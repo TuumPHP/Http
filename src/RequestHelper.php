@@ -105,7 +105,8 @@ class RequestHelper
      */
     public static function getSessionMgr(ServerRequestInterface $request)
     {
-        return $request->getAttribute(self::SESSION_MANAGER);
+        return $request->getAttribute(self::SESSION_MANAGER) ?:
+            self::getApp($request)->get(self::SESSION_MANAGER);
     }
 
     /**
@@ -195,6 +196,10 @@ class RequestHelper
      */
     public static function getReferrer(ServerRequestInterface $request)
     {
-        return $request->getAttribute(self::REFERRER);
+        if ($referrer = $request->getAttribute(self::REFERRER)) {
+            return $referrer;
+        }
+        $info = $request->getServerParams();
+        return array_key_exists('HTTP_REFERER', $info) ? $info['HTTP_REFERER'] : '';
     }
 }
