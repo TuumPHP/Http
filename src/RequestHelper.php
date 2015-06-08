@@ -1,8 +1,8 @@
 <?php
 namespace Tuum\Http;
 
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Application\Application;
 use Tuum\Http\Service\SessionStorageInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
@@ -37,7 +37,7 @@ class RequestHelper
     
     /**
      * @param ServerRequestInterface $request
-     * @param Application            $app
+     * @param ContainerInterface            $app
      * @return ServerRequestInterface
      */
     public static function withApp(ServerRequestInterface $request, $app)
@@ -47,11 +47,25 @@ class RequestHelper
 
     /**
      * @param ServerRequestInterface $request
-     * @return Application
+     * @return ContainerInterface
      */
     public static function getApp(ServerRequestInterface $request)
     {
         return $request->getAttribute(self::APP_NAME);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param string                 $key
+     * @return mixed|null
+     */
+    public static function getContainer(ServerRequestInterface $request, $key)
+    {
+        $app = self::getApp($request);
+        if ($app && $app->has($key)) {
+            return $app->get($key);
+        }
+        return null;
     }
 
     /**
@@ -106,7 +120,7 @@ class RequestHelper
     public static function getSessionMgr(ServerRequestInterface $request)
     {
         return $request->getAttribute(self::SESSION_MANAGER) ?:
-            self::getApp($request)->get(self::SESSION_MANAGER);
+            self::getContainer($request, self::SESSION_MANAGER);
     }
 
     /**

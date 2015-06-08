@@ -1,7 +1,7 @@
 <?php
 namespace Tuum\Http\Service;
 
-use Tuum\Application\Application;
+use Interop\Container\ContainerInterface;
 
 trait WithViewDataTrait
 {
@@ -12,13 +12,13 @@ trait WithViewDataTrait
 
     /**
      * @param array       $options
-     * @param Application $app
+     * @param ContainerInterface $app
      */
     protected function setViewData(array $options, $app)
     {
         if (isset($options[ViewData::class])) {
             $this->data = $options[ViewData::class];
-        } elseif ($app && $app->exists(ViewData::class)) {
+        } elseif ($app && $app->has(ViewData::class)) {
             $this->data = $app->get(ViewData::class);
         } else {
             $this->data = new ViewData();

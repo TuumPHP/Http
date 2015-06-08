@@ -103,7 +103,7 @@ class Error
     public function view($status, $data = [])
     {
         /** @var ErrorViewInterface $view */
-        if (!$view = RequestHelper::getApp($this->request)->get(ErrorViewInterface::class)) {
+        if (!$view = RequestHelper::getContainer($this->request, ErrorViewInterface::class)) {
             throw new \BadMethodCallException;
         }
         return $view->respond($status, $data);

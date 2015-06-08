@@ -108,7 +108,7 @@ class Respond
     public function asView($file)
     {
         /** @var ViewStreamInterface $view */
-        if (!$view = RequestHelper::getApp($this->request)->get(ViewStreamInterface::class)) {
+        if (!$view = RequestHelper::getContainer($this->request, ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
         $view = $view->withView($file, $this->data->getData());
@@ -125,7 +125,7 @@ class Respond
     public function asContents($content)
     {
         /** @var ViewStreamInterface $view */
-        if (!$view = RequestHelper::getApp($this->request)->get(ViewStreamInterface::class)) {
+        if (!$view = RequestHelper::getContainer($this->request, ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
         $view = $view->withContent($content, $this->data->getData());
