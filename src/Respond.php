@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Http\Service\ViewStreamInterface;
-use Tuum\Http\Service\Value;
+use Tuum\Http\Service\ViewData;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -35,7 +35,7 @@ class Respond
         $this->data    = $this->request->getAttributes();
         if (!RequestHelper::getSessionMgr($request)) return;
 
-        foreach ([Value::INPUTS, Value::ERRORS, Value::MESSAGE] as $key) {
+        foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
             $value = RequestHelper::getFlash($request, $key);
             $this->data[$key] = $value;
         }
@@ -87,7 +87,7 @@ class Respond
      */
     public function withInput(array $input)
     {
-        return $this->with(Value::INPUTS, $input);
+        return $this->with(ViewData::INPUTS, $input);
     }
 
     /**
@@ -96,7 +96,7 @@ class Respond
      */
     public function withInputErrors(array $errors)
     {
-        return $this->with(Value::ERRORS, $errors);
+        return $this->with(ViewData::ERRORS, $errors);
     }
 
     /**
@@ -105,7 +105,7 @@ class Respond
      */
     public function withMessage($message)
     {
-        $this->merge(Value::MESSAGE, Value::success($message));
+        $this->merge(ViewData::MESSAGE, ViewData::success($message));
         return $this;
     }
 
@@ -115,7 +115,7 @@ class Respond
      */
     public function withAlert($message)
     {
-        $this->merge(Value::MESSAGE, Value::alert($message));
+        $this->merge(ViewData::MESSAGE, ViewData::alert($message));
         return $this;
     }
 
@@ -125,7 +125,7 @@ class Respond
      */
     public function withError($message)
     {
-        $this->merge(Value::MESSAGE, Value::error($message));
+        $this->merge(ViewData::MESSAGE, ViewData::error($message));
         return $this;
     }
 

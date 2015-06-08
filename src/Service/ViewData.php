@@ -1,7 +1,7 @@
 <?php
 namespace Tuum\Http\Service;
 
-class Value
+class ViewData
 {
     /*
      * constants for data types.

@@ -4,7 +4,7 @@ namespace Tuum\Http;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use Tuum\Http\Service\Value;
+use Tuum\Http\Service\ViewData;
 use Zend\Diactoros\Response;
 
 class Redirect
@@ -23,7 +23,7 @@ class Redirect
     public function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
-        foreach ([Value::INPUTS, Value::ERRORS, Value::MESSAGE] as $key) {
+        foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
             $value = $this->request->getAttribute($key);
             RequestHelper::setFlash($this->request, $key, $value);
         }
@@ -69,7 +69,7 @@ class Redirect
      */
     public function withInputData(array $input)
     {
-        return $this->with(Value::INPUTS, $input);
+        return $this->with(ViewData::INPUTS, $input);
     }
 
     /**
@@ -78,7 +78,7 @@ class Redirect
      */
     public function withInputErrors(array $errors)
     {
-        return $this->with(Value::ERRORS, $errors);
+        return $this->with(ViewData::ERRORS, $errors);
     }
 
     /**
@@ -87,7 +87,7 @@ class Redirect
      */
     public function withMessage($message)
     {
-        $this->withPush(Value::MESSAGE, Value::success($message));
+        $this->withPush(ViewData::MESSAGE, ViewData::success($message));
         return $this;
     }
 
@@ -97,7 +97,7 @@ class Redirect
      */
     public function withAlertMsg($message)
     {
-        $this->withPush(Value::MESSAGE, Value::alert($message));
+        $this->withPush(ViewData::MESSAGE, ViewData::alert($message));
         return $this;
     }
 
@@ -107,7 +107,7 @@ class Redirect
      */
     public function withErrorMsg($message)
     {
-        $this->withPush(Value::MESSAGE, Value::error($message));
+        $this->withPush(ViewData::MESSAGE, ViewData::error($message));
         return $this;
     }
 
