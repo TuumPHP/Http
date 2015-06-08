@@ -32,9 +32,13 @@ class ViewData
 
     /**
      * @param array $data
+     * @param bool  $replace
      */
-    public function setData(array $data)
+    public function setData(array $data, $replace = false)
     {
+        if (!$replace) {
+            $data = array_merge($this->data, $data);
+        }
         $this->data = $data;
     }
 

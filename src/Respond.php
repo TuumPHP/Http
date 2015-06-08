@@ -7,7 +7,6 @@ use Psr\Http\Message\StreamInterface;
 use Tuum\Http\Service\ViewStreamInterface;
 use Tuum\Http\Service\ViewData;
 use Tuum\Http\Service\WithViewDataTrait;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 class Respond
@@ -63,12 +62,7 @@ class Respond
      */
     public function with($key, $value = null)
     {
-        if (is_array($key)) {
-            $this->data = array_merge($this->data, $key);
-        }
-        if (is_string($key)) {
-            $this->data[$key] = $value;
-        }
+        $this->withData($key, $value);
         return $this;
     }
 
@@ -136,33 +130,33 @@ class Respond
      * returns a string as a html text.
      *
      * @param string $text
-     * @return Response
+     * @return ResponseInterface
      */
     public function asHtml($text)
     {
-        return new Response($text, self::OK, ['Content-Type' => 'text/html']);
+        return $this->asResponse($text, self::OK, ['Content-Type' => 'text/html']);
     }
 
     /**
      * returns a string as a plain text.
      *
      * @param string $text
-     * @return Response
+     * @return ResponseInterface
      */
     public function asText($text)
     {
-        return new Response($text, self::OK, ['Content-Type' => 'text/plain']);
+        return $this->asResponse($text, self::OK, ['Content-Type' => 'text/plain']);
     }
 
     /**
      * returns as JSON from an array of $data.
      *
      * @param array $data
-     * @return Response
+     * @return ResponseInterface
      */
     public function asJson(array $data)
     {
-        return new Response(json_encode($data), self::OK, ['Content-Type' => 'application/json']);
+        return $this->asResponse(json_encode($data), self::OK, ['Content-Type' => 'application/json']);
     }
 
     /**
@@ -171,7 +165,7 @@ class Respond
      *
      * @param string|resource $file_loc
      * @param string          $mime
-     * @return Response
+     * @return ResponseInterface
      */
     public function asFileContents($file_loc, $mime)
     {
@@ -182,7 +176,7 @@ class Respond
         } else {
             throw new \InvalidArgumentException;
         }
-        return new Response($stream, self::OK, ['Content-Type' => $mime]);
+        return $this->asResponse($stream, self::OK, ['Content-Type' => $mime]);
     }
 
     /**
@@ -193,13 +187,13 @@ class Respond
      * @param string                          $filename
      * @param bool                            $attach download as attachment if true, or inline if false.
      * @param string|null                     $mime
-     * @return Response
+     * @return ResponseInterface
      */
     public function asDownload($content, $filename, $attach = true, $mime = null)
     {
         $type = $attach ? 'attachment' : 'inline';
         $mime = $mime ?: 'application/octet-stream';
-        return new Response(
+        return $this->asResponse(
             $content,
             self::OK, [
             'Content-Disposition' => "{$type}; filename=\"{$filename}\"",

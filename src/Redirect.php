@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Http\Service\ViewData;
 use Tuum\Http\Service\WithViewDataTrait;
-use Zend\Diactoros\Response;
 
 class Redirect
 {
@@ -66,7 +65,7 @@ class Redirect
      * the $uri must be a full uri (like http://...), or a UriInterface object.
      *
      * @param UriInterface|string $uri
-     * @return ResponseInterface|Response
+     * @return ResponseInterface
      */
     public function toAbsoluteUri($uri)
     {
@@ -83,7 +82,7 @@ class Redirect
      * uses current hosts and scheme.
      *
      * @param string $path
-     * @return ResponseInterface|Response
+     * @return ResponseInterface
      */
     public function toPath($path)
     {
@@ -94,7 +93,7 @@ class Redirect
     /**
      * @param string $path
      * @param string $query
-     * @return ResponseInterface|Response
+     * @return ResponseInterface
      */
     public function toBasePath($path = '', $query='')
     {
@@ -110,7 +109,7 @@ class Redirect
     }
 
     /**
-     * @return Response
+     * @return ResponseInterface
      */
     public function toReferrer()
     {

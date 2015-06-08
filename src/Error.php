@@ -5,8 +5,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Http\Service\ErrorViewInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
 
 class Error
 {
@@ -59,29 +57,7 @@ class Error
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
     {
-        if ($input instanceof StreamInterface) {
-            $stream = $input;
-
-        } elseif (is_string($input)) {
-            $stream = new Stream('php://memory', 'wb+');
-            $stream->write($input);
-
-        } elseif (is_resource($input)) {
-            $stream = $input;
-
-        } elseif (is_object($input) && method_exists($input, '__toString')) {
-            $stream = new Stream('php://memory', 'wb+');
-            $stream->write($input->__toString());
-
-        } else {
-            throw new \InvalidArgumentException;
-        }
-
-        return new Response(
-            $stream,
-            $status,
-            $header
-        );
+        return ResponseHelper::createResponse($input, $status, $header);
     }
 
     /**
@@ -89,7 +65,7 @@ class Error
      * @param array $data
      * @return ResponseInterface
      */
-    public function json($status, $data)
+    public function asJson($status, $data)
     {
         $stream = json_encode($data);
         return $this->respond($stream, $status, ['Content-Type' => 'application/json']);
@@ -100,7 +76,7 @@ class Error
      * @param array $data
      * @return ResponseInterface
      */
-    public function view($status, $data = [])
+    public function asView($status, $data = [])
     {
         /** @var ErrorViewInterface $view */
         if (!$view = RequestHelper::getContainer($this->request, ErrorViewInterface::class)) {
@@ -115,7 +91,7 @@ class Error
      */
     public function unauthorized($data = [])
     {
-        return $this->view(self::UNAUTHORIZED, $data);
+        return $this->asView(self::UNAUTHORIZED, $data);
     }
 
     /**
@@ -124,7 +100,7 @@ class Error
      */
     public function forbidden($data = [])
     {
-        return $this->view(self::ACCESS_DENIED, $data);
+        return $this->asView(self::ACCESS_DENIED, $data);
     }
 
     /**
@@ -133,6 +109,6 @@ class Error
      */
     public function notFound($data = [])
     {
-        return $this->view(self::FILE_NOT_FOUND, $data);
+        return $this->asView(self::FILE_NOT_FOUND, $data);
     }
 }

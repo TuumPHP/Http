@@ -8,10 +8,10 @@ trait WithViewDataTrait
     /**
      * @var ViewData
      */
-    private $data;
+    protected $data;
 
     /**
-     * @param array       $options
+     * @param array              $options
      * @param ContainerInterface $app
      */
     protected function setViewData(array $options, $app)
@@ -22,6 +22,19 @@ trait WithViewDataTrait
             $this->data = $app->get(ViewData::class);
         } else {
             $this->data = new ViewData();
+        }
+    }
+
+    /**
+     * @param string|array $key
+     * @param mixed|null   $value
+     */
+    protected function withData($key, $value=null)
+    {
+        if (is_array($key)) {
+            $this->data->setData($key);
+        } elseif (is_string($key)) {
+            $this->data->set($key, $value);
         }
     }
 
