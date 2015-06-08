@@ -10,7 +10,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "zendframework/zend-diactoros": "~1.0"
+        "zendframework/zend-diactoros": "~1.0",
+        "container-interop/container-interop": "~1.0"
     },
     "require-dev": {
         "aura/session": "~2.0"
