@@ -1,0 +1,26 @@
+{
+  "name":"tuum/http",
+    "description": "helpers and responders for psr-7 http/messages.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Asao",
+            "email": "kamei@workspot.jp"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "zendframework/zend-diactoros": "~1.0",
+        "league/container": "^1.3.0"
+    },
+    "require-dev": {
+        "aura/session": "~2.0"
+    },
+    "repositories": [
+    ],
+    "autoload": {
+        "psr-4": {
+            "Tuum\\Http\\": "src/"
+        }
+    }
+}
