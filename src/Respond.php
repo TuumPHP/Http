@@ -6,11 +6,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Http\Service\ViewStreamInterface;
 use Tuum\Http\Service\ViewData;
+use Tuum\Http\Service\WithViewDataTrait;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 class Respond
 {
+    use WithViewDataTrait;
+
     const OK = 200;
 
     /**
@@ -18,36 +21,36 @@ class Respond
      */
     private $request;
 
-    /**
-     * @var array
-     */
-    private $data = [];
-
     // +----------------------------------------------------------------------+
     //  construction
     // +----------------------------------------------------------------------+
     /**
      * @param ServerRequestInterface $request
+     * @param array                  $options
      */
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(ServerRequestInterface $request, $options = [])
     {
         $this->request = $request;
-        $this->data    = $this->request->getAttributes();
+        $this->setViewData($options, RequestHelper::getApp($request));
+
+        $this->data->setData($this->request->getAttributes());
+
         if (!RequestHelper::getSessionMgr($request)) return;
 
         foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
             $value = RequestHelper::getFlash($request, $key);
-            $this->data[$key] = $value;
+            $this->data->set($key, $value);
         }
     }
 
     /**
      * @param ServerRequestInterface $request
+     * @param array                  $options
      * @return static
      */
-    public static function forge(ServerRequestInterface $request)
+    public static function forge(ServerRequestInterface $request, $options = [])
     {
-        return new static($request);
+        return new static($request, $options);
     }
 
     // +----------------------------------------------------------------------+
@@ -66,66 +69,6 @@ class Respond
         if (is_string($key)) {
             $this->data[$key] = $value;
         }
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param mixed  $value
-     */
-    protected function merge($key, $value)
-    {
-        if (!isset($this->data[$key])) {
-            $this->data[$key] = [];
-        }
-        $this->data[$key][] = $value;
-    }
-
-    /**
-     * @param array $input
-     * @return $this
-     */
-    public function withInput(array $input)
-    {
-        return $this->with(ViewData::INPUTS, $input);
-    }
-
-    /**
-     * @param array $errors
-     * @return $this
-     */
-    public function withInputErrors(array $errors)
-    {
-        return $this->with(ViewData::ERRORS, $errors);
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withMessage($message)
-    {
-        $this->merge(ViewData::MESSAGE, ViewData::success($message));
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withAlert($message)
-    {
-        $this->merge(ViewData::MESSAGE, ViewData::alert($message));
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withError($message)
-    {
-        $this->merge(ViewData::MESSAGE, ViewData::error($message));
         return $this;
     }
 
@@ -168,7 +111,7 @@ class Respond
         if (!$view = RequestHelper::getApp($this->request)->get(ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
-        $view = $view->withView($file, $this->data);
+        $view = $view->withView($file, $this->data->getData());
         return $this->asResponse($view);
     }
 
@@ -185,7 +128,7 @@ class Respond
         if (!$view = RequestHelper::getApp($this->request)->get(ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
-        $view = $view->withContent($content);
+        $view = $view->withContent($content, $this->data->getData());
         return $this->asResponse($view);
     }
 

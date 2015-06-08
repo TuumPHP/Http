@@ -3,13 +3,17 @@ namespace Tuum\Http\Service;
 
 class ViewData
 {
+    /**
+     * @var array
+     */
+    private $data = [];
+
     /*
      * constants for data types.
      */
     const MESSAGE = '-message-view';
     const INPUTS = '-input-view';
     const ERRORS = '-errors-view';
-    const URI = '-uri-view';
 
     /*
      * message types. 
@@ -19,13 +23,71 @@ class ViewData
     const MESSAGE_ERROR = 'error';
 
     /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData(array $data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    public function set($key, $value)
+    {
+        $this->data[$key] = $value;
+    }
+
+    /**
+     * @param string      $key
+     * @param null|mixed  $alt
+     * @return mixed
+     */
+    public function get($key, $alt = null)
+    {
+        return array_key_exists($key, $this->data) ? $this->data[$key] : $alt;
+    }
+
+    /**
+     * sets input value, like $_POST.
+     *
+     * @param array $value
+     */
+    public function inputData(array $value)
+    {
+        $this->set(self::INPUTS, $value);
+    }
+
+    /**
+     * sets input errors, such as validation error messages.
+     *
+     * @param array $errors
+     */
+    public function inputErrors(array $errors)
+    {
+        $this->set(self::ERRORS, $errors);
+    }
+
+    /**
      * @param string $message
      * @param string $type
      * @return array
      */
-    public static function message($message, $type)
+    public function message($message, $type)
     {
-        return [
+        if (!array_key_exists(self::MESSAGE, $this->data)) {
+            $this->data[self::MESSAGE] = [];
+        }
+        $this->data[self::MESSAGE][] = [
             'message' => $message,
             'type'    => $type,
         ];
@@ -35,26 +97,26 @@ class ViewData
      * @param string $message
      * @return array
      */
-    public static function success($message)
+    public function success($message)
     {
-        return self::message($message, self::MESSAGE_SUCCESS);
+        return $this->message($message, self::MESSAGE_SUCCESS);
     }
 
     /**
      * @param string $message
      * @return array
      */
-    public static function alert($message)
+    public function alert($message)
     {
-        return self::message($message, self::MESSAGE_ALERT);
+        return $this->message($message, self::MESSAGE_ALERT);
     }
 
     /**
      * @param string $message
      * @return array
      */
-    public static function error($message)
+    public function error($message)
     {
-        return self::message($message, self::MESSAGE_ERROR);
+        return $this->message($message, self::MESSAGE_ERROR);
     }
 }

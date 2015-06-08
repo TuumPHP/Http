@@ -5,10 +5,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Http\Service\ViewData;
+use Tuum\Http\Service\WithViewDataTrait;
 use Zend\Diactoros\Response;
 
 class Redirect
 {
+    use WithViewDataTrait;
+
     /**
      * @var ServerRequestInterface
      */
@@ -19,10 +22,13 @@ class Redirect
     // +----------------------------------------------------------------------+
     /**
      * @param ServerRequestInterface $request
+     * @param array                  $options
      */
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(ServerRequestInterface $request, $options = [])
     {
         $this->request = $request;
+        $this->setViewData($options, RequestHelper::getApp($request));
+
         foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
             $value = $this->request->getAttribute($key);
             RequestHelper::setFlash($this->request, $key, $value);
@@ -46,68 +52,9 @@ class Redirect
      * @param mixed        $value
      * @return $this
      */
-    public function with($key, $value)
+    public function withFlashData($key, $value)
     {
         RequestHelper::setFlash($this->request, $key, $value);
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param mixed  $value
-     */
-    private function withPush($key, $value)
-    {
-        $data = RequestHelper::getCurrFlash($this->request, $key, []);
-        $data[] = $value;
-        RequestHelper::setFlash($this->request, $key, $data);
-    }
-
-    /**
-     * @param array $input
-     * @return $this
-     */
-    public function withInputData(array $input)
-    {
-        return $this->with(ViewData::INPUTS, $input);
-    }
-
-    /**
-     * @param array $errors
-     * @return $this
-     */
-    public function withInputErrors(array $errors)
-    {
-        return $this->with(ViewData::ERRORS, $errors);
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withMessage($message)
-    {
-        $this->withPush(ViewData::MESSAGE, ViewData::success($message));
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withAlertMsg($message)
-    {
-        $this->withPush(ViewData::MESSAGE, ViewData::alert($message));
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withErrorMsg($message)
-    {
-        $this->withPush(ViewData::MESSAGE, ViewData::error($message));
         return $this;
     }
 
@@ -126,6 +73,8 @@ class Redirect
         if ($uri instanceof UriInterface) {
             $uri = (string)$uri;
         }
+        $data = $this->data->getData();
+        RequestHelper::setFlash($this->request, $data);
         return ResponseHelper::createResponse('php://memory', 302, ['Location' => $uri]);
     }
 
