@@ -19,10 +19,10 @@ __Responder classes__ offer a simplified way to create a response object, such
 as text, jason, html, or redirection. But more uniquely, the responders can pass data across http requests using sessions and flashes. For instance, 
 
 ```php
-Redirect::forge($request)->withMessage('welcome!')->toPath('jump/to');
+Redirect::forge($request, $response)->withMessage('welcome!')->toPath('jump/to');
 
 // ...now in the subsequent request to a server...
-Respond::forge($request)->asView('template'); // with the 'welcome!' message.
+Respond::forge($request, $response)->asView('template'); // with the 'welcome!' message.
 ```
 
 ### License
@@ -68,6 +68,16 @@ The respnders are helpers to simplify the construction of a response object by u
 *   ```Redirect```: to create a redirect response. 
 *   ```Error```: to create response with error status and view. 
 
+To start responders, use ```forge``` method with ```$response``` object, and optionaly, ```$response``` object. If $response is given, responders will populate the existing $response, or will craete a new $resopnse object. 
+
+```php
+use Tuum\Http\Respond;
+Respond::forge($request, $response);
+// or...
+Respond::forge($request);
+```
+
+For the simplicity of the code, the following samples use only ```$request``` as input. 
 
 
 ### Basic Usage
