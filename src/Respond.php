@@ -6,19 +6,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Http\Service\ViewStreamInterface;
 use Tuum\Http\Service\ViewData;
-use Tuum\Http\Service\WithViewDataTrait;
+use Tuum\Http\Service\AbstractWithViewData;
 use Zend\Diactoros\Stream;
 
-class Respond
+class Respond extends AbstractWithViewData
 {
-    use WithViewDataTrait;
-
     const OK = 200;
-
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
 
     // +----------------------------------------------------------------------+
     //  construction
@@ -47,20 +40,6 @@ class Respond
     public static function forge(ServerRequestInterface $request)
     {
         return new static($request);
-    }
-
-    // +----------------------------------------------------------------------+
-    //  methods for saving data for response.
-    // +----------------------------------------------------------------------+
-    /**
-     * @param string $key
-     * @param mixed  $value
-     * @return $this
-     */
-    public function withFlashData($key, $value)
-    {
-        RequestHelper::setFlash($this->request, $key, $value);
-        return $this;
     }
 
     // +----------------------------------------------------------------------+

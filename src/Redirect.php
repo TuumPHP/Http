@@ -5,17 +5,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Http\Service\ViewData;
-use Tuum\Http\Service\WithViewDataTrait;
+use Tuum\Http\Service\AbstractWithViewData;
 
-class Redirect
+class Redirect extends AbstractWithViewData
 {
-    use WithViewDataTrait;
-
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-
     // +----------------------------------------------------------------------+
     //  construction
     // +----------------------------------------------------------------------+
@@ -40,20 +33,6 @@ class Redirect
     public static function forge(ServerRequestInterface $request)
     {
         return new static($request);
-    }
-
-    // +----------------------------------------------------------------------+
-    //  methods for saving data into session's flash.
-    // +----------------------------------------------------------------------+
-    /**
-     * @param string|array $key
-     * @param mixed        $value
-     * @return $this
-     */
-    public function withFlashData($key, $value)
-    {
-        RequestHelper::setFlash($this->request, $key, $value);
-        return $this;
     }
 
     // +----------------------------------------------------------------------+

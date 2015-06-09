@@ -1,12 +1,31 @@
 <?php
 namespace Tuum\Http\Service;
 
-trait WithViewDataTrait
+use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Http\RequestHelper;
+
+abstract class AbstractWithViewData
 {
+    /**
+     * @var ServerRequestInterface
+     */
+    protected $request;
+
     /**
      * @var ViewData
      */
     protected $data;
+
+    /**
+     * @param string|array $key
+     * @param mixed        $value
+     * @return $this
+     */
+    public function withFlashData($key, $value)
+    {
+        RequestHelper::setFlash($this->request, $key, $value);
+        return $this;
+    }
 
     /**
      * @param string|array $key
