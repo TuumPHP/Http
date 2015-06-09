@@ -11,6 +11,7 @@ class ViewData
     /*
      * constants for data types.
      */
+    const DATA = '-data-view';
     const MESSAGE = '-message-view';
     const INPUTS = '-input-view';
     const ERRORS = '-errors-view';
@@ -23,6 +24,8 @@ class ViewData
     const MESSAGE_ERROR = 'error';
 
     /**
+     * get all raw data.
+     *
      * @return array
      */
     public function getRawData()
@@ -31,6 +34,8 @@ class ViewData
     }
 
     /**
+     * set all raw data.
+     *
      * @param array $data
      * @param bool  $replace
      */
@@ -43,6 +48,20 @@ class ViewData
     }
 
     /**
+     * get a raw data.
+     *
+     * @param string      $key
+     * @param null|mixed  $alt
+     * @return mixed
+     */
+    public function get($key, $alt = null)
+    {
+        return array_key_exists($key, $this->data) ? $this->data[$key] : $alt;
+    }
+
+    /**
+     * set a raw data.
+     *
      * @param string $key
      * @param mixed $value
      */
@@ -52,13 +71,15 @@ class ViewData
     }
 
     /**
-     * @param string      $key
-     * @param null|mixed  $alt
-     * @return mixed
+     * @param string $key
+     * @param mixed $value
      */
-    public function get($key, $alt = null)
+    public function dataValue($key, $value)
     {
-        return array_key_exists($key, $this->data) ? $this->data[$key] : $alt;
+        if (!array_key_exists(self::DATA, $this->data)) {
+            $this->data[self::DATA] = [];
+        }
+        $this->data[self::DATA][$key] = $value;
     }
 
     /**

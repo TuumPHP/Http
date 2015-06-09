@@ -68,14 +68,14 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $refObj  = new \ReflectionObject($respond);
         $refData = $refObj->getProperty('data');
         $refData->setAccessible(true);
+        /** @var ViewData $data */
         $data    = $refData->getValue($respond);
-        $data = $data->getRawData();
 
         $this->assertEquals('val1', RequestHelper::getFlash($request, 'with'));
-        $this->assertEquals('message', $data[ViewData::MESSAGE][0]['message']);
-        $this->assertEquals('notice-msg', $data[ViewData::MESSAGE][1]['message']);
-        $this->assertEquals('error-msg', $data[ViewData::MESSAGE][2]['message']);
-        $this->assertEquals('test', $data[ViewData::INPUTS]['more']);
-        $this->assertEquals('done', $data[ViewData::ERRORS]['more']);
+        $this->assertEquals('message', $data->get(ViewData::MESSAGE)[0]['message']);
+        $this->assertEquals('notice-msg', $data->get(ViewData::MESSAGE)[1]['message']);
+        $this->assertEquals('error-msg', $data->get(ViewData::MESSAGE)[2]['message']);
+        $this->assertEquals('test', $data->get(ViewData::INPUTS)['more']);
+        $this->assertEquals('done', $data->get(ViewData::ERRORS)['more']);
     }
 }

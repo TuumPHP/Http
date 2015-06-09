@@ -17,7 +17,7 @@ trait WithViewDataTrait
         if (is_array($key)) {
             $this->data->setRawData($key);
         } elseif (is_string($key)) {
-            $this->data->set($key, $value);
+            $this->data->dataValue($key, $value);
         }
     }
 

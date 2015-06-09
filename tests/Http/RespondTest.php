@@ -87,15 +87,15 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $refObj  = new \ReflectionObject($respond);
         $refData = $refObj->getProperty('data');
         $refData->setAccessible(true);
+        /** @var ViewData $data */
         $data    = $refData->getValue($respond);
-        $data = $data->getRawData();
 
-        $this->assertEquals('value', $data['some']);
-        $this->assertEquals('message', $data[ViewData::MESSAGE][0]['message']);
-        $this->assertEquals('notice-msg', $data[ViewData::MESSAGE][1]['message']);
-        $this->assertEquals('error-msg', $data[ViewData::MESSAGE][2]['message']);
-        $this->assertEquals('test', $data[ViewData::INPUTS]['more']);
-        $this->assertEquals('done', $data[ViewData::ERRORS]['more']);
+        $this->assertEquals('value', $data->get(ViewData::DATA)['some']);
+        $this->assertEquals('message', $data->get(ViewData::MESSAGE)[0]['message']);
+        $this->assertEquals('notice-msg', $data->get(ViewData::MESSAGE)[1]['message']);
+        $this->assertEquals('error-msg', $data->get(ViewData::MESSAGE)[2]['message']);
+        $this->assertEquals('test', $data->get(ViewData::INPUTS)['more']);
+        $this->assertEquals('done', $data->get(ViewData::ERRORS)['more']);
     }
 
     /**
