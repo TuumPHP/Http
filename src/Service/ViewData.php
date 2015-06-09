@@ -25,7 +25,7 @@ class ViewData
     /**
      * @return array
      */
-    public function getData()
+    public function getRawData()
     {
         return $this->data;
     }
@@ -34,7 +34,7 @@ class ViewData
      * @param array $data
      * @param bool  $replace
      */
-    public function setData(array $data, $replace = false)
+    public function setRawData(array $data, $replace = false)
     {
         if (!$replace) {
             $data = array_merge($this->data, $data);
@@ -68,7 +68,7 @@ class ViewData
      */
     public function inputData(array $value)
     {
-        $this->set(self::INPUTS, $value);
+        $this->data[self::INPUTS] = $value;
     }
 
     /**
@@ -78,7 +78,7 @@ class ViewData
      */
     public function inputErrors(array $errors)
     {
-        $this->set(self::ERRORS, $errors);
+        $this->data[self::ERRORS] = $errors;
     }
 
     /**

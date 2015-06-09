@@ -32,14 +32,15 @@ class Respond
         $this->request = $request;
         $this->setViewData($options, RequestHelper::getApp($request));
 
-        $this->data->setData($this->request->getAttributes());
-
-        if (!RequestHelper::getSessionMgr($request)) return;
-
-        foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
-            $value = RequestHelper::getFlash($request, $key);
-            $this->data->set($key, $value);
+        if (RequestHelper::getSessionMgr($request)) {
+            $data = [
+                ViewData::INPUTS => RequestHelper::getFlash($request, ViewData::INPUTS, []),
+                ViewData::ERRORS => RequestHelper::getFlash($request, ViewData::ERRORS, []),
+                ViewData::MESSAGE => RequestHelper::getFlash($request, ViewData::MESSAGE, []),
+            ];
+            $this->withData($data);
         }
+        $this->withData($this->request->getAttributes());
     }
 
     /**
@@ -105,7 +106,7 @@ class Respond
         if (!$view = RequestHelper::getContainer($this->request, ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
-        $view = $view->withView($file, $this->data->getData());
+        $view = $view->withView($file, $this->data);
         return $this->asResponse($view);
     }
 
@@ -122,7 +123,7 @@ class Respond
         if (!$view = RequestHelper::getContainer($this->request, ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
-        $view = $view->withContent($content, $this->data->getData());
+        $view = $view->withContent($content, $this->data);
         return $this->asResponse($view);
     }
 
@@ -197,7 +198,7 @@ class Respond
             $content,
             self::OK, [
             'Content-Disposition' => "{$type}; filename=\"{$filename}\"",
-            'Content-Length'      => strlen($content),
+            'Content-Length'      => (string) strlen($content),
             'Content-Type'        => $mime,
             'Cache-Control'       => 'public', // for IE8
             'Pragma'              => 'public', // for IE8

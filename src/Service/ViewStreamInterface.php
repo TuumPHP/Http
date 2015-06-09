@@ -15,20 +15,20 @@ interface ViewStreamInterface extends StreamInterface
     /**
      * sets view template file and data to be rendered.
      *
-     * @param string $view_file
-     * @param array  $data
+     * @param string    $view_file
+     * @param ViewData  $data
      * @return ViewStreamInterface
      */
-    public function withView($view_file, $data = []);
+    public function withView($view_file, $data = null);
 
     /**
      * sets view contents to be rendered.
      *
-     * @param string $content
-     * @param array  $data
+     * @param string    $content
+     * @param ViewData  $data
      * @return ViewStreamInterface
      */
-    public function withContent($content, $data = []);
+    public function withContent($content, $data = null);
 
     /**
      * modifies the internal renderer's setting.

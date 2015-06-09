@@ -32,7 +32,7 @@ trait WithViewDataTrait
     protected function withData($key, $value=null)
     {
         if (is_array($key)) {
-            $this->data->setData($key);
+            $this->data->setRawData($key);
         } elseif (is_string($key)) {
             $this->data->set($key, $value);
         }

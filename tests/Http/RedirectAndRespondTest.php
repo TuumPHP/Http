@@ -6,7 +6,7 @@ use Tuum\Http\Redirect;
 use Tuum\Http\RequestHelper;
 use Tuum\Http\Respond;
 use Tuum\Http\ResponseHelper;
-use Tuum\Web\View\Value;
+use Tuum\Http\Service\ViewData;
 
 class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
 {
@@ -69,12 +69,13 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $refData = $refObj->getProperty('data');
         $refData->setAccessible(true);
         $data    = $refData->getValue($respond);
-        $data = $data->getData();
+        $data = $data->getRawData();
 
-        $this->assertEquals('message', $data[Value::MESSAGE][0]['message']);
-        $this->assertEquals('notice-msg', $data[Value::MESSAGE][1]['message']);
-        $this->assertEquals('error-msg', $data[Value::MESSAGE][2]['message']);
-        $this->assertEquals('test', $data[Value::INPUTS]['more']);
-        $this->assertEquals('done', $data[Value::ERRORS]['more']);
+        $this->assertEquals('val1', RequestHelper::getFlash($request, 'with'));
+        $this->assertEquals('message', $data[ViewData::MESSAGE][0]['message']);
+        $this->assertEquals('notice-msg', $data[ViewData::MESSAGE][1]['message']);
+        $this->assertEquals('error-msg', $data[ViewData::MESSAGE][2]['message']);
+        $this->assertEquals('test', $data[ViewData::INPUTS]['more']);
+        $this->assertEquals('done', $data[ViewData::ERRORS]['more']);
     }
 }
