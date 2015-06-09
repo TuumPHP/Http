@@ -18,10 +18,12 @@ class Respond extends AbstractWithViewData
     // +----------------------------------------------------------------------+
     /**
      * @param ServerRequestInterface $request
+     * @param null|ResponseInterface $response
      */
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(ServerRequestInterface $request, $response = null)
     {
-        $this->request = $request;
+        $this->request  = $request;
+        $this->response = $response;
         $this->data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
 
         if (RequestHelper::getSessionMgr($request)) {
@@ -35,11 +37,12 @@ class Respond extends AbstractWithViewData
 
     /**
      * @param ServerRequestInterface $request
+     * @param null|ResponseInterface $response
      * @return static
      */
-    public static function forge(ServerRequestInterface $request)
+    public static function forge(ServerRequestInterface $request, $response = null)
     {
-        return new static($request);
+        return new static($request, $response);
     }
 
     // +----------------------------------------------------------------------+
@@ -55,7 +58,7 @@ class Respond extends AbstractWithViewData
      */
     public function asResponse($input, $status = self::OK, array $header = [])
     {
-        return ResponseHelper::createResponse($input, $status, $header);
+        return ResponseHelper::composeResponse($this->response, $input, $status, $header);
     }
 
     /**

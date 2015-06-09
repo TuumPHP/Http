@@ -16,29 +16,63 @@ class ResponseHelper
      */
     public static function createResponse($input, $status = 200, array $header = [])
     {
-        if ($input instanceof StreamInterface) {
-            $stream = $input;
-
-        } elseif (is_string($input)) {
-            $stream = new Stream('php://memory', 'wb+');
-            $stream->write($input);
-
-        } elseif (is_resource($input)) {
-            $stream = $input;
-
-        } elseif (is_object($input) && method_exists($input, '__toString')) {
-            $stream = new Stream('php://memory', 'wb+');
-            $stream->write($input->__toString());
-
-        } else {
-            throw new \InvalidArgumentException;
-        }
+        $stream = self::makeStream($input);
 
         return new Response(
             $stream,
             $status,
             $header
         );
+    }
+
+    /**
+     * @param ResponseInterface|null                  $response
+     * @param StreamInterface|string|resource|object  $input
+     * @param int   $status
+     * @param array $header
+     * @return mixed
+     */
+    public static function composeResponse($response, $input, $status = 200, array $header = [])
+    {
+        if (!$response) {
+            return self::createResponse($input, $status, $header);
+        }
+        $stream = self::makeStream($input);
+        /** @var ResponseInterface $response */
+        $response = $response
+            ->withStatus($status)
+            ->withBody($stream);
+        foreach($header as $name => $val ) {
+            $response = $response->withHeader($name, $val);
+        }
+        return $response;
+    }
+
+    /**
+     * @param $input
+     * @return StreamInterface
+     */
+    private static function makeStream($input)
+    {
+        if ($input instanceof StreamInterface) {
+            return $input;
+
+        } elseif (is_string($input)) {
+            $stream = new Stream('php://memory', 'wb+');
+            $stream->write($input);
+
+            return $stream;
+
+        } elseif (is_resource($input)) {
+            return new Stream($input);
+
+        } elseif (is_object($input) && method_exists($input, '__toString')) {
+            $stream = new Stream('php://memory', 'wb+');
+            $stream->write($input->__toString());
+
+            return $stream;
+        }
+        throw new \InvalidArgumentException;
     }
     
     /**

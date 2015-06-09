@@ -4,6 +4,7 @@ namespace tests\Http;
 use Aura\Session\SessionFactory;
 use Tuum\Http\RequestHelper;
 use Tuum\Http\Respond;
+use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewData;
 
 class RespondTest extends \PHPUnit_Framework_TestCase
@@ -39,7 +40,8 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asHtml_creates_html_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = Respond::forge($request)->asHtml('<h1>html</h1>');
+        $response = ResponseHelper::createResponse('');
+        $response = Respond::forge($request, $response)->asHtml('<h1>html</h1>');
         $this->assertEquals('text/html', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('<h1>html</h1>', $response->getBody()->__toString());
     }

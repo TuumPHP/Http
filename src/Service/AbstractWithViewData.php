@@ -1,6 +1,7 @@
 <?php
 namespace Tuum\Http\Service;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Http\RequestHelper;
 
@@ -11,6 +12,11 @@ abstract class AbstractWithViewData
      */
     protected $request;
 
+    /**
+     * @var ResponseInterface
+     */
+    protected $response; 
+    
     /**
      * @var ViewData
      */

@@ -14,10 +14,12 @@ class Redirect extends AbstractWithViewData
     // +----------------------------------------------------------------------+
     /**
      * @param ServerRequestInterface $request
+     * @param null|ResponseInterface $response
      */
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(ServerRequestInterface $request, $response = null)
     {
         $this->request = $request;
+        $this->response = $response;
         $this->data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
 
         foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
@@ -28,11 +30,12 @@ class Redirect extends AbstractWithViewData
 
     /**
      * @param ServerRequestInterface $request
+     * @param null|ResponseInterface $response
      * @return static
      */
-    public static function forge(ServerRequestInterface $request)
+    public static function forge(ServerRequestInterface $request, $response = null)
     {
-        return new static($request);
+        return new static($request, $response);
     }
 
     // +----------------------------------------------------------------------+
@@ -51,7 +54,7 @@ class Redirect extends AbstractWithViewData
             $uri = (string)$uri;
         }
         RequestHelper::setFlash($this->request, ViewData::MY_KEY, $this->data);
-        return ResponseHelper::createResponse('php://memory', 302, ['Location' => $uri]);
+        return ResponseHelper::composeResponse($this->response, 'php://memory', 302, ['Location' => $uri]);
     }
 
     /**
