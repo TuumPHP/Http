@@ -39,6 +39,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
         $response = Redirect::forge($request)
             ->withFlashData('with', 'val1')
+            ->with('more', 'with')
             ->withMessage('message')
             ->withAlertMsg('notice-msg')
             ->withErrorMsg('error-msg')
@@ -72,6 +73,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $data    = $refData->getValue($respond);
 
         $this->assertEquals('val1', RequestHelper::getFlash($request, 'with'));
+        $this->assertEquals('with', $data->get(ViewData::DATA)['more']);
         $this->assertEquals('message', $data->get(ViewData::MESSAGE)[0]['message']);
         $this->assertEquals('notice-msg', $data->get(ViewData::MESSAGE)[1]['message']);
         $this->assertEquals('error-msg', $data->get(ViewData::MESSAGE)[2]['message']);

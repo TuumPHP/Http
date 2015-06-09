@@ -10,15 +10,13 @@ trait WithViewDataTrait
 
     /**
      * @param string|array $key
-     * @param mixed|null   $value
+     * @param mixed        $value
+     * @return $this
      */
-    protected function withData($key, $value=null)
+    public function with($key, $value = null)
     {
-        if (is_array($key)) {
-            $this->data->setRawData($key);
-        } elseif (is_string($key)) {
-            $this->data->dataValue($key, $value);
-        }
+        $this->data->dataValue($key, $value);
+        return $this;
     }
 
     /**

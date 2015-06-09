@@ -32,14 +32,12 @@ class Respond
         $this->data = RequestHelper::getContainer($this->request, ViewData::class) ?: new ViewData();
 
         if (RequestHelper::getSessionMgr($request)) {
-            $data = [
-                ViewData::INPUTS => RequestHelper::getFlash($request, ViewData::INPUTS, []),
-                ViewData::ERRORS => RequestHelper::getFlash($request, ViewData::ERRORS, []),
-                ViewData::MESSAGE => RequestHelper::getFlash($request, ViewData::MESSAGE, []),
-            ];
-            $this->withData($data);
+            $this->data = RequestHelper::getFlash($request, ViewData::MY_KEY);
         }
-        $this->withData($this->request->getAttributes());
+        if (!$this->data) {
+            $this->data = RequestHelper::getContainer($this->request, ViewData::class) ?: new ViewData();
+        }
+        $this->data->setRawData($this->request->getAttributes());
     }
 
     /**
@@ -54,17 +52,6 @@ class Respond
     // +----------------------------------------------------------------------+
     //  methods for saving data for response.
     // +----------------------------------------------------------------------+
-    /**
-     * @param string|array $key
-     * @param mixed        $value
-     * @return $this
-     */
-    public function with($key, $value = null)
-    {
-        $this->withData($key, $value);
-        return $this;
-    }
-
     /**
      * @param string $key
      * @param mixed  $value

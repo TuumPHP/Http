@@ -8,6 +8,8 @@ class ViewData
      */
     private $data = [];
 
+    const MY_KEY = '-view-data-key';
+
     /*
      * constants for data types.
      */
@@ -74,12 +76,16 @@ class ViewData
      * @param string $key
      * @param mixed $value
      */
-    public function dataValue($key, $value)
+    public function dataValue($key, $value=null)
     {
         if (!array_key_exists(self::DATA, $this->data)) {
             $this->data[self::DATA] = [];
         }
-        $this->data[self::DATA][$key] = $value;
+        if (is_array($key)) {
+            $this->data[self::DATA] = array_merge($this->data[self::DATA], $key);
+        } else {
+            $this->data[self::DATA][$key] = $value;
+        }
     }
 
     /**

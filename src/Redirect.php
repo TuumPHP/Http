@@ -71,8 +71,7 @@ class Redirect
         if ($uri instanceof UriInterface) {
             $uri = (string)$uri;
         }
-        $data = $this->data->getRawData();
-        RequestHelper::setFlash($this->request, $data);
+        RequestHelper::setFlash($this->request, ViewData::MY_KEY, $this->data);
         return ResponseHelper::createResponse('php://memory', 302, ['Location' => $uri]);
     }
 
