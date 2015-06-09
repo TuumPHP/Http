@@ -25,12 +25,11 @@ class Respond
     // +----------------------------------------------------------------------+
     /**
      * @param ServerRequestInterface $request
-     * @param array                  $options
      */
-    public function __construct(ServerRequestInterface $request, $options = [])
+    public function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
-        $this->setViewData($options, RequestHelper::getApp($request));
+        $this->data = RequestHelper::getContainer($this->request, ViewData::class) ?: new ViewData();
 
         if (RequestHelper::getSessionMgr($request)) {
             $data = [
@@ -45,12 +44,11 @@ class Respond
 
     /**
      * @param ServerRequestInterface $request
-     * @param array                  $options
      * @return static
      */
-    public static function forge(ServerRequestInterface $request, $options = [])
+    public static function forge(ServerRequestInterface $request)
     {
-        return new static($request, $options);
+        return new static($request);
     }
 
     // +----------------------------------------------------------------------+

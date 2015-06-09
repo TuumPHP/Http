@@ -1,29 +1,12 @@
 <?php
 namespace Tuum\Http\Service;
 
-use Interop\Container\ContainerInterface;
-
 trait WithViewDataTrait
 {
     /**
      * @var ViewData
      */
     protected $data;
-
-    /**
-     * @param array              $options
-     * @param ContainerInterface $app
-     */
-    protected function setViewData(array $options, $app)
-    {
-        if (isset($options[ViewData::class])) {
-            $this->data = $options[ViewData::class];
-        } elseif ($app && $app->has(ViewData::class)) {
-            $this->data = $app->get(ViewData::class);
-        } else {
-            $this->data = new ViewData();
-        }
-    }
 
     /**
      * @param string|array $key

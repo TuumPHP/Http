@@ -21,12 +21,11 @@ class Redirect
     // +----------------------------------------------------------------------+
     /**
      * @param ServerRequestInterface $request
-     * @param array                  $options
      */
-    public function __construct(ServerRequestInterface $request, $options = [])
+    public function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
-        $this->setViewData($options, RequestHelper::getApp($request));
+        $this->data = RequestHelper::getContainer($this->request, ViewData::class) ?: new ViewData();
 
         foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
             $value = $this->request->getAttribute($key);
