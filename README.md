@@ -16,10 +16,11 @@ $bool = ResponseHelper::isRedirect($response);
 will evaluate $response to check for redirect response. 
 
 __Responder classes__ offer a simplified way to create a response object, such 
-as text, jason, html, or redirection. But more uniquely, the responders can pass data across http requests using sessions and flashes, by properly configuring $request. For instance, 
+as text, jason, html, or redirection. But more uniquely, the responders can pass data across http requests using sessions and flashes. For instance, 
 
 ```php
 Redirect::forge($request)->withMessage('welcome!')->toPath('jump/to');
+
 // ...now in the subsequent request to a server...
 Respond::forge($request)->asView('template'); // with the 'welcome!' message.
 ```
@@ -55,13 +56,13 @@ Responders require several services to work properly, that are defined by (mostl
 
 and additionally, the viewers must understand this class. 
 
-*   ViewData.
+*   ```ViewData```.
 
 
 Responders Overview
 -------------------
 
-The respnders are helpers to simplify the construction of a response object by using various information from $request. There are 3 responders: 
+The respnders are helpers to simplify the construction of a response object by using various information from ```$request```. There are 3 responders: 
 
 *   ```Respond```: to create a response with a view body. 
 *   ```Redirect```: to create a redirect response. 
@@ -114,7 +115,7 @@ Tuum\Http\Respond::forge($request)
     ->asView('view-file');
 ```
 
-Similarly, ```asContent``` method will render any text content maybe inside a layout of a template if ViewStream object implements it. 
+Similarly, ```asContent``` method will render any text content within a template layout if ```ViewStream``` object implements it. 
 
 ```php
 Tuum\Http\Respond::forge($request)
@@ -124,7 +125,7 @@ Tuum\Http\Respond::forge($request)
 
 ### Passing Data From Redirect To View
 
-when redirecting, 
+Use Redirect and Respond responders to pass data between requests as, 
 
 ```php
 Redirect::forge($request)
@@ -139,27 +140,20 @@ then, receive the data as,
 
 ```php
 Respond::forge($request)
-    ->asView('some-view');
+    ->asView('some-view'); // all the data from the previous request.
 ```
 
 The data set by using ```with``` methods will be stored in a session's flash data; the subsequent ```Respond::forge method``` will automatically retrieve the flash data and populate them in the template view. 
 
+To enable this feature, provide ```SessionStorageInterface``` object to the responders.  
+
 ### Error Responder
 
-Error responder generates a template view based on the status code by using ```ErrorViewInterface```. Provide the ErrorView object to the responder using a container. 
-
-```php
-$app = new Container(); // must implement ContainerInterface
-$app->set->(ErrorViewInterface::class new ErrorView());
-RequestHelper::withApp($request, $app);
-```
-
-Then,
+Error responder generates a template view based on the status code by using ```ErrorViewInterface``` object. Set up the error view, then,
 
 ```php
 Error::forge($request)->forbidden();
 ```
-
 
 Helpers Overview
 ----------------
@@ -256,3 +250,16 @@ to use the ```asView``` and ```asContent``` method in ```Respond``` responders, 
 Turned out that this ViewData class is one of the center piece of this package, by managing data used for rendering a view template. 
 
 It is the ```ViewStream```'s responsibility to correctly convert the information of ViewData object in the template renderer. 
+
+
+### ErrorViewInterface
+
+Provide the ErrorView object to the responder using a container. 
+
+```php
+$app = new Container(); // must implement ContainerInterface
+$app->set->(ErrorViewInterface::class new ErrorView());
+RequestHelper::withApp($request, $app);
+```
+
+You can use the ```ErrorView``` object for PHP's ```set_exception_handler``` handle.
