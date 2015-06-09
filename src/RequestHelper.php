@@ -59,7 +59,7 @@ class RequestHelper
      * @param string                 $key
      * @return mixed|null
      */
-    public static function getContainer(ServerRequestInterface $request, $key)
+    public static function getService(ServerRequestInterface $request, $key)
     {
         $app = self::getApp($request);
         if ($app && $app->has($key)) {
@@ -120,7 +120,7 @@ class RequestHelper
     public static function getSessionMgr(ServerRequestInterface $request)
     {
         return $request->getAttribute(self::SESSION_MANAGER) ?:
-            self::getContainer($request, self::SESSION_MANAGER);
+            self::getService($request, self::SESSION_MANAGER);
     }
 
     /**

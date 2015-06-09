@@ -2,24 +2,25 @@
 namespace Tuum\Http\Service;
 
 use Exception;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 interface ErrorViewInterface
 {
     /**
      * error handler when catching an exception.
-     * returns a response with error page.
+     * renders an error page with exception's code.
      *
      * @param Exception $e
-     * @return ResponseInterface
      */
     public function __invoke($e);
 
     /**
+     *
+     *
      * @param int   $code
      * @param array $data
-     * @return ResponseInterface
+     * @return StreamInterface
      */
-    public function respond($code, $data = []);
+    public function getStream($code, $data = []);
 
 }

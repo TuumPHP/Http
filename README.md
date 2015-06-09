@@ -16,11 +16,13 @@ $bool = ResponseHelper::isRedirect($response);
 will evaluate $response to check for redirect response. 
 
 __Responder classes__ offer a simplified way to create a response object, such 
-as text, jason, html, or redirection. 
+as text, jason, html, or redirection. But more uniquely, the responders can pass data across http requests using sessions and flashes, by properly configuring $request. For instance, 
 
-But more uniquely, the responders can pass data across http requests 
-using sessions and flashes, by properly configuring $request. 
-
+```php
+Redirect::forge($request)->withMessage('welcome!')->toPath('jump/to');
+// ...now in the subsequent request to a server...
+Respond::forge($request)->asView('template'); // with the 'welcome!' message.
+```
 
 ### License
 
@@ -46,18 +48,26 @@ and for require-dev,
 Responders require several services to work properly, that are defined by (mostly) 
  these interfaces: 
 
-*   ContainerInterface (by Container-interop), 
-*   SessionStorageInterface,
-*   ViewStreamInterface, and
-*   ErrorViewInterface,
+*   ```ContainerInterface``` (by Container-interop), 
+*   ```SessionStorageInterface```,
+*   ```ViewStreamInterface```, and
+*   ```ErrorViewInterface```,
 
 and additionally, the viewers must understand this class. 
 
-*   Value.
+*   ViewData.
 
 
 Responders Overview
 -------------------
+
+The respnders are helpers to simplify the construction of a response object by using various information from $request. There are 3 responders: 
+
+*   ```Respond```: to create a response with a view body. 
+*   ```Redirect```: to create a redirect response. 
+*   ```Error```: to create response with error status and view. 
+
+
 
 ### Basic Usage
 
@@ -85,7 +95,15 @@ To use ```toBasePath```, set base-path to $request by ```RequestHelper::withBase
 
 ### Using Views (Template)
 
-To view a template, code like, 
+To view a template, you must provide a viewer that implements ```ViewStreamInterface```, something like,
+
+```php
+$app = new Container(); // must implement ContainerInterface
+$app->set->(ViewStreamInterface::class new ViewStream());
+RequestHelper::withApp($request, $app);
+```
+
+Once, that is done, you can view a template using ```asView``` method; 
 
 ```php
 Tuum\Http\Respond::forge($request)
@@ -96,7 +114,13 @@ Tuum\Http\Respond::forge($request)
     ->asView('view-file');
 ```
 
-To use ```asView```, set ViewStreamInterface in $app container. 
+Similarly, ```asContent``` method will render any text content maybe inside a layout of a template if ViewStream object implements it. 
+
+```php
+Tuum\Http\Respond::forge($request)
+    ->asContent('<h1>My Content</h1>');
+```
+
 
 ### Passing Data From Redirect To View
 
@@ -114,23 +138,60 @@ Redirect::forge($request)
 then, receive the data as,
 
 ```php
-$extra = RequestHelper::getFlash($request, 'extra');
 Respond::forge($request)
     ->asView('some-view');
 ```
 
-The inputData, inputErrors, and with{Message|Alert|Error} are automatically 
-populated as view's data. 
+The data set by using ```with``` methods will be stored in a session's flash data; the subsequent ```Respond::forge method``` will automatically retrieve the flash data and populate them in the template view. 
 
-The ```with``` method will keep the value in flash data but have retrieve it 
-manually with ```RequestHelper::getFlash``` method.
+### Error Responder
+
+Error responder generates a template view based on the status code by using ```ErrorViewInterface```. Provide the ErrorView object to the responder using a container. 
+
+```php
+$app = new Container(); // must implement ContainerInterface
+$app->set->(ErrorViewInterface::class new ErrorView());
+RequestHelper::withApp($request, $app);
+```
+
+Then,
+
+```php
+Error::forge($request)->forbidden();
+```
 
 
 Helpers Overview
 ----------------
 
+### RequestHelper
 
-Configuration
+constants:
+
+*   ```APP_NAME```: 
+*   ```BASE_PATH```: key name for basePath. 
+*   ```PATH_INFO```: key name for pathInfo. 
+*   ```SESSION_MANAGER```: key name for session.
+*   ```REFERRER```: key name for referrer path. 
+
+public static methods. 
+
+*   ```createFromPath```: static method to construct a request . 
+*   ```withApp``` / ```getApp```: manage application or container (```ContainerInterface```). 
+*   ```getService```: a simplified way to get a service from the container. 
+*   ```withBasePath``` / ```getBasePath``` / ```getPathInfo```: manage a base path. pathInfo is the remaining of the entire path minus the base path. 
+*   ```withSessionMgr``` / ```getSessionMgr```: manage ```SessionStorageInterface``` object. 
+*   ```setSession``` / ```getSession```: set and get values to the session. 
+*   ```setFlash``` / ```getCurrFlash``` / ```getFlash```: set and get values to the flash memory of the current session. getCurrFlash gets the value set in the current request. 
+*   ```withReferrer``` / ```getReferrer```: getReferer returns a path set by withReferrer, or ```$_SEVER['HTTP_REFERER']```. 
+
+
+### ResponseHelper
+
+to-be-written
+
+
+Services
 -------------
 
 The responders requires many services to operate. 
@@ -182,11 +243,16 @@ Currently uses Tuum\Http\Service\SessionStorageInterface
 
 ### ViewStreamInterface
 
-ViewStreamInterface is a stream which renders a template. 
+```ViewStreamInterface``` extends a ```StreamInterface``` with extra methods for rendering a template. 
 
-```php
-$app = new Container();
-$app->set(ViewStreamInterface::class, $viewer);
-RequestHelper::withApp($request, $app);
-```
+*   ```withView($view_name, ViewData $data)```: sets the template file name for the view and render data. 
+*   ```withContent($view_name, ViewData $data)```: sets the contents of a view and render data. This method maybe used for rendering a static file. 
 
+to use the ```asView``` and ```asContent``` method in ```Respond``` responders, you must set a ```ViewStreamInterface``` object in a container, as such. 
+
+
+### ViewData
+
+Turned out that this ViewData class is one of the center piece of this package, by managing data used for rendering a view template. 
+
+It is the ```ViewStream```'s responsibility to correctly convert the information of ViewData object in the template renderer. 

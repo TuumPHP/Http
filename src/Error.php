@@ -79,10 +79,11 @@ class Error
     public function asView($status, $data = [])
     {
         /** @var ErrorViewInterface $view */
-        if (!$view = RequestHelper::getContainer($this->request, ErrorViewInterface::class)) {
+        if (!$view = RequestHelper::getService($this->request, ErrorViewInterface::class)) {
             throw new \BadMethodCallException;
         }
-        return $view->respond($status, $data);
+        $stream = $view->getStream($status, $data);
+        return $this->respond($stream, $status);
     }
 
     /**

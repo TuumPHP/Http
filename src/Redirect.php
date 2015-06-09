@@ -18,7 +18,7 @@ class Redirect extends AbstractWithViewData
     public function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
-        $this->data = RequestHelper::getContainer($this->request, ViewData::class) ?: new ViewData();
+        $this->data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
 
         foreach ([ViewData::INPUTS, ViewData::ERRORS, ViewData::MESSAGE] as $key) {
             $value = $this->request->getAttribute($key);

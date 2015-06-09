@@ -22,13 +22,13 @@ class Respond extends AbstractWithViewData
     public function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
-        $this->data = RequestHelper::getContainer($this->request, ViewData::class) ?: new ViewData();
+        $this->data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
 
         if (RequestHelper::getSessionMgr($request)) {
             $this->data = RequestHelper::getFlash($request, ViewData::MY_KEY);
         }
         if (!$this->data) {
-            $this->data = RequestHelper::getContainer($this->request, ViewData::class) ?: new ViewData();
+            $this->data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
         }
         $this->data->setRawData($this->request->getAttributes());
     }
@@ -67,7 +67,7 @@ class Respond extends AbstractWithViewData
     public function asView($file)
     {
         /** @var ViewStreamInterface $view */
-        if (!$view = RequestHelper::getContainer($this->request, ViewStreamInterface::class)) {
+        if (!$view = RequestHelper::getService($this->request, ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
         $view = $view->withView($file, $this->data);
@@ -84,7 +84,7 @@ class Respond extends AbstractWithViewData
     public function asContents($content)
     {
         /** @var ViewStreamInterface $view */
-        if (!$view = RequestHelper::getContainer($this->request, ViewStreamInterface::class)) {
+        if (!$view = RequestHelper::getService($this->request, ViewStreamInterface::class)) {
             throw new \BadMethodCallException;
         }
         $view = $view->withContent($content, $this->data);
