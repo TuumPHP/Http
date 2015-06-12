@@ -15,7 +15,7 @@ interface ErrorViewInterface
     public function __invoke($e);
 
     /**
-     *
+     * create a stream for error view.
      *
      * @param int   $code
      * @param array $data
