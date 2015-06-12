@@ -8,10 +8,9 @@ use Tuum\Http\RequestHelper;
 use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewStreamInterface;
 use Tuum\Http\Service\ViewData;
-use Tuum\Http\Service\AbstractWithViewData;
 use Zend\Diactoros\Stream;
 
-class Respond extends AbstractWithViewData
+class View extends AbstractWithViewData
 {
     const OK = 200;
 

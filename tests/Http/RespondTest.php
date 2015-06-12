@@ -3,7 +3,7 @@ namespace tests\Http;
 
 use Aura\Session\SessionFactory;
 use Tuum\Http\RequestHelper;
-use Tuum\Http\Responder\Respond;
+use Tuum\Http\Responder\View;
 use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewData;
 
@@ -29,7 +29,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asText_creates_text_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = Respond::forge($request)->asText('text response');
+        $response = View::forge($request)->asText('text response');
         $this->assertEquals('text/plain', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('text response', $response->getBody()->__toString());
     }
@@ -41,7 +41,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     {
         $request  = RequestHelper::createFromPath('/path/test');
         $response = ResponseHelper::createResponse('');
-        $response = Respond::forge($request, $response)->asHtml('<h1>html</h1>');
+        $response = View::forge($request, $response)->asHtml('<h1>html</h1>');
         $this->assertEquals('text/html', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('<h1>html</h1>', $response->getBody()->__toString());
     }
@@ -52,7 +52,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asJson_creates_json_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = Respond::forge($request)->asJson(['jason'=>'type']);
+        $response = View::forge($request)->asJson(['jason'=>'type']);
         $this->assertEquals('application/json', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('{"jason":"type"}', $response->getBody()->__toString());
     }
@@ -63,7 +63,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asDownload_creates_download_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = Respond::forge($request)->asDownload('dl', 'dl-name');
+        $response = View::forge($request)->asDownload('dl', 'dl-name');
         $this->assertEquals('application/octet-stream', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('attachment; filename="dl-name"', $response->getHeader('Content-Disposition')[0]);
         $this->assertEquals('2', $response->getHeader('Content-Length')[0]);
@@ -78,7 +78,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $session  = $this->session_factory->newInstance([]);
         $request  = RequestHelper::createFromPath('/path/test');
         $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
-        $respond  = Respond::forge($request)
+        $respond  = View::forge($request)
             ->with('some', 'value')
             ->withMessage('message')
             ->withAlertMsg('notice-msg')
@@ -108,7 +108,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $session  = $this->session_factory->newInstance([]);
         $request  = RequestHelper::createFromPath('/path/test');
         $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
-        Respond::forge($request)->withFlashData('with-flash', 'value1');
+        View::forge($request)->withFlashData('with-flash', 'value1');
 
         /*
          * next request.

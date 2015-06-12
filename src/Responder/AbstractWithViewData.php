@@ -1,9 +1,10 @@
 <?php
-namespace Tuum\Http\Service;
+namespace Tuum\Http\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Http\RequestHelper;
+use Tuum\Http\Service\ViewData;
 
 abstract class AbstractWithViewData
 {

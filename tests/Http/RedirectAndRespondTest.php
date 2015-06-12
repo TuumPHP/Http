@@ -4,7 +4,7 @@ namespace tests\Http;
 use Aura\Session\SessionFactory;
 use Tuum\Http\Responder\Redirect;
 use Tuum\Http\RequestHelper;
-use Tuum\Http\Responder\Respond;
+use Tuum\Http\Responder\View;
 use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewData;
 
@@ -64,7 +64,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $session  = $this->session_factory->newInstance([]);
         $request  = RequestHelper::createFromPath('/more/test');
         $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
-        $respond  = Respond::forge($request);
+        $respond  = View::forge($request);
         
         $refObj  = new \ReflectionObject($respond);
         $refData = $refObj->getProperty('data');

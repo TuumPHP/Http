@@ -7,7 +7,6 @@ use Psr\Http\Message\UriInterface;
 use Tuum\Http\RequestHelper;
 use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewData;
-use Tuum\Http\Service\AbstractWithViewData;
 
 class Redirect extends AbstractWithViewData
 {
