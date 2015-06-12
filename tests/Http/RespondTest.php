@@ -3,7 +3,7 @@ namespace tests\Http;
 
 use Aura\Session\SessionFactory;
 use Tuum\Http\RequestHelper;
-use Tuum\Http\Respond;
+use Tuum\Http\Responder\Respond;
 use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewData;
 

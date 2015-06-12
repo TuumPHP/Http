@@ -1,9 +1,11 @@
 <?php
-namespace Tuum\Http;
+namespace Tuum\Http\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
+use Tuum\Http\RequestHelper;
+use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewData;
 use Tuum\Http\Service\AbstractWithViewData;
 
