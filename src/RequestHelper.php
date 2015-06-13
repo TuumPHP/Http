@@ -4,7 +4,9 @@ namespace Tuum\Http;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Http\Service\SessionStorageInterface;
+use Zend\Diactoros\Request;
 use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Uri;
 
 class RequestHelper
@@ -35,6 +37,35 @@ class RequestHelper
         return $request;
     }
     
+    public static function createFromGlobal(array $globals = [])
+    {
+        $server  = self::arrayGet($globals, '_SERVER', $_SERVER);
+        $files   = self::arrayGet($globals, '_FILES', $_FILES);
+        $cookies = self::arrayGet($globals, '_COOKIE', $_COOKIE);
+        $query   = self::arrayGet($globals, '_GET', $_GET);
+        $body    = self::arrayGet($globals, '_POST', $_POST);
+        $request = ServerRequestFactory::fromGlobals(
+            $server,
+            $query,
+            $body,
+            $cookies,
+            $files
+        );
+
+        return $request;
+    }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param array  $default
+     * @return array
+     */
+    private static function arrayGet($array, $key, $default=[])
+    {
+        return array_key_exists($key, $array) ? $array[$key] : $default;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param ContainerInterface            $app
