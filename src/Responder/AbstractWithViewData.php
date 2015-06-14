@@ -27,7 +27,7 @@ abstract class AbstractWithViewData
      * @param ServerRequestInterface $request
      * @return ViewData
      */
-    public function retrieveViewDta(ServerRequestInterface $request)
+    protected function retrieveViewDta(ServerRequestInterface $request)
     {
         $data = null;
         if (RequestHelper::getSessionMgr($request)) {
