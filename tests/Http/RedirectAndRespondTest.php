@@ -54,6 +54,9 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * move the flash, i.e. next request.
          */
         $session->commit();
+        $stored = serialize($_SESSION);
+        $_SESSION = unserialize($stored);
+        
         $move = new \ReflectionMethod($session, 'moveFlash');
         $move->setAccessible(true);
         $move->invoke($session);

@@ -25,14 +25,7 @@ class View extends AbstractWithViewData
     {
         $this->request  = $request;
         $this->response = $response;
-        $this->data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
-
-        if (RequestHelper::getSessionMgr($request)) {
-            $this->data = RequestHelper::getFlash($request, ViewData::MY_KEY);
-        }
-        if (!$this->data) {
-            $this->data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
-        }
+        $this->data     = $this->retrieveViewDta($request);
         $this->data->setRawData($this->request->getAttributes());
     }
 

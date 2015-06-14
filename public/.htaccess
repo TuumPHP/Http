@@ -1,3 +1,8 @@
+Redirect 404 /favicon.ico
+<Location /favicon.ico>
+    ErrorDocument 404 "No favicon
+</Location>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews

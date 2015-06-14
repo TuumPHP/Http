@@ -24,6 +24,25 @@ abstract class AbstractWithViewData
     protected $data;
 
     /**
+     * @param ServerRequestInterface $request
+     * @return ViewData
+     */
+    public function retrieveViewDta(ServerRequestInterface $request)
+    {
+        $data = null;
+        if (RequestHelper::getSessionMgr($request)) {
+            $data = RequestHelper::getFlash($request, ViewData::MY_KEY);
+            if ($data) {
+                $data = clone($data); // detach from the object in the session.
+            }
+        }
+        if (!$data) {
+            $data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
+        }
+        return $data;
+    }
+
+    /**
      * @param string|array $key
      * @param mixed        $value
      * @return $this
