@@ -37,11 +37,12 @@ $jump = function($req, $res) {
  */
 $jumper = function($req, $res) {
     return Respond::redirect($req, $res)
-        ->toPath('/jump');
+        ->toPath('jump');
 };
 
 $routes = array(
     '/jump' => $jump,
+    '/jumper' => $jumper,
     '' => $all,
 );
 

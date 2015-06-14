@@ -17,16 +17,17 @@ return function($req, $res) {
      */
     $factory = new \Aura\Session\SessionFactory();
     $session = $factory->newInstance($_COOKIE);
+    $session->start();
     $segment = $session->getSegment('sample');
     /** @var SessionStorageInterface $segment */
-    RequestHelper::withSessionMgr($req, $segment);
+    $req     = RequestHelper::withSessionMgr($req, $segment);
 
     /** 
      * run the router!
      * 
      * @var Closure $router
      */
-    $router = include __DIR__."/routes.php";;
+    $router = include __DIR__ . "/routes.php";;
     $res    = $router($req, $res);
     
     /**
