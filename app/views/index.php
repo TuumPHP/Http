@@ -1,3 +1,12 @@
+<?php
+/** @var Renderer $this */
+/** @var DataView $view */
+use Tuum\Form\DataView;
+use Tuum\View\Renderer;
+
+$this->setLayout('layouts/layout');
+
+?>
 <h1>Hello Tuum/Respond</h1>
 
 <p>helpers and responders for Psr-7 http/messages.</p>

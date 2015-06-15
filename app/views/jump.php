@@ -4,7 +4,10 @@
 use Tuum\Form\DataView;
 use Tuum\View\Renderer;
 
+$this->setLayout('layouts/layout');
+
 ?>
+
 <h1>Let's Jump!!</h1>
 <a href="jumper">jump and back!</a>
 
