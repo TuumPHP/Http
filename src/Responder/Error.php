@@ -8,33 +8,26 @@ use Tuum\Http\RequestHelper;
 use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ErrorViewInterface;
 
-class Error
+class Error extends AbstractWithViewData
 {
     const UNAUTHORIZED   = 401;
     const ACCESS_DENIED  = 403;
     const FILE_NOT_FOUND = 404;
     const INTERNAL_ERROR = 500;
 
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-
-    /**
-     * @var array
-     */
-    private $data = [];
-
     // +----------------------------------------------------------------------+
     //  construction
     // +----------------------------------------------------------------------+
     /**
      * @param ServerRequestInterface $request
+     * @param null|ResponseInterface $response
      */
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(ServerRequestInterface $request, $response = null)
     {
-        $this->request = $request;
-        $this->data    = $this->request->getAttributes();
+        $this->request  = $request;
+        $this->response = $response;
+        $this->data     = $this->retrieveViewDta($request);
+        $this->data->setRawData($this->request->getAttributes());
     }
 
     /**
@@ -75,43 +68,39 @@ class Error
 
     /**
      * @param int   $status
-     * @param array $data
      * @return ResponseInterface
      */
-    public function asView($status, $data = [])
+    public function asView($status)
     {
         /** @var ErrorViewInterface $view */
         if (!$view = RequestHelper::getService($this->request, ErrorViewInterface::class)) {
             throw new \BadMethodCallException;
         }
-        $stream = $view->getStream($status, $data);
+        $stream = $view->getStream($status, $this->data);
         return $this->respond($stream, $status);
     }
 
     /**
-     * @param array $data
      * @return ResponseInterface
      */
-    public function unauthorized($data = [])
+    public function unauthorized()
     {
-        return $this->asView(self::UNAUTHORIZED, $data);
+        return $this->asView(self::UNAUTHORIZED);
     }
 
     /**
-     * @param array $data
      * @return ResponseInterface
      */
-    public function forbidden($data = [])
+    public function forbidden()
     {
-        return $this->asView(self::ACCESS_DENIED, $data);
+        return $this->asView(self::ACCESS_DENIED);
     }
 
     /**
-     * @param array $data
      * @return ResponseInterface
      */
-    public function notFound($data = [])
+    public function notFound()
     {
-        return $this->asView(self::FILE_NOT_FOUND, $data);
+        return $this->asView(self::FILE_NOT_FOUND);
     }
 }

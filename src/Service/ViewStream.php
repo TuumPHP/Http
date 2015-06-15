@@ -86,6 +86,7 @@ class ViewStream implements ViewStreamInterface
      */
     private function setDataView($data)
     {
+        if(!$data) return;
         $view = new DataView();
         $view->setData($data->get(ViewData::DATA, []));
         $view->setErrors($data->get(ViewData::ERRORS, []));
