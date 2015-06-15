@@ -68,8 +68,8 @@ return function($req) use($getApp) {
      * 
      * @var Closure $router
      */
+    $router = include __DIR__ . "/routes.php";
     $res    = Respond::error($req)->notFound();
-    $router = include __DIR__ . "/routes.php";;
     $res    = $router($req, $res);
     
     /**

@@ -21,13 +21,8 @@ $all = function($req, $res) {
  * @return ResponseInterface
  */
 $jump = function($req, $res) {
-    
     return Respond::view($req, $res)
-        ->asHtml('
-<h1>Jump!!</h1>
-<a href="jumper"/>jump!</a>
-<p></p>
-');
+        ->asView('jump');
 };
 
 /**
@@ -37,15 +32,16 @@ $jump = function($req, $res) {
  */
 $jumper = function($req, $res) {
     return Respond::redirect($req, $res)
+        ->withMessage('jumped back!')
+        ->withInputData(['jumped' => 'done'])
+        ->withInputErrors(['jumped' => 'error'])
         ->toPath('jump');
 };
 
 /**
- * @param ServerRequestInterface $req
- * @param ResponseInterface      $res
- * @return ResponseInterface
+ * @throw \Exception
  */
-$throw = function($req, $res) {
+$throw = function() {
     throw new \Exception('always throws exception');
 };
 
