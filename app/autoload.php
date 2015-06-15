@@ -15,3 +15,7 @@ call_user_func(function() {
     }
 },null);
 
+/**
+ * include utilities just for this sample app.
+ */
+include __DIR__ . '/utils.php';

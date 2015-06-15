@@ -3,6 +3,7 @@ namespace Tuum\Http\Service;
 
 use Closure;
 use Tuum\Form\DataView;
+use Tuum\Locator\Locator;
 use Tuum\View\Renderer;
 
 class ViewStream implements ViewStreamInterface
@@ -33,6 +34,19 @@ class ViewStream implements ViewStreamInterface
     public function __construct($renderer)
     {
         $this->renderer = $renderer;
+    }
+
+    /**
+     * creates a new ViewStream with Tuum\Renderer.
+     * set $root for the root of the view/template directory.
+     *
+     * @param string $root
+     * @return static
+     */
+    public static function forge($root)
+    {
+        $renderer = new Renderer(new Locator($root));
+        return new static($renderer);
     }
 
     /**

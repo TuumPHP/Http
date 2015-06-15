@@ -12,7 +12,7 @@ use Tuum\Http\Respond;
  */
 $all = function($req, $res) {
     return Respond::view($req, $res)
-        ->asHtml('<h1>Hello Tuum/Http</h1>');
+        ->asView('index');
 };
 
 /**
@@ -43,7 +43,7 @@ $jumper = function($req, $res) {
 $routes = array(
     '/jump' => $jump,
     '/jumper' => $jumper,
-    '' => $all,
+    '/' => $all,
 );
 
 /**
