@@ -3,14 +3,14 @@
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Http\RequestHelper;
-use Tuum\Http\Respond;
-use Tuum\Http\Responder\Error;
-use Tuum\Http\Service\ErrorView;
-use Tuum\Http\Service\ErrorViewInterface;
-use Tuum\Http\Service\SessionStorageInterface;
-use Tuum\Http\Service\ViewStream;
-use Tuum\Http\Service\ViewStreamInterface;
+use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Respond;
+use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Service\ErrorView;
+use Tuum\Respond\Service\ErrorViewInterface;
+use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Service\ViewStream;
+use Tuum\Respond\Service\ViewStreamInterface;
 
 /**
  * creates a container with necessary services.

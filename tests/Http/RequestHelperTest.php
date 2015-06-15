@@ -1,7 +1,7 @@
 <?php
 namespace tests\Http;
 
-use Tuum\Http\RequestHelper;
+use Tuum\Respond\RequestHelper;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\ServerRequest;
 

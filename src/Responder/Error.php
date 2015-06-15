@@ -1,12 +1,12 @@
 <?php
-namespace Tuum\Http\Responder;
+namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Tuum\Http\RequestHelper;
-use Tuum\Http\ResponseHelper;
-use Tuum\Http\Service\ErrorViewInterface;
+use Tuum\Respond\RequestHelper;
+use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\ErrorViewInterface;
 
 class Error extends AbstractWithViewData
 {

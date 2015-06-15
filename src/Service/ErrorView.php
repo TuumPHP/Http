@@ -1,9 +1,9 @@
 <?php
-namespace Tuum\Http\Service;
+namespace Tuum\Respond\Service;
 
 use Exception;
 use Psr\Http\Message\StreamInterface;
-use Tuum\Http\ResponseHelper;
+use Tuum\Respond\ResponseHelper;
 
 class ErrorView implements ErrorViewInterface
 {

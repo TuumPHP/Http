@@ -1,12 +1,12 @@
 <?php
-namespace Tuum\Http\Responder;
+namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Tuum\Http\RequestHelper;
-use Tuum\Http\ResponseHelper;
-use Tuum\Http\Service\ViewStreamInterface;
+use Tuum\Respond\RequestHelper;
+use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\ViewStreamInterface;
 use Zend\Diactoros\Stream;
 
 class View extends AbstractWithViewData

@@ -1,7 +1,7 @@
 <?php
 namespace tests\Http;
 
-use Tuum\Http\ResponseHelper;
+use Tuum\Respond\ResponseHelper;
 use Zend\Diactoros\Stream;
 
 class ResponseHelperTest extends \PHPUnit_Framework_TestCase

@@ -2,8 +2,8 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Http\RequestHelper;
-use Tuum\Http\Respond;
+use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Respond;
 
 /**
  * @param ServerRequestInterface $req

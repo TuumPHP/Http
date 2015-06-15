@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Http\Service;
+namespace Tuum\Respond\Service;
 
 /**
  * Interface SessionStorageInterface

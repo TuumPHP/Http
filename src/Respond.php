@@ -1,11 +1,11 @@
 <?php
-namespace Tuum\Http;
+namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Http\Responder\Error;
-use Tuum\Http\Responder\Redirect;
-use Tuum\Http\Responder\View;
+use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Responder\Redirect;
+use Tuum\Respond\Responder\View;
 
 class Respond
 {

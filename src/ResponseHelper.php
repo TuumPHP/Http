@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Http;
+namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;

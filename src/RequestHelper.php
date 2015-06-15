@@ -1,9 +1,9 @@
 <?php
-namespace Tuum\Http;
+namespace Tuum\Respond;
 
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Http\Service\SessionStorageInterface;
+use Tuum\Respond\Service\SessionStorageInterface;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;

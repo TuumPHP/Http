@@ -2,10 +2,10 @@
 namespace tests\Http;
 
 use Aura\Session\SessionFactory;
-use Tuum\Http\RequestHelper;
-use Tuum\Http\Responder\View;
-use Tuum\Http\ResponseHelper;
-use Tuum\Http\Service\ViewData;
+use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Responder\View;
+use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\ViewData;
 
 class RespondTest extends \PHPUnit_Framework_TestCase
 {

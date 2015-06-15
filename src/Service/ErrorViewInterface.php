@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Http\Service;
+namespace Tuum\Respond\Service;
 
 use Exception;
 use Psr\Http\Message\StreamInterface;

@@ -8,7 +8,7 @@ call_user_func(function() {
         /** @noinspection PhpIncludeInspection */
         include_once($vendor.$auto);
     }
-    $vendor = dirname(dirname(dirname(__DIR__)));
+    $vendor = dirname(dirname(dirname(__DIR__))).'/vendor';
     if (file_exists($vendor)) {
         /** @noinspection PhpIncludeInspection */
         include_once($vendor.$auto);

@@ -71,7 +71,7 @@ The respnders are helpers to simplify the construction of a response object by u
 To start responders, use ```forge``` method with ```$response``` object, and optionaly, ```$response``` object. If $response is given, responders will populate the existing $response, or will craete a new $resopnse object. 
 
 ```php
-use Tuum\Http\Respond;
+use Tuum\Respond\Respond;
 Respond::forge($request, $response);
 // or...
 Respond::forge($request);
@@ -85,7 +85,7 @@ For the simplicity of the code, the following samples use only ```$request``` as
 Responding basic text, json, or html. 
 
 ```php
-use Tuum\Http\Respond;
+use Tuum\Respond\Respond;
 Respond::forge($request)->asText('Hello World');
 Respond::forge($request)->asJson(['Hello' => 'World']);
 Respond::forge($request)->asHtml('<h1>Hello World</h1>');
@@ -94,7 +94,7 @@ Respond::forge($request)->asHtml('<h1>Hello World</h1>');
 Responding to uri, path, base-path, or referrer.
 
 ```php
-use Tuum\Http\Redirect;
+use Tuum\Respond\Redirect;
 Redirect::forge($request)->toAbsoluteUri($request->getUri()->withPath('jump/to'));
 Redirect::forge($request)->toPath('jump/to');
 Redirect::forge($request)->toBasePath('to');
@@ -117,7 +117,7 @@ RequestHelper::withApp($request, $app);
 Once, that is done, you can view a template using ```asView``` method; 
 
 ```php
-Tuum\Http\Respond::forge($request)
+Tuum\Respond\Respond::forge($request)
     ->with('name', 'value')
     ->withMessage('message')
     ->withAlert('alert-message')
@@ -128,7 +128,7 @@ Tuum\Http\Respond::forge($request)
 Similarly, ```asContent``` method will render any text content within a template layout if ```ViewStream``` object implements it. 
 
 ```php
-Tuum\Http\Respond::forge($request)
+Tuum\Respond\Respond::forge($request)
     ->asContent('<h1>My Content</h1>');
 ```
 
@@ -239,11 +239,11 @@ $app->set(SessionStorageInterface::class, $segment);
 or 
 
 ```php
-use Tuum\Http\RequestHelper;
+use Tuum\Respond\RequestHelper;
 $request = RequestHelper::withSessionMgr($request, $segment);
 ```
 
-Currently uses Tuum\Http\Service\SessionStorageInterface
+Currently uses Tuum\Respond\Service\SessionStorageInterface
 
 ### ViewStreamInterface
 

@@ -2,7 +2,7 @@
 namespace tests\Http;
 
 use Aura\Session\SessionFactory;
-use Tuum\Http\RequestHelper;
+use Tuum\Respond\RequestHelper;
 
 class RequestSessionTest extends \PHPUnit_Framework_TestCase
 {

@@ -4,9 +4,8 @@
  * give it a try.
  */
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Http\RequestHelper;
-use Tuum\Http\Respond;
-use Tuum\Http\ResponseHelper;
+use Tuum\Respond\RequestHelper;
+use Tuum\Respond\ResponseHelper;
 
 /** @var ResponseInterface $res */
 /** @var Closure $app */
