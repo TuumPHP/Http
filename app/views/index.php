@@ -7,6 +7,7 @@
 <ul>
     <li><a href="not-such-file">not found</a></li>
     <li><a href="jump">jump!!!</a></li>
+    <li><a href="throw">catch exception</a> </li>
 </ul>
 
 

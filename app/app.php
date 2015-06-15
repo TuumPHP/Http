@@ -1,18 +1,51 @@
 <?php
 
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Http\RequestHelper;
+use Tuum\Http\Respond;
+use Tuum\Http\Responder\Error;
+use Tuum\Http\Service\ErrorView;
+use Tuum\Http\Service\ErrorViewInterface;
 use Tuum\Http\Service\SessionStorageInterface;
 use Tuum\Http\Service\ViewStream;
 use Tuum\Http\Service\ViewStreamInterface;
 
 /**
+ * creates a container with necessary services.
+ *
+ * @return Container|ContainerInterface
+ */
+$getApp = function() {
+
+    // this is the container/app.
+    $app = new Container();
+
+    // this is the view for template.
+    $view = ViewStream::forge(__DIR__.'/views');
+    $app->set(ViewStreamInterface::class, $view);
+
+    // this is the view for error.
+    $error = new ErrorView($view);
+    $error->default_error = 'errors/error';
+    $error->statusView = [
+        Error::FILE_NOT_FOUND => 'errors/notFound',
+    ];
+    $app->set(ErrorViewInterface::class, $error);
+    set_exception_handler($error); // catch uncaught exception!!!
+
+    // done.
+    return $app;
+};
+
+/**
+ * the main application!
+ *
  * @param ServerRequestInterface $req
- * @param ResponseInterface      $res
  * @return ResponseInterface
  */
-return function($req, $res) {
+return function($req) use($getApp) {
     
     /**
      * create a session and set it to the $req.
@@ -27,9 +60,7 @@ return function($req, $res) {
     /**
      * create a container and set it to the $req.
      */
-    $app = new Container();
-    $view = ViewStream::forge(__DIR__.'/views');
-    $app->set(ViewStreamInterface::class, $view);
+    $app = $getApp();
     $req = RequestHelper::withApp($req, $app);
 
     /** 
@@ -37,6 +68,7 @@ return function($req, $res) {
      * 
      * @var Closure $router
      */
+    $res    = Respond::error($req)->notFound();
     $router = include __DIR__ . "/routes.php";;
     $res    = $router($req, $res);
     

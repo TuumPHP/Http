@@ -40,9 +40,22 @@ $jumper = function($req, $res) {
         ->toPath('jump');
 };
 
+/**
+ * @param ServerRequestInterface $req
+ * @param ResponseInterface      $res
+ * @return ResponseInterface
+ */
+$throw = function($req, $res) {
+    throw new \Exception('always throws exception');
+};
+
+/**
+ *
+ */
 $routes = array(
     '/jump' => $jump,
     '/jumper' => $jumper,
+    '/throw' => $throw,
     '/' => $all,
 );
 
