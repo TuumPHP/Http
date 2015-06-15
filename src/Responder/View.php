@@ -7,7 +7,6 @@ use Psr\Http\Message\StreamInterface;
 use Tuum\Http\RequestHelper;
 use Tuum\Http\ResponseHelper;
 use Tuum\Http\Service\ViewStreamInterface;
-use Tuum\Http\Service\ViewData;
 use Zend\Diactoros\Stream;
 
 class View extends AbstractWithViewData
@@ -159,7 +158,7 @@ class View extends AbstractWithViewData
             $content,
             self::OK, [
             'Content-Disposition' => "{$type}; filename=\"{$filename}\"",
-            'Content-Length'      => (string) strlen($content),
+            'Content-Length'      => (string)strlen($content),
             'Content-Type'        => $mime,
             'Cache-Control'       => 'public', // for IE8
             'Pragma'              => 'public', // for IE8

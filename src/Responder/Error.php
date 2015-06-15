@@ -10,8 +10,8 @@ use Tuum\Http\Service\ErrorViewInterface;
 
 class Error
 {
-    const UNAUTHORIZED = 401;
-    const ACCESS_DENIED = 403;
+    const UNAUTHORIZED   = 401;
+    const ACCESS_DENIED  = 403;
     const FILE_NOT_FOUND = 404;
     const INTERNAL_ERROR = 500;
 

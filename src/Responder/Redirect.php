@@ -71,7 +71,7 @@ class Redirect extends AbstractWithViewData
      * @param string $query
      * @return ResponseInterface
      */
-    public function toBasePath($path = '', $query='')
+    public function toBasePath($path = '', $query = '')
     {
         $path = '/' . ltrim($path, '/');
         $base = RequestHelper::getBasePath($this->request);

@@ -16,26 +16,35 @@ abstract class AbstractWithViewData
     /**
      * @var ResponseInterface
      */
-    protected $response; 
-    
+    protected $response;
+
     /**
      * @var ViewData
      */
     protected $data;
 
     /**
+     * returns a new ViewData as followings:
+     * - retrieve from the session's flash data,
+     * - retrieve from the container, or
+     * - create a new ViewData.
+     *
      * @param ServerRequestInterface $request
      * @return ViewData
      */
     protected function retrieveViewDta(ServerRequestInterface $request)
     {
         $data = null;
+        // retrieving from the flash.
         if (RequestHelper::getSessionMgr($request)) {
             $data = RequestHelper::getFlash($request, ViewData::MY_KEY);
             if ($data) {
-                $data = clone($data); // detach from the object in the session.
+                // if ViewData is taken from the session,
+                // detach it from the object in the session.
+                $data = clone($data);
             }
         }
+        // or get a new ViewData from container, or create a new one.
         if (!$data) {
             $data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
         }

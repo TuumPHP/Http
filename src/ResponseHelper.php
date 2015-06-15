@@ -9,9 +9,11 @@ use Zend\Diactoros\Stream;
 class ResponseHelper
 {
     /**
-     * @param StreamInterface|string|resource|object      $input
-     * @param       $status
-     * @param array $header
+     * creates a new $response.
+     *
+     * @param StreamInterface|string|resource|object $input
+     * @param int                                    $status
+     * @param array                                  $header
      * @return Response|ResponseInterface
      */
     public static function createResponse($input, $status = 200, array $header = [])
@@ -26,10 +28,12 @@ class ResponseHelper
     }
 
     /**
-     * @param ResponseInterface|null                  $response
-     * @param StreamInterface|string|resource|object  $input
-     * @param int   $status
-     * @param array $header
+     * compose a $response, or creates a new $response if a $response is not set.
+     *
+     * @param ResponseInterface|null                 $response
+     * @param StreamInterface|string|resource|object $input
+     * @param int                                    $status
+     * @param array                                  $header
      * @return mixed
      */
     public static function composeResponse($response, $input, $status = 200, array $header = [])
@@ -42,13 +46,20 @@ class ResponseHelper
         $response = $response
             ->withStatus($status)
             ->withBody($stream);
-        foreach($header as $name => $val ) {
+        foreach ($header as $name => $val) {
             $response = $response->withHeader($name, $val);
         }
         return $response;
     }
 
     /**
+     * create a new stream object based on various $input.
+     * $input can be:
+     * - an object implementing StreamInterface,
+     * - a string,
+     * - a resource,
+     * - an object implementing __toString method.
+     *
      * @param $input
      * @return StreamInterface
      */
@@ -74,7 +85,7 @@ class ResponseHelper
         }
         throw new \InvalidArgumentException;
     }
-    
+
     /**
      * Is this response successful?
      *
@@ -118,7 +129,7 @@ class ResponseHelper
     }
 
     /**
-     * Is this response a client error?
+     * Is this response a success?
      *
      * @param ResponseInterface $response
      * @return bool
@@ -129,7 +140,7 @@ class ResponseHelper
     }
 
     /**
-     * Is this response a client error?
+     * Is this response a redirection?
      *
      * @param ResponseInterface $response
      * @return bool
@@ -140,7 +151,7 @@ class ResponseHelper
     }
 
     /**
-     * Is this response a server error?
+     * Is this response a client error?
      *
      * @param ResponseInterface $response
      * @return bool
@@ -162,7 +173,7 @@ class ResponseHelper
     }
 
     /**
-     * Is this response a client error?
+     * Is this response an error, (either of client or server error)?
      *
      * @param ResponseInterface $response
      * @return bool

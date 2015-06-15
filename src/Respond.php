@@ -10,6 +10,8 @@ use Tuum\Http\Responder\View;
 class Respond
 {
     /**
+     * get a view responder, Responder\View.
+     *
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
      * @return View
@@ -20,6 +22,8 @@ class Respond
     }
 
     /**
+     * get a redirect responder, Responder\Redirect.
+     *
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
      * @return Redirect
@@ -30,6 +34,8 @@ class Respond
     }
 
     /**
+     * get an error responder, Responder\Error.
+     *
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
      * @return Error
