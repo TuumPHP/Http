@@ -17,7 +17,7 @@ use Tuum\View\Renderer;
 </head>
 <body>
 
-<nav id="header" class="navbar navbar-inverse">
+<nav id="header" class="nav navbar-inverse">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">

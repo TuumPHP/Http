@@ -5,13 +5,21 @@ use Tuum\Form\DataView;
 use Tuum\View\Renderer;
 
 $this->setLayout('layouts/layout');
+$forms = $view->forms;
 
 ?>
 
 <h1>Let's Jump!!</h1>
-<a href="jumper">jump and back!</a>
 
-<h3>from previous request...</h3>
+<h3>Sample Form</h3>
+
 <?= $view->message; ?>
-<?= $view->inputs->get('jumped'); ?>
-<?= $view->errors->get('jumped'); ?>
+
+<?= $forms->open()->action('jumper'); ?>
+
+<?= $forms->text('jumped', 'some message here'); ?>
+<?= $view->errors->get('jumped'); ?><br/>
+<p><?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
+<input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" /></p>
+
+<?= $forms->close(); ?>
