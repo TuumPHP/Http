@@ -12,8 +12,11 @@ use Tuum\Respond\ResponseHelper;
 
 include dirname(__DIR__) . "/app/autoload.php";
 
-$req  = RequestHelper::createFromGlobal($GLOBALS);
+/**
+ * run web application for the request.
+ */
 $app = include dirname(__DIR__) . '/app/app.php';
+$req = RequestHelper::createFromGlobal($GLOBALS);
 $res = $app($req);
 
 ResponseHelper::emit($res);
