@@ -11,16 +11,18 @@ $forms = $view->forms;
 
 <h1>Let's Jump!!</h1>
 
+<p>This sample shows how to create a form input and shows the error message from the redirection.</p>
+
 <h3>Sample Form</h3>
 
 <?= $view->message; ?>
 
-<?= $forms->open()->action('jumper'); ?>
+<?= $forms->open()->action('jumper')->method('post'); ?>
 
 <?=
 $forms->formGroup(
-    $forms->label('some text message here:', 'jumped'),
-    $forms->text('jumped', 'some message here')->id()->class('form-control'),
+    $forms->label('some text here:', 'jumped'),
+    $forms->text('jumped', 'original text')->id()->class('form-control'),
     $view->errors->get('jumped')
 );
 ?>
