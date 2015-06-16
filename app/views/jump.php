@@ -17,9 +17,14 @@ $forms = $view->forms;
 
 <?= $forms->open()->action('jumper'); ?>
 
-<?= $forms->text('jumped', 'some message here'); ?>
-<?= $view->errors->get('jumped'); ?><br/>
-<p><?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
-<input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" /></p>
+<?=
+$forms->formGroup(
+    $forms->label('some text message here:', 'jumped'),
+    $forms->text('jumped', 'some message here')->id()->class('form-control'),
+    $view->errors->get('jumped')
+);
+?>
+<?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
+    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" />
 
 <?= $forms->close(); ?>
