@@ -2,7 +2,6 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\ErrorViewInterface;
@@ -21,15 +20,10 @@ $next = include __DIR__ . '/appSession.php';
 return function($req) use($next) {
 
     /**
-     * this is the container/app.
-     */
-    $app = new Container();
-
-    /**
      * this is the view for template.
      */
     $view = ViewStream::forge(__DIR__.'/views');
-    $app->set(ViewStreamInterface::class, $view);
+    $req = $req->withAttribute(ViewStreamInterface::class, $view);
 
     /**
      * this is the view for error.
@@ -39,13 +33,9 @@ return function($req) use($next) {
     $error->statusView = [
         Error::FILE_NOT_FOUND => 'errors/notFound',
     ];
-    $app->set(ErrorViewInterface::class, $error);
+    $req = $req->withAttribute(ErrorViewInterface::class, $error);
     set_exception_handler($error); // catch uncaught exception!!!
 
-    /**
-     * done constructing services. dispatch next.
-     */
-    $req = RequestHelper::withApp($req, $app);
     return $next($req);
 };
 

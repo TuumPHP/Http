@@ -3,7 +3,9 @@ namespace Tuum\Respond;
 
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Service\ErrorViewInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Service\ViewStreamInterface;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
@@ -14,7 +16,6 @@ class RequestHelper
     const APP_NAME        = 'tuum-app';
     const BASE_PATH       = 'basePath';
     const PATH_INFO       = 'pathInfo';
-    const SESSION_MANAGER = 'sessionMgr';
     const REFERRER        = 'referrer';
 
     /**
@@ -100,7 +101,7 @@ class RequestHelper
     }
 
     /**
-     * get a service, $key, from the $app container.
+     * get a service, $key, from the $request's attribute or from $app container.
      *
      * @param ServerRequestInterface $request
      * @param string                 $key
@@ -108,11 +109,36 @@ class RequestHelper
      */
     public static function getService(ServerRequestInterface $request, $key)
     {
+        if ($service = $request->getAttribute($key)) {
+            return $service;
+        }
         $app = self::getApp($request);
         if ($app && $app->has($key)) {
             return $app->get($key);
         }
         return null;
+    }
+
+    /**
+     * get a ViewStream object that implements ViewStreamInterface.
+     *
+     * @param ServerRequestInterface $request
+     * @return ViewStreamInterface|null
+     */
+    public static function getViewStream(ServerRequestInterface $request)
+    {
+        return self::getService($request, ViewStreamInterface::class);
+    }
+
+    /**
+     * get an ErrorView object that implements ErrorViewInterface.
+     *
+     * @param ServerRequestInterface $request
+     * @return ErrorViewInterface|null
+     */
+    public static function getErrorView(ServerRequestInterface $request)
+    {
+        return self::getService($request, ErrorViewInterface::class);
     }
 
     /**
@@ -166,19 +192,18 @@ class RequestHelper
      */
     public static function withSessionMgr(ServerRequestInterface $request, $session)
     {
-        return $request->withAttribute(self::SESSION_MANAGER, $session);
+        return $request->withAttribute(SessionStorageInterface::class, $session);
     }
 
     /**
      * get a session storage.
      *
      * @param ServerRequestInterface $request
-     * @return SessionStorageInterface
+     * @return SessionStorageInterface|null
      */
     public static function getSessionMgr(ServerRequestInterface $request)
     {
-        return $request->getAttribute(self::SESSION_MANAGER) ?:
-            self::getService($request, self::SESSION_MANAGER);
+        return self::getService($request, SessionStorageInterface::class);
     }
 
     /**
