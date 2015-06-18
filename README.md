@@ -1,74 +1,14 @@
 Tuum/Respond
 =========
 
-Framework independent helpers and responders for PSR-7 Http/Message. 
+Tuum/Respond is a framework independent helpers and responders for PSR-7 Http/Message. 
 
-> This package will bring extra functionality and ease of development to the simple middlewares and micro-frameworks, making them more suitable for ordinary web site development... 
-
-Overview
---------
-
-### Helper classes
-
-Helper classes helps to manage Psr-7 http message objects. For instance, 
-
-```php
-$bool = ResponseHelper::isRedirect($response);
-``` 
-
-will evaluate $response to check for redirect response. 
-
-### Responder classes
-
-Responders to simplify the composing a response object, by providing various response types such as text, jason, html, or redirection. But more uniquely, the responders enables to transfer data across http requests using sessions and flashes. For instance, 
-
-```php
-// first request.
-$response = Redirect::forge($request, $response)
-    ->withMessage('welcome!') // <- message to the next view.
-    ->toPath('jump/to');
-ResponseHelper::emit($response);
-exit;
-
-// ...now in the subsequent request to a server...
-Respond::forge($request, $response)
-    ->asView('template'); // with the 'welcome!' message.
-```
-
-The message __"welcome!"__ set in the first request, will appear automatically in the second request. 
-
-> looks familiar API? I like Laravel very much!
+*   Still an Alpha Release. 
+*   PSR-1, PSR-2, and PSR-4.
 
 ### License
 
 MIT license
-
-### Status
-
-Alpha. 
-
-### Packages
-
-Currently, Tuum/Respond uses following packages: 
-
-*   [Zendframework/Zend-Diactoros](https://github.com/zendframework/zend-diactoros),
-*   [Aura/Session](),
-*   [Container-interop/container-interop](https://github.com/auraphp/Aura.Session),
-*   [Tuum/View](https://github.com/TuumPHP/View), and
-*   [Tuum/Form](https://github.com/TuumPHP/Form).
-
-> Yep, uses home grown views and forms (;´д｀)
-
-### Services
-
-Responders require several services to work properly; these services are defined mostly by these interfaces: 
-
-*   ```ContainerInterface``` for containers, 
-*   ```SessionStorageInterface``` for session,
-*   ```ViewStreamInterface``` for views, and
-*   ```ErrorViewInterface```.
-
-> so, it is possible to use other packages by using adaptors, in theory. 
 
 ### Installation and samples
 
@@ -86,6 +26,72 @@ $ php -S localhost:8888 index.php
 ```
 
 and access ```localhost:8888``` by any browser. The sample site uses external bootstrap css and javascript. 
+
+
+Overview
+--------
+
+Tuum/Respond can be used together with Psr-7 based middlewares and micro-frameworks to compliment extra functionalities for developing ordinary web sites. 
+
+### Helper classes
+
+Helper classes helps to manage Psr-7 http message objects. For instance, 
+
+```php
+$bool = ResponseHelper::isRedirect($response);
+``` 
+
+will evaluate $response to check for redirect response. There are helpers for request and responce. 
+
+### Responder classes
+
+The __responders__ are the main part of this package.
+
+Responders to simplify the composing a response object, by providing various response types such as text, jason, html, or redirection. But more uniquely, the responders enables to transfer data across http requests using sessions and flashes. For instance, 
+
+```php
+$app = new App(); // some micro-framework app. 
+
+// redirects to /jumped.
+$app->get('/jumper', function($request) {
+	return Respond::redirect($request, $response)
+	    ->withMessage('bad input!') // <- set up info.
+	    ->withInputData(['some' => 'value'])
+	    ->withInputErrors(['some' => 'bad value'])
+	    ->toPath('jump/to');
+	});
+
+// ...and this is jumped.
+$app->get('/jumped', function($request) {
+	return Respond::view($request, $response)
+	    ->asView('template'); // with the 'welcome!' message.
+});
+```
+Accessing ```/jumper``` will redirect to ```/jumped``` with the message __"welcome!"__ and other data. These data appears automatically in the second request's view. 
+
+> looks familiar API? I like Laravel very much!
+
+### Services
+
+The Psr-7 http/message does not provide all the necessary functionalities to use the responders. You need to supply services that are defined by following interfaces. 
+
+*   ```ContainerInterface``` for containers, 
+*   ```SessionStorageInterface``` for session,
+*   ```ViewStreamInterface``` for views, and
+*   ```ErrorViewInterface```.
+
+
+### Packages
+
+Currently, Tuum/Respond uses following packages: 
+
+*   [Zendframework/Zend-Diactoros](https://github.com/zendframework/zend-diactoros),
+*   [Aura/Session](),
+*   [Container-interop/container-interop](https://github.com/auraphp/Aura.Session),
+*   [Tuum/View](https://github.com/TuumPHP/View), and
+*   [Tuum/Form](https://github.com/TuumPHP/Form).
+
+> Yep, uses home grown views and forms (;´д｀)
 
 
 Responders Overview
@@ -111,7 +117,7 @@ For the simplicity of the code, the subsequent samples use only ```$request``` a
 
 ### Basic Usage
 
-Responding basic text, json, or html. 
+```view``` responder creates basic text, json, or html responces. 
 
 ```php
 use Tuum\Respond\Respond;
@@ -122,7 +128,7 @@ Respond::view($request)->asDownload($fp, 'some.dat');
 Respond::view($request)->asFileContents('tuum.pdf', 'application/pdf');
 ```
 
-Responding to uri, path, base-path, or referrer.
+```redirect``` responder creates redirect responce to uri, path, base-path, or referrer.
 
 ```php
 Respond::redirect($request)->toAbsoluteUri($request->getUri()->withPath('jump/to'));
@@ -131,20 +137,10 @@ Respond::redirect($request)->toBasePath('to');
 Respond::redirect($request)->toReferrer();
 ```
 
-To use ```toBasePath```, set base-path to $request by ```RequestHelper::withBasePath($basePath);``` somewhere before.  
-
 
 ### Using Views (Template)
 
-To view a template, you must provide a viewer that implements ```ViewStreamInterface```, something like,
-
-```php
-$app = new Container(); // must implement ContainerInterface
-$app->set->(ViewStreamInterface::class new ViewStream());
-RequestHelper::withApp($request, $app);
-```
-
-Once, that is done, you can view a template using ```asView``` method; 
+```view``` responder can create responce using view (or template). 
 
 ```php
 Respond::view($request)
@@ -162,6 +158,7 @@ Respond::view($request)
     ->asContent('<h1>My Content</h1>');
 ```
 
+To use Views feature, provide ```ViewStreamInterface``` object to the responders. 
 
 ### Passing Data From Redirect To View
 
@@ -203,23 +200,9 @@ Services
 The responders requires many services to operate. 
 These services are stored in ```$request->withAttribute``` method. 
 
-### ContainerInterface
-
-A service container provides a way to obtain services used by responders. 
-Use ```RequestHelper::withApp``` method to set a container to $request. 
-
-The container must implement ContainerInterface by Container-interop group. 
-
-```php
-$app = new Container(); // must implement ContainerInterface
-$request = RequestHelper::withApp($request, $app);
-```
-
-
 ### SessionStorageInterface
 
-SessionStorageInterface provides ways to access session, which is taken 
-primarily from Aura.Session's segment. 
+```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken primarily from Aura.Session's segment. 
 
 To obtain a segment by Aura.Session, 
 
@@ -231,21 +214,14 @@ $session = $factory->newInstance($_COOKIES);
 $segment = $session->getSegment('some-name');
 ```
 
-Set the session storage to the container, or directly set to the $request.
+Set the session storage in the $request object using RequestHelper, as.
 
 ```php
-$app = new Container(); // must implement ContainerInterface
-$app->set(SessionStorageInterface::class, $segment);
-```
-
-or 
-
-```php
-use Tuum\Respond\RequestHelper;
 $request = RequestHelper::withSessionMgr($request, $segment);
 ```
 
-> accurately speaking, the Aura's segment class does not implement the ```SessionStorageInterface```. so, do not set strict type hinting using the interface...
+> strictly speaking, the Aura's segment class does not implement the ```SessionStorageInterface```. so, do not set strict type hinting using the interface...
+
 
 ### ViewStreamInterface
 
@@ -257,10 +233,10 @@ The ```ViewStreamInterface``` extends Psr-7's ```StreamInterface``` to add extra
 To respond using ```view``` resopnder, provide a ViewStream object implementing ```ViewStreamInterface``` interface. To use the default ```Tuum/View``` and ```Tuum/Form``` package, 
 
 ```php
-$app = new Container(); // ContainerInterface
-$view = ViewStream::forge(__DIR__ . '/view-dir');
-$app->set(ViewStreamInterface::class, $view);
-$request = RequestHelper::withApp($request, $app);
+use Tuum\Respond\Service\ViewStream;
+use Tuum\Respond\Service\ViewStreamInterface;
+
+$request->withAttribute(ViewStreamInterface::class, ViewStream::forge(__DIR__.'/views'));
 ```
 
 ### ErrorViewInterface
@@ -270,15 +246,11 @@ The ```ErrorViewInterface``` is a simplified ViewStreamInterface which can rende
 To respond using the ```error``` responder, provide an ```ErrorView``` object. To use the default set, 
 
 ```php
-$app = new Container(); // ContainerInterface
-$view = ViewStream::forge(__DIR__ . '/error-view-dir');
-$error = new ErrorView($view);
+$error = new ErrorView(ViewStream::forge(__DIR__ . '/error-view-dir'));
 $error->default_error = 'errors/error';
 $error->statusView = [
     Error::FILE_NOT_FOUND => 'errors/notFound',
-];
-$app->set(ErrorViewInterface::class, $error);
-RequestHelper::withApp($request, $app);
+];$request->withAttribute(ErrorViewInterface::class, $error);
 ```
 
 You can use the ```ErrorView``` object for PHP's ```set_exception_handler``` handle as well:
@@ -287,13 +259,20 @@ You can use the ```ErrorView``` object for PHP's ```set_exception_handler``` han
 set_exception_handler($error); // catch uncaught exception!!!
 ```
 
-### ViewData
+### ContainerInterface
 
-Turned out that this ViewData class is one of the center piece of this package, by managing data used for rendering a view template. 
+A container maybe used to provide the services to responders. The container must implement ```ContainerInterface``` by Container-interop group. 
 
-It is the ```ViewStream```'s responsibility to correctly convert the information of ViewData object in the template renderer. 
+Populate the container with the services using interface class name as a key, and set it in the $request as;
 
-> The ViewData is the core of the responders which is used to transfer data between requests as well as from request to view's renderer. 
+```php
+$app = new Container(); // some ContainerInterface...
+$app->set(SessionStorageInterface::class, $session);
+$app->set(ViewStreamInterface::class, $views);
+$app->set(ErrorViewInterface::class, $error);
+$request = RequestHelper::withApp($request, $app);
+```
+
 
 Helpers Overview
 ----------------
@@ -325,3 +304,29 @@ public static methods.
 to-be-written
 
 
+Views and Template
+==================
+
+To use a view/template system, it has to satisfy the followings:
+
+*   implement ViewStreamInterface,
+*   understand ViewData object.
+
+Currently, only the default ViewStream uses Tuum/View and Tuum/Form matches these criteria. 
+
+### ViewData
+
+Turned out that this ViewData class is one of the center piece of this package, by managing data used for rendering a view template. 
+
+The ViewData is the core of the responders which is used to transfer data between requests as well as from request to view's renderer. 
+
+### Tuum/Form
+
+Tuum/Form can interpret ViewData's withInputData and withInputErrors and converts to $inputs and $errors objects; then injects $inputs into the $form, a form generator. 
+
+```php
+<?= $forms->text('jumped', $data->jumped)->id()->class('form-control'); ?>
+<?= $errors->get('jumped'); ?>
+```
+
+The $form will check for $inputs, then the specified value ($data->jumped value) to populate the value for the form. 
