@@ -1,5 +1,5 @@
 {
-  "name":"tuum/http",
+  "name":"tuum/respond",
     "description": "helpers and responders for psr-7 http/messages.",
     "license": "MIT",
     "authors": [
