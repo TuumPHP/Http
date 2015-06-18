@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\ErrorViewInterface;
@@ -36,6 +37,6 @@ return function($req) use($next) {
     $req = $req->withAttribute(ErrorViewInterface::class, $error);
     set_exception_handler($error); // catch uncaught exception!!!
 
-    return $next($req);
+    return $next($req) ?: Respond::error($req)->notFound();
 };
 

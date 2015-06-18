@@ -1,7 +1,7 @@
 <?php
 
 /**
- * give it a try.
+ * a sample web application using Tuum/Respond.
  */
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\RequestHelper;

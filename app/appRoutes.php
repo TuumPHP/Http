@@ -6,7 +6,7 @@ use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Respond;
 
 /**
- * route and dispatch.
+ * set routes and dispatch.
  *
  * @param ServerRequestInterface $req
  * @return ResponseInterface

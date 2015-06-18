@@ -3,7 +3,6 @@
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\RequestHelper;
-use Tuum\Respond\Respond;
 use Tuum\Respond\Service\SessionStorageInterface;
 
 /** @var Closure $next */
@@ -11,7 +10,7 @@ $next = include __DIR__ . '/appRoutes.php';
 
 
 /**
- * the set up sessions.
+ * set up sessions.
  *
  * @param ServerRequestInterface $req
  * @return ResponseInterface
@@ -33,7 +32,7 @@ return function($req) use($next) {
      *
      * @var Closure $router
      */
-    $res    = $next($req) ?: Respond::error($req)->notFound();
+    $res    = $next($req);
 
     /**
      * done. save session.
