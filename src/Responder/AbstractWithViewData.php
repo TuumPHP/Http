@@ -69,6 +69,7 @@ abstract class AbstractWithViewData
      */
     public function with($key, $value = null)
     {
+        $this->data = clone($this->data);
         $this->data->dataValue($key, $value);
         return $this;
     }
@@ -79,6 +80,7 @@ abstract class AbstractWithViewData
      */
     public function withInputData(array $input)
     {
+        $this->data = clone($this->data);
         $this->data->inputData($input);
         return $this;
     }
@@ -89,6 +91,7 @@ abstract class AbstractWithViewData
      */
     public function withInputErrors(array $errors)
     {
+        $this->data = clone($this->data);
         $this->data->inputErrors($errors);
         return $this;
     }
@@ -99,6 +102,7 @@ abstract class AbstractWithViewData
      */
     public function withMessage($message)
     {
+        $this->data = clone($this->data);
         $this->data->success($message);
         return $this;
     }
@@ -109,6 +113,7 @@ abstract class AbstractWithViewData
      */
     public function withAlertMsg($message)
     {
+        $this->data = clone($this->data);
         $this->data->alert($message);
         return $this;
     }
@@ -119,6 +124,7 @@ abstract class AbstractWithViewData
      */
     public function withErrorMsg($message)
     {
+        $this->data = clone($this->data);
         $this->data->error($message);
         return $this;
     }
