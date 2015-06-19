@@ -13,8 +13,8 @@
         "aura/session": "~2.0",
         "zendframework/zend-diactoros": "~1.0",
         "container-interop/container-interop": "~1.0",
-        "tuum/view":"~0.2",
-        "tuum/form":"~0.5"
+        "tuum/view":"~0.5",
+        "tuum/form":"~0.2"
     },
     "require-dev": {
     },
