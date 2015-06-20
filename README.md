@@ -12,13 +12,15 @@ MIT license
 
 ### Installation and samples
 
-Use git to install Tuum/Responder from github. 
+To see Tuum/Respond working, use git and composer. 
 
 ```sh
-git clone https://github.com/TuumPHP/Respond
+$ git clone https://github.com/TuumPHP/Respond
+$ cd Respond
+$ composer update
 ```
 
-to see a sample site, use PHP's internal server at public folder as;
+To see a sample site, use PHP's internal server at public folder as;
 
 ```sh
 $ cd Respond/public
@@ -83,19 +85,19 @@ The Psr-7 http/message does not provide all the necessary functionalities to use
 
 ### Packages
 
-Currently, Tuum/Respond uses following packages: 
+Currently, Tuum/Respond uses following packages. 
 
-*   [Zendframework/Zend-Diactoros](https://github.com/zendframework/zend-diactoros),
-*   [Aura/Session](),
-*   [Container-interop/container-interop](https://github.com/auraphp/Aura.Session),
-*   [Tuum/View](https://github.com/TuumPHP/View), and
-*   [Tuum/Form](https://github.com/TuumPHP/Form).
+*   [Zendframework/Zend-Diactoros](https://github.com/zendframework/zend-diactoros) as a default Psr-7 objects.
+*   [Aura/Session]() for managing session and flash storage.
+*   [Tuum/View](https://github.com/TuumPHP/View) for rendering a PHP as a template.
+*   [Tuum/Form](https://github.com/TuumPHP/Form) for html form elements and data helpers.
+*   [Container-interop/container-interop](https://github.com/auraphp/Aura.Session) for container.
 
 > Yep, uses home grown views and forms (;´д｀)
 
 
-Responders Overview
--------------------
+Responders
+---------
 
 The respnders simplfies the composition of response object by using various services and information from ```$request```. There are 3 responders: 
 
@@ -194,15 +196,15 @@ Respond::error($request)->forbidden();
 
 To enable this feature, provide ```ErrorViewInterface``` object to the responders. 
 
-Services
--------------
+Service
+------
 
 The responders requires many services to operate. 
 These services are stored in ```$request->withAttribute``` method. 
 
 ### SessionStorageInterface
 
-```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken primarily from Aura.Session's segment. 
+```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken from Aura.Session's segment. 
 
 To obtain a segment by Aura.Session, 
 
@@ -274,8 +276,8 @@ $request = RequestHelper::withApp($request, $app);
 ```
 
 
-Helpers Overview
-----------------
+Helpers
+-------
 
 ### RequestHelper
 
@@ -305,7 +307,7 @@ to-be-written
 
 
 Views and Template
-==================
+-----
 
 To use a view/template system, it has to satisfy the followings:
 
@@ -320,13 +322,43 @@ Turned out that this ViewData class is one of the center piece of this package, 
 
 The ViewData is the core of the responders which is used to transfer data between requests as well as from request to view's renderer. 
 
-### Tuum/Form
+The ViewData manages following data, 
 
-Tuum/Form can interpret ViewData's withInputData and withInputErrors and converts to $inputs and $errors objects; then injects $inputs into the $form, a form generator. 
+*	`ViewData::DATA`, set by with method.
+* 	`ViewData::MESSAGE`, set by with{Message|AlertMsg|ErrorMsg} method. 
+*  `ViewData::INPUTS`, set by withInputData method. 
+*  `ViewData::ERRORS`, set by withInputErrors method. 
+
+To retrieve the data, use `get` method as 
 
 ```php
+$data = $viewData->get(ViewData::DATA);
+```
+
+
+### Tuum/Form
+
+Tuum/Form provides helper objects which (not surprisingly) correspond to each of the data in the `ViewData`. All the helpers are combined into `$view` object in the template file. 
+
+```php
+<?php
+/** @var Renderer $this */
+/** @var DataView $view */
+use Tuum\Form\DataView;
+use Tuum\View\Renderer;
+
+$this->setLayout('layouts/layout');
+$data = $view->data;
+$forms = $view->forms;
+$message = $view->message;
+$inputs = $view->inputs;
+
+?>
+
 <?= $forms->text('jumped', $data->jumped)->id()->class('form-control'); ?>
 <?= $errors->get('jumped'); ?>
 ```
 
-The $form will check for $inputs, then the specified value ($data->jumped value) to populate the value for the form. 
+The example code shows how to use `$forms`, `$data`, and `$errors`. 
+
+But what about `$inputs`? It is in the `$form` object. If the (old) `$inputs->get('jumped')` value exist, the value is used instead of the given `$data->jumped` value. 
