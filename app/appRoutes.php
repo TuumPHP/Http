@@ -8,7 +8,7 @@ use Tuum\Respond\Respond;
 /**
  * set routes and dispatch.
  *
- * @param ServerRequestInterface $req
+ * @param ServerRequestInterface $request
  * @return ResponseInterface
  */
 return function ($request) {
