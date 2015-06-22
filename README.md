@@ -35,7 +35,7 @@ Overview
 
 Tuum/Respond can be used together with Psr-7 based middlewares and micro-frameworks to compliment extra functionalities for developing ordinary web sites. 
 
-### Helper classes
+### Helper Classes
 
 Helper classes helps to manage Psr-7 http message objects. For instance, 
 
@@ -45,7 +45,7 @@ $bool = ResponseHelper::isRedirect($response);
 
 will evaluate $response to check for redirect response. There are helpers for request and responce. 
 
-### Responder classes
+### Responder Classes
 
 The __responders__ are the main part of this package.
 
@@ -60,7 +60,7 @@ $app->get('/jumper', function($request) {
 	    ->withMessage('bad input!') // <- set up info.
 	    ->withInputData(['some' => 'value'])
 	    ->withInputErrors(['some' => 'bad value'])
-	    ->toPath('jump/to');
+	    ->toPath('/jumped');
 	});
 
 // ...and this is jumped.
@@ -101,11 +101,31 @@ Responders
 
 The respnders simplfies the composition of response object by using various services and information from ```$request```. There are 3 responders: 
 
-*   ```Respond::view```: to create a response with a view body. 
-*   ```Respond::redirect```: to create a redirect response. 
-*   ```Respond::error```: to create response with error status and view. 
+*   ```View```: to create a response with a view body. 
+*   ```Redirect```: to create a redirect response. 
+*   ```Error```: to create response with error status and view. 
 
-To start responders, provide ```$request``` and ```$response``` objects to the methods above. If ```$response``` is not given, the responders will create a new ```$response``` object. 
+There is a `Responder` class for conveniently access these responders; 
+
+```php
+$responder = new Responder(
+    new View, new Redirect, new Error // <- you must construct them accordingly.
+);
+```
+
+and access responders, such as.
+
+```php
+return $responder->view($request, $response)
+    ->with('my', 'key')
+    ->asView('view-file');
+```
+
+### Respond Class
+
+The `Respond` class provides a quick way to create or access these responders using convenient static methods. 
+
+To start responders, provide ```$request``` and ```$response``` objects to the methods. If ```$response``` is not given, the responders will create a new ```$response``` object. 
 
 ```php
 use Tuum\Respond\Respond;
@@ -116,10 +136,38 @@ Respond::view($request);
 
 For the simplicity of the code, the subsequent samples use only ```$request``` as input. 
 
+#### Setting Services for Respond Class
 
-### Basic Usage
+You must setup services before using the shortcut static method in `Respond` class. You can set up 
 
-```view``` responder creates basic text, json, or html responces. 
+*   by $request's attribute, or 
+*   by using a container. 
+
+If you are using a sane framework, and the container happens to observe the ContainerInterface of ContainerInterop, container approach is the way to go. 
+
+Set up the container, and use `RequestHelper::withApp` method to set the container in the $request. 
+
+```php
+$app = new Container; //
+$app->set(ViewStreamInterface::class, 
+    ViewStream::forge(__DIR__.'/views')
+);
+$request = RequestHelper::withApp($request, $app);
+```
+
+You can set up services directly inside **$request's attribute**; set the service as corresponding interface name using `withAttribute` method;
+
+```php
+$request = $request->withAttribute(
+    ViewStreamInterface::class, 
+    ViewStream::forge(__DIR__.'/views')
+);
+```
+
+View Responder
+----
+
+`View` responder creates basic text, json, or html responces. 
 
 ```php
 use Tuum\Respond\Respond;
@@ -130,19 +178,9 @@ Respond::view($request)->asDownload($fp, 'some.dat');
 Respond::view($request)->asFileContents('tuum.pdf', 'application/pdf');
 ```
 
-```redirect``` responder creates redirect responce to uri, path, base-path, or referrer.
-
-```php
-Respond::redirect($request)->toAbsoluteUri($request->getUri()->withPath('jump/to'));
-Respond::redirect($request)->toPath('jump/to');
-Respond::redirect($request)->toBasePath('to');
-Respond::redirect($request)->toReferrer();
-```
-
-
 ### Using Views (Template)
 
-```view``` responder can create responce using view (or template). 
+`View` responder can create responce using view (or template). 
 
 ```php
 Respond::view($request)
@@ -153,7 +191,7 @@ Respond::view($request)
     ->asView('view-file');
 ```
 
-Similarly, ```asContent``` method will render any text content within a template layout if ```ViewStream``` object implements it. 
+Similarly, `asContent` method will render any text content within a template layout if ```ViewStream``` object implements it. 
 
 ```php
 Respond::view($request)
@@ -161,6 +199,18 @@ Respond::view($request)
 ```
 
 To use Views feature, provide ```ViewStreamInterface``` object to the responders. 
+
+Redirect Responder
+----
+
+`Redirect` responder creates redirect responce to uri, path, base-path, or referrer.
+
+```php
+Respond::redirect($request)->toAbsoluteUri($request->getUri()->withPath('jump/to'));
+Respond::redirect($request)->toPath('jump/to');
+Respond::redirect($request)->toBasePath('to');
+Respond::redirect($request)->toReferrer();
+```
 
 ### Passing Data From Redirect To View
 
@@ -186,7 +236,9 @@ The data set by using ```with``` methods will be stored in a session's flash dat
 
 To enable this feature, provide ```SessionStorageInterface``` object to the responders.  
 
-### Error Responder
+
+Error Responder
+----
 
 Error responder generates a template view based on the status code by using ```ErrorViewInterface``` object. Set up the error view, then,
 
@@ -196,7 +248,7 @@ Respond::error($request)->forbidden();
 
 To enable this feature, provide ```ErrorViewInterface``` object to the responders. 
 
-Service
+Services
 ------
 
 The responders requires many services to operate. 
@@ -204,16 +256,12 @@ These services are stored in ```$request->withAttribute``` method.
 
 ### SessionStorageInterface
 
-```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken from Aura.Session's segment. 
-
-To obtain a segment by Aura.Session, 
+```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken from Aura.Session's segment. And thus, the default implementation uses the Aura.Session. 
 
 ```php
-use Aura\Session\SessionFactory;
+use Tuum\Respond\Service\SessionStorage;
 
-$factory = new SessionFactory();
-$session = $factory->newInstance($_COOKIES);
-$segment = $session->getSegment('some-name');
+$session = SessionStorage::forge('some-name');
 ```
 
 Set the session storage in the $request object using RequestHelper, as.
@@ -221,8 +269,6 @@ Set the session storage in the $request object using RequestHelper, as.
 ```php
 $request = RequestHelper::withSessionMgr($request, $segment);
 ```
-
-> strictly speaking, the Aura's segment class does not implement the ```SessionStorageInterface```. so, do not set strict type hinting using the interface...
 
 
 ### ViewStreamInterface
@@ -265,7 +311,7 @@ set_exception_handler($error); // catch uncaught exception!!!
 
 A container maybe used to provide the services to responders. The container must implement ```ContainerInterface``` by Container-interop group. 
 
-Populate the container with the services using interface class name as a key, and set it in the $request as;
+Populate the container with the services using interface class name as a key, and set it in the $request using `RequestHelper::withApp` method, as;
 
 ```php
 $app = new Container(); // some ContainerInterface...
