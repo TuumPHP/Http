@@ -6,37 +6,54 @@ use Tuum\Respond\Respond;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\ErrorViewInterface;
+use Tuum\Respond\Service\SessionStorage;
+use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewStream;
 use Tuum\Respond\Service\ViewStreamInterface;
 
 /** @var Closure $next */
-$next = include __DIR__ . '/appSession.php';
+$next = include __DIR__ . '/appRoutes.php';
 
 /**
  * creates services.
  *
- * @param ServerRequestInterface $req
+ * @param ServerRequestInterface $request
  * @return ResponseInterface
  */
-return function($req) use($next) {
+return function (ServerRequestInterface $request) use ($next) {
 
     /**
      * this is the view for template.
      */
-    $view = ViewStream::forge(__DIR__.'/views');
-    $req = $req->withAttribute(ViewStreamInterface::class, $view);
+    $view    = ViewStream::forge(__DIR__ . '/views');
+    $request = $request->withAttribute(ViewStreamInterface::class, $view);
 
     /**
      * this is the view for error.
      */
-    $error = new ErrorView($view);
+    $error                = new ErrorView($view);
     $error->default_error = 'errors/error';
-    $error->statusView = [
+    $error->statusView    = [
         Error::FILE_NOT_FOUND => 'errors/notFound',
     ];
-    $req = $req->withAttribute(ErrorViewInterface::class, $error);
     set_exception_handler($error); // catch uncaught exception!!!
+    $request = $request->withAttribute(ErrorViewInterface::class, $error);
 
-    return $next($req) ?: Respond::error($req)->notFound();
+    /**
+     * this is the session.
+     */
+    $session = SessionStorage::forge('sample');
+    $request = $request->withAttribute(SessionStorageInterface::class, $session);
+
+    /**
+     * run the next process!!!
+     */
+    $response = $next($request) ?: Respond::error($request)->notFound();
+
+    /**
+     * done. save session.
+     */
+    $session->commit();
+    return $response;
 };
 

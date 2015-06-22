@@ -11,32 +11,32 @@ use Tuum\Respond\Respond;
  * @param ServerRequestInterface $req
  * @return ResponseInterface
  */
-return function($req) {
+return function ($request) {
 
     /**
-     * @param ServerRequestInterface $req
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    $all = function($req) {
-        return Respond::view($req)
+    $all = function ($request) {
+        return Respond::view($request)
             ->asView('index');
     };
 
     /**
-     * @param ServerRequestInterface $req
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    $jump = function($req) {
-        return Respond::view($req)
+    $jump = function ($request) {
+        return Respond::view($request)
             ->asView('jump');
     };
 
     /**
-     * @param ServerRequestInterface $req
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    $jumper = function($req) {
-        return Respond::redirect($req)
+    $jumper = function ($request) {
+        return Respond::redirect($request)
             ->withMessage('redirected back!')
             ->withInputData(['jumped' => 'redirected text'])
             ->withInputErrors(['jumped' => 'redirected error message'])
@@ -46,31 +46,30 @@ return function($req) {
     /**
      * @throw \Exception
      */
-    $throw = function() {
+    $throw = function () {
         throw new \Exception('always throws exception');
     };
 
     /**
-     *
+     * $routes to aggregate all the routes.
      */
     $routes = array(
-        '/jump' => $jump,
+        '/jump'   => $jump,
         '/jumper' => $jumper,
-        '/throw' => $throw,
-        '/' => $all,
+        '/throw'  => $throw,
+        '/'       => $all,
     );
 
-    $res    = null;
-    $path   = RequestHelper::getPathInfo($req);
-    foreach($routes as $root => $app) {
-        if (!$root) {
-            $res = $app($req);
-            break;
-        }
+    /**
+     * main routine: route match!!!
+     */
+    $response = null;
+    $path     = RequestHelper::getPathInfo($request);
+    foreach ($routes as $root => $app) {
         if ($root === $path) {
-            $res = $app($req);
+            $response = $app($request);
             break;
         }
     }
-    return $res;
+    return $response;
 };
