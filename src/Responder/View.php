@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewStreamInterface;
 use Zend\Diactoros\Stream;
 
@@ -13,19 +14,22 @@ class View extends AbstractWithViewData
 {
     const OK = 200;
 
+    /**
+     * @var ViewStreamInterface
+     */
+    protected $view;
+
     // +----------------------------------------------------------------------+
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param ServerRequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param null|SessionStorageInterface $session
+     * @param null|ViewStreamInterface $view
      */
-    public function __construct(ServerRequestInterface $request, $response = null)
+    public function __construct($session = null, $view = null)
     {
-        $this->request  = $request;
-        $this->response = $response;
-        $this->data     = $this->retrieveViewDta($request);
-        $this->data->setRawData($this->request->getAttributes());
+        $this->session  = $session;
+        $this->view     = $view;
     }
 
     /**
@@ -35,7 +39,28 @@ class View extends AbstractWithViewData
      */
     public static function forge(ServerRequestInterface $request, $response = null)
     {
-        return new static($request, $response);
+        $responder = new static(
+            RequestHelper::getService($request, SessionStorageInterface::class),
+            RequestHelper::getService($request, ViewStreamInterface::class)
+        );
+        return $responder->withRequest($request, $response);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @return View
+     */
+    public function withRequest(
+        ServerRequestInterface $request,
+        ResponseInterface $response = null
+    ) {
+        $self = clone($this);
+        $self->request  = $request;
+        $self->response = $response;
+        $self->data     = $self->retrieveViewDta($request);
+        $self->data->setRawData($request->getAttributes());
+        return $self;
     }
 
     // +----------------------------------------------------------------------+

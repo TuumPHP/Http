@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 
 class Redirect extends AbstractWithViewData
@@ -14,14 +15,11 @@ class Redirect extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param ServerRequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param SessionStorageInterface $session
      */
-    public function __construct(ServerRequestInterface $request, $response = null)
+    public function __construct(SessionStorageInterface $session)
     {
-        $this->request  = $request;
-        $this->response = $response;
-        $this->data     = $this->retrieveViewDta($request);
+        $this->session  = $session;
     }
 
     /**
@@ -31,7 +29,26 @@ class Redirect extends AbstractWithViewData
      */
     public static function forge(ServerRequestInterface $request, $response = null)
     {
-        return new static($request, $response);
+        $responder = new static(
+            RequestHelper::getService($request, SessionStorageInterface::class)
+        );
+        return $responder->withRequest($request, $response);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @return View
+     */
+    public function withRequest(
+        ServerRequestInterface $request,
+        ResponseInterface $response = null
+    ) {
+        $self = clone($this);
+        $self->request  = $request;
+        $self->response = $response;
+        $self->data     = $self->retrieveViewDta($request);
+        return $self;
     }
 
     // +----------------------------------------------------------------------+

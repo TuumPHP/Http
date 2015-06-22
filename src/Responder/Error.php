@@ -7,6 +7,7 @@ use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorViewInterface;
+use Tuum\Respond\Service\SessionStorageInterface;
 
 class Error extends AbstractWithViewData
 {
@@ -15,19 +16,22 @@ class Error extends AbstractWithViewData
     const FILE_NOT_FOUND = 404;
     const INTERNAL_ERROR = 500;
 
+    /**
+     * @var null|ErrorViewInterface
+     */
+    private $view;
+
     // +----------------------------------------------------------------------+
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param ServerRequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param null|SessionStorageInterface $session
+     * @param null|ErrorViewInterface $view
      */
-    public function __construct(ServerRequestInterface $request, $response = null)
+    public function __construct($session = null, $view = null)
     {
-        $this->request  = $request;
-        $this->response = $response;
-        $this->data     = $this->retrieveViewDta($request);
-        $this->data->setRawData($this->request->getAttributes());
+        $this->session  = $session;
+        $this->view     = $view;
     }
 
     /**
@@ -36,7 +40,25 @@ class Error extends AbstractWithViewData
      */
     public static function forge(ServerRequestInterface $request)
     {
-        return new static($request);
+        $responder = new static(
+            RequestHelper::getService($request, SessionStorageInterface::class),
+            RequestHelper::getService($request, ErrorViewInterface::class)
+        );
+        return $responder->withRequest($request);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return Error
+     */
+    public function withRequest(
+        ServerRequestInterface $request
+    ) {
+        $self = clone($this);
+        $self->request  = $request;
+        $self->data     = $self->retrieveViewDta($request);
+        $self->data->setRawData($request->getAttributes());
+        return $self;
     }
 
     // +----------------------------------------------------------------------+

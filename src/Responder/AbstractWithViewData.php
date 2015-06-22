@@ -4,6 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 
 abstract class AbstractWithViewData
@@ -17,6 +18,11 @@ abstract class AbstractWithViewData
      * @var ResponseInterface
      */
     protected $response;
+
+    /**
+     * @var SessionStorageInterface
+     */
+    protected $session;
 
     /**
      * @var ViewData
@@ -36,8 +42,8 @@ abstract class AbstractWithViewData
     {
         $data = null;
         // retrieving from the flash.
-        if (RequestHelper::getSessionMgr($request)) {
-            $data = RequestHelper::getFlash($request, ViewData::MY_KEY);
+        if ($this->session) {
+            $data = $this->session->getFlash(ViewData::MY_KEY);
             if ($data) {
                 // if ViewData is taken from the session,
                 // detach it from the object in the session.
@@ -46,7 +52,7 @@ abstract class AbstractWithViewData
         }
         // or get a new ViewData from container, or create a new one.
         if (!$data) {
-            $data = RequestHelper::getService($this->request, ViewData::class) ?: new ViewData();
+            $data = RequestHelper::getService($request, ViewData::class) ?: new ViewData();
         }
         return $data;
     }
@@ -58,7 +64,10 @@ abstract class AbstractWithViewData
      */
     public function withFlashData($key, $value)
     {
-        RequestHelper::setFlash($this->request, $key, $value);
+        if (!isset($this->session)) {
+            throw new \BadMethodCallException('SessionStorageInterface not defined.');
+        }
+        $this->session->setFlash($key, $value);
         return $this;
     }
 

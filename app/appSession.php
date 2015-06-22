@@ -3,7 +3,7 @@
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\RequestHelper;
-use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Service\SessionStorage;
 
 /** @var Closure $next */
 $next = include __DIR__ . '/appRoutes.php';
@@ -20,12 +20,8 @@ return function($req) use($next) {
     /**
      * create a session and set it to the $req.
      */
-    $factory = new \Aura\Session\SessionFactory();
-    $session = $factory->newInstance($_COOKIE);
-    $session->start();
-    $segment = $session->getSegment('sample');
-    /** @var SessionStorageInterface $segment */
-    $req     = RequestHelper::withSessionMgr($req, $segment);
+    $session = SessionStorage::forge('sample');
+    $req     = RequestHelper::withSessionMgr($req, $session);
 
     /**
      * run the router!!!
