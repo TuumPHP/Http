@@ -18,6 +18,10 @@ class Respond
      */
     public static function view($request, $response = null)
     {
+        /** @var View $view */
+        if ($view = RequestHelper::getService($request, View::class)) {
+            return $view->withRequest($request, $response);
+        }
         return View::forge($request, $response);
     }
 
@@ -30,6 +34,10 @@ class Respond
      */
     public static function redirect($request, $response = null)
     {
+        /** @var View $redirect */
+        if ($redirect = RequestHelper::getService($request, Redirect::class)) {
+            return $redirect->withRequest($request, $response);
+        }
         return Redirect::forge($request, $response);
     }
 
@@ -42,6 +50,10 @@ class Respond
      */
     public static function error($request, $response = null)
     {
+        /** @var View $error */
+        if ($error = RequestHelper::getService($request, Error::class)) {
+            return $error->withRequest($request, $response);
+        }
         return Error::forge($request, $response);
     }
 }
