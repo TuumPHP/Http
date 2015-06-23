@@ -38,7 +38,7 @@ abstract class AbstractWithViewData
      * @param ServerRequestInterface $request
      * @return ViewData
      */
-    protected function retrieveViewDta(ServerRequestInterface $request)
+    private function retrieveViewData(ServerRequestInterface $request)
     {
         $data = null;
         // retrieving from the flash.
@@ -47,7 +47,7 @@ abstract class AbstractWithViewData
             if ($data) {
                 // if ViewData is taken from the session,
                 // detach it from the object in the session.
-                $data = clone($data);
+                return clone($data);
             }
         }
         // or get a new ViewData from container, or create a new one.
@@ -67,7 +67,7 @@ abstract class AbstractWithViewData
         $self = clone($this);
         $self->request  = $request;
         $self->response = $response;
-        $self->data     = $self->retrieveViewDta($request);
+        $self->data     = $self->retrieveViewData($request);
         return $self;
     }
 
