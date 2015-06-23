@@ -3,7 +3,6 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 
@@ -35,10 +34,9 @@ abstract class AbstractWithViewData
      * - retrieve from the container, or
      * - create a new ViewData.
      *
-     * @param ServerRequestInterface $request
      * @return ViewData
      */
-    private function retrieveViewData(ServerRequestInterface $request)
+    private function retrieveViewData()
     {
         $data = null;
         // retrieving from the flash.
@@ -50,11 +48,7 @@ abstract class AbstractWithViewData
                 return clone($data);
             }
         }
-        // or get a new ViewData from container, or create a new one.
-        if (!$data) {
-            $data = RequestHelper::getService($request, ViewData::class) ?: new ViewData();
-        }
-        return $data;
+        return new ViewData();
     }
 
     /**
@@ -67,7 +61,7 @@ abstract class AbstractWithViewData
         $self = clone($this);
         $self->request  = $request;
         $self->response = $response;
-        $self->data     = $self->retrieveViewData($request);
+        $self->data     = $self->retrieveViewData();
         return $self;
     }
 
