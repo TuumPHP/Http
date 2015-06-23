@@ -13,10 +13,10 @@ use Zend\Diactoros\Uri;
 
 class RequestHelper
 {
-    const APP_NAME        = 'tuum-app';
-    const BASE_PATH       = 'basePath';
-    const PATH_INFO       = 'pathInfo';
-    const REFERRER        = 'referrer';
+    const APP_NAME  = 'tuum-app';
+    const BASE_PATH = 'basePath';
+    const PATH_INFO = 'pathInfo';
+    const REFERRER  = 'referrer';
 
     /**
      * creates a new $request based on $path and $method.
@@ -49,10 +49,10 @@ class RequestHelper
     public static function createFromGlobal(array $globals = [])
     {
         $server  = self::arrayGet($globals, '_SERVER', $_SERVER);
-        $files   = self::arrayGet($globals, '_FILES',  $_FILES);
+        $files   = self::arrayGet($globals, '_FILES', $_FILES);
         $cookies = self::arrayGet($globals, '_COOKIE', $_COOKIE);
-        $query   = self::arrayGet($globals, '_GET',    $_GET);
-        $body    = self::arrayGet($globals, '_POST',   $_POST);
+        $query   = self::arrayGet($globals, '_GET', $_GET);
+        $body    = self::arrayGet($globals, '_POST', $_POST);
         $request = ServerRequestFactory::fromGlobals(
             $server,
             $query,
@@ -216,13 +216,24 @@ class RequestHelper
     public static function setSession(ServerRequestInterface $request, $key, $value = null)
     {
         $segment = self::getSessionMgr($request);
+        self::magicSet($segment, $key, $value, 'set');
+    }
+
+    /**
+     * @param SessionStorageInterface $segment
+     * @param string|array            $key
+     * @param mixed                   $value
+     * @param string                  $method
+     */
+    private static function magicSet($segment, $key, $value, $method)
+    {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
-                $segment->set($k, $v);
+                $segment->$method($k, $v);
             }
             return;
         }
-        $segment->set($key, $value);
+        $segment->$method($key, $value);
     }
 
     /**
@@ -251,13 +262,7 @@ class RequestHelper
     public static function setFlash(ServerRequestInterface $request, $key, $value = null)
     {
         $segment = self::getSessionMgr($request);
-        if (is_array($key)) {
-            foreach ($key as $k => $v) {
-                $segment->setFlash($k, $v);
-            }
-            return;
-        }
-        $segment->setFlash($key, $value);
+        self::magicSet($segment, $key, $value, 'setFlash');
     }
 
     /**
