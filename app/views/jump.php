@@ -5,7 +5,7 @@ use Tuum\Form\DataView;
 use Tuum\View\Renderer;
 
 $this->setLayout('layouts/layout');
-$forms = $view->forms;
+$forms = $view->forms->withClass('form-control');
 
 ?>
 
@@ -22,9 +22,9 @@ $forms = $view->forms;
 <?=
 $forms->formGroup(
     $forms->label('some text here:', 'jumped'),
-    $forms->text('jumped', 'original text')->id()->class('form-control'),
+    $forms->text('jumped', 'original text')->id(),
     $view->errors->get('jumped')
-);
+)->class($view->errors->exists('jumped')?'has-error':null);
 ?>
 <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
     <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" />
