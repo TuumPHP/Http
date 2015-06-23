@@ -36,7 +36,7 @@ class Error extends AbstractWithViewData
 
     /**
      * @param ServerRequestInterface $request
-     * @return static
+     * @return Error
      */
     public static function forge(ServerRequestInterface $request)
     {

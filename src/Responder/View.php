@@ -35,7 +35,7 @@ class View extends AbstractWithViewData
     /**
      * @param ServerRequestInterface $request
      * @param null|ResponseInterface $response
-     * @return static
+     * @return View
      */
     public static function forge(ServerRequestInterface $request, $response = null)
     {

@@ -25,7 +25,7 @@ class Redirect extends AbstractWithViewData
     /**
      * @param ServerRequestInterface $request
      * @param null|ResponseInterface $response
-     * @return static
+     * @return Redirect
      */
     public static function forge(ServerRequestInterface $request, $response = null)
     {
@@ -38,7 +38,7 @@ class Redirect extends AbstractWithViewData
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @return View
+     * @return Redirect
      */
     public function withRequest(
         ServerRequestInterface $request,

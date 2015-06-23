@@ -227,6 +227,7 @@ class RequestHelper
      */
     private static function magicSet($segment, $key, $value, $method)
     {
+        if (!$segment) return;
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 $segment->$method($k, $v);

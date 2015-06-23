@@ -34,7 +34,7 @@ class Respond
      */
     public static function redirect($request, $response = null)
     {
-        /** @var View $redirect */
+        /** @var Redirect $redirect */
         if ($redirect = RequestHelper::getService($request, Redirect::class)) {
             return $redirect->withRequest($request, $response);
         }
@@ -50,7 +50,7 @@ class Respond
      */
     public static function error($request, $response = null)
     {
-        /** @var View $error */
+        /** @var Error $error */
         if ($error = RequestHelper::getService($request, Error::class)) {
             return $error->withRequest($request, $response);
         }
