@@ -17,8 +17,8 @@ interface ErrorViewInterface
     /**
      * create a stream for error view.
      *
-     * @param int   $code
-     * @param array $data
+     * @param int            $code
+     * @param array|ViewData $data
      * @return StreamInterface
      */
     public function getStream($code, $data = []);

@@ -93,11 +93,11 @@ class Error extends AbstractWithViewData
     public function asView($status)
     {
         /** @var ErrorViewInterface $view */
-        if (!$view = RequestHelper::getService($this->request, ErrorViewInterface::class)) {
+        $view = RequestHelper::getService($this->request, ErrorViewInterface::class);
+        if (!$view) {
             throw new \BadMethodCallException;
         }
-        $stream = $view->getStream($status, $this->data);
-        return $this->respond($stream, $status);
+        return $this->respond($view->getStream($status, $this->data), $status);
     }
 
     /**
