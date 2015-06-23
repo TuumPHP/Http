@@ -55,10 +55,7 @@ class View extends AbstractWithViewData
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        $self = clone($this);
-        $self->request  = $request;
-        $self->response = $response;
-        $self->data     = $self->retrieveViewDta($request);
+        $self = $this->cloneWithRequest($request, $response);
         $self->data->setRawData($request->getAttributes());
         return $self;
     }

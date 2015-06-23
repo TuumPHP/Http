@@ -58,6 +58,20 @@ abstract class AbstractWithViewData
     }
 
     /**
+     * @param ServerRequestInterface $request
+     * @param null|ResponseInterface $response
+     * @return AbstractWithViewData
+     */
+    protected function cloneWithRequest($request, $response = null)
+    {
+        $self = clone($this);
+        $self->request  = $request;
+        $self->response = $response;
+        $self->data     = $self->retrieveViewDta($request);
+        return $self;
+    }
+
+    /**
      * @param string|array $key
      * @param mixed        $value
      * @return $this

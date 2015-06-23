@@ -54,9 +54,7 @@ class Error extends AbstractWithViewData
     public function withRequest(
         ServerRequestInterface $request
     ) {
-        $self = clone($this);
-        $self->request  = $request;
-        $self->data     = $self->retrieveViewDta($request);
+        $self = $this->cloneWithRequest($request);
         $self->data->setRawData($request->getAttributes());
         return $self;
     }
