@@ -77,6 +77,21 @@ class View extends AbstractWithViewData
     }
 
     /**
+     * @param string $method
+     * @param string $data
+     * @return ResponseInterface
+     */
+    private function asViewStream($method, $data)
+    {
+        /** @var ViewStreamInterface $view */
+        if (!$view = RequestHelper::getService($this->request, ViewStreamInterface::class)) {
+            throw new \BadMethodCallException;
+        }
+        $view = $view->$method($data, $this->data);
+        return $this->asResponse($view);
+    }
+
+    /**
      * creates a Response with as template view file, $file.
      *
      * @param string $file
@@ -84,12 +99,7 @@ class View extends AbstractWithViewData
      */
     public function asView($file)
     {
-        /** @var ViewStreamInterface $view */
-        if (!$view = RequestHelper::getService($this->request, ViewStreamInterface::class)) {
-            throw new \BadMethodCallException;
-        }
-        $view = $view->withView($file, $this->data);
-        return $this->asResponse($view);
+        return $this->asViewStream('withView', $file);
     }
 
     /**
@@ -101,12 +111,7 @@ class View extends AbstractWithViewData
      */
     public function asContents($content)
     {
-        /** @var ViewStreamInterface $view */
-        if (!$view = RequestHelper::getService($this->request, ViewStreamInterface::class)) {
-            throw new \BadMethodCallException;
-        }
-        $view = $view->withContent($content, $this->data);
-        return $this->asResponse($view);
+        return $this->asViewStream('withContent', $content);
     }
 
     /**
