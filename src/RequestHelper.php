@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Service\ErrorViewInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewStreamInterface;
-use Zend\Diactoros\Request;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Uri;

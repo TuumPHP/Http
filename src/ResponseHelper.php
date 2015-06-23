@@ -60,7 +60,7 @@ class ResponseHelper
      * - a resource,
      * - an object implementing __toString method.
      *
-     * @param $input
+     * @param string|StreamInterface|resource|mixed $input
      * @return StreamInterface
      */
     private static function makeStream($input)
