@@ -4,6 +4,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Respond;
+use Zend\Diactoros\UploadedFile;
 
 /**
  * set routes and dispatch.
@@ -44,6 +45,39 @@ return function ($request) {
     };
 
     /**
+     * file upload sample.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    $up = function(ServerRequestInterface $request) {
+
+        $responder = Respond::view($request);
+        if ($request->getMethod()==='POST') {
+
+            $uploaded = $request->getUploadedFiles();
+            $responder
+                ->with('isUploaded', true)
+                ->with('dump', print_r($uploaded, true));
+            /** @var UploadedFile $upload */
+            $upload = $uploaded['up'][0];
+            $responder->with('upload', $upload);
+
+            if ($upload->getError()===UPLOAD_ERR_NO_FILE) {
+                $responder->withErrorMsg('please uploaded a file');
+            } elseif ($upload->getError()===UPLOAD_ERR_FORM_SIZE || $upload->getError()===UPLOAD_ERR_INI_SIZE) {
+                $responder->withErrorMsg('uploaded file size too large!');
+            } elseif ($upload->getError()!==UPLOAD_ERR_OK) {
+                $responder->withErrorMsg('uploading failed!');
+            } else {
+                $responder->withMessage('uploaded a file');
+            }
+        }
+        return $responder
+            ->asView('upload');
+    };
+
+    /**
      * @throw \Exception
      */
     $throw = function () {
@@ -57,6 +91,7 @@ return function ($request) {
         '/jump'   => $jump,
         '/jumper' => $jumper,
         '/throw'  => $throw,
+        '/upload' => $up,
         '/'       => $all,
     );
 

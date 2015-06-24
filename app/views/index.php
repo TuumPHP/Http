@@ -18,6 +18,11 @@ $this->setLayout('layouts/layout');
     <li><a href="jump">jump!!!</a></li>
 </ul>
 
+<h3>file upload sample</h3>
+<ul>
+    <li><a href="upload">upload!!!</a></li>
+</ul>
+
 <h3>error samples</h3>
 
 <ul>
