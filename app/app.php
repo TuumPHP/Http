@@ -3,6 +3,7 @@
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\ErrorViewInterface;
@@ -26,7 +27,6 @@ return function (ServerRequestInterface $request) use ($next) {
      * this is the view for template.
      */
     $view    = ViewStream::forge(__DIR__ . '/views');
-    $request = $request->withAttribute(ViewStreamInterface::class, $view);
 
     /**
      * this is the view for error.
@@ -37,13 +37,14 @@ return function (ServerRequestInterface $request) use ($next) {
         Error::FILE_NOT_FOUND => 'errors/notFound',
     ];
     set_exception_handler($error); // catch uncaught exception!!!
-    $request = $request->withAttribute(ErrorViewInterface::class, $error);
 
     /**
      * this is the session.
      */
-    $session = SessionStorage::forge('sample');
-    $request = $request->withAttribute(SessionStorageInterface::class, $session);
+    $session = SessionStorage::forge('sample')->start();
+
+    $responder = Responder::build($view, $error)->withSession($session);
+    $request = $request->withAttribute(Responder::class, $responder);
 
     /**
      * run the next process!!!

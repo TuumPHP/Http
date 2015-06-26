@@ -42,6 +42,18 @@ class SessionStorage implements SessionStorageInterface
     }
 
     /**
+     * starts a session
+     * @return $this
+     */
+    public function start()
+    {
+        if (!isset($_SESSION)) {
+            $this->session->start();
+        }
+        return $this;
+    }
+
+    /**
      * create a new segment
      *
      * @param string $name

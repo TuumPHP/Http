@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
-use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 
 class Redirect extends AbstractWithViewData
@@ -19,16 +18,6 @@ class Redirect extends AbstractWithViewData
      */
     public function __construct()
     {
-    }
-
-    /**
-     * @param SessionStorageInterface $session
-     * @return Redirect
-     */
-    public static function forge($session = null)
-    {
-        $responder = new static();
-        return $responder->withSession($session);
     }
 
     /**
@@ -59,7 +48,7 @@ class Redirect extends AbstractWithViewData
         if ($uri instanceof UriInterface) {
             $uri = (string)$uri;
         }
-        RequestHelper::setFlash($this->request, ViewData::MY_KEY, $this->data);
+        $this->session->setFlash(ViewData::MY_KEY, $this->data);
         return ResponseHelper::composeResponse($this->response, 'php://memory', 302, ['Location' => $uri]);
     }
 

@@ -7,7 +7,6 @@ use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorViewInterface;
-use Tuum\Respond\Service\SessionStorageInterface;
 
 class Error extends AbstractWithViewData
 {
@@ -30,19 +29,6 @@ class Error extends AbstractWithViewData
     public function __construct(ErrorViewInterface $view)
     {
         $this->view = $view;
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @return Error
-     */
-    public static function forge(ServerRequestInterface $request)
-    {
-        $responder = new static(
-            RequestHelper::getService($request, SessionStorageInterface::class),
-            RequestHelper::getService($request, ErrorViewInterface::class)
-        );
-        return $responder->withRequest($request);
     }
 
     /**

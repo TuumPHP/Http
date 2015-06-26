@@ -4,9 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
-use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewStreamInterface;
 use Zend\Diactoros\Stream;
 
@@ -28,20 +26,6 @@ class View extends AbstractWithViewData
     public function __construct(ViewStreamInterface $view)
     {
         $this->view = $view;
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param null|ResponseInterface $response
-     * @return View
-     */
-    public static function forge(ServerRequestInterface $request, $response = null)
-    {
-        $responder = new static(
-            RequestHelper::getService($request, ViewStreamInterface::class),
-            RequestHelper::getService($request, SessionStorageInterface::class)
-        );
-        return $responder->withRequest($request, $response);
     }
 
     /**
@@ -81,11 +65,7 @@ class View extends AbstractWithViewData
      */
     private function asViewStream($method, $data)
     {
-        /** @var ViewStreamInterface $view */
-        if (!$view = RequestHelper::getService($this->request, ViewStreamInterface::class)) {
-            throw new \BadMethodCallException;
-        }
-        $view = $view->$method($data, $this->data);
+        $view = $this->view->$method($data, $this->data);
         return $this->asResponse($view);
     }
 
