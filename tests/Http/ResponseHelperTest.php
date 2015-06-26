@@ -155,6 +155,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @ runInSeparateProcess
      */
     function emit_response()
     {

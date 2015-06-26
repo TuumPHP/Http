@@ -1,11 +1,8 @@
 <?php
 namespace tests\Http;
 
-use tests\Tools\PhpTestFunc;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\RequestHelper;
-use Tuum\Respond\Responder\View;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
@@ -28,9 +25,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
+        $_SESSION = [];
         $this->session_factory = SessionStorage::forge([]);
         $this->setPhpTestFunc($this->session_factory);
 

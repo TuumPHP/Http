@@ -25,9 +25,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
+        $_SESSION = [];
         $this->session_factory = SessionStorage::forge([]);
         $this->setPhpTestFunc($this->session_factory);
 
