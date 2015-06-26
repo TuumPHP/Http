@@ -3,9 +3,7 @@ namespace Tuum\Respond;
 
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Service\ErrorViewInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
-use Tuum\Respond\Service\ViewStreamInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Uri;
@@ -116,28 +114,6 @@ class RequestHelper
             return $app->get($key);
         }
         return null;
-    }
-
-    /**
-     * get a ViewStream object that implements ViewStreamInterface.
-     *
-     * @param ServerRequestInterface $request
-     * @return ViewStreamInterface|null
-     */
-    public static function getViewStream(ServerRequestInterface $request)
-    {
-        return self::getService($request, ViewStreamInterface::class);
-    }
-
-    /**
-     * get an ErrorView object that implements ErrorViewInterface.
-     *
-     * @param ServerRequestInterface $request
-     * @return ErrorViewInterface|null
-     */
-    public static function getErrorView(ServerRequestInterface $request)
-    {
-        return self::getService($request, ErrorViewInterface::class);
     }
 
     /**

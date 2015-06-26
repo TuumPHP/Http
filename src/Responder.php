@@ -33,6 +33,11 @@ class Responder
      */
     private $session;
 
+    /**
+     * @param View     $view
+     * @param Redirect $redirect
+     * @param Error    $error
+     */
     public function __construct(
         View $view,
         Redirect $redirect,

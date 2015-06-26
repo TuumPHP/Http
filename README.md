@@ -12,17 +12,16 @@ MIT license
 
 ### Installation and samples
 
-To see Tuum/Respond working, use git and composer. 
+To install Tuum/Respond, use the composer. 
+
+```sh
+$ composer require "tuum/respond"
+```
+
+To see Tuum/Respond working in a sample site, use git and PHP's internal server at public folder as;
 
 ```sh
 $ git clone https://github.com/TuumPHP/Respond
-$ cd Respond
-$ composer update
-```
-
-To see a sample site, use PHP's internal server at public folder as;
-
-```sh
 $ cd Respond/public
 $ php -S localhost:8888 index.php
 ```
@@ -55,7 +54,7 @@ Responders to simplify the composing a response object, by providing various res
 $app = new App(); // some micro-framework app. 
 
 // redirects to /jumped.
-$app->get('/jumper', function($request) {
+$app->get('/jumper', function($request, $response) {
 	return Respond::redirect($request, $response)
 	    ->withMessage('bad input!') // <- set up info.
 	    ->withInputData(['some' => 'value'])
@@ -64,7 +63,7 @@ $app->get('/jumper', function($request) {
 	});
 
 // ...and this is jumped.
-$app->get('/jumped', function($request) {
+$app->get('/jumped', function($request, $response) {
 	return Respond::view($request, $response)
 	    ->asView('template'); // with the 'welcome!' message.
 });
@@ -77,11 +76,15 @@ Accessing ```/jumper``` will redirect to ```/jumped``` with the message __"welco
 
 The Psr-7 http/message does not provide all the necessary functionalities to use the responders. You need to supply services that are defined by following interfaces. 
 
-*   ```ContainerInterface``` for containers, 
 *   ```SessionStorageInterface``` for session,
 *   ```ViewStreamInterface``` for views, and
 *   ```ErrorViewInterface```.
 
+optionaly, 
+
+*   ```ContainerInterface``` for containers, 
+
+maybe used to provide services.
 
 ### Packages
 
@@ -99,21 +102,38 @@ Currently, Tuum/Respond uses following packages.
 Responders
 ---------
 
-The respnders simplfies the composition of response object by using various services and information from ```$request```. There are 3 responders: 
+The respnders simplfies the composition of response object by using various services and information from `$request`. There are 3 responders: 
 
-*   ```View```: to create a response with a view body. 
-*   ```Redirect```: to create a redirect response. 
-*   ```Error```: to create response with error status and view. 
+*   `View`: to create a response with a view body. 
+*   `Redirect`: to create a redirect response. 
+*   `Error`: to create response with error status and view. 
+
+#### Responder Class
 
 There is a `Responder` class for conveniently access these responders; 
 
 ```php
+use Tuum\Respond\Responder;
 $responder = new Responder(
-    new View, new Redirect, new Error // <- you must construct them accordingly.
-);
+    $view, $redirect, $error
+)->withSession($session);
 ```
 
-and access responders, such as.
+The arguments for the constructors are the each responder. 
+
+> The $session must implements `SessionStorageInterface`. Session is set after the construction because the scope of the responder maybe different from construction and runtime. 
+
+There is a static method for building a responder using default classes. 
+
+```php
+use Tuum\Respond\Responder;
+$responder = Responder::build(
+    ViewStream::forge('view'), 
+    ErrorView::forge([...config...])
+)->withSession($session);
+```
+
+Access responders like.
 
 ```php
 return $responder->view($request, $response)
@@ -121,48 +141,42 @@ return $responder->view($request, $response)
     ->asView('view-file');
 ```
 
+To start responders, provide `$request` and `$response` objects to the methods. If `$response` is not given, the responder will create a new `$response` object. 
+
+
 ### Respond Class
 
-The `Respond` class provides a quick way to create or access these responders using convenient static methods. 
-
-To start responders, provide ```$request``` and ```$response``` objects to the methods. If ```$response``` is not given, the responders will create a new ```$response``` object. 
+The `Respond` class provides a quick way to create or access these responders using convenient static methods. The trick is, you must register the `responder` in the $request' attribute.
 
 ```php
 use Tuum\Respond\Respond;
+$request = $request->withAttribute(Responder::class, $responder);
+
 Respond::view($request, $response);
 // or...
 Respond::view($request);
 ```
 
+
 For the simplicity of the code, the subsequent samples use only ```$request``` as input. 
 
 #### Setting Services for Respond Class
 
-You must setup services before using the shortcut static method in `Respond` class. You can set up 
+You can register the responder, either in
 
-*   by $request's attribute, or 
-*   by using a container. 
+*   $request's attribute as Resonder::class, or 
+*   using a container which implements ContainerInterface.  
 
-If you are using a sane framework, and the container happens to observe the ContainerInterface of ContainerInterop, container approach is the way to go. 
-
-Set up the container, and use `RequestHelper::withApp` method to set the container in the $request. 
+To use the container, set up the container, and use `RequestHelper::withApp` method to set the container in the $request. 
 
 ```php
-$app = new Container; //
+$app = new Container; // some container. 
 $app->set(ViewStreamInterface::class, 
     ViewStream::forge(__DIR__.'/views')
 );
 $request = RequestHelper::withApp($request, $app);
 ```
 
-You can set up services directly inside **$request's attribute**; set the service as corresponding interface name using `withAttribute` method;
-
-```php
-$request = $request->withAttribute(
-    ViewStreamInterface::class, 
-    ViewStream::forge(__DIR__.'/views')
-);
-```
 
 View Responder
 ----
@@ -199,6 +213,7 @@ Respond::view($request)
 ```
 
 To use Views feature, provide ```ViewStreamInterface``` object to the responders. 
+
 
 Redirect Responder
 ----
@@ -256,18 +271,20 @@ These services are stored in ```$request->withAttribute``` method.
 
 ### SessionStorageInterface
 
-```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken from Aura.Session's segment. And thus, the default implementation uses the Aura.Session. 
+```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken from Aura.Session's segment. 
+
+#### using default SessionStorage object
+
+The default implementation uses the Aura.Session. 
 
 ```php
 use Tuum\Respond\Service\SessionStorage;
 
 $session = SessionStorage::forge('some-name');
-```
+$responder = $responder->withSession($session);
 
-Set the session storage in the $request object using RequestHelper, as.
-
-```php
-$request = RequestHelper::withSessionMgr($request, $segment);
+$response = $next($request, $response); // call next
+$session->commit();
 ```
 
 
@@ -278,34 +295,50 @@ The ```ViewStreamInterface``` extends Psr-7's ```StreamInterface``` to add extra
 *   ```withView($view_name, ViewData $data)```: sets the template file name for the view and render data. 
 *   ```withContent($view_name, ViewData $data)```: sets the contents of a view and render data. This method maybe used for rendering a static file. 
 
-To respond using ```view``` resopnder, provide a ViewStream object implementing ```ViewStreamInterface``` interface. To use the default ```Tuum/View``` and ```Tuum/Form``` package, 
+To respond using ```view``` resopnder, provide a ViewStream object implementing ```ViewStreamInterface``` interface. 
+
+#### using default ViewStream object
+
+The default ViewStream class uses ```Tuum/View``` and ```Tuum/Form``` packages, 
 
 ```php
-use Tuum\Respond\Service\ViewStream;
-use Tuum\Respond\Service\ViewStreamInterface;
-
-$request->withAttribute(ViewStreamInterface::class, ViewStream::forge(__DIR__.'/views'));
+$view = ViewStream::forge($view_dir);
 ```
+
+where the `$view_dir` points to the root of the view/template directory, such as `__DIR__ . '/views'`.
+
 
 ### ErrorViewInterface
 
 The ```ErrorViewInterface``` is a simplified ViewStreamInterface which can render a view based on status code instead of view name as used in ViewStreamInterface. 
 
+#### using default ErrorView object
+
 To respond using the ```error``` responder, provide an ```ErrorView``` object. To use the default set, 
 
 ```php
-$error = new ErrorView(ViewStream::forge(__DIR__ . '/error-view-dir'));
-$error->default_error = 'errors/error';
-$error->statusView = [
-    Error::FILE_NOT_FOUND => 'errors/notFound',
-];$request->withAttribute(ErrorViewInterface::class, $error);
+$error = ErrorView::forge(
+    ViewStream::forge($error_view_dir), [
+    'default' => 'errors/error',
+    'status' => [
+        Error::FILE_NOT_FOUND => 'errors/notFound',
+        Error::FORBIDDEN      => 'errors/forbidden',
+    ],
+    'handler' => true,
+]);
 ```
 
-You can use the ```ErrorView``` object for PHP's ```set_exception_handler``` handle as well:
+*   The first argument is another ViewStreamInterface object to render a view. 
+*   second argument is an options array, which has
+    *   **default**: default error view name,
+    *   **status**: error code and associated view name,
+    *   **handler**: use the `ErrorView` for catching uncaught exceptions using `set_exception_handler`.
 
-```php
-set_exception_handler($error); // catch uncaught exception!!!
-```
+> Yes, you can use the ```ErrorView``` object for PHP's ```set_exception_handler``` handle as well:
+>
+> ```php
+> set_exception_handler($error); // catch uncaught exception!!!
+> ```
 
 ### ContainerInterface
 
@@ -315,9 +348,7 @@ Populate the container with the services using interface class name as a key, an
 
 ```php
 $app = new Container(); // some ContainerInterface...
-$app->set(SessionStorageInterface::class, $session);
-$app->set(ViewStreamInterface::class, $views);
-$app->set(ErrorViewInterface::class, $error);
+$app->set(Responder::class, $responder);
 $request = RequestHelper::withApp($request, $app);
 ```
 
