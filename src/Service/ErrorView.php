@@ -31,6 +31,29 @@ class ErrorView implements ErrorViewInterface
     }
 
     /**
+     * @param ViewStreamInterface $viewStream
+     * @param array               $options
+     * @return static
+     */
+    public static function forge(
+        ViewStreamInterface $viewStream,
+        array $options
+    ) {
+        $error = new static($viewStream);
+        if (isset($options['default'])) {
+            $error->default_error = $options['default'];
+        }
+        if (isset($options['status'])) {
+            $error->statusView = $options['status'];
+        }
+        if (isset($options['handler']) && $options['handler']) {
+            set_exception_handler($error); // catch uncaught exception!!!
+        }
+
+        return $error;
+    }
+
+    /**
      * @param int $status
      * @return string
      */

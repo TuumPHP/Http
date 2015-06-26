@@ -4,7 +4,6 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorViewInterface;
 
@@ -78,12 +77,7 @@ class Error extends AbstractWithViewData
      */
     public function asView($status)
     {
-        /** @var ErrorViewInterface $view */
-        $view = RequestHelper::getService($this->request, ErrorViewInterface::class);
-        if (!$view) {
-            throw new \BadMethodCallException;
-        }
-        return $this->respond($view->getStream($status, $this->data), $status);
+        return $this->respond($this->view->getStream($status, $this->data), $status);
     }
 
     /**
