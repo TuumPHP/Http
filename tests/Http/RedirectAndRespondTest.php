@@ -1,27 +1,44 @@
 <?php
 namespace tests\Http;
 
-use Aura\Session\SessionFactory;
+use tests\Tools\PhpTestFunc;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\ErrorView;
+use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Service\ViewStream;
 
 class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
 {
+    use TesterTrait;
+
     /**
-     * @var SessionFactory
+     * @var SessionStorage
      */
     public $session_factory;
+
+    /**
+     * @var Responder
+     */
+    public $responder;
 
     function setup()
     {
         if (!isset($_SESSION)) {
-            session_start();
+            $_SESSION = [];
         }
-        $_SESSION = [];
-        $this->session_factory = new SessionFactory();
+        $this->session_factory = SessionStorage::forge([]);
+        $this->setPhpTestFunc($this->session_factory);
+
+        $view = ViewStream::forge('');
+        $this->responder = Responder::build(
+            $view,
+            new ErrorView($view)
+        );
     }
 
     /**
@@ -34,10 +51,10 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         /*
          * a redirect response with various data.
          */
-        $session  = $this->session_factory->newInstance([]);
+        $session  = $this->session_factory->withStorage('test');
         $request  = RequestHelper::createFromPath('/path/test');
-        $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
-        $response = Redirect::forge($request)
+        $request  = RequestHelper::withSessionMgr($request, $session);
+        $response = $this->responder->withSession($session)->redirect($request)
             ->withFlashData('with', 'val1')
             ->with('more', 'with')
             ->withMessage('message')
@@ -57,17 +74,15 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $stored = serialize($_SESSION);
         $_SESSION = unserialize($stored);
         
-        $move = new \ReflectionMethod($session, 'moveFlash');
-        $move->setAccessible(true);
-        $move->invoke($session);
+        $this->moveFlash($this->session_factory);
 
         /*
          * next request with the data from the previous redirection. 
          */
-        $session  = $this->session_factory->newInstance([]);
+        $session  = $this->session_factory->withStorage('test');
         $request  = RequestHelper::createFromPath('/more/test');
-        $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
-        $respond  = View::forge($request);
+        $request  = RequestHelper::withSessionMgr($request, $session);
+        $respond  = $this->responder->withSession($session)->view($request);
         
         $refObj  = new \ReflectionObject($respond);
         $refData = $refObj->getProperty('data');

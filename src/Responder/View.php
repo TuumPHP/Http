@@ -23,13 +23,11 @@ class View extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param null|SessionStorageInterface $session
-     * @param null|ViewStreamInterface $view
+     * @param ViewStreamInterface $view
      */
-    public function __construct($session = null, $view = null)
+    public function __construct(ViewStreamInterface $view)
     {
-        $this->session  = $session;
-        $this->view     = $view;
+        $this->view = $view;
     }
 
     /**
@@ -40,8 +38,8 @@ class View extends AbstractWithViewData
     public static function forge(ServerRequestInterface $request, $response = null)
     {
         $responder = new static(
-            RequestHelper::getService($request, SessionStorageInterface::class),
-            RequestHelper::getService($request, ViewStreamInterface::class)
+            RequestHelper::getService($request, ViewStreamInterface::class),
+            RequestHelper::getService($request, SessionStorageInterface::class)
         );
         return $responder->withRequest($request, $response);
     }

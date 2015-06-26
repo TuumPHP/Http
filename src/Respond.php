@@ -10,6 +10,29 @@ use Tuum\Respond\Responder\View;
 class Respond
 {
     /**
+     * get the responder of $name.
+     *
+     * @param string                 $name
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface|null $response
+     * @return mixed
+     */
+    private static function respond($name, $request, $response)
+    {
+        /**
+         * 1. get responder from the request' attribute.
+         * @var Responder $responder
+         */
+        if (!$responder = RequestHelper::getService($request, Responder::class)) {
+            throw new \BadMethodCallException;
+        }
+        /**
+         * 2. return responder with $name.
+         */
+        return $responder->$name($request, $response);
+    }
+
+    /**
      * get a view responder, Responder\View.
      *
      * @param ServerRequestInterface $request
@@ -18,11 +41,7 @@ class Respond
      */
     public static function view($request, $response = null)
     {
-        /** @var View $view */
-        if ($view = RequestHelper::getService($request, View::class)) {
-            return $view->withRequest($request, $response);
-        }
-        return View::forge($request, $response);
+        return self::respond('view', $request, $response);
     }
 
     /**
@@ -34,11 +53,7 @@ class Respond
      */
     public static function redirect($request, $response = null)
     {
-        /** @var Redirect $redirect */
-        if ($redirect = RequestHelper::getService($request, Redirect::class)) {
-            return $redirect->withRequest($request, $response);
-        }
-        return Redirect::forge($request, $response);
+        return self::respond('redirect', $request, $response);
     }
 
     /**
@@ -50,10 +65,6 @@ class Respond
      */
     public static function error($request, $response = null)
     {
-        /** @var Error $error */
-        if ($error = RequestHelper::getService($request, Error::class)) {
-            return $error->withRequest($request, $response);
-        }
-        return Error::forge($request, $response);
+        return self::respond('error', $request, $response);
     }
 }

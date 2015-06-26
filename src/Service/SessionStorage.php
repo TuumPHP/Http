@@ -37,7 +37,6 @@ class SessionStorage implements SessionStorageInterface
         $factory = new SessionFactory();
         $cookie  = $cookie ?: $_COOKIE;
         $session = $factory->newInstance($cookie);
-        $session->start();
         $self = new self($session);
         return $self->withStorage($name);
     }

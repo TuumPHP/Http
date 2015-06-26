@@ -25,13 +25,11 @@ class Error extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param null|SessionStorageInterface $session
-     * @param null|ErrorViewInterface $view
+     * @param ErrorViewInterface $view
      */
-    public function __construct($session = null, $view = null)
+    public function __construct(ErrorViewInterface $view)
     {
-        $this->session  = $session;
-        $this->view     = $view;
+        $this->view = $view;
     }
 
     /**
@@ -49,10 +47,12 @@ class Error extends AbstractWithViewData
 
     /**
      * @param ServerRequestInterface $request
-     * @return Error
+     * @param ResponseInterface      $response
+     * @return View
      */
     public function withRequest(
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
+        ResponseInterface $response = null
     ) {
         $self = $this->cloneWithRequest($request);
         $self->data->setRawData($request->getAttributes());
@@ -87,7 +87,7 @@ class Error extends AbstractWithViewData
     }
 
     /**
-     * @param int   $status
+     * @param int $status
      * @return ResponseInterface
      */
     public function asView($status)

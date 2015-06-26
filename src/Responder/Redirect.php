@@ -15,24 +15,20 @@ class Redirect extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param SessionStorageInterface $session
+     *
      */
-    public function __construct(SessionStorageInterface $session)
+    public function __construct()
     {
-        $this->session  = $session;
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param SessionStorageInterface $session
      * @return Redirect
      */
-    public static function forge(ServerRequestInterface $request, $response = null)
+    public static function forge($session = null)
     {
-        $responder = new static(
-            RequestHelper::getService($request, SessionStorageInterface::class)
-        );
-        return $responder->withRequest($request, $response);
+        $responder = new static();
+        return $responder->withSession($session);
     }
 
     /**

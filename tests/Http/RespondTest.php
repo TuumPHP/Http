@@ -1,26 +1,41 @@
 <?php
 namespace tests\Http;
 
-use Aura\Session\SessionFactory;
 use Tuum\Respond\RequestHelper;
-use Tuum\Respond\Responder\View;
+use Tuum\Respond\Responder;
 use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\ErrorView;
+use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Service\ViewStream;
 
 class RespondTest extends \PHPUnit_Framework_TestCase
 {
+    use TesterTrait;
+
     /**
-     * @var SessionFactory
+     * @var SessionStorage
      */
     public $session_factory;
+
+    /**
+     * @var Responder
+     */
+    public $responder;
 
     function setup()
     {
         if (!isset($_SESSION)) {
-            session_start();
+            $_SESSION = [];
         }
-        $_SESSION = [];
-        $this->session_factory = new SessionFactory();
+        $this->session_factory = SessionStorage::forge([]);
+        $this->setPhpTestFunc($this->session_factory);
+
+        $view = ViewStream::forge('');
+        $this->responder = Responder::build(
+            $view,
+            new ErrorView($view)
+        );
     }
 
     /**
@@ -29,7 +44,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asText_creates_text_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = View::forge($request)->asText('text response');
+        $response = $this->responder->view($request)->asText('text response');
         $this->assertEquals('text/plain', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('text response', $response->getBody()->__toString());
     }
@@ -41,7 +56,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     {
         $request  = RequestHelper::createFromPath('/path/test');
         $response = ResponseHelper::createResponse('');
-        $response = View::forge($request, $response)->asHtml('<h1>html</h1>');
+        $response = $this->responder->view($request, $response)->asHtml('<h1>html</h1>');
         $this->assertEquals('text/html', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('<h1>html</h1>', $response->getBody()->__toString());
     }
@@ -52,7 +67,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asJson_creates_json_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = View::forge($request)->asJson(['jason'=>'type']);
+        $response = $this->responder->view($request)->asJson(['jason'=>'type']);
         $this->assertEquals('application/json', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('{"jason":"type"}', $response->getBody()->__toString());
     }
@@ -63,7 +78,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asDownload_creates_download_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = View::forge($request)->asDownload('dl', 'dl-name');
+        $response = $this->responder->view($request)->asDownload('dl', 'dl-name');
         $this->assertEquals('application/octet-stream', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('attachment; filename="dl-name"', $response->getHeader('Content-Disposition')[0]);
         $this->assertEquals('2', $response->getHeader('Content-Length')[0]);
@@ -75,10 +90,10 @@ class RespondTest extends \PHPUnit_Framework_TestCase
      */
     function Respond_populates_ViewData_object()
     {
-        $session  = $this->session_factory->newInstance([]);
+        $session  = $this->session_factory->withStorage('tuum-app');
         $request  = RequestHelper::createFromPath('/path/test');
-        $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
-        $respond  = View::forge($request)
+        $request  = RequestHelper::withSessionMgr($request, $session);
+        $respond  = $this->responder->view($request)
             ->with('some', 'value')
             ->withMessage('message')
             ->withAlertMsg('notice-msg')
@@ -105,19 +120,17 @@ class RespondTest extends \PHPUnit_Framework_TestCase
      */
     function Respond_passes_data_by_withFlashData()
     {
-        $session  = $this->session_factory->newInstance([]);
+        $session  = $this->session_factory->withStorage('tuum-app');
         $request  = RequestHelper::createFromPath('/path/test');
-        $request  = RequestHelper::withSessionMgr($request, $session->getSegment('tuum-app'));
-        View::forge($request)->withFlashData('with-flash', 'value1');
+        $request  = RequestHelper::withSessionMgr($request, $session);
+        $this->responder->withSession($session)->view($request)->withFlashData('with-flash', 'value1');
 
         /*
          * next request.
          * move the flash, i.e. next request.
          */
         $session->commit();
-        $move = new \ReflectionMethod($session, 'moveFlash');
-        $move->setAccessible(true);
-        $move->invoke($session);
+        $this->moveFlash($this->session_factory);
 
         $this->assertEquals('value1', RequestHelper::getFlash($request, 'with-flash'));
     }

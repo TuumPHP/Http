@@ -65,6 +65,22 @@ abstract class AbstractWithViewData
         return $self;
     }
 
+    abstract public function withRequest(
+        ServerRequestInterface $request,
+        ResponseInterface $response = null
+    );
+
+    /**
+     * @param SessionStorageInterface $session
+     * @return View
+     */
+    public function withSession($session)
+    {
+        $self = clone($this);
+        $self->session = $session;
+        return $self;
+    }
+
     /**
      * @param string|array $key
      * @param mixed        $value
