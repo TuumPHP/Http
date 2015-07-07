@@ -58,7 +58,6 @@ class ViewStream implements ViewStreamInterface
     public function renderView($view_file, $data = null)
     {
         $self = clone($this);
-        $self->setDataView($data);
         return $self->renderer->render($view_file, $self->setDataView($data));
     }
 }
