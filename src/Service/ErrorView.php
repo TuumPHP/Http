@@ -2,7 +2,6 @@
 namespace Tuum\Respond\Service;
 
 use Exception;
-use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\ResponseHelper;
 
 class ErrorView implements ErrorViewInterface
@@ -74,8 +73,8 @@ class ErrorView implements ErrorViewInterface
     public function __invoke($e)
     {
         $code     = $e->getCode() ?: 500;
-        $stream   = $this->view->withView($this->findViewFromStatus($code));
-        $response = ResponseHelper::createResponse($stream, $code);
+        $view     = $this->findViewFromStatus($code);
+        $response = ResponseHelper::createResponse($this->view->renderView($view), $code);
         ResponseHelper::emit($response);
         exit;
     }
@@ -83,10 +82,10 @@ class ErrorView implements ErrorViewInterface
     /**
      * @param int   $code
      * @param array $data
-     * @return StreamInterface
+     * @return string
      */
     public function getStream($code, $data = [])
     {
-        return $this->view->withView($this->findViewFromStatus($code), $data);
+        return $this->view->renderView($this->findViewFromStatus($code), $data);
     }
 }

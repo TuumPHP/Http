@@ -40,7 +40,7 @@ return function (ServerRequestInterface $request) use ($next) {
      * this is the session.
      */
     $session   = SessionStorage::forge('sample');
-    $responder = Responder::build($view, $error)->withSession($session);
+    $responder = Responder::build($view, $error, 'contents')->withSession($session);
     $request   = $request->withAttribute(Responder::class, $responder);
 
     /**

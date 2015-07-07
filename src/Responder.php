@@ -49,16 +49,18 @@ class Responder
     }
 
     /**
-     * @param ViewStreamInterface     $view
-     * @param ErrorViewInterface      $error
+     * @param ViewStreamInterface $view
+     * @param ErrorViewInterface  $error
+     * @param null|string         $content_view
      * @return static
      */
     public static function build(
         ViewStreamInterface $view,
-        ErrorViewInterface $error
+        ErrorViewInterface $error,
+        $content_view = null
     ) {
         $self = new static(
-            new View($view),
+            new View($view, $content_view),
             new Redirect(),
             new Error($error)
         );

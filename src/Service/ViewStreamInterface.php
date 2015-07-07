@@ -1,8 +1,6 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use Psr\Http\Message\StreamInterface;
-
 /**
  * Interface ViewStreamInterface
  *
@@ -10,7 +8,7 @@ use Psr\Http\Message\StreamInterface;
  *
  * @package Tuum\Application\Service
  */
-interface ViewStreamInterface extends StreamInterface
+interface ViewStreamInterface
 {
     /**
      * sets view template file and data to be rendered.
@@ -22,22 +20,18 @@ interface ViewStreamInterface extends StreamInterface
     public function withView($view_file, $data = null);
 
     /**
-     * sets view contents to be rendered.
+     * renders the view.
      *
-     * @param string    $content
-     * @param ViewData  $data
-     * @return ViewStreamInterface
+     * @return string
      */
-    public function withContent($content, $data = null);
+    public function render();
 
     /**
-     * modifies the internal renderer's setting.
+     * renders $view_file with $data.
      *
-     * $modifier = function($renderer) {
-     *    // modify the renderer.
-     * }
-     *
-     * @param \Closure $modifier
+     * @param string   $view_file
+     * @param ViewData $data
+     * @return string
      */
-    public function modRenderer($modifier);
+    public function renderView($view_file, $data = null);
 }

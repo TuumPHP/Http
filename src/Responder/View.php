@@ -14,6 +14,13 @@ class View extends AbstractWithViewData
     const OK = 200;
 
     /**
+     * a view file to render a string content.
+     *
+     * @var null|string
+     */
+    public $content_view;
+
+    /**
      * @var ViewStreamInterface
      */
     protected $view;
@@ -23,10 +30,12 @@ class View extends AbstractWithViewData
     // +----------------------------------------------------------------------+
     /**
      * @param ViewStreamInterface $view
+     * @param null|string         $content_view
      */
-    public function __construct(ViewStreamInterface $view)
+    public function __construct(ViewStreamInterface $view, $content_view = null)
     {
         $this->view = $view;
+        $this->content_view = $content_view;
     }
 
     /**
@@ -60,16 +69,14 @@ class View extends AbstractWithViewData
     }
 
     /**
-     * @param string $method
      * @param string $data
      * @return ResponseInterface
      */
-    private function asViewStream($method, $data)
+    private function asViewStream($data)
     {
         /** @var ViewStream $view */
-        $view = $this->view->$method($data, $this->data);
         $response = ResponseHelper::composeResponse($this->response, '');
-        $response->getBody()->write($view->render());
+        $response->getBody()->write($this->view->renderView($data, $this->data));
         return $response;
     }
 
@@ -81,7 +88,7 @@ class View extends AbstractWithViewData
      */
     public function asView($file)
     {
-        return $this->asViewStream('withView', $file);
+        return $this->asViewStream($file);
     }
 
     /**
@@ -93,7 +100,11 @@ class View extends AbstractWithViewData
      */
     public function asContents($content)
     {
-        return $this->asViewStream('withContent', $content);
+        if (!isset($this->content_view)) {
+            throw new \BadMethodCallException;
+        }
+        $this->data->dataValue('contents', $content);
+        return $this->asViewStream($this->content_view);
     }
 
     /**

@@ -23,6 +23,11 @@ $this->setLayout('layouts/layout');
     <li><a href="upload">upload!!!</a></li>
 </ul>
 
+<h3>content</h3>
+<ul>
+    <li><a href="content">content</a></li>
+</ul>
+
 <h3>error samples</h3>
 
 <ul>

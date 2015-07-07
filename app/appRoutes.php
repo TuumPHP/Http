@@ -76,6 +76,14 @@ return function ($request) {
         return $responder
             ->asView('upload');
     };
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    $content = function(ServerRequestInterface $request) {
+        return Respond::view($request)
+            ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
+    };
 
     /**
      * @throw \Exception
@@ -92,6 +100,7 @@ return function ($request) {
         '/jumper' => $jumper,
         '/throw'  => $throw,
         '/upload' => $up,
+        '/content'=> $content,
         '/'       => $all,
     );
 
