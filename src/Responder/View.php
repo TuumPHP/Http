@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Service\ViewStream;
 use Tuum\Respond\Service\ViewStreamInterface;
 use Zend\Diactoros\Stream;
 
@@ -65,8 +66,11 @@ class View extends AbstractWithViewData
      */
     private function asViewStream($method, $data)
     {
+        /** @var ViewStream $view */
         $view = $this->view->$method($data, $this->data);
-        return $this->asResponse($view);
+        $response = ResponseHelper::composeResponse($this->response, '');
+        $response->getBody()->write($view->render());
+        return $response;
     }
 
     /**

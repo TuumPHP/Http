@@ -112,7 +112,7 @@ class ViewStream implements ViewStreamInterface
     /**
      * @return string
      */
-    private function render()
+    public function render()
     {
         return $this->renderer->render($this->view_file, $this->view_data);
     }

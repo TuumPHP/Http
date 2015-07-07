@@ -34,7 +34,7 @@ class ResponseHelper
      * @param StreamInterface|string|resource|object $input
      * @param int                                    $status
      * @param array                                  $header
-     * @return mixed
+     * @return ResponseInterface
      */
     public static function composeResponse($response, $input, $status = 200, array $header = [])
     {
