@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ViewStreamInterface;
-use Zend\Diactoros\Stream;
 
 class View extends AbstractWithViewData
 {
@@ -149,9 +148,9 @@ class View extends AbstractWithViewData
     public function asFileContents($file_loc, $mime)
     {
         if (is_string($file_loc)) {
-            $stream = new Stream(fopen($file_loc, 'rb'));
+            $stream = fopen($file_loc, 'rb');
         } elseif (is_resource($file_loc)) {
-            $stream = new Stream($file_loc);
+            $stream = $file_loc;
         } else {
             throw new \InvalidArgumentException;
         }
