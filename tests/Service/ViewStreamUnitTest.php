@@ -43,8 +43,9 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
      */
     function getContents_return_the_string()
     {
-        $this->assertEquals($this->string, $this->view->getContents());
-        $this->assertEquals($this->string, (string) $this->view);
+        $view = $this->view->withView('some');
+        $this->assertEquals($this->string, $view->getContents());
+        $this->assertEquals($this->string, (string) $view);
     }
 
     /**
@@ -52,7 +53,8 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
      */
     function getSize_returns_the_size()
     {
-        $this->assertEquals(strlen($this->string), $this->view->getSize());
+        $view = $this->view->withView('some');
+        $this->assertEquals(strlen($this->string), $view->getSize());
     }
 
     /**
@@ -60,16 +62,17 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
      */
     function seek_rewind_and_read_will_get_part_of_string()
     {
-        $size = $this->view->getSize();
+        $view = $this->view->withView('some');
+        $size = $view->getSize();
         $mid  = (int) ($size/2);
         $last = $size - $mid;
-        $this->view->rewind();
-        $this->assertEquals(substr($this->string, 0, $mid), $this->view->read($mid));
-        $this->assertEquals($mid, $this->view->tell());
-        $this->assertEquals(substr($this->string, $mid), $this->view->read($last));
-        $this->assertEquals('', $this->view->read($last));
-        $this->view->rewind();
-        $this->assertEquals(substr($this->string, 0, $mid), $this->view->read($mid));
+        $view->rewind();
+        $this->assertEquals(substr($this->string, 0, $mid), $view->read($mid));
+        $this->assertEquals($mid, $view->tell());
+        $this->assertEquals(substr($this->string, $mid), $view->read($last));
+        $this->assertEquals('', $view->read($last));
+        $view->rewind();
+        $this->assertEquals(substr($this->string, 0, $mid), $view->read($mid));
     }
 
     /**
@@ -77,11 +80,12 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
      */
     function eof_checks_end_of_file()
     {
-        $this->assertFalse($this->view->eof());
-        $this->view->getContents();
-        $this->assertTrue($this->view->eof());
-        $this->view->rewind();
-        $this->assertFalse($this->view->eof());
+        $view = $this->view->withView('some');
+        $this->assertFalse($view->eof());
+        $view->getContents();
+        $this->assertTrue($view->eof());
+        $view->rewind();
+        $this->assertFalse($view->eof());
     }
 
     /**
@@ -89,13 +93,14 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
      */
     function write_string()
     {
+        $view = $this->view->withView('some');
         $extra = 'written';
-        $this->view->write($extra);
-        $this->assertEquals($this->string.$extra, $this->view->getContents());
+        $view->write($extra);
+        $this->assertEquals($this->string.$extra, $view->getContents());
 
-        $this->view->rewind();
-        $this->view->write($extra);
-        $this->assertEquals('writtenntwritten', $this->view->getContents());
+        $view->rewind();
+        $view->write($extra);
+        $this->assertEquals('writtenntwritten', $view->getContents());
     }
 
     /**
@@ -103,9 +108,35 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
      */
     function getMeta()
     {
-        $meta = $this->view->getMetadata();
+        $view = $this->view->withView('some');
+        $meta = $view->getMetadata();
         $this->assertTrue(is_array($meta));
         $uri = $meta['uri']; // assume always here.
-        $this->assertEquals($uri, $this->view->getMetadata('uri'));
+        $this->assertEquals($uri, $view->getMetadata('uri'));
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     */    
+    function close_will_make_stream_unusable()
+    {
+        $view = $this->view->withView('some');
+        $this->assertEquals($this->string, $view->getContents());
+        $view->close();
+        $this->assertEquals($this->string, $view->getContents());
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     */
+    function detach_will_return_fp_and_make_stream_unusable()
+    {
+        $view = $this->view->withView('some');
+        $fp   = $view->detach();
+        rewind($fp);
+        $this->assertEquals($this->string, stream_get_contents($fp));
+        $this->assertEquals($this->string, $view->getContents());
     }
 }

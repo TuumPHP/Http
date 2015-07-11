@@ -102,6 +102,9 @@ class ViewStream implements ViewStreamInterface
      */
     private function render()
     {
+        if (!$this->view_file) {
+            throw new \RuntimeException('no view file to render');
+        }
         return $this->renderer->render($this->view_file, $this->view_data);
     }
 
@@ -136,8 +139,6 @@ class ViewStream implements ViewStreamInterface
     {
         try {
 
-            $this->rewind();
-
             return $this->getContents();
 
         } catch (RuntimeException $e) {
@@ -154,8 +155,10 @@ class ViewStream implements ViewStreamInterface
     {
         if ($this->fp) {
             fclose($this->fp);
-            $this->fp = null;
         }
+        $this->fp = null;
+        $this->view_file = null;
+        $this->view_data = [];
     }
 
     /**
@@ -167,8 +170,10 @@ class ViewStream implements ViewStreamInterface
      */
     public function detach()
     {
-        $fp       = $this->fp;
+        $fp = $this->getResource();
         $this->fp = null;
+        $this->view_file = null;
+        $this->view_data = [];
 
         return $fp;
     }
