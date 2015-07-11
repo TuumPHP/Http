@@ -73,8 +73,8 @@ class ErrorView implements ErrorViewInterface
     public function __invoke($e)
     {
         $code     = $e->getCode() ?: 500;
-        $view     = $this->findViewFromStatus($code);
-        $response = ResponseHelper::createResponse($this->view->renderView($view), $code);
+        $stream   = $this->view->withView($this->findViewFromStatus($code));
+        $response = ResponseHelper::createResponse($stream, $code);
         ResponseHelper::emit($response);
         exit;
     }
@@ -86,6 +86,6 @@ class ErrorView implements ErrorViewInterface
      */
     public function getStream($code, $data = [])
     {
-        return $this->view->renderView($this->findViewFromStatus($code), $data);
+        return $this->view->withView($this->findViewFromStatus($code), $data);
     }
 }

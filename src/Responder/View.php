@@ -72,9 +72,8 @@ class View extends AbstractWithViewData
      */
     private function asViewStream($data)
     {
-        $response = ResponseHelper::composeResponse($this->response, '');
-        $response->getBody()->write($this->view->renderView($data, $this->data));
-        return $response;
+        $view = $this->view->withView($data, $this->data);
+        return $this->asResponse($view);
     }
 
     /**
@@ -93,15 +92,14 @@ class View extends AbstractWithViewData
      * use this to view a main contents with layout.
      *
      * @param string $content
+     * @param string|null   $contents_file
      * @return ResponseInterface
      */
-    public function asContents($content)
+    public function asContents($content, $contents_file = null)
     {
-        if (!isset($this->content_view)) {
-            throw new \BadMethodCallException;
-        }
+        $contents_file = $contents_file ?: $this->content_view;
         $this->data->dataValue('contents', $content);
-        return $this->asViewStream($this->content_view);
+        return $this->asViewStream($contents_file);
     }
 
     /**
