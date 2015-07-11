@@ -46,7 +46,8 @@ class ResponseHelper
             $response = $response->withHeader($name, $val);
         }
         if (is_string($input)) {
-            return $response->getBody()->write($input);
+            $response->getBody()->write($input);
+            return $response;
         }
         if ($input instanceof StreamInterface) {
             return $response->withBody($input);
