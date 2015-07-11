@@ -334,6 +334,7 @@ class ViewStream implements ViewStreamInterface
     public function getContents()
     {
         $fp     = $this->getResource();
+        rewind($fp);
         $result = stream_get_contents($fp);
         if (false === $result) {
             throw new RuntimeException('Error reading from stream');
