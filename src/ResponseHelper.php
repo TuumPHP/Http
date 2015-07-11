@@ -41,19 +41,17 @@ class ResponseHelper
         if (!$response) {
             return self::createResponse($input, $status, $header);
         }
-        /** @var ResponseInterface $response */
         $response = $response->withStatus($status);
         foreach ($header as $name => $val) {
             $response = $response->withHeader($name, $val);
         }
         if (is_string($input)) {
-            $response->getBody()->write($input);
-        } elseif ($input instanceof StreamInterface) {
-            $response = $response->withBody($input);
-        } else {
-            $response = $response->withBody(self::makeStream($input));
+            return $response->getBody()->write($input);
+        } 
+        if ($input instanceof StreamInterface) {
+            return $response->withBody($input);
         }
-        return $response;
+        return $response->withBody(self::makeStream($input));
     }
 
     /**
