@@ -94,7 +94,8 @@ class ViewStream implements ViewStreamInterface
      */
     public function modRenderer($modifier)
     {
-        $modifier($this->renderer);
+        $modifier = $modifier->bindTo($this, $this);
+        return $modifier($this->renderer);
     }
 
     /**
