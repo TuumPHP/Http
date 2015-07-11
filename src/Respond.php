@@ -21,14 +21,17 @@ class Respond
     {
         /**
          * 1. get responder from the request' attribute.
+         *
          * @var Responder $responder
          */
         if (!$responder = RequestHelper::getService($request, Responder::class)) {
             throw new \BadMethodCallException;
         }
+
         /**
          * 2. return responder with $name.
          */
+
         return $responder->$name($request, $response);
     }
 

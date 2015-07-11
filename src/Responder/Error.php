@@ -9,8 +9,8 @@ use Tuum\Respond\Service\ErrorViewInterface;
 
 class Error extends AbstractWithViewData
 {
-    const UNAUTHORIZED   = 401;
-    const ACCESS_DENIED  = 403;
+    const UNAUTHORIZED = 401;
+    const ACCESS_DENIED = 403;
     const FILE_NOT_FOUND = 404;
     const INTERNAL_ERROR = 500;
 
@@ -41,6 +41,7 @@ class Error extends AbstractWithViewData
     ) {
         $self = $this->cloneWithRequest($request);
         $self->data->setRawData($request->getAttributes());
+
         return $self;
     }
 
@@ -68,6 +69,7 @@ class Error extends AbstractWithViewData
     public function asJson($status, $data)
     {
         $stream = json_encode($data);
+
         return $this->respond($stream, $status, ['Content-Type' => 'application/json']);
     }
 

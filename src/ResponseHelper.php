@@ -47,10 +47,11 @@ class ResponseHelper
         }
         if (is_string($input)) {
             return $response->getBody()->write($input);
-        } 
+        }
         if ($input instanceof StreamInterface) {
             return $response->withBody($input);
         }
+
         return $response->withBody(self::makeStream($input));
     }
 
@@ -197,6 +198,7 @@ class ResponseHelper
         if (!empty($locations)) {
             return $locations[0];
         }
+
         return null;
     }
 

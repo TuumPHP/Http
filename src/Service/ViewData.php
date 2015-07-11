@@ -13,17 +13,17 @@ class ViewData
     /*
      * constants for data types.
      */
-    const DATA    = '-data-view';
+    const DATA = '-data-view';
     const MESSAGE = '-message-view';
-    const INPUTS  = '-input-view';
-    const ERRORS  = '-errors-view';
+    const INPUTS = '-input-view';
+    const ERRORS = '-errors-view';
 
     /*
      * message types. 
      */
     const MESSAGE_SUCCESS = 'message';
-    const MESSAGE_ALERT   = 'alert';
-    const MESSAGE_ERROR   = 'error';
+    const MESSAGE_ALERT = 'alert';
+    const MESSAGE_ERROR = 'error';
 
     /**
      * get all raw data.

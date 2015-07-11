@@ -30,6 +30,7 @@ class Redirect extends AbstractWithViewData
         ResponseInterface $response = null
     ) {
         $self = $this->cloneWithRequest($request, $response);
+
         return $self;
     }
 
@@ -49,6 +50,7 @@ class Redirect extends AbstractWithViewData
             $uri = (string)$uri;
         }
         $this->session->setFlash(ViewData::MY_KEY, $this->data);
+
         return ResponseHelper::composeResponse($this->response, 'php://memory', 302, ['Location' => $uri]);
     }
 
@@ -62,6 +64,7 @@ class Redirect extends AbstractWithViewData
     public function toPath($path)
     {
         $uri = $this->request->getUri()->withPath($path);
+
         return $this->toAbsoluteUri($uri);
     }
 
@@ -80,6 +83,7 @@ class Redirect extends AbstractWithViewData
         if ($query) {
             $uri = $uri->withQuery($query);
         }
+
         return $this->toAbsoluteUri($uri);
     }
 
@@ -89,6 +93,7 @@ class Redirect extends AbstractWithViewData
     public function toReferrer()
     {
         $referrer = RequestHelper::getReferrer($this->request);
+
         return $this->toAbsoluteUri($referrer);
     }
 

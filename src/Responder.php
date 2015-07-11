@@ -64,6 +64,7 @@ class Responder
             new Redirect(),
             new Error($error)
         );
+
         return $self;
     }
 
@@ -73,8 +74,9 @@ class Responder
      */
     public function withSession($session)
     {
-        $self = clone($this);
+        $self          = clone($this);
         $self->session = $session;
+
         return $self;
     }
 

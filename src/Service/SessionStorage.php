@@ -28,22 +28,24 @@ class SessionStorage implements SessionStorageInterface
     /**
      * construct a SessionStorage using Aura.Session as a default implementation.
      *
-     * @param string $name
+     * @param string     $name
      * @param null|array $cookie
      * @return SessionStorage
      */
-    public static function forge($name, $cookie=null)
+    public static function forge($name, $cookie = null)
     {
         $factory = new SessionFactory();
         $cookie  = $cookie ?: $_COOKIE;
         $session = $factory->newInstance($cookie);
-        $self = new self($session);
+        $self    = new self($session);
         $self->start();
+
         return $self->withStorage($name);
     }
 
     /**
      * starts a session
+     *
      * @return $this
      */
     public function start()
@@ -51,6 +53,7 @@ class SessionStorage implements SessionStorageInterface
         if (!isset($_SESSION)) {
             $this->session->start();
         }
+
         return $this;
     }
 
@@ -62,8 +65,9 @@ class SessionStorage implements SessionStorageInterface
      */
     public function withStorage($name)
     {
-        $self = clone($this);
+        $self          = clone($this);
         $self->segment = $this->session->getSegment($name);
+
         return $self;
     }
 

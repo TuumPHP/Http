@@ -59,6 +59,7 @@ class ErrorView implements ErrorViewInterface
     private function findViewFromStatus($status)
     {
         $status = (string)$status;
+
         return isset($this->statusView[$status]) ?
             $this->statusView[$status] :
             $this->default_error;

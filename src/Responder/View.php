@@ -32,7 +32,7 @@ class View extends AbstractWithViewData
      */
     public function __construct(ViewStreamInterface $view, $content_view = null)
     {
-        $this->view = $view;
+        $this->view         = $view;
         $this->content_view = $content_view;
     }
 
@@ -47,6 +47,7 @@ class View extends AbstractWithViewData
     ) {
         $self = $this->cloneWithRequest($request, $response);
         $self->data->setRawData($request->getAttributes());
+
         return $self;
     }
 
@@ -73,6 +74,7 @@ class View extends AbstractWithViewData
     private function asViewStream($data)
     {
         $view = $this->view->withView($data, $this->data);
+
         return $this->asResponse($view);
     }
 
@@ -91,14 +93,15 @@ class View extends AbstractWithViewData
      * creates a Response of view with given $content as a contents.
      * use this to view a main contents with layout.
      *
-     * @param string $content
-     * @param string|null   $contents_file
+     * @param string      $content
+     * @param string|null $contents_file
      * @return ResponseInterface
      */
     public function asContents($content, $contents_file = null)
     {
         $contents_file = $contents_file ?: $this->content_view;
         $this->data->dataValue('contents', $content);
+
         return $this->asViewStream($contents_file);
     }
 
@@ -152,6 +155,7 @@ class View extends AbstractWithViewData
         } else {
             throw new \InvalidArgumentException;
         }
+
         return $this->asResponse($stream, self::OK, ['Content-Type' => $mime]);
     }
 
@@ -169,6 +173,7 @@ class View extends AbstractWithViewData
     {
         $type = $attach ? 'attachment' : 'inline';
         $mime = $mime ?: 'application/octet-stream';
+
         return $this->asResponse(
             $content,
             self::OK, [

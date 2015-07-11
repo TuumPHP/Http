@@ -48,6 +48,7 @@ abstract class AbstractWithViewData
                 return clone($data);
             }
         }
+
         return new ViewData();
     }
 
@@ -58,10 +59,11 @@ abstract class AbstractWithViewData
      */
     protected function cloneWithRequest($request, $response = null)
     {
-        $self = clone($this);
+        $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
         $self->data     = $self->retrieveViewData();
+
         return $self;
     }
 
@@ -76,8 +78,9 @@ abstract class AbstractWithViewData
      */
     public function withSession($session)
     {
-        $self = clone($this);
+        $self          = clone($this);
         $self->session = $session;
+
         return $self;
     }
 
@@ -92,6 +95,7 @@ abstract class AbstractWithViewData
             throw new \BadMethodCallException('SessionStorageInterface not defined.');
         }
         $this->session->setFlash($key, $value);
+
         return $this;
     }
 
@@ -104,6 +108,7 @@ abstract class AbstractWithViewData
     {
         $this->data = clone($this->data);
         $this->data->dataValue($key, $value);
+
         return $this;
     }
 
@@ -115,6 +120,7 @@ abstract class AbstractWithViewData
     {
         $this->data = clone($this->data);
         $this->data->inputData($input);
+
         return $this;
     }
 
@@ -126,6 +132,7 @@ abstract class AbstractWithViewData
     {
         $this->data = clone($this->data);
         $this->data->inputErrors($errors);
+
         return $this;
     }
 
@@ -137,6 +144,7 @@ abstract class AbstractWithViewData
     {
         $this->data = clone($this->data);
         $this->data->success($message);
+
         return $this;
     }
 
@@ -148,6 +156,7 @@ abstract class AbstractWithViewData
     {
         $this->data = clone($this->data);
         $this->data->alert($message);
+
         return $this;
     }
 
@@ -159,6 +168,7 @@ abstract class AbstractWithViewData
     {
         $this->data = clone($this->data);
         $this->data->error($message);
+
         return $this;
     }
 }

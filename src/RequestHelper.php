@@ -10,10 +10,10 @@ use Zend\Diactoros\Uri;
 
 class RequestHelper
 {
-    const APP_NAME  = 'tuum-app';
+    const APP_NAME = 'tuum-app';
     const BASE_PATH = 'basePath';
     const PATH_INFO = 'pathInfo';
-    const REFERRER  = 'referrer';
+    const REFERRER = 'referrer';
 
     /**
      * creates a new $request based on $path and $method.
@@ -34,6 +34,7 @@ class RequestHelper
             'php://input',
             []
         );
+
         return $request;
     }
 
@@ -113,6 +114,7 @@ class RequestHelper
         if ($app && $app->has($key)) {
             return $app->get($key);
         }
+
         return null;
     }
 
@@ -131,6 +133,7 @@ class RequestHelper
             throw new \InvalidArgumentException;
         }
         $pathInfo = is_null($pathInfo) ? substr($path, strlen($basePath)) : $pathInfo;
+
         return $request
             ->withAttribute(self::BASE_PATH, $basePath)
             ->withAttribute(self::PATH_INFO, $pathInfo);
@@ -202,11 +205,14 @@ class RequestHelper
      */
     private static function magicSet($segment, $key, $value, $method)
     {
-        if (!$segment) return;
+        if (!$segment) {
+            return;
+        }
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 $segment->$method($k, $v);
             }
+
             return;
         }
         $segment->$method($key, $value);
@@ -223,6 +229,7 @@ class RequestHelper
     public static function getSession(ServerRequestInterface $request, $key, $alt = null)
     {
         $segment = self::getSessionMgr($request);
+
         return $segment->get($key, $alt);
 
     }
@@ -252,6 +259,7 @@ class RequestHelper
     public static function getCurrFlash(ServerRequestInterface $request, $key, $alt = null)
     {
         $segment = self::getSessionMgr($request);
+
         return $segment->getFlashNext($key, $alt);
     }
 
@@ -266,6 +274,7 @@ class RequestHelper
     public static function getFlash(ServerRequestInterface $request, $key, $alt = null)
     {
         $segment = self::getSessionMgr($request);
+
         return $segment->getFlash($key, $alt);
     }
 
@@ -293,6 +302,7 @@ class RequestHelper
             return $referrer;
         }
         $info = $request->getServerParams();
+
         return array_key_exists('HTTP_REFERER', $info) ? $info['HTTP_REFERER'] : '';
     }
 }

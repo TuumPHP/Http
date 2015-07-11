@@ -3,9 +3,9 @@ namespace Tuum\Respond\Service;
 
 /**
  * Interface SessionStorageInterface
- * 
- * defines API for storing data to session. 
- * this API is taken from Aura.Session's segment. 
+ *
+ * defines API for storing data to session.
+ * this API is taken from Aura.Session's segment.
  *
  * @package Tuum\Application\Service
  */
@@ -42,5 +42,5 @@ interface SessionStorageInterface
      * @param null|mixed $alt
      * @return mixed
      */
-    public function getFlashNext($key, $alt=null);
+    public function getFlashNext($key, $alt = null);
 }
