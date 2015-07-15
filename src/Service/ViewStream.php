@@ -289,13 +289,12 @@ class ViewStream implements ViewStreamInterface
      */
     public function write($string)
     {
-        $fp     = $this->getResource();
-        $result = fwrite($fp, $string);
-        if (false === $result) {
+        $written = fwrite($this->getResource(), $string);
+        if (false === $written) {
             throw new RuntimeException('Error writing to stream');
         }
 
-        return $result;
+        return $written;
     }
 
     /**
@@ -320,14 +319,12 @@ class ViewStream implements ViewStreamInterface
      */
     public function read($length)
     {
-        $fp     = $this->getResource();
-        $result = fread($fp, $length);
+        $read = fread($this->getResource(), $length);
 
-        if (false === $result) {
-            throw new RuntimeException('Error reading stream');
+        if ($read !== false) {
+            return $read;
         }
-
-        return $result;
+        throw new RuntimeException('Error reading stream');
     }
 
     /**
@@ -339,14 +336,14 @@ class ViewStream implements ViewStreamInterface
      */
     public function getContents()
     {
-        $fp     = $this->getResource();
+        $fp = $this->getResource();
         rewind($fp);
-        $result = stream_get_contents($fp);
-        if (false === $result) {
+        $contents = stream_get_contents($fp);
+        if ($contents === false) {
             throw new RuntimeException('Error reading from stream');
         }
 
-        return $result;
+        return $contents;
     }
 
     /**
@@ -365,7 +362,7 @@ class ViewStream implements ViewStreamInterface
     {
         $fp       = $this->getResource();
         $metadata = stream_get_meta_data($fp);
-        if (null === $key) {
+        if (is_null($key)) {
             return $metadata;
         }
 
