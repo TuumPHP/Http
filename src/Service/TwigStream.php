@@ -1,22 +1,15 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use RuntimeException;
 use Tuum\Form\DataView;
-use Tuum\Locator\Locator;
-use Tuum\View\Renderer;
+use Twig_Environment;
 
-class ViewStream implements ViewStreamInterface
+class TwigStream implements ViewStreamInterface
 {
     use ViewStreamTrait;
 
     /**
-     * @var Renderer
-     */
-    private $renderer;
-
-    /**
-     * @param Renderer $renderer
+     * @param Twig_Environment $renderer
      */
     public function __construct($renderer)
     {
@@ -24,17 +17,15 @@ class ViewStream implements ViewStreamInterface
     }
 
     /**
-     * creates a new ViewStream with Tuum\Renderer.
-     * set $root for the root of the view/template directory.
-     *
      * @param string $root
+     * @param array  $options
      * @return static
      */
-    public static function forge($root)
+    public static function forge($root, array $options = [])
     {
-        $renderer = new Renderer(new Locator($root));
-
-        return new static($renderer);
+        $loader = new \Twig_Loader_Filesystem($root);
+        $twig   = new Twig_Environment($loader, $options);
+        return new static($twig);
     }
 
     /**
@@ -47,6 +38,7 @@ class ViewStream implements ViewStreamInterface
     public function withView($view_file, $data = null)
     {
         $self            = clone($this);
+        $view_file       = substr($view_file, -4) === '.twig' ?: $view_file.'.twig';
         $self->view_file = $view_file;
         $self->setDataView($data);
 
@@ -67,7 +59,13 @@ class ViewStream implements ViewStreamInterface
         $view->setInputs($data->get(ViewData::INPUTS, []));
         $view->setMessage($data->get(ViewData::MESSAGE, []));
 
-        $this->view_data = ['view' => $view];
+        /*
+        $this->renderer->addFunction('message', $view->message);
+        $this->renderer->addFunction('errors', $view->errors);
+        $this->renderer->addFunction('inputs', $view->inputs);
+        $this->renderer->addFunction('forms', $view->forms);
+        */
+        $this->view_data = $data->get(ViewData::DATA, []);
     }
 
     /**
@@ -95,10 +93,11 @@ class ViewStream implements ViewStreamInterface
     }
 
     /**
-     * @return Renderer
+     * @return Twig_Environment
      */
     protected function getRenderer()
     {
         return $this->renderer;
     }
+
 }

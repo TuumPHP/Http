@@ -7,6 +7,7 @@ use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
+use Tuum\Respond\Service\TwigStream;
 use Tuum\Respond\Service\ViewStream;
 
 /** @var Closure $next */
@@ -23,18 +24,33 @@ return function (ServerRequestInterface $request) use ($next) {
     /**
      * this is the view for template.
      */
-    $view = ViewStream::forge(__DIR__ . '/views');
+    if ($request->getAttribute('view') === 'twig') {
+        $view = TwigStream::forge(__DIR__ . '/twigs');
+        /**
+         * this is the view for error.
+         */
+        $error = ErrorView::forge($view, [
+            'default' => 'errors/error.twig',
+            'status'  => [
+                Error::FILE_NOT_FOUND => 'errors/notFound.twig',
+            ],
+            'handler' => true,
+        ]);
 
-    /**
-     * this is the view for error.
-     */
-    $error = ErrorView::forge($view, [
-        'default' => 'errors/error',
-        'status'  => [
-            Error::FILE_NOT_FOUND => 'errors/notFound',
-        ],
-        'handler' => true,
-    ]);
+    } else {
+        $view = ViewStream::forge(__DIR__ . '/views');
+        /**
+         * this is the view for error.
+         */
+        $error = ErrorView::forge($view, [
+            'default' => 'errors/error',
+            'status'  => [
+                Error::FILE_NOT_FOUND => 'errors/notFound',
+            ],
+            'handler' => true,
+        ]);
+
+    }
 
     /**
      * this is the session.
