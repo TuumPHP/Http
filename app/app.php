@@ -30,9 +30,9 @@ return function (ServerRequestInterface $request) use ($next) {
          * this is the view for error.
          */
         $error = ErrorView::forge($view, [
-            'default' => 'errors/error.twig',
+            'default' => 'errors/error',
             'status'  => [
-                Error::FILE_NOT_FOUND => 'errors/notFound.twig',
+                Error::FILE_NOT_FOUND => 'errors/notFound',
             ],
             'handler' => true,
         ]);

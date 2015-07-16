@@ -3,6 +3,7 @@ namespace Tuum\Respond\Service;
 
 use Tuum\Form\DataView;
 use Twig_Environment;
+use Twig_SimpleFunction;
 
 class TwigStream implements ViewStreamInterface
 {
@@ -59,12 +60,7 @@ class TwigStream implements ViewStreamInterface
         $view->setInputs($data->get(ViewData::INPUTS, []));
         $view->setMessage($data->get(ViewData::MESSAGE, []));
 
-        /*
-        $this->renderer->addFunction('message', $view->message);
-        $this->renderer->addFunction('errors', $view->errors);
-        $this->renderer->addFunction('inputs', $view->inputs);
-        $this->renderer->addFunction('forms', $view->forms);
-        */
+        $this->renderer->addGlobal('viewData', $view);
         $this->view_data = $data->get(ViewData::DATA, []);
     }
 
