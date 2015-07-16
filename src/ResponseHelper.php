@@ -49,9 +49,6 @@ class ResponseHelper
             $response->getBody()->write($input);
             return $response;
         }
-        if ($input instanceof StreamInterface) {
-            return $response->withBody($input);
-        }
 
         return $response->withBody(self::makeStream($input));
     }
