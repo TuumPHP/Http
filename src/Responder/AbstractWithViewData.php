@@ -54,11 +54,13 @@ abstract class AbstractWithViewData
 
     /**
      * @param ServerRequestInterface $request
-     * @param null|ResponseInterface $response
-     * @return AbstractWithViewData
+     * @param ResponseInterface      $response
+     * @return View
      */
-    protected function cloneWithRequest($request, $response = null)
-    {
+    public function withRequest(
+        ServerRequestInterface $request,
+        ResponseInterface $response = null
+    ) {
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
@@ -67,10 +69,21 @@ abstract class AbstractWithViewData
         return $self;
     }
 
-    abstract public function withRequest(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
-    );
+    /**
+     * copies request's attributes into data using keys.
+     *
+     * @param string $arg
+     * @return AbstractWithViewData
+     */
+    public function withReqAttribute($arg)
+    {
+        $args = func_get_args();
+        $self = clone($this);
+        foreach($args as $key) {
+            $self->data->dataValue($key, $this->request->getAttribute($key));
+        }
+        return $self;
+    }
 
     /**
      * @param SessionStorageInterface $session

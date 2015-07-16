@@ -2,7 +2,6 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ViewStreamInterface;
@@ -34,21 +33,6 @@ class View extends AbstractWithViewData
     {
         $this->view         = $view;
         $this->content_view = $content_view;
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @return View
-     */
-    public function withRequest(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
-    ) {
-        $self = $this->cloneWithRequest($request, $response);
-        $self->data->setRawData($request->getAttributes());
-
-        return $self;
     }
 
     // +----------------------------------------------------------------------+

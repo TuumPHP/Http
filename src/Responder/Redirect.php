@@ -2,7 +2,6 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
@@ -18,20 +17,6 @@ class Redirect extends AbstractWithViewData
      */
     public function __construct()
     {
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @return Redirect
-     */
-    public function withRequest(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
-    ) {
-        $self = $this->cloneWithRequest($request, $response);
-
-        return $self;
     }
 
     // +----------------------------------------------------------------------+
