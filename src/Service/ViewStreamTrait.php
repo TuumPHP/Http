@@ -80,7 +80,7 @@ trait ViewStreamTrait
         if ($this->fp) {
             fclose($this->fp);
         }
-        $this->fp = null;
+        $this->fp        = null;
         $this->view_file = null;
         $this->view_data = [];
     }
@@ -94,8 +94,8 @@ trait ViewStreamTrait
      */
     public function detach()
     {
-        $fp = $this->getResource();
-        $this->fp = null;
+        $fp              = $this->getResource();
+        $this->fp        = null;
         $this->view_file = null;
         $this->view_data = [];
 

@@ -3,7 +3,7 @@ namespace Tuum\Respond\Service;
 
 use Tuum\Form\DataView;
 use Twig_Environment;
-use Twig_SimpleFunction;
+use Twig_Loader_Filesystem;
 
 class TwigStream implements ViewStreamInterface
 {
@@ -24,7 +24,7 @@ class TwigStream implements ViewStreamInterface
      */
     public static function forge($root, array $options = [])
     {
-        $loader = new \Twig_Loader_Filesystem($root);
+        $loader = new Twig_Loader_Filesystem($root);
         $twig   = new Twig_Environment($loader, $options);
         return new static($twig);
     }
@@ -39,7 +39,7 @@ class TwigStream implements ViewStreamInterface
     public function withView($view_file, $data = null)
     {
         $self            = clone($this);
-        $view_file       = substr($view_file, -4) === '.twig' ?: $view_file.'.twig';
+        $view_file       = substr($view_file, -4) === '.twig' ?: $view_file . '.twig';
         $self->view_file = $view_file;
         $self->setDataView($data);
 
