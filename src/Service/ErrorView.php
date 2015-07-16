@@ -39,15 +39,14 @@ class ErrorView implements ErrorViewInterface
         array $options
     ) {
         $error = new static($viewStream);
-        if (isset($options['default'])) {
-            $error->default_error = $options['default'];
-        }
-        if (isset($options['status'])) {
-            $error->statusView = $options['status'];
-        }
-        if (isset($options['handler']) && $options['handler']) {
-            set_exception_handler($error); // catch uncaught exception!!!
-        }
+        $options += [
+            'default' => null,
+            'status'  => [],
+            'handler' => false,
+        ];
+        $error->default_error = $options['default'];
+        $error->statusView = $options['status'];
+        set_exception_handler($error); // catching an uncaught exception!!!
 
         return $error;
     }
