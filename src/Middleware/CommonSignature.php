@@ -7,9 +7,20 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
+use Tuum\Respond\Service\TwigStream;
 use Tuum\Respond\Service\ViewStream;
+use Tuum\Respond\Service\ViewStreamInterface;
 
-class SlimTuum
+/**
+ * Class CommonSignature
+ *
+ * a sample middleware code for common signature: ($request, $response, $next),
+ * that is used by Slim3, zend-stratigility, and Relay/Radar, for instance.
+ * 
+ * @package Tuum\Respond\Middleware
+ * 
+ */
+class CommonSignature
 {
     /**
      * @var Responder
@@ -30,22 +41,50 @@ class SlimTuum
      * @param null|array $cookie
      * @return static
      */
-    public static function forge($viewDir, $error_options, $cookie = null)
+    public static function forge($viewDir, array $error_options, $cookie = null)
+    {
+        $stream = ViewStream::forge($viewDir);
+
+        return self::build($stream, $error_options, $cookie);
+    }
+
+    /**
+     * @param string     $twigRoot
+     * @param array      $twigOptions
+     * @param array      $errorOptions
+     * @param array|null $cookie
+     * @return static
+     */
+    public static function forgeTwig($twigRoot, array $twigOptions, array $errorOptions, $cookie = null)
+    {
+        $stream = TwigStream::forge($twigRoot, $twigOptions);
+
+        return self::build($stream, $errorOptions, $cookie);
+    }
+
+    /**
+     * @param ViewStreamInterface $stream
+     * @param array               $errors
+     * @param array|null          $cookie
+     * @return static
+     */
+    private static function build($stream, $errors, $cookie)
     {
         // check options.
-        $cookie  = is_null($cookie) ?: $_COOKIE;
-        $error_options += [
+        $cookie = is_null($cookie) ?: $_COOKIE;
+        $errors += [
             'default' => 'errors/error',
             'status'  => [],
             'handler' => false,
         ];
         // construct responders and its dependent objects.
         $session = SessionStorage::forge('slim-tuum', $cookie);
-        $stream  = ViewStream::forge($viewDir);
-        $errors  = ErrorView::forge($stream, $error_options);
+        $errors  = ErrorView::forge($stream, $errors);
         $respond = Responder::build($stream, $errors)->withSession($session);
         $self    = new static($respond);
+
         return $self;
+
     }
 
     /**
@@ -60,6 +99,7 @@ class SlimTuum
         Closure $next
     ) {
         $request = $request->withAttribute(Responder::class, $this->responder);
+
         return $next($request, $response);
     }
 }
