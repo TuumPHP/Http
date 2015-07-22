@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Respond\Middleware;
+namespace Tuum\Respond\Slim;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;
@@ -20,7 +20,7 @@ use Tuum\Respond\Service\ViewStreamInterface;
  * @package Tuum\Respond\Middleware
  * 
  */
-class CommonSignature
+class ResponderStack
 {
     /**
      * @var Responder
