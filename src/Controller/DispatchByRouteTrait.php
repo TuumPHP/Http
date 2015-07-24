@@ -1,7 +1,8 @@
 <?php
-namespace Tuum\Respond\Slim;
+namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Router\Matcher;
 use Tuum\Respond\Responder\View;
 
@@ -25,9 +26,9 @@ trait DispatchByRoute
     abstract protected function view();
 
     /**
-     * @return string
+     * @return ServerRequestInterface
      */
-    abstract protected function getMethod();
+    abstract protected function getRequest();
 
     /**
      * @return string
@@ -35,16 +36,12 @@ trait DispatchByRoute
     abstract protected function getPathInfo();
 
     /**
-     * @return array
-     */
-    abstract protected function getQueryParams();
-    
-    /**
      * @return ResponseInterface|null
      */
     protected function dispatch()
     {
-        $method = $this->getMethod();
+        $request = $this->getRequest();
+        $method = $request->getMethod();
         $path   = $this->getPathInfo();
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions($path);
@@ -71,7 +68,7 @@ trait DispatchByRoute
         $options = array_unique($options);
         sort($options);
         $list = implode(',', $options);
-        return $this->view()->('', 200, ['Allow' => $list]);
+        return $this->view()->asResponse('', 200, ['Allow' => $list]);
     }
 
     /**
@@ -85,7 +82,7 @@ trait DispatchByRoute
         foreach ($routes as $pattern => $dispatch) {
             $params = Matcher::verify($pattern, $path, $method);
             if (!empty($params)) {
-                $params += $this->getQueryParams() ?: [];
+                $params += $this->getRequest()->getQueryParams() ?: [];
                 $method = 'on' . ucwords($dispatch);
                 return $this->dispatchMethod($method, $params);
             }

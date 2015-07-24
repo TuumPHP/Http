@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Respond\Slim;
+namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,16 +20,20 @@ trait DispatchByMethodTrait
     abstract protected function view();
 
     /**
-     * @param ServerRequestInterface $request
+     * @return ServerRequestInterface
+     */
+    abstract protected function getRequest();
+
+    /**
      * @return ResponseInterface|null
      */
-    protected function dispatch($request)
+    protected function dispatch()
     {
         /*
          * set up request information
          */
-        $params = (array)$request->getQueryParams();
-        $method = $request->getMethod();
+        $params = $this->getRequest()->getQueryParams();
+        $method = $this->getRequest()->getMethod();
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions();
         }

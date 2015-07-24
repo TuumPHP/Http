@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Respond\Slim;
+namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,21 +22,14 @@ trait ControllerTrait
     protected $response;
 
     /**
-     * @var array
-     */
-    protected $arguments = [];
-    
-    /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param array                  $args
      * @return null|ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    protected function invokeController(ServerRequestInterface $request, ResponseInterface $response)
     {
         $this->request   = $request;
         $this->response  = $response;
-        $this->arguments = $args;
         if (strtoupper($request->getMethod()) === 'HEAD') {
             return $this->onHead();
         }
@@ -50,11 +43,11 @@ trait ControllerTrait
     abstract protected function dispatch();
 
     /**
-     * @return string
+     * @return ServerRequestInterface
      */
-    protected function getMethod()
+    protected function getRequest()
     {
-        return $this->getMethod();
+        return $this->request;
     }
 
     /**
@@ -63,14 +56,6 @@ trait ControllerTrait
     protected function getPathInfo()
     {
         return RequestHelper::getPathInfo($this->request);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getQueryParams()
-    {
-        return array_merge($this->request->getQueryParams(), $this->arguments);
     }
 
     /**
