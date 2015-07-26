@@ -50,4 +50,9 @@ interface SessionStorageInterface
      * @return bool
      */
     public function validateToken($value);
+
+    /**
+     * @return string
+     */
+    public function getToken();
 }

@@ -99,6 +99,15 @@ class RequestHelper
     }
 
     /**
+     * @param ServerRequestInterface $request
+     * @return Responder
+     */
+    public static function getResponder(ServerRequestInterface $request)
+    {
+        return $request->getAttribute(Responder::class);
+    }
+
+    /**
      * get a service, $key, from the $request's attribute or from $app container.
      *
      * @param ServerRequestInterface $request
