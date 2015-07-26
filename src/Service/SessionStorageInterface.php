@@ -43,4 +43,11 @@ interface SessionStorageInterface
      * @return mixed
      */
     public function getFlashNext($key, $alt = null);
+
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function validateToken($value);
 }

@@ -126,4 +126,14 @@ class SessionStorage implements SessionStorageInterface
     {
         return $this->segment->getFlashNext($key, $alt);
     }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function validateToken($value)
+    {
+        $token = $this->session->getCsrfToken();
+        return $token->isValid($value);
+    }
 }
