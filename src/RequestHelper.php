@@ -76,6 +76,16 @@ class RequestHelper
 
     /**
      * @param ServerRequestInterface $request
+     * @param Responder              $responder
+     * @return ServerRequestInterface
+     */
+    public static function withResponder($request, $responder)
+    {
+        return $request->withAttribute(Responder::class, $responder);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
      * @return Responder
      */
     public static function getResponder(ServerRequestInterface $request)

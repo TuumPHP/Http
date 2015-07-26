@@ -32,10 +32,9 @@ return function (ServerRequestInterface $request) use ($next) {
     }
 
     /**
-     * this is the session.
+     * construct session and responder.
      */
     $session   = SessionStorage::forge('sample');
-    $request   = RequestHelper::withSessionMgr($request, $session);
     $error     = ErrorView::forge($view, [
         'default' => 'errors/error',
         'status'  => [
@@ -44,7 +43,8 @@ return function (ServerRequestInterface $request) use ($next) {
         'handler' => true,
     ]);
     $responder = Responder::build($view, $error, 'layouts/contents')->withSession($session);
-    $request   = $request->withAttribute(Responder::class, $responder);
+    $request   = RequestHelper::withSessionMgr($request, $session);
+    $request   = RequestHelper::withResponder($request, $responder);
 
     /**
      * run the next process!!!
