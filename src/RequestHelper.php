@@ -146,9 +146,6 @@ class RequestHelper
      */
     public static function getSessionMgr(ServerRequestInterface $request)
     {
-        if ($responder = self::getResponder($request)) {
-            return $responder->getStorage();
-        }
         return $request->getAttribute(SessionStorageInterface::class);
     }
 

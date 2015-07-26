@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
@@ -26,36 +27,22 @@ return function (ServerRequestInterface $request) use ($next) {
      */
     if ($request->getAttribute('view') === 'twig') {
         $view = TwigStream::forge(__DIR__ . '/twigs');
-        /**
-         * this is the view for error.
-         */
-        $error = ErrorView::forge($view, [
-            'default' => 'errors/error',
-            'status'  => [
-                Error::FILE_NOT_FOUND => 'errors/notFound',
-            ],
-            'handler' => true,
-        ]);
-
     } else {
         $view = ViewStream::forge(__DIR__ . '/views');
-        /**
-         * this is the view for error.
-         */
-        $error = ErrorView::forge($view, [
-            'default' => 'errors/error',
-            'status'  => [
-                Error::FILE_NOT_FOUND => 'errors/notFound',
-            ],
-            'handler' => true,
-        ]);
-
     }
 
     /**
      * this is the session.
      */
     $session   = SessionStorage::forge('sample');
+    $request   = RequestHelper::withSessionMgr($request, $session);
+    $error     = ErrorView::forge($view, [
+        'default' => 'errors/error',
+        'status'  => [
+            Error::FILE_NOT_FOUND => 'errors/notFound',
+        ],
+        'handler' => true,
+    ]);
     $responder = Responder::build($view, $error, 'layouts/contents')->withSession($session);
     $request   = $request->withAttribute(Responder::class, $responder);
 
@@ -68,6 +55,7 @@ return function (ServerRequestInterface $request) use ($next) {
      * done. save session.
      */
     $session->commit();
+
     return $response;
 };
 

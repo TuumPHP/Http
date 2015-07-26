@@ -92,14 +92,6 @@ class Responder
     }
 
     /**
-     * @return SessionStorageInterface
-     */
-    public function getStorage()
-    {
-        return $this->session;
-    }
-
-    /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
      * @return View
