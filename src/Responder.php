@@ -8,7 +8,6 @@ use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorViewInterface;
-use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewStreamInterface;
 
