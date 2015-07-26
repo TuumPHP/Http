@@ -20,18 +20,6 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function withApp_sets_app()
-    {
-        $app = 'app-test';
-        $request = new ServerRequest();
-        $request2 = RequestHelper::withApp($request, $app);
-        $this->assertEquals('app-test', RequestHelper::getApp($request2));
-        $this->assertEquals(null, RequestHelper::getApp($request));
-    }
-
-    /**
-     * @test
-     */
     function basePath_sets_base_path_and_path_info()
     {
         $request = RequestHelper::createFromPath('/http/base/path/test');

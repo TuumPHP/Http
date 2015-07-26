@@ -1,7 +1,6 @@
 <?php
 namespace Tuum\Respond;
 
-use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Zend\Diactoros\ServerRequest;
@@ -76,55 +75,12 @@ class RequestHelper
     }
 
     /**
-     * set a container, $app, to $reqeust.
-     *
-     * @param ServerRequestInterface $request
-     * @param ContainerInterface     $app
-     * @return ServerRequestInterface
-     */
-    public static function withApp(ServerRequestInterface $request, $app)
-    {
-        return $request->withAttribute(self::APP_NAME, $app);
-    }
-
-    /**
-     * get a container, $app.
-     *
-     * @param ServerRequestInterface $request
-     * @return ContainerInterface
-     */
-    public static function getApp(ServerRequestInterface $request)
-    {
-        return $request->getAttribute(self::APP_NAME);
-    }
-
-    /**
      * @param ServerRequestInterface $request
      * @return Responder
      */
     public static function getResponder(ServerRequestInterface $request)
     {
         return $request->getAttribute(Responder::class);
-    }
-
-    /**
-     * get a service, $key, from the $request's attribute or from $app container.
-     *
-     * @param ServerRequestInterface $request
-     * @param string                 $key
-     * @return mixed|null
-     */
-    public static function getService(ServerRequestInterface $request, $key)
-    {
-        if ($service = $request->getAttribute($key)) {
-            return $service;
-        }
-        $app = self::getApp($request);
-        if ($app && $app->has($key)) {
-            return $app->get($key);
-        }
-
-        return null;
     }
 
     /**
@@ -190,7 +146,10 @@ class RequestHelper
      */
     public static function getSessionMgr(ServerRequestInterface $request)
     {
-        return self::getService($request, SessionStorageInterface::class);
+        if ($responder = self::getResponder($request)) {
+            return $responder->getStorage();
+        }
+        return $request->getAttribute(SessionStorageInterface::class);
     }
 
     /**

@@ -24,7 +24,7 @@ class Respond
          *
          * @var Responder $responder
          */
-        if (!$responder = RequestHelper::getService($request, Responder::class)) {
+        if (!$responder = RequestHelper::getResponder($request)) {
             throw new \BadMethodCallException;
         }
 
