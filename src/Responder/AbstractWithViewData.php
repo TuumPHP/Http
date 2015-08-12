@@ -55,7 +55,7 @@ abstract class AbstractWithViewData
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @return View
+     * @return $this
      */
     public function withRequest(
         ServerRequestInterface $request,
@@ -73,7 +73,7 @@ abstract class AbstractWithViewData
      * copies request's attributes into data using keys.
      *
      * @param string $arg
-     * @return AbstractWithViewData
+     * @return $this
      */
     public function withReqAttribute($arg)
     {
@@ -87,7 +87,7 @@ abstract class AbstractWithViewData
 
     /**
      * @param SessionStorageInterface $session
-     * @return View
+     * @return $this
      */
     public function withSession($session)
     {
