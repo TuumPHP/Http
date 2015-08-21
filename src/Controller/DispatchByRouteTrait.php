@@ -3,7 +3,6 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Router\Matcher;
 use Tuum\Respond\Responder\View;
 
 trait DispatchByRoute
@@ -36,11 +35,19 @@ trait DispatchByRoute
     abstract protected function getPathInfo();
 
     /**
-     * @return ResponseInterface|null
+     * @param array  $routes
+     * @param string $path
+     * @param string $method
+     * @return []
      */
-    protected function dispatch()
+    abstract function matchRoute(array $routes, $path, $method);
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return null|ResponseInterface
+     */
+    protected function dispatch(ServerRequestInterface $request)
     {
-        $request = $this->getRequest();
         $method = $request->getMethod();
         $path   = $this->getPathInfo();
         if (strtoupper($method) === 'OPTIONS') {
@@ -83,8 +90,7 @@ trait DispatchByRoute
             $params = Matcher::verify($pattern, $path, $method);
             if (!empty($params)) {
                 $params += $this->getRequest()->getQueryParams() ?: [];
-                $method = 'on' . ucwords($dispatch);
-                return $this->dispatchMethod($method, $params);
+                return $this->dispatchMethod($dispatch, $params);
             }
         }
         return null;

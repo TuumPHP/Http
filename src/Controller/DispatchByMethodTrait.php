@@ -20,20 +20,16 @@ trait DispatchByMethodTrait
     abstract protected function view();
 
     /**
-     * @return ServerRequestInterface
+     * @param ServerRequestInterface $request
+     * @return null|ResponseInterface
      */
-    abstract protected function getRequest();
-
-    /**
-     * @return ResponseInterface|null
-     */
-    protected function dispatch()
+    protected function dispatch(ServerRequestInterface $request)
     {
         /*
          * set up request information
          */
-        $params = $this->getRequest()->getQueryParams();
-        $method = $this->getRequest()->getMethod();
+        $params = $request->getQueryParams();
+        $method = $request->getMethod();
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions();
         }

@@ -34,13 +34,14 @@ trait ControllerTrait
             return $this->onHead();
         }
 
-        return $this->dispatch();
+        return $this->dispatch($request);
     }
 
     /**
-     * @return ResponseInterface|null
+     * @param ServerRequestInterface $request
+     * @return null|ResponseInterface
      */
-    abstract protected function dispatch();
+    abstract protected function dispatch(ServerRequestInterface $request);
 
     /**
      * @return ServerRequestInterface
@@ -88,7 +89,7 @@ trait ControllerTrait
     protected function onHead()
     {
         $this->request = $this->request->withMethod('GET');
-        $response      = $this->dispatch();
+        $response      = $this->dispatch($this->request);
         if ($response) {
             $response->getBody()->rewind();
             $response->getBody()->write('');
