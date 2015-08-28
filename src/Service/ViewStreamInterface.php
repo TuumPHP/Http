@@ -17,7 +17,7 @@ interface ViewStreamInterface extends StreamInterface
      *
      * @param string   $view_file
      * @param ViewData $data
-     * @return string
+     * @return ViewStreamInterface
      */
     public function withView($view_file, $data = null);
 
@@ -29,6 +29,7 @@ interface ViewStreamInterface extends StreamInterface
      * }
      *
      * @param \Closure $modifier
+     * @return mixed
      */
     public function modRenderer($modifier);
 }

@@ -1,50 +1,20 @@
 <?php
-namespace Tuum\Respond\Service;
+namespace tests\Responder;
 
-use RuntimeException;
+use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Service\ViewStreamInterface;
 
-trait ViewStreamTrait
+class LocalView implements ViewStreamInterface
 {
     /**
      * @var string
      */
-    protected $view_file;
+    public $view_file;
 
     /**
-     * @var array
+     * @var ViewData
      */
-    protected $view_data = [];
-
-    /**
-     * @var null|resource
-     */
-    protected $fp = null;
-
-    /**
-     * @return resource
-     */
-    abstract protected function getResource();
-
-    /**
-     * @return mixed
-     */
-    abstract protected function getRenderer();
-
-    /**
-     * modifies the internal renderer's setting.
-     *
-     * $modifier = function($renderer) {
-     *    // modify the renderer.
-     * }
-     *
-     * @param \Closure $modifier
-     * @return mixed
-     */
-    public function modRenderer($modifier)
-    {
-        $modifier = $modifier->bindTo($this, $this);
-        return $modifier($this->getRenderer());
-    }
+    public $data;
 
     /**
      * Reads all data from the stream into a string, from the beginning to end.
@@ -62,13 +32,7 @@ trait ViewStreamTrait
      */
     public function __toString()
     {
-        try {
-
-            return $this->getContents();
-
-        } catch (RuntimeException $e) {
-            return '';
-        }
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -78,12 +42,7 @@ trait ViewStreamTrait
      */
     public function close()
     {
-        if ($this->fp) {
-            fclose($this->fp);
-        }
-        $this->fp        = null;
-        $this->view_file = null;
-        $this->view_data = [];
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -95,12 +54,7 @@ trait ViewStreamTrait
      */
     public function detach()
     {
-        $fp              = $this->getResource();
-        $this->fp        = null;
-        $this->view_file = null;
-        $this->view_data = [];
-
-        return $fp;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -110,27 +64,18 @@ trait ViewStreamTrait
      */
     public function getSize()
     {
-        $fp    = $this->getResource();
-        $stats = fstat($fp);
-
-        return $stats['size'];
+        throw new \BadMethodCallException;
     }
 
     /**
      * Returns the current position of the file read/write pointer
      *
      * @return int Position of the file pointer
-     * @throws RuntimeException on error.
+     * @throws \RuntimeException on error.
      */
     public function tell()
     {
-        $fp     = $this->getResource();
-        $result = ftell($fp);
-        if (!is_int($result)) {
-            throw new RuntimeException('Error occurred during tell operation');
-        }
-
-        return $result;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -140,9 +85,7 @@ trait ViewStreamTrait
      */
     public function eof()
     {
-        $fp = $this->getResource();
-
-        return feof($fp);
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -152,7 +95,7 @@ trait ViewStreamTrait
      */
     public function isSeekable()
     {
-        return true;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -165,18 +108,11 @@ trait ViewStreamTrait
      *                    PHP $whence values for `fseek()`.  SEEK_SET: Set position equal to
      *                    offset bytes SEEK_CUR: Set position to current location plus offset
      *                    SEEK_END: Set position to end-of-stream plus offset.
-     * @return bool
-     * @throws RuntimeException on failure.
+     * @throws \RuntimeException on failure.
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        $fp     = $this->getResource();
-        $result = fseek($fp, $offset, $whence);
-        if (0 !== $result) {
-            throw new RuntimeException('Error seeking within stream');
-        }
-
-        return true;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -187,11 +123,11 @@ trait ViewStreamTrait
      *
      * @see  seek()
      * @link http://www.php.net/manual/en/function.fseek.php
-     * @throws RuntimeException on failure.
+     * @throws \RuntimeException on failure.
      */
     public function rewind()
     {
-        return $this->seek(0);
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -201,7 +137,7 @@ trait ViewStreamTrait
      */
     public function isWritable()
     {
-        return true;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -209,16 +145,11 @@ trait ViewStreamTrait
      *
      * @param string $string The string that is to be written.
      * @return int Returns the number of bytes written to the stream.
-     * @throws RuntimeException on failure.
+     * @throws \RuntimeException on failure.
      */
     public function write($string)
     {
-        $written = fwrite($this->getResource(), $string);
-        if (false === $written) {
-            throw new RuntimeException('Error writing to stream');
-        }
-
-        return $written;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -228,7 +159,7 @@ trait ViewStreamTrait
      */
     public function isReadable()
     {
-        return true;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -239,35 +170,23 @@ trait ViewStreamTrait
      *                    call returns fewer bytes.
      * @return string Returns the data read from the stream, or an empty string
      *                    if no bytes are available.
-     * @throws RuntimeException if an error occurs.
+     * @throws \RuntimeException if an error occurs.
      */
     public function read($length)
     {
-        $read = fread($this->getResource(), $length);
-
-        if ($read !== false) {
-            return $read;
-        }
-        throw new RuntimeException('Error reading stream');
+        throw new \BadMethodCallException;
     }
 
     /**
      * Returns the remaining contents in a string
      *
      * @return string
-     * @throws RuntimeException if unable to read or an error occurs while
+     * @throws \RuntimeException if unable to read or an error occurs while
      *     reading.
      */
     public function getContents()
     {
-        $fp = $this->getResource();
-        rewind($fp);
-        $contents = stream_get_contents($fp);
-        if ($contents === false) {
-            throw new RuntimeException('Error reading from stream');
-        }
-
-        return $contents;
+        throw new \BadMethodCallException;
     }
 
     /**
@@ -284,12 +203,35 @@ trait ViewStreamTrait
      */
     public function getMetadata($key = null)
     {
-        $fp       = $this->getResource();
-        $metadata = stream_get_meta_data($fp);
-        if (is_null($key)) {
-            return $metadata;
-        }
+        throw new \BadMethodCallException;
+    }
 
-        return array_key_exists($key, $metadata) ? $metadata[$key] : null;
+    /**
+     * renders $view_file with $data.
+     *
+     * @param string   $view_file
+     * @param ViewData $data
+     * @return string
+     */
+    public function withView($view_file, $data = null)
+    {
+        $this->view_file = $view_file;
+        $this->data      = $data;
+        return $this;
+    }
+
+    /**
+     * modifies the internal renderer's setting.
+     *
+     * $modifier = function($renderer) {
+     *    // modify the renderer.
+     * }
+     *
+     * @param \Closure $modifier
+     * @return mixed|void
+     */
+    public function modRenderer($modifier)
+    {
+        throw new \BadMethodCallException;
     }
 }
