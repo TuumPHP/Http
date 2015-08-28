@@ -13,6 +13,7 @@
         >
     <testsuites>
         <testsuite name="Tuum/Application test">
+            <directory>Responder</directory>
             <directory>Http</directory>
             <directory>Service</directory>
         </testsuite>
