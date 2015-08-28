@@ -2,6 +2,7 @@
 namespace tests\Http;
 
 use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
@@ -34,6 +35,31 @@ class RespondTest extends \PHPUnit_Framework_TestCase
             $view,
             new ErrorView($view)
         );
+    }
+
+    function tearDown()
+    {
+        unset($_SESSION);
+    }
+
+    /**
+     * @test
+     */
+    function Respond_class_invokes_responder_object()
+    {
+        $request  = RequestHelper::createFromPath('/path/test');
+        $request  = RequestHelper::withResponder($request, $this->responder->withSession(SessionStorage::forge('testing')));
+
+        $response = Respond::view($request)->asText('test Respond');
+        $this->assertEquals('text/plain', $response->getHeader('Content-Type')[0]);
+        $this->assertEquals('test Respond', $response->getBody()->__toString());
+
+        $response = Respond::error($request)->notFound();
+        $this->assertEquals(404, $response->getStatusCode());
+
+        $response = Respond::redirect($request)->toPath('/tested');
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/tested', $response->getHeader('Location')[0]);
     }
 
     /**
