@@ -48,7 +48,8 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_class_invokes_responder_object()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $request  = RequestHelper::withResponder($request, $this->responder->withSession(SessionStorage::forge('testing')));
+        $request  = RequestHelper::withSessionMgr($request, SessionStorage::forge('testing'));
+        $request  = RequestHelper::withResponder($request, $this->responder);
 
         $response = Respond::view($request)->asText('test Respond');
         $this->assertEquals('text/plain', $response->getHeader('Content-Type')[0]);
@@ -147,7 +148,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $session  = $this->session_factory->withStorage('tuum-app');
         $request  = RequestHelper::createFromPath('/path/test');
         $request  = RequestHelper::withSessionMgr($request, $session);
-        $this->responder->withSession($session)->view($request)->withFlashData('with-flash', 'value1');
+        $this->responder->view($request)->withFlashData('with-flash', 'value1');
 
         /*
          * next request.

@@ -3,6 +3,7 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 
@@ -64,6 +65,7 @@ abstract class AbstractWithViewData
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
+        $self->session  = $this->session ?: RequestHelper::getSessionMgr($request);
         $self->data     = $self->retrieveViewData();
 
         return $self;

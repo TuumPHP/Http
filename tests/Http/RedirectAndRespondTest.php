@@ -49,7 +49,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $session  = $this->session_factory->withStorage('test');
         $request  = RequestHelper::createFromPath('/path/test');
         $request  = RequestHelper::withSessionMgr($request, $session);
-        $response = $this->responder->withSession($session)->redirect($request)
+        $response = $this->responder->redirect($request)
             ->withFlashData('with', 'val1')
             ->with('more', 'with')
             ->withMessage('message')
@@ -77,7 +77,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $session  = $this->session_factory->withStorage('test');
         $request  = RequestHelper::createFromPath('/more/test');
         $request  = RequestHelper::withSessionMgr($request, $session);
-        $respond  = $this->responder->withSession($session)->view($request);
+        $respond  = $this->responder->view($request);
         
         $refObj  = new \ReflectionObject($respond);
         $refData = $refObj->getProperty('data');

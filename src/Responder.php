@@ -8,7 +8,6 @@ use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorViewInterface;
-use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewStreamInterface;
 
 class Responder
@@ -27,11 +26,6 @@ class Responder
      * @var Error
      */
     private $error;
-
-    /**
-     * @var SessionStorageInterface
-     */
-    private $session;
 
     /**
      * @param View     $view
@@ -69,18 +63,6 @@ class Responder
     }
 
     /**
-     * @param SessionStorageInterface $session
-     * @return static
-     */
-    public function withSession($session)
-    {
-        $self          = clone($this);
-        $self->session = $session;
-
-        return $self;
-    }
-
-    /**
      * @param AbstractWithViewData   $responder
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
@@ -88,7 +70,7 @@ class Responder
      */
     private function returnWith($responder, $request, $response)
     {
-        return $responder->withSession($this->session)->withRequest($request, $response);
+        return $responder->withRequest($request, $response);
     }
 
     /**
