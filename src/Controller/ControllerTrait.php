@@ -60,6 +60,19 @@ trait ControllerTrait
     }
 
     /**
+     * @param null|string $name
+     * @return array|null|object
+     */
+    protected function getPost($name = null)
+    {
+        $data = $this->request->getParsedBody();
+        if (!$name) {
+            return $data;
+        }
+        return array_key_exists($name, $data) ? $data[$name] : null;
+    }
+
+    /**
      * @return View
      */
     protected function view()
