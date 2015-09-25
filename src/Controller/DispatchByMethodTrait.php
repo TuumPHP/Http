@@ -3,6 +3,7 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Responder\View;
 
 trait DispatchByMethodTrait
@@ -29,7 +30,7 @@ trait DispatchByMethodTrait
          * set up request information
          */
         $params = $request->getQueryParams();
-        $method = $request->getMethod();
+        $method = RequestHelper::getMethod($request);
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions();
         }

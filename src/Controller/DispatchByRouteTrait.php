@@ -3,6 +3,7 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Responder\View;
 
 trait DispatchByRoute
@@ -48,7 +49,7 @@ trait DispatchByRoute
      */
     protected function dispatch(ServerRequestInterface $request)
     {
-        $method = $request->getMethod();
+        $method = RequestHelper::getMethod($request);
         $path   = $this->getPathInfo();
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions($path);

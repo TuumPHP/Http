@@ -13,6 +13,7 @@ class RequestHelper
     const BASE_PATH = 'basePath';
     const PATH_INFO = 'pathInfo';
     const REFERRER = 'referrer';
+    const METHOD = 'method';
 
     /**
      * creates a new $request based on $path and $method.
@@ -134,6 +135,33 @@ class RequestHelper
     public static function getPathInfo(ServerRequestInterface $request)
     {
         return $request->getAttribute(self::PATH_INFO, null) ?: $request->getUri()->getPath();
+    }
+
+    /**
+     * sets a method to override using $key in post or query data.
+     *
+     * @param ServerRequestInterface $request
+     * @param string                 $key
+     * @return ServerRequestInterface
+     */
+    public static function withMethod(ServerRequestInterface $request, $key = '_method')
+    {
+        $data = $request->getParsedBody() + $request->getQueryParams();
+        if (isset($data[$key])) {
+            return $request->withAttribute(self::METHOD, $data[$key]);
+        }
+        return $request;
+    }
+
+    /**
+     * gets a overridden method or http method.
+     *
+     * @param ServerRequestInterface $request
+     * @return string
+     */
+    public static function getMethod(ServerRequestInterface $request)
+    {
+        return $request->getAttribute(self::METHOD, $request->getMethod());
     }
 
     /**
