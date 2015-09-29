@@ -294,6 +294,28 @@ class RequestHelper
     }
 
     /**
+     * loads referrer uri from previous request (via session).
+     *
+     * @param ServerRequestInterface $request
+     * @return ServerRequestInterface
+     */
+    public static function loadReferrer(ServerRequestInterface $request)
+    {
+        $referrer = RequestHelper::getSession($request, self::REFERRER);
+        return $request->withAttribute(self::REFERRER, $referrer);
+    }
+
+    /**
+     * saves the referrer uri to session.
+     *
+     * @param ServerRequestInterface $request
+     */
+    public static function saveReferrer(ServerRequestInterface $request)
+    {
+        self::setSession($request, self::REFERRER, $request->getUri()->__toString());
+    }
+
+    /**
      * get the referrer uri set by withReferrer, or the HTTP_REFERER if not set.
      *
      * @param ServerRequestInterface $request
@@ -302,6 +324,9 @@ class RequestHelper
     public static function getReferrer(ServerRequestInterface $request)
     {
         if ($referrer = $request->getAttribute(self::REFERRER)) {
+            return $referrer;
+        }
+        if ($referrer = RequestHelper::getSession($request, self::REFERRER)) {
             return $referrer;
         }
         $info = $request->getServerParams();
