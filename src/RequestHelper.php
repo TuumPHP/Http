@@ -20,11 +20,15 @@ class RequestHelper
      *
      * @param string $path
      * @param string $method
+     * @param array  $query
+     * @param array  $post
      * @return ServerRequestInterface
      */
     public static function createFromPath(
         $path,
-        $method = 'GET'
+        $method = 'GET',
+        $query  = [],
+        $post   = []
     ) {
         $request = new ServerRequest(
             [],
@@ -35,7 +39,9 @@ class RequestHelper
             []
         );
 
-        return $request;
+        return $request
+            ->withQueryParams($query)
+            ->withParsedBody($post);
     }
 
     /**
