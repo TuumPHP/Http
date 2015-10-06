@@ -34,8 +34,3 @@ $this->setLayout('layouts/layout');
     <li><a href="not-such-file">not found</a></li>
     <li><a href="throw">catch exception</a> </li>
 </ul>
-
-<h3>Page Controller Sample</h3>
-
-<p>Use Tuum/Respond as a page-controller for legacy systems. </p>
-<p><a href="page.php" >view the working sample.</a></p>
