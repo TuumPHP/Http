@@ -44,11 +44,15 @@ class Redirect extends AbstractWithViewData
      * uses current hosts and scheme.
      *
      * @param string $path
+     * @param string $query
      * @return ResponseInterface
      */
-    public function toPath($path)
+    public function toPath($path, $query = '')
     {
         $uri = $this->request->getUri()->withPath($path);
+        if (!is_null($query)) {
+            $uri = $uri->withQuery($query);
+        }
 
         return $this->toAbsoluteUri($uri);
     }
@@ -65,7 +69,7 @@ class Redirect extends AbstractWithViewData
         $path = rtrim($base, '/') . $path;
         $path = rtrim($path, '/');
         $uri  = $this->request->getUri()->withPath($path);
-        if ($query) {
+        if (!is_null($query)) {
             $uri = $uri->withQuery($query);
         }
 
