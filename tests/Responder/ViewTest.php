@@ -36,7 +36,6 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->stream = new LocalView();
         $this->view   = new View($this->stream);
         $this->view   = $this->view
-            ->withSession($this->session)
             ->withRequest(RequestHelper::createFromPath('test'));
     }
 

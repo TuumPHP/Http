@@ -54,19 +54,25 @@ abstract class AbstractWithViewData
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param SessionStorageInterface $session
+     * @param ViewData                $viewData
      * @return $this
      */
     public function withRequest(
         ServerRequestInterface $request,
-        ResponseInterface $response = null
+        ResponseInterface $response = null,
+        SessionStorageInterface $session = null,
+        ViewData $viewData = null
     ) {
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
-        $self->session  = $this->session ?: RequestHelper::getSessionMgr($request);
-        $self->data     = $self->retrieveViewData();
+        if (!$self->session) {
+            $self->session = $session ?: RequestHelper::getSessionMgr($request);
+        }
+        $self->data     = $viewData ?: $self->retrieveViewData();
 
         return $self;
     }
@@ -84,18 +90,6 @@ abstract class AbstractWithViewData
         foreach($args as $key) {
             $self->data->dataValue($key, $this->request->getAttribute($key));
         }
-        return $self;
-    }
-
-    /**
-     * @param SessionStorageInterface $session
-     * @return $this
-     */
-    public function withSession($session)
-    {
-        $self          = clone($this);
-        $self->session = $session;
-
         return $self;
     }
 

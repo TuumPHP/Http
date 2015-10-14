@@ -36,6 +36,25 @@ class Respond
     }
 
     /**
+     * get responder object while updating viewData with $closure.
+     *
+     * @param ServerRequestInterface $request
+     * @param callable $closure
+     * @return Responder
+     */
+    public static function with($request, callable $closure = null)
+    {
+        if (!$responder = RequestHelper::getResponder($request)) {
+            throw new \BadMethodCallException;
+        }
+        if ($closure && is_callable($closure))         {
+            $responder = $responder->viewData($closure);
+            RequestHelper::withResponder($request, $responder);
+        }
+        return $responder;
+    }
+
+    /**
      * get a view responder, Responder\View.
      *
      * @param ServerRequestInterface $request

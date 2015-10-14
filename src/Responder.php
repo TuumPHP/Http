@@ -8,6 +8,8 @@ use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorViewInterface;
+use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Service\ViewData;
 use Tuum\Respond\Service\ViewStreamInterface;
 
 class Responder
@@ -26,6 +28,16 @@ class Responder
      * @var Error
      */
     private $error;
+
+    /**
+     * @var SessionStorageInterface
+     */
+    private $session;
+
+    /**
+     * @var ViewData
+     */
+    private $viewData;
 
     /**
      * @param View     $view
@@ -63,6 +75,39 @@ class Responder
     }
 
     /**
+     * @param SessionStorageInterface $session
+     * @return Responder
+     */
+    public function withSession($session)
+    {
+        $self = clone($this);
+        $self->session = $session;
+        $data = $session->getFlash(ViewData::MY_KEY);
+        if ($data) {
+            // if ViewData is taken from the session,
+            // detach it from the object in the session.
+            $self->viewData = clone($data);
+        }
+        return $self;
+    }
+
+    /**
+     * modifies viewData.
+     * not immutable...
+     *
+     * @param callable $closure
+     * @return Responder
+     */
+    public function viewData(callable $closure)
+    {
+        if (!$this->viewData) {
+            $this->viewData = new ViewData();
+        }
+        $this->viewData = $closure($this->viewData);
+        return $this;
+    }
+
+    /**
      * @param AbstractWithViewData   $responder
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
@@ -70,7 +115,7 @@ class Responder
      */
     private function returnWith($responder, $request, $response)
     {
-        return $responder->withRequest($request, $response);
+        return $responder->withRequest($request, $response, $this->session, $this->viewData);
     }
 
     /**

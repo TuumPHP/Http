@@ -34,7 +34,9 @@ class Redirect extends AbstractWithViewData
         if ($uri instanceof UriInterface) {
             $uri = (string)$uri;
         }
-        $this->session->setFlash(ViewData::MY_KEY, $this->data);
+        if ($this->session) {
+            $this->session->setFlash(ViewData::MY_KEY, $this->data);
+        }
 
         return ResponseHelper::composeResponse($this->response, 'php://memory', 302, ['Location' => $uri]);
     }

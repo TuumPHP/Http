@@ -28,7 +28,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->session  = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->redirect = new Redirect();
-        $this->redirect = $this->redirect->withSession($this->session);
+        //$this->redirect = $this->redirect->withSession($this->session);
     }
 
     function tearDown()
@@ -57,7 +57,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
     {
         $request  = RequestHelper::createFromPath('/base/path');
         $request  = RequestHelper::withBasePath($request, '/base/');
-        $response = $this->redirect->withRequest($request)->toBasePath('path');
+        $response = $this->redirect->withRequest($request, null, $this->session)->toBasePath('path');
         $this->assertEquals('/base/path', ResponseHelper::getLocation($response));
     }
 
@@ -68,7 +68,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
     {
         $request  = RequestHelper::createFromPath('/base/path');
         $request  = RequestHelper::withReferrer($request, '/referrer/');
-        $response = $this->redirect->withRequest($request)->toReferrer();
+        $response = $this->redirect->withRequest($request, null, $this->session)->toReferrer();
         $this->assertEquals('/referrer/', ResponseHelper::getLocation($response));
     }
 }

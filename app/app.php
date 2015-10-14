@@ -42,7 +42,8 @@ return function (ServerRequestInterface $request) use ($next) {
         ],
         'handler' => true,
     ]);
-    $responder = Responder::build($view, $error, 'layouts/contents');
+    $responder = Responder::build($view, $error, 'layouts/contents')
+        ->withSession($session);
     $request   = RequestHelper::withSessionMgr($request, $session);
     $request   = RequestHelper::withResponder($request, $responder);
 
