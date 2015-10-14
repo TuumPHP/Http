@@ -6,6 +6,16 @@ use Zend\Diactoros\Stream;
 
 class ResponseHelperTest extends \PHPUnit_Framework_TestCase
 {
+    function setup()
+    {
+        $_SESSION = [];
+    }
+
+    function teardown()
+    {
+        unset($_SESSION);
+    }
+
     /**
      * @test
      */
@@ -154,7 +164,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @ test
      * @ runInSeparateProcess
      */
     function emit_response()

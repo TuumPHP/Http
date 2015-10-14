@@ -30,6 +30,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
+        $_SESSION = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->stream = new LocalView();
@@ -41,6 +42,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 
     function tearDown()
     {
+        unset($_SESSION);
     }
 
     function test0()
