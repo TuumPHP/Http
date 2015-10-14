@@ -74,4 +74,14 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
         $request = RequestHelper::createFromGlobal([]);
         $this->assertTrue($request instanceof ServerRequestInterface);
     }
+
+    /**
+     * @test
+     */
+    function with_and_get_method()
+    {
+        $request = RequestHelper::createFromPath('test', 'POST', [], ['_test_method' => 'tested']);
+        $request = RequestHelper::withMethod($request, '_test_method');
+        $this->assertEquals('tested', RequestHelper::getMethod($request));
+    }
 }
