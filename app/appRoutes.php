@@ -4,6 +4,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Respond;
+use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\UploadedFile;
 
 /**
@@ -42,6 +43,20 @@ return function ($request) {
             ->withInputData(['jumped' => 'redirected text'])
             ->withInputErrors(['jumped' => 'redirected error message'])
             ->toPath('jump');
+    };
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    $jumper2 = function ($request) use($jump) {
+        Respond::with($request, function(ViewData $view) {
+            $view->success('redirected back!');
+            $view->inputData(['jumped' => 'redirected text']);
+            $view->inputErrors(['jumped' => 'redirected error message']);
+            return $view;
+        });
+        return $jump($request);
     };
 
     /**
