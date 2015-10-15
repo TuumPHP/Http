@@ -61,12 +61,7 @@ class ViewStream implements ViewStreamInterface
         if (!$data) {
             return;
         }
-        $view = new DataView();
-        $view->setData($data->getData());
-        $view->setErrors($data->getInputErrors());
-        $view->setInputs($data->getInputData());
-        $view->setMessage($data->getMessages());
-
+        $view = $this->forgeDataView($data);
         $this->view_data = $data->getRawData();
         $this->view_data = ['view' => $view];
     }
@@ -74,7 +69,7 @@ class ViewStream implements ViewStreamInterface
     /**
      * @return string
      */
-    private function render()
+    protected function render()
     {
         if (!$this->view_file) {
             throw new \RuntimeException('no view file to render');
@@ -83,23 +78,19 @@ class ViewStream implements ViewStreamInterface
     }
 
     /**
-     * @return resource
+     * modifies the internal renderer's setting.
+     *
+     * $modifier = function($renderer) {
+     *    // modify the renderer.
+     * }
+     *
+     * @param \Closure $modifier
+     * @return mixed
      */
-    protected function getResource()
+    public function modRenderer($modifier)
     {
-        if (is_null($this->fp)) {
-            $this->fp = fopen('php://temp', 'wb+');
-            fwrite($this->fp, $this->render());
-        }
-
-        return $this->fp;
+        $modifier = $modifier->bindTo($this, $this);
+        return $modifier($this->renderer);
     }
 
-    /**
-     * @return Renderer
-     */
-    protected function getRenderer()
-    {
-        return $this->renderer;
-    }
 }

@@ -2,6 +2,7 @@
 namespace Tuum\Respond\Service;
 
 use RuntimeException;
+use Tuum\Form\DataView;
 
 trait ViewStreamTrait
 {
@@ -21,29 +22,36 @@ trait ViewStreamTrait
     protected $fp = null;
 
     /**
+     * @return string
+     */
+    abstract protected function render();
+
+    /**
      * @return resource
      */
-    abstract protected function getResource();
-
-    /**
-     * @return mixed
-     */
-    abstract protected function getRenderer();
-
-    /**
-     * modifies the internal renderer's setting.
-     *
-     * $modifier = function($renderer) {
-     *    // modify the renderer.
-     * }
-     *
-     * @param \Closure $modifier
-     * @return mixed
-     */
-    public function modRenderer($modifier)
+    protected function getResource()
     {
-        $modifier = $modifier->bindTo($this, $this);
-        return $modifier($this->getRenderer());
+        if (is_null($this->fp)) {
+            $this->fp = fopen('php://temp', 'wb+');
+            fwrite($this->fp, $this->render());
+        }
+
+        return $this->fp;
+    }
+
+    /**
+     * @param ViewData $data
+     * @return DataView
+     */
+    protected function forgeDataView(ViewData $data)
+    {
+        $view = new DataView();
+        $view->setData($data->getData());
+        $view->setErrors($data->getInputErrors());
+        $view->setInputs($data->getInputData());
+        $view->setMessage($data->getMessages());
+
+        return $view;
     }
 
     /**
