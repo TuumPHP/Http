@@ -2,7 +2,6 @@
 namespace Tuum\Respond\Service;
 
 use RuntimeException;
-use Tuum\Form\DataView;
 use Tuum\Locator\Locator;
 use Tuum\View\Renderer;
 

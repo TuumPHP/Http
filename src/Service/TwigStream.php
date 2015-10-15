@@ -1,7 +1,6 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use Tuum\Form\DataView;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
 
