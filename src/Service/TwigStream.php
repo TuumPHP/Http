@@ -9,6 +9,11 @@ class TwigStream implements ViewStreamInterface
     use ViewStreamTrait;
 
     /**
+     * @var Twig_Environment
+     */
+    private $renderer;
+
+    /**
      * @param Twig_Environment $renderer
      */
     public function __construct($renderer)
