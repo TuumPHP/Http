@@ -25,12 +25,12 @@ class ViewDataTest  extends \PHPUnit_Framework_TestCase
      */
     function viewData_stores_data()
     {
-        $this->view->inputData(['inputs' => 'tested']);
-        $this->view->inputErrors(['errors' => 'tested']);
-        $this->view->success('message: success');
-        $this->view->alert('message: alert');
-        $this->view->error('message: error');
-        $this->view->setData('value', 'tested');
+        $this->view->inputData(['inputs' => 'tested'])
+            ->inputErrors(['errors' => 'tested'])
+            ->success('message: success')
+            ->alert('message: alert')
+            ->error('message: error')
+            ->setData('value', 'tested');
         
         $this->assertEquals(['inputs' => 'tested'], $this->view->getInputData());
         $this->assertEquals(['errors' => 'tested'], $this->view->getInputErrors());

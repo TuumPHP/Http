@@ -67,6 +67,7 @@ class ViewStream implements ViewStreamInterface
         $view->setInputs($data->getInputData());
         $view->setMessage($data->getMessages());
 
+        $this->view_data = $data->getRawData();
         $this->view_data = ['view' => $view];
     }
 

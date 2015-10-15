@@ -1,6 +1,20 @@
 <?php
 namespace Tuum\Respond\Service;
 
+/**
+ * Class ViewData
+ *
+ * a data transfer object for responder to Tuum/Form helpers used in templates.
+ *
+ * types data are:
+ * - data (Data helper),
+ * - message (Message helper),
+ * - inputData (Inputs helper),
+ * - inputErrors (Errors helper), and
+ * - rawData (raw values are populated).
+ *
+ * @package Tuum\Respond\Service
+ */
 class ViewData
 {
     /**
@@ -42,10 +56,12 @@ class ViewData
      *
      * @param string $key
      * @param mixed  $value
+     * @return $this
      */
     public function setRawData($key, $value)
     {
         $this->rawData[$key] = $value;
+        return $this;
     }
 
     /**
@@ -59,8 +75,11 @@ class ViewData
     }
 
     /**
+     * set data for Data helper.
+     *
      * @param string|array $key
-     * @param mixed  $value
+     * @param mixed        $value
+     * @return $this
      */
     public function setData($key, $value = null)
     {
@@ -69,6 +88,7 @@ class ViewData
         } else {
             $this->data[$key] = $value;
         }
+        return $this;
     }
 
     /**
@@ -80,13 +100,15 @@ class ViewData
     }
 
     /**
-     * sets input value, like $_POST.
+     * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
+     * @return $this
      */
     public function inputData(array $value)
     {
         $this->inputData = $value;
+        return $this;
     }
 
     /**
@@ -99,12 +121,15 @@ class ViewData
 
     /**
      * sets input errors, such as validation error messages.
+     * for Errors helper.
      *
      * @param array $errors
+     * @return $this
      */
     public function inputErrors(array $errors)
     {
         $this->inputErrors = $errors;
+        return $this;
     }
 
     /**
@@ -116,9 +141,12 @@ class ViewData
     }
 
     /**
+     * a generic message method for Message helper.
+     * use success, alert, and error methods.
+     *
      * @param string $message
      * @param string $type
-     * @return array
+     * @return $this
      */
     public function message($message, $type)
     {
@@ -126,6 +154,7 @@ class ViewData
             'message' => $message,
             'type'    => $type,
         ];
+        return $this;
     }
 
     /**
@@ -138,7 +167,7 @@ class ViewData
 
     /**
      * @param string $message
-     * @return array
+     * @return $this
      */
     public function success($message)
     {
@@ -147,7 +176,7 @@ class ViewData
 
     /**
      * @param string $message
-     * @return array
+     * @return $this
      */
     public function alert($message)
     {
@@ -156,7 +185,7 @@ class ViewData
 
     /**
      * @param string $message
-     * @return array
+     * @return $this
      */
     public function error($message)
     {
