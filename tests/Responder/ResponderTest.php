@@ -46,7 +46,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         /** @var LocalView $view */
         $view     = $response->getBody();
         $this->assertEquals('test/responder', $view->view_file);
-        $this->assertEquals('tested', $view->data->getRawData('responder-with'));
+        $this->assertEquals('tested', $view->data->getRawData()['responder-with']);
     }
 
     /**
@@ -64,6 +64,6 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         /** @var LocalView $view */
         $view     = $response->getBody();
         $this->assertEquals('test/respond', $view->view_file);
-        $this->assertEquals('tested', $view->data->getRawData('respond-with'));
+        $this->assertEquals('tested', $view->data->getRawData()['respond-with']);
     }
 }

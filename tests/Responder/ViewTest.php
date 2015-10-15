@@ -70,7 +70,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $response = $this->view->asContents('test-content', 'testing/contents');
         /** @var LocalView $stream */
         $stream = $response->getBody();
-        $this->assertEquals('test-content', $stream->data->getRawData(ViewData::DATA)['contents']);
+        $this->assertEquals('test-content', $stream->data->getData()['contents']);
         $this->assertEquals('testing/contents', $stream->view_file);
     }
 
@@ -83,7 +83,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $response                 = $this->view->asContents('test-content');
         /** @var LocalView $stream */
         $stream = $response->getBody();
-        $this->assertEquals('test-content', $stream->data->getRawData(ViewData::DATA)['contents']);
+        $this->assertEquals('test-content', $stream->data->getData()['contents']);
         $this->assertEquals('default/contents', $stream->view_file);
     }
 

@@ -55,13 +55,13 @@ class TwigStream implements ViewStreamInterface
             return;
         }
         $view = new DataView();
-        $view->setData($data->getRawData(ViewData::DATA, []));
-        $view->setErrors($data->getRawData(ViewData::ERRORS, []));
-        $view->setInputs($data->getRawData(ViewData::INPUTS, []));
+        $view->setData($data->getData());
+        $view->setErrors($data->getInputErrors());
+        $view->setInputs($data->getInputData());
         $view->setMessage($data->getMessages());
 
         $this->renderer->addGlobal('viewData', $view);
-        $this->view_data = $data->getRawData(ViewData::DATA, []);
+        $this->view_data = $data->getRawData();
     }
 
     /**

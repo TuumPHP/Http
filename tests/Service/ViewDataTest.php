@@ -32,11 +32,11 @@ class ViewDataTest  extends \PHPUnit_Framework_TestCase
         $this->view->error('message: error');
         $this->view->setData('value', 'tested');
         
-        $this->assertEquals(['inputs' => 'tested'], $this->view->getRawData(ViewData::INPUTS));
-        $this->assertEquals(['errors' => 'tested'], $this->view->getRawData(ViewData::ERRORS));
-        $this->assertEquals(['value' => 'tested'], $this->view->getRawData(ViewData::DATA));
-        $this->assertEquals(['message' => 'message: success', 'type' => ViewData::MESSAGE_SUCCESS], $this->view->getRawData(ViewData::MESSAGE)[0]);
-        $this->assertEquals(['message' => 'message: alert', 'type' => ViewData::MESSAGE_ALERT], $this->view->getRawData(ViewData::MESSAGE)[1]);
-        $this->assertEquals(['message' => 'message: error', 'type' => ViewData::MESSAGE_ERROR], $this->view->getRawData(ViewData::MESSAGE)[2]);
+        $this->assertEquals(['inputs' => 'tested'], $this->view->getInputData());
+        $this->assertEquals(['errors' => 'tested'], $this->view->getInputErrors());
+        $this->assertEquals(['value' => 'tested'], $this->view->getData());
+        $this->assertEquals(['message' => 'message: success', 'type' => ViewData::MESSAGE_SUCCESS], $this->view->getMessages()[0]);
+        $this->assertEquals(['message' => 'message: alert', 'type' => ViewData::MESSAGE_ALERT], $this->view->getMessages()[1]);
+        $this->assertEquals(['message' => 'message: error', 'type' => ViewData::MESSAGE_ERROR], $this->view->getMessages()[2]);
     }
 }

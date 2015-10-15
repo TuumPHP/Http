@@ -8,15 +8,27 @@ class ViewData
      */
     private $data = [];
 
-    const MY_KEY = '-view-data-key';
-
-    /*
-     * constants for data types.
+    /**
+     * @var array
      */
-    const DATA = '-data-view';
-    const MESSAGE = '-message-view';
-    const INPUTS = '-input-view';
-    const ERRORS = '-errors-view';
+    private $rawData = [];
+
+    /**
+     * @var array
+     */
+    private $messages = [];
+
+    /**
+     * @var array
+     */
+    private $inputData = [];
+
+    /**
+     * @var array
+     */
+    private $inputErrors = [];
+
+    const MY_KEY = '-view-data-key';
 
     /*
      * message types. 
@@ -26,18 +38,6 @@ class ViewData
     const MESSAGE_ERROR = 'error';
 
     /**
-     * get a raw data.
-     *
-     * @param string     $key
-     * @param null|mixed $alt
-     * @return mixed
-     */
-    public function getRawData($key, $alt = null)
-    {
-        return array_key_exists($key, $this->data) ? $this->data[$key] : $alt;
-    }
-
-    /**
      * set a raw data.
      *
      * @param string $key
@@ -45,7 +45,17 @@ class ViewData
      */
     public function setRawData($key, $value)
     {
-        $this->data[$key] = $value;
+        $this->rawData[$key] = $value;
+    }
+
+    /**
+     * get a raw data.
+     *
+     * @return array
+     */
+    public function getRawData()
+    {
+        return $this->rawData;
     }
 
     /**
@@ -54,14 +64,19 @@ class ViewData
      */
     public function setData($key, $value = null)
     {
-        if (!array_key_exists(self::DATA, $this->data)) {
-            $this->data[self::DATA] = [];
-        }
         if (is_array($key)) {
-            $this->data[self::DATA] = array_merge($this->data[self::DATA], $key);
+            $this->data = array_merge($this->data, $key);
         } else {
-            $this->data[self::DATA][$key] = $value;
+            $this->data[$key] = $value;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**
@@ -71,7 +86,15 @@ class ViewData
      */
     public function inputData(array $value)
     {
-        $this->data[self::INPUTS] = $value;
+        $this->inputData = $value;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInputData()
+    {
+        return $this->inputData;
     }
 
     /**
@@ -81,7 +104,15 @@ class ViewData
      */
     public function inputErrors(array $errors)
     {
-        $this->data[self::ERRORS] = $errors;
+        $this->inputErrors = $errors;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInputErrors()
+    {
+        return $this->inputErrors;
     }
 
     /**
@@ -91,13 +122,18 @@ class ViewData
      */
     public function message($message, $type)
     {
-        if (!array_key_exists(self::MESSAGE, $this->data)) {
-            $this->data[self::MESSAGE] = [];
-        }
-        $this->data[self::MESSAGE][] = [
+        $this->messages[] = [
             'message' => $message,
             'type'    => $type,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getMessages()
+    {
+        return $this->messages;
     }
 
     /**
