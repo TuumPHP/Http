@@ -88,7 +88,7 @@ abstract class AbstractWithViewData
         $args = func_get_args();
         $self = clone($this);
         foreach($args as $key) {
-            $self->data->dataValue($key, $this->request->getAttribute($key));
+            $self->data->setData($key, $this->request->getAttribute($key));
         }
         return $self;
     }
@@ -116,7 +116,7 @@ abstract class AbstractWithViewData
     public function with($key, $value = null)
     {
         $this->data = clone($this->data);
-        $this->data->dataValue($key, $value);
+        $this->data->setData($key, $value);
 
         return $this;
     }

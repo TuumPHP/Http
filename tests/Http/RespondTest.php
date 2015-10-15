@@ -132,12 +132,12 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         /** @var ViewData $data */
         $data    = $refData->getValue($respond);
 
-        $this->assertEquals('value', $data->get(ViewData::DATA)['some']);
-        $this->assertEquals('message', $data->get(ViewData::MESSAGE)[0]['message']);
-        $this->assertEquals('notice-msg', $data->get(ViewData::MESSAGE)[1]['message']);
-        $this->assertEquals('error-msg', $data->get(ViewData::MESSAGE)[2]['message']);
-        $this->assertEquals('test', $data->get(ViewData::INPUTS)['more']);
-        $this->assertEquals('done', $data->get(ViewData::ERRORS)['more']);
+        $this->assertEquals('value', $data->getRawData(ViewData::DATA)['some']);
+        $this->assertEquals('message', $data->getRawData(ViewData::MESSAGE)[0]['message']);
+        $this->assertEquals('notice-msg', $data->getRawData(ViewData::MESSAGE)[1]['message']);
+        $this->assertEquals('error-msg', $data->getRawData(ViewData::MESSAGE)[2]['message']);
+        $this->assertEquals('test', $data->getRawData(ViewData::INPUTS)['more']);
+        $this->assertEquals('done', $data->getRawData(ViewData::ERRORS)['more']);
     }
 
     /**

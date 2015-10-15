@@ -37,7 +37,7 @@ return function ($request) {
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    $jumper = function ($request) {
+    $jumper1 = function ($request) {
         return Respond::redirect($request)
             ->withMessage('redirected back!')
             ->withInputData(['jumped' => 'redirected text'])
@@ -49,7 +49,7 @@ return function ($request) {
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    $jumper2 = function ($request) use($jump) {
+    $jumper = function ($request) use($jump) {
         Respond::with($request, function(ViewData $view) {
             $view->success('redirected back!');
             $view->inputData(['jumped' => 'redirected text']);

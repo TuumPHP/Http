@@ -62,10 +62,10 @@ class ViewStream implements ViewStreamInterface
             return;
         }
         $view = new DataView();
-        $view->setData($data->get(ViewData::DATA, []));
-        $view->setErrors($data->get(ViewData::ERRORS, []));
-        $view->setInputs($data->get(ViewData::INPUTS, []));
-        $view->setMessage($data->get(ViewData::MESSAGE, []));
+        $view->setData($data->getRawData(ViewData::DATA, []));
+        $view->setErrors($data->getRawData(ViewData::ERRORS, []));
+        $view->setInputs($data->getRawData(ViewData::INPUTS, []));
+        $view->setMessage($data->getRawData(ViewData::MESSAGE, []));
 
         $this->view_data = ['view' => $view];
     }

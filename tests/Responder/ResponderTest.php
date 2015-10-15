@@ -38,7 +38,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     function with_sets_viewData_which_is_passed_to_subsequent_responders()
     {
         $res = $this->responder->viewData(function(ViewData $view) {
-            $view->set('responder-with', 'tested');
+            $view->setRawData('responder-with', 'tested');
             return $view;
         });
         $request  = RequestHelper::createFromPath('/base/path');
@@ -46,7 +46,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         /** @var LocalView $view */
         $view     = $response->getBody();
         $this->assertEquals('test/responder', $view->view_file);
-        $this->assertEquals('tested', $view->data->get('responder-with'));
+        $this->assertEquals('tested', $view->data->getRawData('responder-with'));
     }
 
     /**
@@ -57,13 +57,13 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $request  = RequestHelper::createFromPath('/base/path');
         $request  = RequestHelper::withResponder($request, $this->responder);
         Respond::with($request, function(ViewData $view) {
-            $view->set('respond-with', 'tested');
+            $view->setRawData('respond-with', 'tested');
             return $view;
         });
         $response = Respond::view($request)->asView('test/respond');
         /** @var LocalView $view */
         $view     = $response->getBody();
         $this->assertEquals('test/respond', $view->view_file);
-        $this->assertEquals('tested', $view->data->get('respond-with'));
+        $this->assertEquals('tested', $view->data->getRawData('respond-with'));
     }
 }

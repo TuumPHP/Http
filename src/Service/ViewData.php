@@ -26,37 +26,13 @@ class ViewData
     const MESSAGE_ERROR = 'error';
 
     /**
-     * get all raw data.
-     *
-     * @return array
-     */
-    public function getRawData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * set all raw data.
-     *
-     * @param array $data
-     * @param bool  $replace
-     */
-    public function setRawData(array $data, $replace = false)
-    {
-        if (!$replace) {
-            $data = array_merge($this->data, $data);
-        }
-        $this->data = $data;
-    }
-
-    /**
      * get a raw data.
      *
      * @param string     $key
      * @param null|mixed $alt
      * @return mixed
      */
-    public function get($key, $alt = null)
+    public function getRawData($key, $alt = null)
     {
         return array_key_exists($key, $this->data) ? $this->data[$key] : $alt;
     }
@@ -67,16 +43,16 @@ class ViewData
      * @param string $key
      * @param mixed  $value
      */
-    public function set($key, $value)
+    public function setRawData($key, $value)
     {
         $this->data[$key] = $value;
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param mixed  $value
      */
-    public function dataValue($key, $value = null)
+    public function setData($key, $value = null)
     {
         if (!array_key_exists(self::DATA, $this->data)) {
             $this->data[self::DATA] = [];
