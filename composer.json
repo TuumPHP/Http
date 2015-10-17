@@ -12,8 +12,8 @@
     "require": {
         "aura/session": "~2.0",
         "zendframework/zend-diactoros": "~1.0",
-        "tuum/view": "~0.5",
-        "tuum/form": "~0.2",
+        "tuum/view": "1.x@dev",
+        "tuum/form": "1.x@dev",
         "twig/twig": "~1.0"
     },
     "autoload": {
