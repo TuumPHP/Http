@@ -56,11 +56,10 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     {
         $request  = RequestHelper::createFromPath('/base/path');
         $request  = RequestHelper::withResponder($request, $this->responder);
-        Respond::with($request, function(ViewData $view) {
+        $response = Respond::with($request, function(ViewData $view) {
             $view->setRawData('respond-with', 'tested');
             return $view;
-        });
-        $response = Respond::view($request)->asView('test/respond');
+        })->view($request)->asView('test/respond');
         /** @var LocalView $view */
         $view     = $response->getBody();
         $this->assertEquals('test/respond', $view->view_file);
