@@ -22,6 +22,11 @@ class ErrorView implements ErrorViewInterface
     public $statusView = [];
 
     /**
+     * @var
+     */
+    private $exitOnTerminate = true;
+
+    /**
      * @param ViewStreamInterface $viewStream
      */
     public function __construct(ViewStreamInterface $viewStream)
@@ -76,7 +81,15 @@ class ErrorView implements ErrorViewInterface
         $stream   = $this->view->withView($this->findViewFromStatus($code));
         $response = ResponseHelper::createResponse($stream, $code);
         ResponseHelper::emit($response);
-        exit;
+        $this->terminate();
+    }
+
+    private function terminate()
+    {
+        if ($this->exitOnTerminate) {
+            exit;
+        }
+        return;
     }
 
     /**
@@ -87,5 +100,13 @@ class ErrorView implements ErrorViewInterface
     public function getStream($code, $data = [])
     {
         return $this->view->withView($this->findViewFromStatus($code), $data);
+    }
+
+    /**
+     * @param bool $exitOnTerminate
+     */
+    public function setExitOnTerminate($exitOnTerminate)
+    {
+        $this->exitOnTerminate = $exitOnTerminate;
     }
 }

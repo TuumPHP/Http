@@ -21,6 +21,7 @@ class ViewForError implements ViewStreamInterface
     {
         $this->view_file = $view_file;
         $this->view_data = $data;
+        return $this;
     }
 
     /**
@@ -55,14 +56,8 @@ class ViewForError implements ViewStreamInterface
     }
 };
 
-class ErrorViewException
+class ErrorViewException extends \Exception
 {
-    public $code;
-
-    public function getCode()
-    {
-        return $this->code;
-    }
 }
 
 class ErrorViewTest  extends \PHPUnit_Framework_TestCase
@@ -113,14 +108,19 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @ test
+     * @test
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     function invoke_will_emit()
     {
         /** @noinspection PhpUnusedLocalVariableInspection */
         $error = ErrorView::forge($this->view, [
-            'default' => 'tested-default',
+            'default' => 'error-default',
         ]);
-        //$error->__invoke(new ErrorViewException());
+        $error->setExitOnTerminate(false);
+
+        $error->__invoke(new ErrorViewException('error-view', 123));
+        $this->assertEquals('error-default', $this->view->getViewFile());
     }
 }
