@@ -1,7 +1,6 @@
 <?php
 namespace tests\Responder;
 
-use tests\Http\TesterTrait;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
@@ -10,8 +9,6 @@ use Tuum\Respond\Service\ViewData;
 
 class ResponderTest extends \PHPUnit_Framework_TestCase
 {
-    use TesterTrait;
-
     /**
      * @var Responder
      */
@@ -19,12 +16,18 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
+        $_SESSION = [];
         class_exists(Respond::class);
         $this->responder = Responder::build(
             new LocalView(),
             new ErrorBack()
         );
         $this->responder = $this->responder->withSession(SessionStorage::forge('tuum-app'));
+    }
+
+    function teardown()
+    {
+        unset($_SESSION);
     }
 
     function test0()
