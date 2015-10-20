@@ -108,6 +108,12 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * for PhpStorm users (like me):
+     *
+     * this test hangs when running from PhpStorm.
+     * run phpunit from terminal. to get code coverage, try:
+     * phpunit --coverage-clover ../../Respond-coverage.xml
+     *
      * @test
      * @runInSeparateProcess
      * @preserveGlobalState disabled

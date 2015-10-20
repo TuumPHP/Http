@@ -180,9 +180,9 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
         $res = ResponseHelper::createResponse('emit testing', 200, ['test' => 'testing']);
         ResponseHelper::emit($res);
         $body = ob_get_contents();
-        ob_end_clean();
         $this->assertEquals('emit testing', $body);
         $list = headers_list();
         $this->assertEquals([], $list);
+        ob_end_clean();
     }
 }
