@@ -39,8 +39,8 @@ class Respond
      * get responder object while updating viewData with $closure.
      *
      * @param ServerRequestInterface $request
-     * @param callable $closure
-     * @return Responder
+     * @param callable               $closure
+     * @return ServerRequestInterface
      */
     public static function with($request, callable $closure = null)
     {
@@ -49,9 +49,9 @@ class Respond
         }
         if ($closure && is_callable($closure))         {
             $responder = $responder->viewData($closure);
-            RequestHelper::withResponder($request, $responder);
+            $request   = RequestHelper::withResponder($request, $responder);
         }
-        return $responder;
+        return $request;
     }
 
     /**

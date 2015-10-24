@@ -10,17 +10,38 @@
 
     <h3>Sample Form</h3>
 
-    <form method="get" action="jumper" class="">
+    <div style="margin-left: 2em;">
 
-        <div class="form-group">
-            {{ viewData.forms.label('some text:', 'jumped')|raw }}
-            {{ viewData.forms.text('jumped', 'original text').id().class('form-control')|raw }}
-            {{ viewData.errors.get('jumped')|raw }}
-        </div>
+        <form method="post" action="jumper" class="">
 
-        <input type="submit" value="jump!" class="btn btn-primary"/>&nbsp;
-        <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
+            <div class="form-group">
+                {{ viewData.forms.label('some text:', 'jumped')|raw }}
+                {{ viewData.forms.text('jumped', 'original text').id().class('form-control')|raw }}
+                {{ viewData.errors.get('jumped')|raw }}
+            </div>
 
-    </form>
+            <input type="submit" value="jump!" class="btn btn-primary"/>&nbsp;
+            <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
+
+        </form>
+
+    </div>
+
+    <div style="margin-left: 2em;">
+
+        <form method="post" action="jumped" class="">
+
+            <div class="form-group">
+                {{ viewData.forms.label('some text:', 'jumped')|raw }}
+                {{ viewData.forms.text('jumped', 'original text').id().class('form-control')|raw }}
+                {{ viewData.errors.get('jumped')|raw }}
+            </div>
+
+            <input type="submit" value="re-draw!" class="btn btn-primary"/>&nbsp;
+            <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
+
+        </form>
+
+    </div>
 
 {% endblock %}

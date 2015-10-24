@@ -103,8 +103,9 @@ class Responder
         if (!$this->viewData) {
             $this->viewData = new ViewData();
         }
-        $this->viewData = $closure($this->viewData);
-        return $this;
+        $self = clone($this);
+        $self->viewData = $closure($this->viewData);
+        return $self;
     }
 
     /**
