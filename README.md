@@ -1,14 +1,16 @@
 Tuum/Respond
 =========
 
-Tuum/Respond is a framework independent helpers and responders for PSR-7 Http/Message. 
-
-*   Still an Alpha Release. 
-*   PSR-1, PSR-2, and PSR-4.
+Tuum/Respond is a framework independent helpers and responders for composing a PSR-7 response object. Helps to build Post-Redirect-Get pattern and similar responses. 
 
 ### License
 
-MIT license
+*	MIT license
+
+### PSR
+
+*   PSR-1, PSR-2, and PSR-4.
+
 
 ### Installation and samples
 

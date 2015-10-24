@@ -11,7 +11,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
         $_SESSION = [];
     }
 
-    function teardown()
+    function tearDown()
     {
         unset($_SESSION);
     }
@@ -173,6 +173,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      * @test
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     * @group NoStorm
      */
     function emit_response()
     {

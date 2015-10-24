@@ -117,6 +117,7 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
      * @test
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     * @group NoStorm
      */
     function invoke_will_emit()
     {
