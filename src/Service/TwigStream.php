@@ -60,7 +60,7 @@ class TwigStream implements ViewStreamInterface
         }
         $view = $this->forgeDataView($data);
         $this->renderer->addGlobal('viewData', $view);
-        $this->view_data = $data->getRawData();
+        $this->view_data = $data->getData();
     }
 
     /**
