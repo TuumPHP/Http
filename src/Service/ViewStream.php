@@ -2,7 +2,6 @@
 namespace Tuum\Respond\Service;
 
 use RuntimeException;
-use Tuum\Locator\Locator;
 use Tuum\View\Renderer;
 
 /**
@@ -39,7 +38,7 @@ class ViewStream implements ViewStreamInterface
      */
     public static function forge($root)
     {
-        $renderer = new Renderer(new Locator($root));
+        $renderer = Renderer::forge($root);
 
         return new static($renderer);
     }
