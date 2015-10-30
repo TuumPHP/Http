@@ -4,6 +4,14 @@ namespace Tuum\Respond\Service;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
 
+/**
+ * Class TwigStream
+ *
+ * uses Twig as template renderer as ViewStream.
+ * include Twig 1.0 or later. Version 2.0 should work, as well.
+ *
+ * @package Tuum\Respond\Service
+ */
 class TwigStream implements ViewStreamInterface
 {
     use ViewStreamTrait;

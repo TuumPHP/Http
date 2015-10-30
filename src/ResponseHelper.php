@@ -1,6 +1,7 @@
 <?php
 namespace Tuum\Respond;
 
+use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;
@@ -8,6 +9,17 @@ use Zend\Diactoros\Stream;
 
 class ResponseHelper
 {
+    /**
+     * a closure for building a response object.
+     * uses Zend/Diactoros Response class if set to null.
+     *
+     * signature is:
+     * $closure(StreamInterface $stream, int $status, array $header);
+     *
+     * @var null|Closure
+     */
+    public static $responseBuilder = null;
+
     /**
      * creates a new $response.
      *
@@ -20,11 +32,19 @@ class ResponseHelper
     {
         $stream = self::makeStream($input);
 
-        return new Response(
-            $stream,
-            $status,
-            $header
-        );
+        if (is_callable(self::$responseBuilder)) {
+            $builder = self::$responseBuilder;
+            return $builder($stream, $status, $header);
+        }
+
+        if (class_exists(Response::class)) {
+            return new Response(
+                $stream,
+                $status,
+                $header
+            );
+        }
+        throw new \RuntimeException('cannot create response');
     }
 
     /**

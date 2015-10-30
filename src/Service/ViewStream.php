@@ -5,6 +5,14 @@ use RuntimeException;
 use Tuum\Locator\Locator;
 use Tuum\View\Renderer;
 
+/**
+ * Class ViewStream
+ *
+ * uses Tuum/View as template renderer for ViewStream.
+ * include 1.0 or later version.
+ *
+ * @package Tuum\Respond\Service
+ */
 class ViewStream implements ViewStreamInterface
 {
     use ViewStreamTrait;

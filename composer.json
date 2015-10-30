@@ -11,10 +11,10 @@
     "minimum-stability": "dev",
     "require": {
         "aura/session": "~2.0",
-        "zendframework/zend-diactoros": "~1.0",
         "tuum/form": "1.x@dev"
     },
     "require-dev":{
+        "zendframework/zend-diactoros": "~1.0",
         "tuum/view": "1.x@dev",
         "twig/twig": "~1.0"
     },

@@ -5,6 +5,14 @@ use Aura\Session\Segment;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
 
+/**
+ * Class SessionStorage
+ *
+ * a default implementation for SessionStorageInterface
+ * using Aura.Session 2.0 or above.
+ *
+ * @package Tuum\Respond\Service
+ */
 class SessionStorage implements SessionStorageInterface
 {
     /**
