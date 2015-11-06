@@ -1,6 +1,8 @@
 <?php
 namespace Tuum\Respond\Service;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
 
@@ -12,9 +14,9 @@ use Twig_Loader_Filesystem;
  *
  * @package Tuum\Respond\Service
  */
-class TwigStream implements ViewStreamInterface
+class TwigViewer implements ViewerInterface
 {
-    use ViewStreamTrait;
+    use ViewerTrait;
 
     /**
      * @var Twig_Environment
@@ -42,59 +44,35 @@ class TwigStream implements ViewStreamInterface
     }
 
     /**
-     * sets view template file and data to be rendered.
+     * renders $view and returns a new $response.
      *
-     * @param string   $view_file
-     * @param ViewData $data
-     * @return ViewStreamInterface
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param ViewData               $view
+     * @return ResponseInterface
      */
-    public function withView($view_file, $data = null)
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
-        $self            = clone($this);
+        $view_file = $view->getViewFile();
         $view_file       = substr($view_file, -4) === '.twig' ?: $view_file . '.twig';
-        $self->view_file = $view_file;
-        $self->setDataView($data);
+        $view_data = $this->setDataView($view);
 
-        return $self;
+        $response->getBody()->write($this->renderer->render($view_file, $view_data));
+        return $response;
     }
 
     /**
      * @param ViewData $data
+     * @return array
      */
     private function setDataView($data)
     {
         if (!$data) {
-            return;
+            return [];
         }
         $view = $this->forgeDataView($data);
         $this->renderer->addGlobal('viewData', $view);
-        $this->view_data = $data->getData();
-    }
-
-    /**
-     * @return string
-     */
-    protected function render()
-    {
-        if (!$this->view_file) {
-            throw new \RuntimeException('no view file to render');
-        }
-        return $this->renderer->render($this->view_file, $this->view_data);
-    }
-
-    /**
-     * modifies the internal renderer's setting.
-     *
-     * $modifier = function($renderer) {
-     *    // modify the renderer.
-     * }
-     *
-     * @param \Closure $modifier
-     * @return mixed
-     */
-    public function modRenderer($modifier)
-    {
-        $modifier = $modifier->bindTo($this, $this);
-        return $modifier($this->renderer);
+        $view_data = $data->getData();
+        return $view_data;
     }
 }

@@ -18,6 +18,16 @@ namespace Tuum\Respond\Service;
 class ViewData
 {
     /**
+     * @var int
+     */
+    private $status;
+    
+    /**
+     * @var string
+     */
+    private $view_file;
+    
+    /**
      * @var array
      */
     private $data = [];
@@ -190,5 +200,43 @@ class ViewData
     public function error($message)
     {
         return $this->message($message, self::MESSAGE_ERROR);
+    }
+
+    /**
+     * @param string $view_file
+     * @return ViewData
+     */
+    public function setViewFile($view_file)
+    {
+        $this->view_file = $view_file;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewFile()
+    {
+        return $this->view_file;
+    }
+
+    /**
+     * @param int $status
+     * @return ViewData
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

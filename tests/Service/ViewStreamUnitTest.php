@@ -1,7 +1,7 @@
 <?php
 namespace tests\Service;
 
-use Tuum\Respond\Service\ViewStream;
+use Tuum\Respond\Service\Viewer;
 use Tuum\View\Renderer;
 
 require_once __DIR__ . '/../autoloader.php';
@@ -14,7 +14,7 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
     public $string;
 
     /**
-     * @var ViewStream
+     * @var Viewer
      */
     public $view;
 
@@ -25,7 +25,7 @@ class ViewStreamUnitTest extends \PHPUnit_Framework_TestCase
         /** @noinspection PhpUndefinedMethodInspection */
         $render->method('render')->willReturn($this->string);
         /** @noinspection PhpParamsInspection */
-        $this->view = new ViewStream($render);
+        $this->view = new Viewer($render);
     }
 
     /**

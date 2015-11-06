@@ -1,13 +1,13 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use Exception;
-use Tuum\Respond\ResponseHelper;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ErrorView implements ErrorViewInterface
 {
     /**
-     * @var ViewStreamInterface
+     * @var ViewerInterface
      */
     private $view;
 
@@ -27,31 +27,29 @@ class ErrorView implements ErrorViewInterface
     private $exitOnTerminate = true;
 
     /**
-     * @param ViewStreamInterface $viewStream
+     * @param ViewerInterface $viewStream
      */
-    public function __construct(ViewStreamInterface $viewStream)
+    public function __construct(ViewerInterface $viewStream)
     {
         $this->view = $viewStream;
     }
 
     /**
-     * @param ViewStreamInterface $viewStream
-     * @param array               $options
+     * @param ViewerInterface $viewStream
+     * @param array           $options
      * @return static
      */
     public static function forge(
-        ViewStreamInterface $viewStream,
+        ViewerInterface $viewStream,
         array $options
     ) {
         $error = new static($viewStream);
         $options += [
             'default' => null,
             'status'  => [],
-            'handler' => false,
         ];
         $error->default_error = $options['default'];
         $error->statusView = $options['status'];
-        set_exception_handler($error); // catching an uncaught exception!!!
 
         return $error;
     }
@@ -70,36 +68,18 @@ class ErrorView implements ErrorViewInterface
     }
 
     /**
-     * error handler when catching an exception.
-     * renders an error page with exception's code.
+     * create a response for error view.
      *
-     * @param Exception $e
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param ViewData               $data
+     * @return ResponseInterface
      */
-    public function __invoke($e)
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $data)
     {
-        $code     = $e->getCode() ?: 500;
-        $stream   = $this->view->withView($this->findViewFromStatus($code));
-        $response = ResponseHelper::createResponse($stream, $code);
-        ResponseHelper::emit($response);
-        $this->terminate();
-    }
-
-    private function terminate()
-    {
-        if ($this->exitOnTerminate) {
-            exit;
-        }
-        return;
-    }
-
-    /**
-     * @param int   $code
-     * @param array $data
-     * @return string
-     */
-    public function getStream($code, $data = [])
-    {
-        return $this->view->withView($this->findViewFromStatus($code), $data);
+        $status = $data->getStatus();
+        $data->setViewFile($this->findViewFromStatus($status));
+        return $this->view->withView($request, $response, $data);
     }
 
     /**

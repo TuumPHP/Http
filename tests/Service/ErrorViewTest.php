@@ -3,39 +3,25 @@ namespace tests\Service;
 
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\ViewStreamInterface;
-use Tuum\Respond\Service\ViewStreamTrait;
+use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Service\ViewerTrait;
 
-class ViewForError implements ViewStreamInterface
+class ViewForError implements ViewerInterface
 {
-    use ViewStreamTrait;
+    use ViewerTrait;
 
     /**
      * renders $view_file with $data.
      *
      * @param string   $view_file
      * @param ViewData $data
-     * @return ViewStreamInterface
+     * @return ViewerInterface
      */
     public function withView($view_file, $data = null)
     {
         $this->view_file = $view_file;
         $this->view_data = $data;
         return $this;
-    }
-
-    /**
-     * modifies the internal renderer's setting.
-     *
-     * $modifier = function($renderer) {
-     *    // modify the renderer.
-     * }
-     *
-     * @param \Closure $modifier
-     * @return mixed
-     */
-    public function modRenderer($modifier)
-    {
     }
 
     /**

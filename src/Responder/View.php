@@ -4,7 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\ResponseHelper;
-use Tuum\Respond\Service\ViewStreamInterface;
+use Tuum\Respond\Service\ViewerInterface;
 
 class View extends AbstractWithViewData
 {
@@ -18,7 +18,7 @@ class View extends AbstractWithViewData
     public $content_view;
 
     /**
-     * @var ViewStreamInterface
+     * @var ViewerInterface
      */
     protected $view;
 
@@ -26,10 +26,10 @@ class View extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param ViewStreamInterface $view
-     * @param null|string         $content_view
+     * @param ViewerInterface $view
+     * @param null|string     $content_view
      */
-    public function __construct(ViewStreamInterface $view, $content_view = null)
+    public function __construct(ViewerInterface $view, $content_view = null)
     {
         $this->view         = $view;
         $this->content_view = $content_view;
@@ -52,14 +52,13 @@ class View extends AbstractWithViewData
     }
 
     /**
-     * @param string $data
+     * @param string $file
      * @return ResponseInterface
      */
-    private function asViewStream($data)
+    private function asViewStream($file)
     {
-        $view = $this->view->withView($data, $this->data);
-
-        return $this->asResponse($view);
+        $this->data->setViewFile($file);
+        return $this->view->withView($this->request, $this->response, $this->data);
     }
 
     /**

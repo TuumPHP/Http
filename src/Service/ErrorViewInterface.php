@@ -1,26 +1,6 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use Exception;
-use Psr\Http\Message\StreamInterface;
-
-interface ErrorViewInterface
+interface ErrorViewInterface extends ViewerInterface
 {
-    /**
-     * error handler when catching an exception.
-     * renders an error page with exception's code.
-     *
-     * @param Exception $e
-     */
-    public function __invoke($e);
-
-    /**
-     * create a stream for error view.
-     *
-     * @param int            $code
-     * @param array|ViewData $data
-     * @return StreamInterface
-     */
-    public function getStream($code, $data = []);
-
 }

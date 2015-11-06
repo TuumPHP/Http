@@ -2,20 +2,20 @@
 namespace tests\Service;
 
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\ViewStream;
+use Tuum\Respond\Service\Viewer;
 
 require_once __DIR__ . '/../autoloader.php';
 
 class ViewStreamFuncTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ViewStream
+     * @var Viewer
      */
     public $view;
 
     function setup()
     {
-        $this->view = ViewStream::forge(__DIR__.'/views');
+        $this->view = Viewer::forge(__DIR__.'/views');
     }
 
     /**

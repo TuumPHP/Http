@@ -7,7 +7,7 @@ use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\ViewStreamInterface;
+use Tuum\Respond\Service\ViewerInterface;
 
 class ViewTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +24,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     private $view;
 
     /**
-     * @var ViewStreamInterface
+     * @var ViewerInterface
      */
     private $stream;
 

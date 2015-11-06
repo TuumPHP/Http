@@ -10,7 +10,7 @@ use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorViewInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\ViewStreamInterface;
+use Tuum\Respond\Service\ViewerInterface;
 
 class Responder
 {
@@ -40,6 +40,11 @@ class Responder
     private $viewData;
 
     /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    /**
      * @param View     $view
      * @param Redirect $redirect
      * @param Error    $error
@@ -55,13 +60,13 @@ class Responder
     }
 
     /**
-     * @param ViewStreamInterface $view
-     * @param ErrorViewInterface  $error
-     * @param null|string         $content_view
+     * @param ViewerInterface    $view
+     * @param ErrorViewInterface $error
+     * @param null|string        $content_view
      * @return static
      */
     public static function build(
-        ViewStreamInterface $view,
+        ViewerInterface $view,
         ErrorViewInterface $error,
         $content_view = null
     ) {
@@ -92,6 +97,17 @@ class Responder
     }
 
     /**
+     * @param ResponseInterface $response
+     * @return Responder
+     */
+    public function withResponse($response)
+    {
+        $self = clone($this);
+        $self->response = $response;
+        return $self;
+    }
+
+    /**
      * modifies viewData.
      * not immutable...
      *
@@ -116,6 +132,7 @@ class Responder
      */
     private function returnWith($responder, $request, $response)
     {
+        $response = $response ?: $this->response;
         return $responder->withRequest($request, $response, $this->session, $this->viewData);
     }
 

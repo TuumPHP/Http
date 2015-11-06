@@ -2,8 +2,6 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
-use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorViewInterface;
 
 class Error extends AbstractWithViewData
@@ -35,14 +33,19 @@ class Error extends AbstractWithViewData
     /**
      * creates a generic response.
      *
-     * @param string|StreamInterface|resource $input
+     * @param string $input
      * @param int                             $status
      * @param array                           $header
      * @return ResponseInterface
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
     {
-        return ResponseHelper::createResponse($input, $status, $header);
+        $response = $this->response->withStatus($status);
+        $response->getBody()->write($input);
+        foreach($header as $key => $val) {
+            $response = $response->withHeader($key, $val);
+        }
+        return $response;
     }
 
     /**
@@ -63,7 +66,8 @@ class Error extends AbstractWithViewData
      */
     public function asView($status)
     {
-        return $this->respond($this->view->getStream($status, $this->data), $status);
+        $this->data->setStatus($status);
+        return $this->view->withView($this->request, $this->response, $this->data);
     }
 
     /**

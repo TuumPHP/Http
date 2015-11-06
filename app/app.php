@@ -8,8 +8,9 @@ use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\TwigStream;
-use Tuum\Respond\Service\ViewStream;
+use Tuum\Respond\Service\TwigViewer;
+use Tuum\Respond\Service\TuumViewer;
+use Zend\Diactoros\Response;
 
 /** @var Closure $next */
 $next = include __DIR__ . '/appRoutes.php';
@@ -26,9 +27,9 @@ return function (ServerRequestInterface $request) use ($next) {
      * this is the view for template.
      */
     if ($request->getAttribute('view') === 'twig') {
-        $view = TwigStream::forge(__DIR__ . '/twigs');
+        $view = TwigViewer::forge(__DIR__ . '/twigs');
     } else {
-        $view = ViewStream::forge(__DIR__ . '/views');
+        $view = TuumViewer::forge(__DIR__ . '/views');
     }
 
     /**
@@ -43,7 +44,8 @@ return function (ServerRequestInterface $request) use ($next) {
         'handler' => true,
     ]);
     $responder = Responder::build($view, $error, 'layouts/contents')
-        ->withSession($session);
+        ->withSession($session)
+        ->withResponse(new Response());
     $request   = RequestHelper::withSessionMgr($request, $session);
     $request   = RequestHelper::withResponder($request, $responder);
 

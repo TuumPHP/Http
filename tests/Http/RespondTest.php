@@ -8,7 +8,7 @@ use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\ViewStream;
+use Tuum\Respond\Service\Viewer;
 
 class RespondTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,7 +30,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $this->session_factory = SessionStorage::forge([]);
         $this->setPhpTestFunc($this->session_factory);
 
-        $view = ViewStream::forge('');
+        $view = Viewer::forge('');
         $this->responder = Responder::build(
             $view,
             new ErrorView($view)
