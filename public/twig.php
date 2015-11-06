@@ -6,6 +6,7 @@
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
+use Zend\Diactoros\Response\SapiEmitter;
 
 /** @var ResponseInterface $res */
 /** @var Closure $app */
@@ -20,4 +21,5 @@ $req = RequestHelper::createFromGlobal($GLOBALS);
 $req = $req->withAttribute('view', 'twig');
 $res = $app($req);
 
-ResponseHelper::emit($res);
+$emitter = new SapiEmitter;
+$emitter->emit($res);

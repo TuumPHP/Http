@@ -219,39 +219,4 @@ class ResponseHelper
 
         return null;
     }
-
-    /**
-     * emits the response.
-     *
-     * @param ResponseInterface $response
-     */
-    public static function emit($response)
-    {
-        self::emitHeaders($response);
-        echo $response->getBody()->__toString();
-    }
-
-    /**
-     * @param ResponseInterface $response
-     */
-    public static function emitHeaders($response)
-    {
-        header(sprintf(
-            'HTTP/%s %d %s',
-            $response->getProtocolVersion(),
-            $response->getStatusCode(),
-            $response->getReasonPhrase()
-        ));
-        foreach ($response->getHeaders() as $header => $values) {
-            $first = true;
-            foreach ($values as $value) {
-                header(sprintf(
-                    '%s: %s',
-                    $header,
-                    $value
-                ), $first);
-                $first = false;
-            }
-        }
-    }
 }

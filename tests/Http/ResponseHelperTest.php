@@ -162,28 +162,4 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
         ));
         return $list;
     }
-
-    /**
-     * for PhpStorm users (like me):
-     *
-     * this test hangs when running from PhpStorm.
-     * run phpunit from terminal. to get code coverage, try:
-     * phpunit --coverage-clover ../../Respond-coverage.xml
-     *
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     * @group NoStorm
-     */
-    function emit_response()
-    {
-        ob_start();
-        $res = ResponseHelper::createResponse('emit testing', 200, ['test' => 'testing']);
-        ResponseHelper::emit($res);
-        $body = ob_get_contents();
-        $this->assertEquals('emit testing', $body);
-        $list = headers_list();
-        $this->assertEquals([], $list);
-        ob_end_clean();
-    }
 }
