@@ -2,6 +2,7 @@
 namespace tests\Http;
 
 use Tuum\Respond\ResponseHelper;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 class ResponseHelperTest extends \PHPUnit_Framework_TestCase
@@ -21,7 +22,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function createResponse_creates_a_response()
     {
-        $res = ResponseHelper::createResponse('testing');
+        $res = new Response('testing');
         $this->assertEquals('Zend\Diactoros\Response', get_class($res));
         $this->assertEquals('testing', $res->getBody()->__toString());
         $this->assertEquals(200, $res->getStatusCode());
@@ -34,7 +35,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
     {
         $stream = new Stream('php://memory', 'wb+');
         $stream->write('streaming');
-        $res = ResponseHelper::createResponse($stream);
+        $res = new Response($stream);
         $this->assertEquals('streaming', $res->getBody()->__toString());
         $this->assertSame($stream, $res->getBody());
     }
@@ -46,7 +47,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
     {
         $stream = fopen('php://memory', 'wb+');
         fwrite($stream, 'resource');
-        $res = ResponseHelper::createResponse($stream);
+        $res = new Response($stream);
         $this->assertEquals('resource', $res->getBody()->__toString());
         $this->assertSame($stream, $res->getBody()->detach());
     }
@@ -58,7 +59,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
     function createResponse_throws_exception_if_unknown_object_is_given()
     {
         $object = new \stdClass();
-        ResponseHelper::createResponse($object);
+        new Response($object);
     }
 
     /**
@@ -66,7 +67,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function default_response_has_status_200_and_isOk()
     {
-        $res = ResponseHelper::createResponse('testing');
+        $res = new Response('testing');
         $this->assertTrue(ResponseHelper::isOk($res));
     }
 
@@ -75,13 +76,13 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function getLocation_returns_location_header()
     {
-        $res = ResponseHelper::createResponse('testing', 302, ['location' => 'to/test']);
+        $res = new Response('testing', 302, ['location' => 'to/test']);
         $this->assertEquals('to/test', ResponseHelper::getLocation($res));
 
-        $res = ResponseHelper::createResponse('testing', 200, ['location' => 'more/test']);
+        $res = new Response('testing', 200, ['location' => 'more/test']);
         $this->assertEquals('more/test', ResponseHelper::getLocation($res));
 
-        $res = ResponseHelper::createResponse('testing', 302);
+        $res = new Response('testing', 302);
         $this->assertEquals(null, ResponseHelper::getLocation($res));
     }
 
@@ -94,7 +95,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function isDirect_checks_for_redirect_response($status, $expected)
     {
-        $res = ResponseHelper::createResponse('testing', $status);
+        $res = new Response('testing', $status);
         $this->assertEquals($expected, ResponseHelper::isRedirect($res));
     }
     
@@ -120,7 +121,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function isInformational_checks_for_informational_response($method, $status, $expected)
     {
-        $res = ResponseHelper::createResponse('testing', $status);
+        $res = new Response('testing', $status);
         $this->assertEquals($expected, ResponseHelper::$method($res));
     }
     

@@ -3,7 +3,6 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 use Tuum\View\Renderer;
 
 /**

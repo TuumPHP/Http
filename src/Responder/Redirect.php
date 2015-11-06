@@ -4,7 +4,6 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\RequestHelper;
-use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ViewData;
 
 class Redirect extends AbstractWithViewData
@@ -38,7 +37,9 @@ class Redirect extends AbstractWithViewData
             $this->session->setFlash(ViewData::MY_KEY, $this->data);
         }
 
-        return ResponseHelper::composeResponse($this->response, 'php://memory', 302, ['Location' => $uri]);
+        return $this->response
+            ->withStatus(302)
+            ->withHeader('Location', $uri);
     }
 
     /**

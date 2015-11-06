@@ -1,112 +1,11 @@
 <?php
 namespace Tuum\Respond;
 
-use Closure;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
 
 class ResponseHelper
 {
-    /**
-     * a closure for building a response object.
-     * uses Zend/Diactoros Response class if set to null.
-     *
-     * signature is:
-     * $closure(StreamInterface $stream, int $status, array $header);
-     *
-     * @var null|Closure
-     */
-    public static $responseBuilder = null;
-
-    /**
-     * creates a new $response.
-     *
-     * @param StreamInterface|string|resource|object $input
-     * @param int                                    $status
-     * @param array                                  $header
-     * @return Response|ResponseInterface
-     */
-    public static function createResponse($input, $status = 200, array $header = [])
-    {
-        $stream = self::makeStream($input);
-
-        if (is_callable(self::$responseBuilder)) {
-            $builder = self::$responseBuilder;
-            return $builder($stream, $status, $header);
-        }
-
-        if (class_exists(Response::class)) {
-            return new Response(
-                $stream,
-                $status,
-                $header
-            );
-        }
-        throw new \RuntimeException('cannot create response');
-    }
-
-    /**
-     * compose a $response, or creates a new $response if a $response is not set.
-     *
-     * @param ResponseInterface|null                 $response
-     * @param StreamInterface|string|resource|object $input
-     * @param int                                    $status
-     * @param array                                  $header
-     * @return ResponseInterface
-     */
-    public static function composeResponse($response, $input, $status = 200, array $header = [])
-    {
-        if (!$response) {
-            return self::createResponse($input, $status, $header);
-        }
-        $response = $response->withStatus($status);
-        foreach ($header as $name => $val) {
-            $response = $response->withHeader($name, $val);
-        }
-        if (is_string($input)) {
-            $response->getBody()->write($input);
-            return $response;
-        }
-
-        return $response->withBody(self::makeStream($input));
-    }
-
-    /**
-     * create a new stream object based on various $input.
-     * $input can be:
-     * - an object implementing StreamInterface,
-     * - a string,
-     * - a resource,
-     * - an object implementing __toString method.
-     *
-     * @param string|StreamInterface|resource|mixed $input
-     * @return StreamInterface
-     */
-    private static function makeStream($input)
-    {
-        if ($input instanceof StreamInterface) {
-            return $input;
-
-        } elseif (is_string($input)) {
-            $stream = new Stream('php://memory', 'wb+');
-            $stream->write($input);
-
-            return $stream;
-
-        } elseif (is_resource($input)) {
-            return new Stream($input);
-
-        } elseif (is_object($input) && method_exists($input, '__toString')) {
-            $stream = new Stream('php://memory', 'wb+');
-            $stream->write($input->__toString());
-
-            return $stream;
-        }
-        throw new \InvalidArgumentException;
-    }
-
     /**
      * Is this response successful?
      *

@@ -1,7 +1,6 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use RuntimeException;
 use Tuum\Form\DataView;
 
 trait ViewerTrait
