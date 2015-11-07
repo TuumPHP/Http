@@ -61,7 +61,7 @@ abstract class AbstractWithViewData
      */
     public function withRequest(
         ServerRequestInterface $request,
-        ResponseInterface $response = null,
+        ResponseInterface $response,
         SessionStorageInterface $session = null,
         ViewData $viewData = null
     ) {

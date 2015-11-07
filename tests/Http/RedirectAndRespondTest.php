@@ -8,7 +8,6 @@ use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\Viewer;
 use Zend\Diactoros\Response;
 
 class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
@@ -79,7 +78,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $session  = $this->session_factory->withStorage('test');
         $request  = RequestHelper::createFromPath('/more/test');
         $request  = RequestHelper::withSessionMgr($request, $session);
-        $respond  = $this->responder->view($request);
+        $respond  = $this->responder->withSession($session)->view($request);
         
         $refObj  = new \ReflectionObject($respond);
         $refData = $refObj->getProperty('data');

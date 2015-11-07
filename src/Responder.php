@@ -48,15 +48,18 @@ class Responder
      * @param View     $view
      * @param Redirect $redirect
      * @param Error    $error
+     * @param ViewData $viewData
      */
     public function __construct(
         View $view,
         Redirect $redirect,
-        Error $error
+        Error $error,
+        $viewData = null
     ) {
         $this->view     = $view;
         $this->redirect = $redirect;
         $this->error    = $error;
+        $this->viewData = $viewData ?: new ViewData();
     }
 
     /**
