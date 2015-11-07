@@ -118,4 +118,22 @@ class ResponseHelper
 
         return null;
     }
+
+    /**
+     * @param ResponseInterface $response
+     * @param string            $input
+     * @param int               $status
+     * @param array             $header
+     * @return ResponseInterface
+     */
+    public static function fill(ResponseInterface $response, $input, $status, array $header = [])
+    {
+        $response = $response->withStatus($status);
+        $response->getBody()->write($input);
+        foreach($header as $key => $val) {
+            /** @var ResponseInterface $response */
+            $response = $response->withHeader($key, $val);
+        }
+        return $response;
+    }
 }

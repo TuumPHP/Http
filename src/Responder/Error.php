@@ -2,6 +2,7 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
+use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorViewInterface;
 
 class Error extends AbstractWithViewData
@@ -40,12 +41,7 @@ class Error extends AbstractWithViewData
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
     {
-        $response = $this->response->withStatus($status);
-        $response->getBody()->write($input);
-        foreach($header as $key => $val) {
-            $response = $response->withHeader($key, $val);
-        }
-        return $response;
+        return ResponseHelper::fill($this->response, $input, $status, $header);
     }
 
     /**

@@ -3,6 +3,7 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ViewerInterface;
 
 class View extends AbstractWithViewData
@@ -47,12 +48,7 @@ class View extends AbstractWithViewData
      */
     public function asResponse($input, $status = self::OK, array $header = [])
     {
-        $response = $this->response->withStatus($status);
-        $response->getBody()->write($input);
-        foreach($header as $key => $val) {
-            $response = $response->withHeader($key, $val);
-        }
-        return $response;
+        return ResponseHelper::fill($this->response, $input, $status, $header);
     }
 
     /**
