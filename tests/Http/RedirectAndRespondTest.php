@@ -6,8 +6,10 @@ use Tuum\Respond\RequestHelper;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
+use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\ViewData;
 use Tuum\Respond\Service\Viewer;
+use Zend\Diactoros\Response;
 
 class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,11 +31,11 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $this->session_factory = SessionStorage::forge([]);
         $this->setPhpTestFunc($this->session_factory);
 
-        $view = Viewer::forge('');
+        $view = TuumViewer::forge('');
         $this->responder = Responder::build(
             $view,
             new ErrorView($view)
-        );
+        )->withResponse(new Response());
     }
 
     /**

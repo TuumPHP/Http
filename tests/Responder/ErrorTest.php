@@ -1,7 +1,10 @@
 <?php
 namespace tests\Responder;
 
+use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Service\ViewData;
+use Zend\Diactoros\Response;
 
 class ErrorTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,6 +16,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     function setup()
     {
         $this->error = new Error(new ErrorBack());
+        $this->error = $this->error->withRequest(RequestHelper::createFromPath('test'), new Response(), null, new ViewData());
     }
 
     function test0()

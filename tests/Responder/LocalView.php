@@ -1,6 +1,8 @@
 <?php
 namespace tests\Responder;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Service\ViewData;
 use Tuum\Respond\Service\ViewerInterface;
 
@@ -19,14 +21,17 @@ class LocalView implements ViewerInterface
     /**
      * renders $view_file with $data.
      *
-     * @param string   $view_file
-     * @param ViewData $data
-     * @return string
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param ViewData               $view
+     * @return ResponseInterface
      */
-    public function withView($view_file, $data = null)
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
-        $this->view_file = $view_file;
-        $this->data      = $data;
-        return $this;
+        $this->view_file = $view->getViewFile();
+        $this->data      = $view;
+        $response = $response->withHeader('ViewFile', $view->getViewFile());
+        $response->getBody()->write(implode(',',$view->getData()));
+        return $response;
     }
 }

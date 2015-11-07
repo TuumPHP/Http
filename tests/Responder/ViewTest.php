@@ -3,15 +3,22 @@ namespace tests\Responder;
 
 use tests\Http\TesterTrait;
 use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 use Tuum\Respond\Service\ViewerInterface;
+use Zend\Diactoros\Response;
 
 class ViewTest extends \PHPUnit_Framework_TestCase
 {
     use TesterTrait;
+
+    /**
+     * @var Responder
+     */
+    public $responder;
 
     /**
      * @var SessionStorageInterface
@@ -33,10 +40,11 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $_SESSION = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
-        $this->stream = new LocalView();
-        $this->view   = new View($this->stream);
-        $this->view   = $this->view
-            ->withRequest(RequestHelper::createFromPath('test'));
+        $this->responder = Responder::build(
+            new LocalView(),
+            new ErrorBack()
+        )->withResponse(new Response());
+        $this->view   = $this->responder->view(RequestHelper::createFromPath('test'));
     }
 
     function tearDown()
@@ -58,8 +66,8 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         /** @var LocalView $stream */
         $stream = $response->getBody();
         $this->assertEquals('Zend\Diactoros\Response', get_class($response));
-        $this->assertEquals('tests\Responder\LocalView', get_class($stream));
-        $this->assertEquals('test-view', $stream->view_file);
+        $this->assertEquals('Zend\Diactoros\Stream', get_class($stream));
+        $this->assertEquals('test-view', $response->getHeaderLine('ViewFile'));
     }
 
     /**
@@ -68,10 +76,8 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     function asContents_returns_content_file_with_content_data()
     {
         $response = $this->view->asContents('test-content', 'testing/contents');
-        /** @var LocalView $stream */
         $stream = $response->getBody();
-        $this->assertEquals('test-content', $stream->data->getData()['contents']);
-        $this->assertEquals('testing/contents', $stream->view_file);
+        $this->assertEquals('testing/contents', $response->getHeaderLine('ViewFile'));
     }
 
     /**
@@ -81,10 +87,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     {
         $this->view->content_view = 'default/contents';
         $response                 = $this->view->asContents('test-content');
-        /** @var LocalView $stream */
-        $stream = $response->getBody();
-        $this->assertEquals('test-content', $stream->data->getData()['contents']);
-        $this->assertEquals('default/contents', $stream->view_file);
+        $this->assertEquals('default/contents', $response->getHeaderLine('ViewFile'));
     }
 
     /**
@@ -92,9 +95,11 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function asFileContents_returns_fp_as_stream()
     {
-        $fp = fopen('php://memory', 'r+');
+        $fp = fopen('php://memory', 'wb+');
+        fwrite($fp, 'test/resource');
+
         $response = $this->view->asFileContents($fp, 'mime/test');
-        $this->assertSame($fp, $response->getBody()->detach());
+        $this->assertSame('test/resource', $response->getBody()->__toString());
         $this->assertEquals('mime/test', $response->getHeader('Content-Type')[0]);
     }
 }

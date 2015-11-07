@@ -6,6 +6,7 @@ use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\ViewData;
+use Zend\Diactoros\Response;
 
 class ResponderTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,10 +23,10 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
             new LocalView(),
             new ErrorBack()
         );
-        $this->responder = $this->responder->withSession(SessionStorage::forge('tuum-app'));
+        $this->responder = $this->responder->withSession(SessionStorage::forge('tuum-app'))->withResponse(new Response());
     }
 
-    function teardown()
+    function tearDown()
     {
         unset($_SESSION);
     }
@@ -33,6 +34,10 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     function test0()
     {
         $this->assertEquals('Tuum\Respond\Responder', get_class($this->responder));
+        $req = RequestHelper::createFromPath('test');
+        $this->assertEquals('Tuum\Respond\Responder\View', get_class($this->responder->view($req)));
+        $this->assertEquals('Tuum\Respond\Responder\Redirect', get_class($this->responder->redirect($req)));
+        $this->assertEquals('Tuum\Respond\Responder\Error', get_class($this->responder->error($req)));
     }
 
     /**
@@ -41,32 +46,13 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     function with_sets_viewData_which_is_passed_to_subsequent_responders()
     {
         $res = $this->responder->viewData(function(ViewData $view) {
-            $view->setRawData('responder-with', 'tested');
+            $view->setData('test', 'responder-tested');
             return $view;
         });
         $request  = RequestHelper::createFromPath('/base/path');
         $response = $res->view($request)->asView('test/responder');
         /** @var LocalView $view */
-        $view     = $response->getBody();
-        $this->assertEquals('test/responder', $view->view_file);
-        $this->assertEquals('tested', $view->data->getRawData()['responder-with']);
-    }
-
-    /**
-     * @test
-     */
-    function Respond_with_alters_responder()
-    {
-        $request  = RequestHelper::createFromPath('/base/path');
-        $request  = RequestHelper::withResponder($request, $this->responder);
-        $request  = Respond::with($request, function(ViewData $view) {
-            $view->setRawData('respond-with', 'tested');
-            return $view;
-        });
-        $response = Respond::view($request)->asView('test/respond');
-        /** @var LocalView $view */
-        $view     = $response->getBody();
-        $this->assertEquals('test/respond', $view->view_file);
-        $this->assertEquals('tested', $view->data->getRawData()['respond-with']);
+        $this->assertEquals('responder-tested', $response->getBody()->__toString());
+        $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
     }
 }

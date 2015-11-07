@@ -1,36 +1,39 @@
 <?php
 namespace tests\Service;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\ViewData;
 use Tuum\Respond\Service\ViewerInterface;
 use Tuum\Respond\Service\ViewerTrait;
+use Zend\Diactoros\Request;
+use Zend\Diactoros\Response;
 
 class ViewForError implements ViewerInterface
 {
     use ViewerTrait;
 
+    public $view_file;
+    
+    public $view_data;
+    
     /**
      * renders $view_file with $data.
      *
-     * @param string   $view_file
-     * @param ViewData $data
-     * @return ViewerInterface
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param ViewData               $view
+     * @return ResponseInterface
      */
-    public function withView($view_file, $data = null)
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
-        $this->view_file = $view_file;
-        $this->view_data = $data;
+        $this->view_file = $view->getViewFile();
+        $this->view_data = $view;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    protected function render()
-    {
-    }
-    
     public function getViewFile()
     {
         return $this->view_file;
@@ -53,9 +56,27 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
      */
     private $view;
 
+    /**
+     * @var ServerRequestInterface
+     */
+    public $req;
+
+    /**
+     * @var ResponseInterface
+     */
+    public $res;
+
+    /**
+     * @var ViewData
+     */
+    public $viewData;
+
     function setup()
     {
         $this->view  = new ViewForError();
+        $this->req   = RequestHelper::createFromPath('test');
+        $this->res   = new Response();
+        $this->viewData  = new ViewData();
     }
 
     /**
@@ -86,10 +107,12 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
             ],
             'handler' => false,
         ]);
-        $error->getStream('123', ['stream' => 'tested']);
+        $this->viewData->setStatus(123);
+        $error->withView($this->req, $this->res, $this->viewData);
         $this->assertEquals('tested-status', $this->view->getViewFile());
 
-        $error->getStream('234', ['stream' => 'tested']);
+        $this->viewData->setStatus(234);
+        $error->withView($this->req, $this->res, $this->viewData);
         $this->assertEquals('tested-default', $this->view->getViewFile());
     }
 

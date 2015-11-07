@@ -7,6 +7,8 @@ use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Service\ViewData;
+use Zend\Diactoros\Response;
 
 class RedirectTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,7 +30,12 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->session  = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->redirect = new Redirect();
-        //$this->redirect = $this->redirect->withSession($this->session);
+        $this->redirect = $this->redirect->withRequest(
+            RequestHelper::createFromPath('test'), 
+            new Response(), 
+            $this->session, 
+            new ViewData()
+        );
     }
 
     function tearDown()
@@ -57,7 +64,13 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
     {
         $request  = RequestHelper::createFromPath('/base/path');
         $request  = RequestHelper::withBasePath($request, '/base/');
-        $response = $this->redirect->withRequest($request, null, $this->session)->toBasePath('path');
+        $this->redirect = $this->redirect->withRequest(
+            $request,
+            new Response(),
+            $this->session,
+            new ViewData()
+        );
+        $response = $this->redirect->toBasePath('path');
         $this->assertEquals('/base/path', ResponseHelper::getLocation($response));
     }
 
@@ -68,7 +81,13 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
     {
         $request  = RequestHelper::createFromPath('/base/path');
         $request  = RequestHelper::withReferrer($request, '/referrer/');
-        $response = $this->redirect->withRequest($request, null, $this->session)->toReferrer();
+        $this->redirect = $this->redirect->withRequest(
+            $request,
+            new Response(),
+            $this->session,
+            new ViewData()
+        );
+        $response = $this->redirect->toReferrer();
         $this->assertEquals('/referrer/', ResponseHelper::getLocation($response));
     }
 }

@@ -7,8 +7,10 @@ use Tuum\Respond\Responder;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
+use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\ViewData;
 use Tuum\Respond\Service\Viewer;
+use Zend\Diactoros\Response;
 
 class RespondTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,11 +32,11 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $this->session_factory = SessionStorage::forge([]);
         $this->setPhpTestFunc($this->session_factory);
 
-        $view = Viewer::forge('');
+        $view = TuumViewer::forge('');
         $this->responder = Responder::build(
             $view,
             new ErrorView($view)
-        );
+        )->withResponse(new Response());
     }
 
     function tearDown()
@@ -80,7 +82,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asHtml_creates_html_response()
     {
         $request  = RequestHelper::createFromPath('/path/test');
-        $response = ResponseHelper::createResponse('');
+        $response = new Response();
         $response = $this->responder->view($request, $response)->asHtml('<h1>html</h1>');
         $this->assertEquals('text/html', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('<h1>html</h1>', $response->getBody()->__toString());

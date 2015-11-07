@@ -1,21 +1,43 @@
 <?php
 namespace tests\Service;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\Viewer;
+use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
 class ViewStreamFuncTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Viewer
+     * @var TuumViewer
      */
     public $view;
 
+    /**
+     * @var ServerRequestInterface
+     */
+    public $req;
+
+    /**
+     * @var ResponseInterface
+     */
+    public $res;
+
+    /**
+     * @var ViewData
+     */
+    public $viewData;
+
     function setup()
     {
-        $this->view = Viewer::forge(__DIR__.'/views');
+        $this->view = TuumViewer::forge(__DIR__.'/views');
+        $this->req   = RequestHelper::createFromPath('test');
+        $this->res   = new Response();
+        $this->viewData  = new ViewData();
     }
 
     /**
@@ -23,38 +45,9 @@ class ViewStreamFuncTest extends \PHPUnit_Framework_TestCase
      */
     function get_contents()
     {
-        $view = $this->view->withView('simple-text');
-        $this->assertEquals('this is a simple text.', $view->getContents());
+        $this->viewData->setViewFile('simple-text');
+        $res = $this->view->withView($this->req, $this->res, $this->viewData);
+        $this->assertEquals('this is a simple text.', $res->getBody()->__toString());
     }
 
-    /**
-     * @test
-     */
-    function mod_render()
-    {
-        $view = $this->view->withView('simple-text');
-        $renderer = $view->modRenderer(function($renderer) {
-            return $renderer;
-        });
-        $this->assertEquals('Tuum\View\Renderer', get_class($renderer));
-    }
-
-    /**
-     * @test
-     */
-    function check_view_data()
-    {
-        $vd   = new ViewData();
-        $view = $this->view->withView('simple-text', $vd);
-        $data = $view->modRenderer(
-            /**
-             * @return array
-             */
-            function() {
-                /** @noinspection PhpUndefinedFieldInspection */
-                return $this->view_data;
-        });
-        $this->assertTrue(is_array($data));
-        $this->assertEquals('Tuum\Form\DataView', get_class($data['view']));
-    }
 }

@@ -2,6 +2,8 @@
 namespace tests\Responder;
 
 use Exception;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\Service\ErrorViewInterface;
 use Tuum\Respond\Service\ViewData;
@@ -12,26 +14,17 @@ class ErrorBack implements ErrorViewInterface
     public $data;
 
     /**
-     * error handler when catching an exception.
-     * renders an error page with exception's code.
-     *
-     * @param Exception $e
-     */
-    public function __invoke($e)
-    {
-    }
-
-    /**
      * create a stream for error view.
      *
-     * @param int            $code
-     * @param array|ViewData $data
-     * @return StreamInterface
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param ViewData               $view
+     * @return ResponseInterface
      */
-    public function getStream($code, $data = [])
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
-        $this->code = $code;
-        $this->data = $data;
-        return 'code:'. $code;
+        $this->code = $view->getStatus();
+        $this->data = $view;
+        return $response->withStatus($this->code);
     }
 }

@@ -22,7 +22,8 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function createResponse_creates_a_response()
     {
-        $res = new Response('testing');
+        $res = new Response();
+        $res->getBody()->write('testing');
         $this->assertEquals('Zend\Diactoros\Response', get_class($res));
         $this->assertEquals('testing', $res->getBody()->__toString());
         $this->assertEquals(200, $res->getStatusCode());
