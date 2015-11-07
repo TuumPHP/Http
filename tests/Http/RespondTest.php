@@ -4,12 +4,10 @@ namespace tests\Http;
 use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\Viewer;
 use Zend\Diactoros\Response;
 
 class RespondTest extends \PHPUnit_Framework_TestCase
@@ -160,5 +158,25 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $this->moveFlash($this->session_factory);
 
         $this->assertEquals('value1', RequestHelper::getFlash($request, 'with-flash'));
+    }
+
+    /**
+     * @test
+     */
+    function with()
+    {
+        $request = RequestHelper::createFromPath('/path/test');
+        $request = RequestHelper::withResponder($request, $this->responder);
+        $request = Respond::with($request, function(ViewData $view) {
+            $view->setData('test', 'tested');
+            return $view;
+        });
+        $view   = Respond::view($request);
+        $refObj = new \ReflectionObject($view);
+        $refPro = $refObj->getProperty('data');
+        $refPro->setAccessible(true);
+        /** @var ViewData $data */
+        $data   = $refPro->getValue($view);
+        $this->assertEquals('tested', $data->getData()['test']);
     }
 }
