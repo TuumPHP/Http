@@ -39,7 +39,6 @@ abstract class AbstractWithViewData
      */
     private function retrieveViewData()
     {
-        $data = null;
         // retrieving from the flash.
         if ($this->session) {
             $data = $this->session->getFlash(ViewData::MY_KEY);

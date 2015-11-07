@@ -147,7 +147,7 @@ class View extends AbstractWithViewData
      * creates a response for downloading a contents.
      * A contents can be, a text string, a resource, or a stream.
      *
-     * @param string|StreamInterface|resource $content
+     * @param string|resource $content
      * @param string                          $filename
      * @param bool                            $attach download as attachment if true, or inline if false.
      * @param string|null                     $mime
@@ -155,6 +155,10 @@ class View extends AbstractWithViewData
      */
     public function asDownload($content, $filename, $attach = true, $mime = null)
     {
+        if (is_resource($content)) {
+            rewind($content);
+            $content = stream_get_contents($content);
+        }
         $type = $attach ? 'attachment' : 'inline';
         $mime = $mime ?: 'application/octet-stream';
 

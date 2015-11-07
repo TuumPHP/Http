@@ -17,7 +17,7 @@ class Respond
      * @param ResponseInterface|null $response
      * @return mixed
      */
-    private static function respond($name, $request, $response)
+    private static function _getResponder($name, $request, $response)
     {
         /**
          * 1. get responder from the request' attribute.
@@ -63,7 +63,7 @@ class Respond
      */
     public static function view($request, $response = null)
     {
-        return self::respond('view', $request, $response);
+        return self::_getResponder('view', $request, $response);
     }
 
     /**
@@ -75,7 +75,7 @@ class Respond
      */
     public static function redirect($request, $response = null)
     {
-        return self::respond('redirect', $request, $response);
+        return self::_getResponder('redirect', $request, $response);
     }
 
     /**
@@ -87,6 +87,6 @@ class Respond
      */
     public static function error($request, $response = null)
     {
-        return self::respond('error', $request, $response);
+        return self::_getResponder('error', $request, $response);
     }
 }

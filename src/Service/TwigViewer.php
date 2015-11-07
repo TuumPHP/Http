@@ -54,7 +54,7 @@ class TwigViewer implements ViewerInterface
     public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
         $view_file = $view->getViewFile();
-        $view_file       = substr($view_file, -4) === '.twig' ?: $view_file . '.twig';
+        $view_file = (substr($view_file, -4) === '.twig') ?: $view_file . '.twig';
         $view_data = $this->setDataView($view);
 
         $response->getBody()->write($this->renderer->render($view_file, $view_data));

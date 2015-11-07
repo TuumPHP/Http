@@ -207,7 +207,7 @@ class RequestHelper
     }
 
     /**
-     * @param SessionStorageInterface $segment
+     * @param null|SessionStorageInterface $segment
      * @param string|array            $key
      * @param mixed                   $value
      * @param string                  $method
