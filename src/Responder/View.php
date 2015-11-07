@@ -136,14 +136,15 @@ class View extends AbstractWithViewData
     public function asFileContents($file_loc, $mime)
     {
         if (is_string($file_loc)) {
-            $stream = fopen($file_loc, 'rb');
+            $contents = file_get_contents($file_loc);
         } elseif (is_resource($file_loc)) {
-            $stream = $file_loc;
+            rewind($file_loc);
+            $contents = stream_get_contents($file_loc);
         } else {
             throw new \InvalidArgumentException;
         }
 
-        return $this->asResponse($stream, self::OK, ['Content-Type' => $mime]);
+        return $this->asResponse($contents, self::OK, ['Content-Type' => $mime]);
     }
 
     /**
