@@ -58,6 +58,9 @@ class TuumViewer implements ViewerInterface
         $view_data = $this->setDataView($view);
 
         $response->getBody()->write($this->renderer->render($view_file, $view_data));
+        if ($status = $view->getStatus()) {
+            $response = $response->withStatus($status);
+        }
         return $response;
     }
 
