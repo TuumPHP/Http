@@ -1,7 +1,7 @@
 <?php
 namespace tests\Http;
 
-use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Helper\ResponseHelper;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 

@@ -2,9 +2,10 @@
 namespace tests\Responder;
 
 use tests\Http\TesterTrait;
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqAttr;
+use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder\Redirect;
-use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
@@ -31,7 +32,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->setPhpTestFunc($this->session);
         $this->redirect = new Redirect();
         $this->redirect = $this->redirect->withRequest(
-            RequestHelper::createFromPath('test'), 
+            ReqBuilder::createFromPath('test'), 
             new Response(), 
             $this->session, 
             new ViewData()
@@ -62,8 +63,8 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
      */
     function toBasePath_sets_relative_to_basePath()
     {
-        $request  = RequestHelper::createFromPath('/base/path');
-        $request  = RequestHelper::withBasePath($request, '/base/');
+        $request  = ReqBuilder::createFromPath('/base/path');
+        $request  = ReqAttr::withBasePath($request, '/base/');
         $this->redirect = $this->redirect->withRequest(
             $request,
             new Response(),
@@ -79,8 +80,8 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
      */
     function toReferrer_sets_referring_uri_as_location()
     {
-        $request  = RequestHelper::createFromPath('/base/path');
-        $request  = RequestHelper::withReferrer($request, '/referrer/');
+        $request  = ReqBuilder::createFromPath('/base/path');
+        $request  = ReqAttr::withReferrer($request, '/referrer/');
         $this->redirect = $this->redirect->withRequest(
             $request,
             new Response(),

@@ -2,8 +2,8 @@
 namespace tests\Http;
 
 use Tuum\Respond\Responder;
-use Tuum\Respond\RequestHelper;
-use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
@@ -27,14 +27,15 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
     function setup()
     {
         $_SESSION = [];
-        $this->session_factory = SessionStorage::forge([]);
+        $this->session_factory = SessionStorage::forge('test');
         $this->setPhpTestFunc($this->session_factory);
 
         $view = TuumViewer::forge('');
         $this->responder = Responder::build(
             $view,
             new ErrorView($view)
-        )->withResponse(new Response());
+        )->withResponse(new Response())
+        ->withSession($this->session_factory);
     }
 
     /**
@@ -47,9 +48,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         /*
          * a redirect response with various data.
          */
-        $session  = $this->session_factory->withStorage('test');
-        $request  = RequestHelper::createFromPath('/path/test');
-        $request  = RequestHelper::withSessionMgr($request, $session);
+        $request  = ReqBuilder::createFromPath('/path/test');
         $response = $this->responder->redirect($request)
             ->withFlashData('with', 'val1')
             ->with('more', 'with')
@@ -66,7 +65,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * next request. 
          * move the flash, i.e. next request.
          */
-        $session->commit();
+        $this->session_factory->commit();
         $stored = serialize($_SESSION);
         $_SESSION = unserialize($stored);
         
@@ -76,17 +75,15 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * next request with the data from the previous redirection. 
          */
         $session  = $this->session_factory->withStorage('test');
-        $request  = RequestHelper::createFromPath('/more/test');
-        $request  = RequestHelper::withSessionMgr($request, $session);
-        $respond  = $this->responder->withSession($session)->view($request);
+        $responder= $this->responder->withSession($session);
         
-        $refObj  = new \ReflectionObject($respond);
-        $refData = $refObj->getProperty('data');
+        $refObj  = new \ReflectionObject($responder);
+        $refData = $refObj->getProperty('viewData');
         $refData->setAccessible(true);
         /** @var ViewData $data */
-        $data    = $refData->getValue($respond);
+        $data    = $refData->getValue($responder);
 
-        $this->assertEquals('val1', RequestHelper::getFlash($request, 'with'));
+        $this->assertEquals('val1', $responder->session()->getFlash('with'));
         $this->assertEquals('with', $data->getData()['more']);
         $this->assertEquals('message', $data->getMessages()[0]['message']);
         $this->assertEquals('notice-msg', $data->getMessages()[1]['message']);

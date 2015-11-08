@@ -2,7 +2,7 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\ErrorViewInterface;
 
 class Error extends AbstractWithViewData

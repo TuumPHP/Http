@@ -2,7 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\UploadedFile;
@@ -53,7 +53,7 @@ return function ($request) {
      * @return ResponseInterface
      */
     $jumped = function ($request) use($jump) {
-        $request = Respond::with($request, function(ViewData $view) {
+        $request = Respond::withViewData($request, function(ViewData $view) {
             $view->success('redrawn form!');
             $view->inputData(['jumped' => 'redrawn text']);
             $view->inputErrors(['jumped' => 'redrawn error message']);
@@ -127,7 +127,7 @@ return function ($request) {
      * main routine: route match!!!
      */
     $response = null;
-    $path     = RequestHelper::getPathInfo($request);
+    $path     = ReqAttr::getPathInfo($request);
     foreach ($routes as $root => $app) {
         if ($root === $path) {
             $response = $app($request);

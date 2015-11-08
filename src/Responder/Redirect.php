@@ -3,7 +3,7 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Service\ViewData;
 
 class Redirect extends AbstractWithViewData
@@ -68,7 +68,7 @@ class Redirect extends AbstractWithViewData
     public function toBasePath($path = '', $query = '')
     {
         $path = '/' . ltrim($path, '/');
-        $base = RequestHelper::getBasePath($this->request);
+        $base = ReqAttr::getBasePath($this->request);
         $path = rtrim($base, '/') . $path;
         $path = rtrim($path, '/');
         $uri  = $this->request->getUri()->withPath($path);
@@ -84,7 +84,7 @@ class Redirect extends AbstractWithViewData
      */
     public function toReferrer()
     {
-        $referrer = RequestHelper::getReferrer($this->request);
+        $referrer = ReqAttr::getReferrer($this->request);
 
         return $this->toAbsoluteUri($referrer);
     }

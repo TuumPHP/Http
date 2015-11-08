@@ -3,7 +3,7 @@ namespace tests\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\ViewData;
 use Tuum\Respond\Service\ViewerInterface;
@@ -74,7 +74,7 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
     function setup()
     {
         $this->view  = new ViewForError();
-        $this->req   = RequestHelper::createFromPath('test');
+        $this->req   = ReqBuilder::createFromPath('test');
         $this->res   = new Response();
         $this->viewData  = new ViewData();
     }
@@ -114,29 +114,5 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
         $this->viewData->setStatus(234);
         $error->withView($this->req, $this->res, $this->viewData);
         $this->assertEquals('tested-default', $this->view->getViewFile());
-    }
-
-    /**
-     * for PhpStorm users (like me):
-     *
-     * this test hangs when running from PhpStorm.
-     * run phpunit from terminal. to get code coverage, try:
-     * phpunit --coverage-clover ../../Respond-coverage.xml
-     *
-     * @test
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     * @group NoStorm
-     */
-    function invoke_will_emit()
-    {
-        /** @noinspection PhpUnusedLocalVariableInspection */
-        $error = ErrorView::forge($this->view, [
-            'default' => 'error-default',
-        ]);
-        $error->setExitOnTerminate(false);
-
-        $error->__invoke(new ErrorViewException('error-view', 123));
-        $this->assertEquals('error-default', $this->view->getViewFile());
     }
 }

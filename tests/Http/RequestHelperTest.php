@@ -2,7 +2,9 @@
 namespace tests\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqAttr;
+use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Zend\Diactoros\Request;
 
@@ -13,7 +15,7 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
      */
     function createFromPath_creates_request_with_path_and_method()
     {
-        $request = RequestHelper::createFromPath('/http/test', 'post');
+        $request = ReqBuilder::createFromPath('/http/test', 'post');
         $this->assertEquals('/http/test', $request->getUri()->getPath());
         $this->assertEquals('post', $request->getMethod());
     }
@@ -23,10 +25,10 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
      */
     function basePath_sets_base_path_and_path_info()
     {
-        $request = RequestHelper::createFromPath('/http/base/path/test');
-        $request = RequestHelper::withBasePath($request, '/http/base');
-        $this->assertEquals('/http/base', RequestHelper::getBasePath($request));
-        $this->assertEquals('/path/test', RequestHelper::getPathInfo($request));
+        $request = ReqBuilder::createFromPath('/http/base/path/test');
+        $request = ReqAttr::withBasePath($request, '/http/base');
+        $this->assertEquals('/http/base', ReqAttr::getBasePath($request));
+        $this->assertEquals('/path/test', ReqAttr::getPathInfo($request));
     }
 
     /**
@@ -35,8 +37,8 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
      */
     function setting_wrong_basePath_throws_exception()
     {
-        $request = RequestHelper::createFromPath('/http/base/path/test');
-        RequestHelper::withBasePath($request, '/bad/basePath');
+        $request = ReqBuilder::createFromPath('/http/base/path/test');
+        ReqAttr::withBasePath($request, '/bad/basePath');
     }
 
     /**
@@ -44,9 +46,9 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
      */
     function setReferrer_sets_reference()
     {
-        $request = RequestHelper::createFromPath('/http/base/path/test');
-        $request = RequestHelper::withReferrer($request, '/refer/route');
-        $this->assertEquals('/refer/route', RequestHelper::getReferrer($request));
+        $request = ReqBuilder::createFromPath('/http/base/path/test');
+        $request = ReqAttr::withReferrer($request, '/refer/route');
+        $this->assertEquals('/refer/route', ReqAttr::getReferrer($request));
     }
 
     /**
@@ -58,9 +60,9 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
         $obj = $this->getMockBuilder(Responder::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $request = RequestHelper::createFromPath('/http/base/path/test');
-        $request = RequestHelper::withResponder($request, $obj);
-        $obj2 = RequestHelper::getResponder($request);
+        $request = ReqBuilder::createFromPath('/http/base/path/test');
+        $request = Respond::withResponder($request, $obj);
+        $obj2 = Respond::getResponder($request);
         $this->assertSame($obj, $obj2);
     }
 
@@ -71,7 +73,7 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
      */
     function exec_create_from_global()
     {
-        $request = RequestHelper::createFromGlobal([]);
+        $request = ReqBuilder::createFromGlobal([]);
         $this->assertTrue($request instanceof ServerRequestInterface);
     }
 
@@ -80,8 +82,8 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
      */
     function with_and_get_method()
     {
-        $request = RequestHelper::createFromPath('test', 'POST', [], ['_test_method' => 'tested']);
-        $request = RequestHelper::withMethod($request, '_test_method');
-        $this->assertEquals('tested', RequestHelper::getMethod($request));
+        $request = ReqBuilder::createFromPath('test', 'POST', [], ['_test_method' => 'tested']);
+        $request = ReqAttr::withMethod($request, '_test_method');
+        $this->assertEquals('tested', ReqAttr::getMethod($request));
     }
 }

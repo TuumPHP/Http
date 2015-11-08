@@ -3,7 +3,6 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 
@@ -43,16 +42,14 @@ abstract class AbstractWithViewData
     public function withRequest(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        SessionStorageInterface $session = null,
+        SessionStorageInterface $session,
         ViewData $viewData
     ) {
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
         $self->data     = $viewData;
-        if (!$self->session) {
-            $self->session = $session ?: RequestHelper::getSessionMgr($request);
-        }
+        $self->session  = $session;
 
         return $self;
     }

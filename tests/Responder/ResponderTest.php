@@ -1,7 +1,7 @@
 <?php
 namespace tests\Responder;
 
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
@@ -34,7 +34,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     function test0()
     {
         $this->assertEquals('Tuum\Respond\Responder', get_class($this->responder));
-        $req = RequestHelper::createFromPath('test');
+        $req = ReqBuilder::createFromPath('test');
         $this->assertEquals('Tuum\Respond\Responder\View', get_class($this->responder->view($req)));
         $this->assertEquals('Tuum\Respond\Responder\Redirect', get_class($this->responder->redirect($req)));
         $this->assertEquals('Tuum\Respond\Responder\Error', get_class($this->responder->error($req)));
@@ -49,7 +49,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
             $view->setData('test', 'responder-tested');
             return $view;
         });
-        $request  = RequestHelper::createFromPath('/base/path');
+        $request  = ReqBuilder::createFromPath('/base/path');
         $response = $res->view($request)->asView('test/responder');
         /** @var LocalView $view */
         $this->assertEquals('responder-tested', $response->getBody()->__toString());
@@ -61,7 +61,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
      */
     function View_withViewData_sets_viewData()
     {
-        $request  = RequestHelper::createFromPath('/base/path');
+        $request  = ReqBuilder::createFromPath('/base/path');
         $response = $this->responder
             ->view($request)
             ->withViewData(function(ViewData $view) {

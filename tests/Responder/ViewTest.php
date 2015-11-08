@@ -2,7 +2,7 @@
 namespace tests\Responder;
 
 use tests\Http\TesterTrait;
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorage;
@@ -36,8 +36,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->responder = Responder::build(
             new LocalView(),
             new ErrorBack()
-        )->withResponse(new Response());
-        $this->view   = $this->responder->view(RequestHelper::createFromPath('test'));
+        )->withResponse(new Response())
+        ->withSession($this->session);
+        $this->view   = $this->responder->view(ReqBuilder::createFromPath('test'));
     }
 
     function tearDown()

@@ -10,6 +10,25 @@ use Tuum\Respond\Responder\View;
 class Respond
 {
     /**
+     * @param ServerRequestInterface $request
+     * @param Responder              $responder
+     * @return ServerRequestInterface
+     */
+    public static function withResponder($request, $responder)
+    {
+        return $request->withAttribute(Responder::class, $responder);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return Responder
+     */
+    public static function getResponder(ServerRequestInterface $request)
+    {
+        return $request->getAttribute(Responder::class);
+    }
+
+    /**
      * get the responder of $name.
      *
      * @param string                 $name
@@ -24,7 +43,7 @@ class Respond
          *
          * @var Responder $responder
          */
-        if (!$responder = RequestHelper::getResponder($request)) {
+        if (!$responder = self::getResponder($request)) {
             throw new \BadMethodCallException;
         }
 
@@ -42,14 +61,14 @@ class Respond
      * @param callable               $closure
      * @return ServerRequestInterface
      */
-    public static function with($request, callable $closure = null)
+    public static function withViewData($request, callable $closure = null)
     {
-        if (!$responder = RequestHelper::getResponder($request)) {
+        if (!$responder = Respond::getResponder($request)) {
             throw new \BadMethodCallException;
         }
         if ($closure && is_callable($closure)) {
             $responder = $responder->withViewData($closure);
-            $request   = RequestHelper::withResponder($request, $responder);
+            $request   = Respond::withResponder($request, $responder);
         }
 
         return $request;
@@ -89,5 +108,14 @@ class Respond
     public static function error($request, $response = null)
     {
         return self::_getResponder('error', $request, $response);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return Service\SessionStorageInterface
+     */
+    public static function session($request)
+    {
+        return self::getResponder($request)->session();
     }
 }

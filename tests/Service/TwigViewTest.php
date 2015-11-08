@@ -1,7 +1,7 @@
 <?php
 namespace tests\Service;
 
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Service\TwigViewer;
 use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\Response;
@@ -19,7 +19,7 @@ class TwigViewTest extends \PHPUnit_Framework_TestCase
         $view = new ViewData();
         $view->setViewFile('twig-text');
         
-        $res = $twig->withView(RequestHelper::createFromPath('test'), new Response(), $view);
+        $res = $twig->withView(ReqBuilder::createFromPath('test'), new Response(), $view);
         $this->assertEquals('this is a text from twig.', $res->getBody()->__toString());
     }
 

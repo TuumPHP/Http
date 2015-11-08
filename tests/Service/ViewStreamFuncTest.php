@@ -3,7 +3,7 @@ namespace tests\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
+use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\Response;
@@ -35,7 +35,7 @@ class ViewStreamFuncTest extends \PHPUnit_Framework_TestCase
     function setup()
     {
         $this->view = TuumViewer::forge(__DIR__.'/views');
-        $this->req   = RequestHelper::createFromPath('test');
+        $this->req   = ReqBuilder::createFromPath('test');
         $this->res   = new Response();
         $this->viewData  = new ViewData();
     }

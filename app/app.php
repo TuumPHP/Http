@@ -2,7 +2,6 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\RequestHelper;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
@@ -45,9 +44,9 @@ return function (ServerRequestInterface $request) use ($next) {
     ]);
     $responder = Responder::build($view, $error, 'layouts/contents')
         ->withSession($session)
-        ->withResponse(new Response());
-    $request   = RequestHelper::withSessionMgr($request, $session);
-    $request   = RequestHelper::withResponder($request, $responder);
+        ->withResponse(new Response())
+        ->withSession($session);
+    $request   = Respond::withResponder($request, $responder);
 
     /**
      * run the next process!!!

@@ -186,4 +186,11 @@ class Responder
     ) {
         return $this->returnWith($this->error, $request, $response);
     }
+
+    /**
+     * @return SessionStorageInterface
+     */
+    public function session() {
+        return $this->session;
+    }
 }

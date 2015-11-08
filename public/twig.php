@@ -4,8 +4,7 @@
  * a sample web application using Tuum/Respond.
  */
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\RequestHelper;
-use Tuum\Respond\ResponseHelper;
+use Tuum\Respond\Helper\ReqBuilder;
 use Zend\Diactoros\Response\SapiEmitter;
 
 /** @var ResponseInterface $res */
@@ -17,7 +16,7 @@ include dirname(__DIR__) . "/app/autoload.php";
  * run web application for the request.
  */
 $app = include dirname(__DIR__) . '/app/app.php';
-$req = RequestHelper::createFromGlobal($GLOBALS);
+$req = ReqBuilder::createFromGlobal($GLOBALS);
 $req = $req->withAttribute('view', 'twig');
 $res = $app($req);
 
