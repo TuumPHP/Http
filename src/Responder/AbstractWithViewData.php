@@ -30,29 +30,6 @@ abstract class AbstractWithViewData
     protected $data;
 
     /**
-     * returns a new ViewData as followings:
-     * - retrieve from the session's flash data,
-     * - retrieve from the container, or
-     * - create a new ViewData.
-     *
-     * @return ViewData
-     */
-    private function retrieveViewData()
-    {
-        // retrieving from the flash.
-        if ($this->session) {
-            $data = $this->session->getFlash(ViewData::MY_KEY);
-            if ($data) {
-                // if ViewData is taken from the session,
-                // detach it from the object in the session.
-                return clone($data);
-            }
-        }
-
-        return new ViewData();
-    }
-
-    /**
      * @param ServerRequestInterface  $request
      * @param ResponseInterface       $response
      * @param SessionStorageInterface $session
@@ -63,15 +40,15 @@ abstract class AbstractWithViewData
         ServerRequestInterface $request,
         ResponseInterface $response,
         SessionStorageInterface $session = null,
-        ViewData $viewData = null
+        ViewData $viewData
     ) {
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
+        $self->data     = $viewData;
         if (!$self->session) {
             $self->session = $session ?: RequestHelper::getSessionMgr($request);
         }
-        $self->data = $viewData ?: $self->retrieveViewData();
 
         return $self;
     }

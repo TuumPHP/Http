@@ -83,10 +83,14 @@ class Responder
     }
 
     /**
+     * set SessionStorage and retrieves ViewData from session's flash.
+     * execute this method before using responders.
+     * 
+     * @api
      * @param SessionStorageInterface $session
      * @return Responder
      */
-    public function withSession($session)
+    public function withSession(SessionStorageInterface $session)
     {
         $self          = clone($this);
         $self->session = $session;
@@ -101,10 +105,17 @@ class Responder
     }
 
     /**
+     * set response object when omitting $response when calling 
+     * responders, such as:
+     * Respond::view($request);
+     * 
+     * responders will return $response using this object. 
+     *
+     * @api
      * @param ResponseInterface $response
      * @return Responder
      */
-    public function withResponse($response)
+    public function withResponse(ResponseInterface $response)
     {
         $self           = clone($this);
         $self->response = $response;
@@ -115,14 +126,12 @@ class Responder
     /**
      * modifies viewData.
      *
+     * @api
      * @param callable $closure
      * @return Responder
      */
     public function withViewData(callable $closure)
     {
-        if (!$this->viewData) {
-            $this->viewData = new ViewData();
-        }
         $self           = clone($this);
         $self->viewData = $closure($this->viewData);
 
