@@ -40,9 +40,9 @@ class View extends AbstractWithViewData
     /**
      * creates a generic response.
      *
-     * @param string $input
-     * @param int    $status
-     * @param array  $header
+     * @param string|resource $input
+     * @param int             $status
+     * @param array           $header
      * @return ResponseInterface
      */
     public function asResponse($input, $status = self::OK, array $header = [])
@@ -155,10 +155,6 @@ class View extends AbstractWithViewData
      */
     public function asDownload($content, $filename, $attach = true, $mime = null)
     {
-        if (is_resource($content)) {
-            rewind($content);
-            $content = stream_get_contents($content);
-        }
         $type = $attach ? 'attachment' : 'inline';
         $mime = $mime ?: 'application/octet-stream';
 

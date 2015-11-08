@@ -121,7 +121,7 @@ class ResponseHelper
 
     /**
      * @param ResponseInterface $response
-     * @param string            $input
+     * @param string|resource   $input
      * @param int               $status
      * @param array             $header
      * @return ResponseInterface
@@ -129,7 +129,14 @@ class ResponseHelper
     public static function fill(ResponseInterface $response, $input, $status, array $header = [])
     {
         $response = $response->withStatus($status);
-        $response->getBody()->write($input);
+        if (is_resource($input)) {
+            rewind($input);
+            $response->getBody()->write(stream_get_contents($input));
+        } elseif (is_string($input)) {
+            $response->getBody()->write($input);
+        } else {
+            throw new \InvalidArgumentException('input must be a string or resource. ');
+        }
         foreach ($header as $key => $val) {
             /** @var ResponseInterface $response */
             $response = $response->withHeader($key, $val);

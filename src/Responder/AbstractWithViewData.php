@@ -94,7 +94,7 @@ abstract class AbstractWithViewData
     }
 
     /**
-     * @param string|array $key
+     * @param string       $key
      * @param mixed        $value
      * @return $this
      */
