@@ -43,7 +43,6 @@ return function (ServerRequestInterface $request) use ($next) {
         'handler' => true,
     ]);
     $responder = Responder::build($view, $error, 'layouts/contents')
-        ->withSession($session)
         ->withResponse(new Response())
         ->withSession($session);
     $request   = Respond::withResponder($request, $responder);
