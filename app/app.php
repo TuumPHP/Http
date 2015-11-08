@@ -50,7 +50,7 @@ return function (ServerRequestInterface $request) use ($next) {
     /**
      * run the next process!!!
      */
-    $response = $next($request) ?: Respond::error($request)->notFound();
+    $response = $next($request, $responder) ?: Respond::error($request)->notFound();
 
     /**
      * done. save session.

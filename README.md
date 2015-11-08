@@ -34,150 +34,191 @@ and access ```localhost:8888``` by any browser. The sample site uses external bo
 Overview
 --------
 
-Tuum/Respond can be used together with Psr-7 based middlewares and micro-frameworks to compliment extra functionalities for developing ordinary web sites. 
+Tuum/Respond can be used together with PSR-7 based middlewares and micro-frameworks to compliment extra functionalities for developing ordinary web sites. 
 
-### Helper Classes
+### Accessing Responder Object
 
-Helper classes helps to manage Psr-7 http message objects. For instance, 
+There are two ways to access the responder object: by injecting the responder object, or by storing the responder object in $request's attribute. 
 
-```php
-$bool = ResponseHelper::isRedirect($response);
-``` 
-
-will evaluate $response to check for redirect response. There are helpers for request and responce. 
-
-### Responder Classes
-
-The __responders__ are the main part of this package.
-
-Responders to simplify the composing a response object, by providing various response types such as text, jason, html, or redirection. But more uniquely, the responders enables to transfer data across http requests using sessions and flashes. For instance, 
+Here's an example for rendering a template. 
 
 ```php
-$app = new App(); // some micro-framework app. 
+// use $responder object to render index page. 
+$app->get('/' function ($request) use($responder) {
+    return $responder->view($request , $response)
+        ->asView('index');
+});
+```
 
+To use `Respond` class, set the responder object in prior to of using. 
+
+```php
+// set $responder object. 
+$request = Respond::withResponder($request, $responder);
+
+
+// use Respond class to access responder object. 
+$app->get('/jump', $jump = function($request, $response) {
+	return Respond::view($request, $response)
+	    ->asView('jump'); // with the 'welcome!' message.
+});
+```
+
+### Post-Redirect-Get Pattern
+
+The Responder simplifies implementing Post-Redirect-Get pattern by saving data in session's flash data and access it across http requests. For instance, 
+
+```php
 // redirects to /jumped.
 $app->get('/jumper', function($request, $response) {
 	return Respond::redirect($request, $response)
-	    ->withMessage('bad input!') // <- set up info.
-	    ->withInputData(['some' => 'value'])
-	    ->withInputErrors(['some' => 'bad value'])
+        ->withMessage('redirected back!')
+        ->withInputData(['jumped' => 'redirected text'])
+        ->withInputErrors(['jumped' => 'redirected error message'])
 	    ->toPath('/jumped');
 	});
-
-// ...and this is jumped.
-$app->get('/jumped', function($request, $response) {
-	return Respond::view($request, $response)
-	    ->asView('template'); // with the 'welcome!' message.
-});
 ```
-Accessing ```/jumper``` will redirect to ```/jumped``` with the message __"welcome!"__ and other data. These data appears automatically in the second request's view. 
+
+Accessing `/jumper` will redirect to `/jump` with the message __"redirected back!"__ and other data. These data are retrieved in the subsequent request, and passed to the view automatically. 
 
 > looks familiar API? I like Laravel very much!
 
-### Services
+### Prepare View
 
-The Psr-7 http/message does not provide all the necessary functionalities to use the responders. You need to supply services that are defined by following interfaces. 
+There's another way of displaying view with extra information. This example shows when accessing '/jumped' path, it draws a page using `$jump` closure. But in prior to the $jump, it sets various data to $responder to be drawn in the view. 
 
-*   ```SessionStorageInterface``` for session,
-*   ```ViewStreamInterface``` for views, and
-*   ```ErrorViewInterface```.
+```php
+$app->get('/jumped', function($request, $response) use ($jump) {
+    $request = Respond::withViewData($request, function(ViewData $view) {
+        $view->success('redrawn form!');
+        $view->inputData(['jumped' => 'redrawn text']);
+        $view->inputErrors(['jumped' => 'redrawn error message']);
+        return $view;
+    });
+    return $jump($request, $response);
+});
+```
 
-optionaly, 
-
-*   ```ContainerInterface``` for containers, 
-
-maybe used to provide services.
-
-### Packages
-
-Currently, Tuum/Respond uses following packages. 
-
-*   [Zendframework/Zend-Diactoros](https://github.com/zendframework/zend-diactoros) as a default Psr-7 objects.
-*   [Aura/Session]() for managing session and flash storage.
-*   [Tuum/View](https://github.com/TuumPHP/View) for rendering a PHP as a template.
-*   [Tuum/Form](https://github.com/TuumPHP/Form) for html form elements and data helpers.
-*   [Container-interop/container-interop](https://github.com/auraphp/Aura.Session) for container.
-
-> Yep, uses home grown views and forms (;´д｀)
-
-
-Responders
+Responder
 ---------
 
-The respnders simplfies the composition of response object by using various services and information from `$request`. There are 3 responders: 
+The respnder object is composed of 3 responders, `View`, `Redirect`, and `Error`, as well as `SessionStorage` object. 
 
-*   `View`: to create a response with a view body. 
-*   `Redirect`: to create a redirect response. 
-*   `Error`: to create response with error status and view. 
+*   `View`: to create a response with a view body. example: `$view->asView('template/name');`
+*   `Redirect`: to create a redirect response. example: `$redirect->toPath('path/to');`
+*   `Error`: to create response with error status and view. example: `$error->notFound();`
+*   `SessionStorage`: manages session and flash data, which is essentially the Aura.Session's segment. example: `$session->setFlash('key', 'value');`. 
 
-#### Responder Class
-
-There is a `Responder` class for conveniently access these responders; 
+The constructor looks like;
 
 ```php
-use Tuum\Respond\Responder;
-$responder = new Responder(
-    $view, $redirect, $error
-)->withSession($session);
+$responder = (new Responder(new View, new Redirect, new Error))
+	->withSession($session);
 ```
 
-The arguments for the constructors are the each responder. 
 
-> The $session must implements `SessionStorageInterface`. Session is set after the construction because the scope of the responder maybe different from construction and runtime. 
+### Responder::builder
 
-There is a static method for building a responder using default classes. 
+But the easiest way, currently, to build a responder object is to use `Responder::build` method, which takes, `ViewerInterface`, `SessionStorageInterface` object, and some configuration array for errors. 
 
 ```php
-use Tuum\Respond\Responder;
-$responder = Responder::build(
-    ViewStream::forge('view'), 
-    ErrorView::forge([...config...])
-)->withSession($session);
+$view    = TwigViewer::forge(__DIR__ . '/twigs');
+$session = SessionStorage::forge('sample');
+$error   = ErrorView::forge($view, [
+    'default' => 'errors/error',
+    'status'  => [
+        404 => 'errors/notFound',
+    ],
+]);
+$responder = Responder::build($view, $error, 'layouts/contents')
+    ->withResponse(new Response())
+    ->withSession($session);
 ```
 
-Access responders like.
+#### setting `$response` object
+
+Responders takes `$request` and `$response` objects as arguments. To omit the second `$response` object, set it using `withResponse` method in prior to using it. 
 
 ```php
-return $responder->view($request, $response)
-    ->with('my', 'key')
+$responder = $responder->withResponse($response);
+return $responder->view($request)->asView('index');
+```
+
+> Responder needs a `$response` object to return since it does not know how to construct a response object. (as it being a framework agnostic module).
+
+#### using `Respond` class
+
+As noted before, `Respond` class offers a convenient way to access responders using __static method__. Use `Respond::withResponder` method to set the responder as an attribute of a `$request` object. 
+
+```php
+$request = Respond::withResponder($request, $responder);
+```
+
+what it is doing inside is this. 
+
+```php
+$request = $request->withAttribute(Responder::class, $responder);
+```
+
+
+You can access the responder, or each of resopnders as:
+
+```php
+$responder = Resopnd::getResponder($request);
+$view      = Resopnd::view($request, $response);
+$redirect  = Resopnd::view($request, $response);
+$error     = Resopnd::view($request, $response);
+$session   = Resopnd::view($request);
+```
+
+### Setting View Data
+
+`ViewData` is a DTO (data-transfer-object) between responders, as well as between requests via session's flash. There are many methods to set and manage the data object. 
+
+#### `withViewData` method
+
+All the responder objects have `withViewData` method
+All of `$responder` and associated responder objects has 
+
+```php
+$responder = $responder->withViewData(
+	function(ViewData $view) {
+		$view->success('success message');
+		$view->inputData(['key' => 'value']);
+		$view->inputError(['key' => 'some error']);
+		return $view;
+});
+```
+
+As for Respond class, it works like,
+
+```php
+$request = Respond::withViewData($respond, 
+	function(ViewData $view) {
+		return $view;
+});
+```
+
+
+#### shared API
+
+Furthermore, the View, Redirect, and Error responders share the same API to manage ViewData, that are:
+
+```php
+Respond::view($request)
+    ->with('name', 'data')
+    ->withMessage('message')
+    ->withAlert('alert-message')
+    ->withError('error-message')
+    ->withInputError(['key' => 'value'])
+    ->withInputData(['key' => 'some error'])
     ->asView('view-file');
 ```
 
-To start responders, provide `$request` and `$response` objects to the methods. If `$response` is not given, the responder will create a new `$response` object. 
 
 
-### Respond Class
+HERE HERE HERE
 
-The `Respond` class provides a quick way to create or access these responders using convenient static methods. The trick is, you must register the `responder` in the $request' attribute.
-
-```php
-use Tuum\Respond\Respond;
-$request = $request->withAttribute(Responder::class, $responder);
-
-Respond::view($request, $response);
-// or...
-Respond::view($request);
-```
-
-
-For the simplicity of the code, the subsequent samples use only ```$request``` as input. 
-
-#### Setting Services for Respond Class
-
-You can register the responder, either in
-
-*   $request's attribute as Resonder::class, or 
-*   using a container which implements ContainerInterface.  
-
-To use the container, set up the container, and use `RequestHelper::withApp` method to set the container in the $request. 
-
-```php
-$app = new Container; // some container. 
-$app->set(ViewStreamInterface::class, 
-    ViewStream::forge(__DIR__.'/views')
-);
-$request = RequestHelper::withApp($request, $app);
-```
 
 
 View Responder
@@ -268,6 +309,34 @@ To enable this feature, provide ```ErrorViewInterface``` object to the responder
 Services
 ------
 
+### Services
+
+The Psr-7 http/message does not provide all the necessary functionalities to use the responders. You need to supply services that are defined by following interfaces. 
+
+*   ```SessionStorageInterface``` for session,
+*   ```ViewStreamInterface``` for views, and
+*   ```ErrorViewInterface```.
+
+optionaly, 
+
+*   ```ContainerInterface``` for containers, 
+
+maybe used to provide services.
+
+### Packages
+
+Currently, Tuum/Respond uses following packages. 
+
+*   [Zendframework/Zend-Diactoros](https://github.com/zendframework/zend-diactoros) as a default Psr-7 objects.
+*   [Aura/Session]() for managing session and flash storage.
+*   [Tuum/View](https://github.com/TuumPHP/View) for rendering a PHP as a template.
+*   [Tuum/Form](https://github.com/TuumPHP/Form) for html form elements and data helpers.
+*   [Container-interop/container-interop](https://github.com/auraphp/Aura.Session) for container.
+
+> Yep, uses home grown views and forms (;´д｀)
+
+
+
 The responders requires many services to operate. 
 These services are stored in ```$request->withAttribute``` method. 
 
@@ -357,6 +426,17 @@ $request = RequestHelper::withApp($request, $app);
 
 Helpers
 -------
+
+### Helper Classes
+
+Helper classes helps to manage Psr-7 http message objects. For instance, 
+
+```php
+$bool = ResponseHelper::isRedirect($response);
+``` 
+
+will evaluate $response to check for redirect response. There are helpers for request and responce. 
+
 
 ### RequestHelper
 

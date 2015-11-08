@@ -4,6 +4,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\UploadedFile;
 
@@ -11,16 +12,17 @@ use Zend\Diactoros\UploadedFile;
  * set routes and dispatch.
  *
  * @param ServerRequestInterface $request
+ * @param Responder              $responder
  * @return ResponseInterface
  */
-return function ($request) {
+return function ($request, $responder) {
 
     /**
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    $all = function ($request) {
-        return Respond::view($request)
+    $all = function ($request) use($responder) {
+        return $responder->view($request)
             ->asView('index');
     };
 
