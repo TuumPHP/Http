@@ -32,7 +32,7 @@ return function (ServerRequestInterface $request) use ($next) {
     }
 
     /**
-     * construct session and responder.
+     * construct responder.
      */
     $session   = SessionStorage::forge('sample');
     $error     = ErrorView::forge($view, [
