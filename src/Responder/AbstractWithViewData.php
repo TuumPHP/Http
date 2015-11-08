@@ -34,7 +34,6 @@ abstract class AbstractWithViewData
      * and optionally $session. intended to be internal API used
      * by Responder object and tests. 
      * 
-     * @internal
      * @param ServerRequestInterface  $request
      * @param ResponseInterface       $response
      * @param SessionStorageInterface $session
