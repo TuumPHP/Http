@@ -7,8 +7,6 @@ use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
-use Tuum\Respond\Service\ViewData;
-use Tuum\Respond\Service\ViewerInterface;
 use Zend\Diactoros\Response;
 
 class ViewTest extends \PHPUnit_Framework_TestCase
@@ -29,11 +27,6 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      * @var View
      */
     private $view;
-
-    /**
-     * @var ViewerInterface
-     */
-    private $stream;
 
     function setup()
     {
@@ -76,7 +69,6 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     function asContents_returns_content_file_with_content_data()
     {
         $response = $this->view->asContents('test-content', 'testing/contents');
-        $stream = $response->getBody();
         $this->assertEquals('testing/contents', $response->getHeaderLine('ViewFile'));
     }
 

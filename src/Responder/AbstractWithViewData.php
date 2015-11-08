@@ -30,6 +30,11 @@ abstract class AbstractWithViewData
     protected $data;
 
     /**
+     * initializes responders with $request, $response, $viewData,
+     * and optionally $session. intended to be internal API used
+     * by Responder object and tests. 
+     * 
+     * @internal
      * @param ServerRequestInterface  $request
      * @param ResponseInterface       $response
      * @param SessionStorageInterface $session
@@ -56,6 +61,7 @@ abstract class AbstractWithViewData
     /**
      * copies request's attributes into data using keys.
      *
+     * @api
      * @param string $arg
      * @return $this
      */
@@ -71,6 +77,7 @@ abstract class AbstractWithViewData
     }
 
     /**
+     * @api
      * @param string       $key
      * @param mixed        $value
      * @return $this
@@ -88,6 +95,7 @@ abstract class AbstractWithViewData
     /**
      * modifies viewData.
      *
+     * @api
      * @param callable $closure
      * @return static
      */
