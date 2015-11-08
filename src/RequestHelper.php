@@ -27,8 +27,8 @@ class RequestHelper
     public static function createFromPath(
         $path,
         $method = 'GET',
-        $query  = [],
-        $post   = []
+        $query = [],
+        $post = []
     ) {
         $request = new ServerRequest(
             [],
@@ -156,6 +156,7 @@ class RequestHelper
         if (isset($data[$key])) {
             return $request->withAttribute(self::METHOD, $data[$key]);
         }
+
         return $request;
     }
 
@@ -208,9 +209,9 @@ class RequestHelper
 
     /**
      * @param null|SessionStorageInterface $segment
-     * @param string|array            $key
-     * @param mixed                   $value
-     * @param string                  $method
+     * @param string|array                 $key
+     * @param mixed                        $value
+     * @param string                       $method
      */
     private static function magicSet($segment, $key, $value, $method)
     {
@@ -308,6 +309,7 @@ class RequestHelper
     public static function loadReferrer(ServerRequestInterface $request)
     {
         $referrer = RequestHelper::getSession($request, self::REFERRER);
+
         return $request->withAttribute(self::REFERRER, $referrer);
     }
 

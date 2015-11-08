@@ -61,6 +61,7 @@ class TuumViewer implements ViewerInterface
         if ($status = $view->getStatus()) {
             $response = $response->withStatus($status);
         }
+
         return $response;
     }
 
@@ -73,9 +74,10 @@ class TuumViewer implements ViewerInterface
         if (!$data) {
             return [];
         }
-        $view = $this->forgeDataView($data);
-        $view_data = $data->getRawData();
+        $view              = $this->forgeDataView($data);
+        $view_data         = $data->getRawData();
         $view_data['view'] = $view;
+
         return $view_data;
     }
 }

@@ -47,10 +47,11 @@ class Respond
         if (!$responder = RequestHelper::getResponder($request)) {
             throw new \BadMethodCallException;
         }
-        if ($closure && is_callable($closure))         {
+        if ($closure && is_callable($closure)) {
             $responder = $responder->viewData($closure);
             $request   = RequestHelper::withResponder($request, $responder);
         }
+
         return $request;
     }
 

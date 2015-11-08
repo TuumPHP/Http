@@ -142,6 +142,7 @@ class SessionStorage implements SessionStorageInterface
     public function validateToken($value)
     {
         $token = $this->session->getCsrfToken();
+
         return $token->isValid($value);
     }
 

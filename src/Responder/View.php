@@ -2,7 +2,6 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\ResponseHelper;
 use Tuum\Respond\Service\ViewerInterface;
 
@@ -42,8 +41,8 @@ class View extends AbstractWithViewData
      * creates a generic response.
      *
      * @param string $input
-     * @param int                             $status
-     * @param array                           $header
+     * @param int    $status
+     * @param array  $header
      * @return ResponseInterface
      */
     public function asResponse($input, $status = self::OK, array $header = [])
@@ -58,6 +57,7 @@ class View extends AbstractWithViewData
     private function asViewStream($file)
     {
         $this->data->setViewFile($file);
+
         return $this->view->withView($this->request, $this->response, $this->data);
     }
 
@@ -148,9 +148,9 @@ class View extends AbstractWithViewData
      * A contents can be, a text string, a resource, or a stream.
      *
      * @param string|resource $content
-     * @param string                          $filename
-     * @param bool                            $attach download as attachment if true, or inline if false.
-     * @param string|null                     $mime
+     * @param string          $filename
+     * @param bool            $attach download as attachment if true, or inline if false.
+     * @param string|null     $mime
      * @return ResponseInterface
      */
     public function asDownload($content, $filename, $attach = true, $mime = null)

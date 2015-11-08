@@ -49,7 +49,7 @@ class ErrorView implements ErrorViewInterface
             'status'  => [],
         ];
         $error->default_error = $options['default'];
-        $error->statusView = $options['status'];
+        $error->statusView    = $options['status'];
 
         return $error;
     }
@@ -79,6 +79,7 @@ class ErrorView implements ErrorViewInterface
     {
         $status = $data->getStatus();
         $data->setViewFile($this->findViewFromStatus($status));
+
         return $this->view->withView($request, $response, $data);
     }
 

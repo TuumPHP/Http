@@ -130,10 +130,11 @@ class ResponseHelper
     {
         $response = $response->withStatus($status);
         $response->getBody()->write($input);
-        foreach($header as $key => $val) {
+        foreach ($header as $key => $val) {
             /** @var ResponseInterface $response */
             $response = $response->withHeader($key, $val);
         }
+
         return $response;
     }
 }

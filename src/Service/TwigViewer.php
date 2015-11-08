@@ -40,6 +40,7 @@ class TwigViewer implements ViewerInterface
     {
         $loader = new Twig_Loader_Filesystem($root);
         $twig   = new Twig_Environment($loader, $options);
+
         return new static($twig);
     }
 
@@ -58,6 +59,7 @@ class TwigViewer implements ViewerInterface
         $view_data = $this->setDataView($view);
 
         $response->getBody()->write($this->renderer->render($view_file, $view_data));
+
         return $response;
     }
 
@@ -73,6 +75,7 @@ class TwigViewer implements ViewerInterface
         $view = $this->forgeDataView($data);
         $this->renderer->addGlobal('viewData', $view);
         $view_data = $data->getData();
+
         return $view_data;
     }
 }

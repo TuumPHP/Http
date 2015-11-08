@@ -21,12 +21,12 @@ class ViewData
      * @var int
      */
     private $status;
-    
+
     /**
      * @var string
      */
     private $view_file;
-    
+
     /**
      * @var array
      */
@@ -71,6 +71,7 @@ class ViewData
     public function setRawData($key, $value)
     {
         $this->rawData[$key] = $value;
+
         return $this;
     }
 
@@ -98,6 +99,7 @@ class ViewData
         } else {
             $this->data[$key] = $value;
         }
+
         return $this;
     }
 
@@ -118,6 +120,7 @@ class ViewData
     public function inputData(array $value)
     {
         $this->inputData = $value;
+
         return $this;
     }
 
@@ -139,6 +142,7 @@ class ViewData
     public function inputErrors(array $errors)
     {
         $this->inputErrors = $errors;
+
         return $this;
     }
 
@@ -164,6 +168,7 @@ class ViewData
             'message' => $message,
             'type'    => $type,
         ];
+
         return $this;
     }
 

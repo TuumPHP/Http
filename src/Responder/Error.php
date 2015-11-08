@@ -35,8 +35,8 @@ class Error extends AbstractWithViewData
      * creates a generic response.
      *
      * @param string $input
-     * @param int                             $status
-     * @param array                           $header
+     * @param int    $status
+     * @param array  $header
      * @return ResponseInterface
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
@@ -63,6 +63,7 @@ class Error extends AbstractWithViewData
     public function asView($status)
     {
         $this->data->setStatus($status);
+
         return $this->view->withView($this->request, $this->response, $this->data);
     }
 

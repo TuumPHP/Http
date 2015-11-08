@@ -88,14 +88,15 @@ class Responder
      */
     public function withSession($session)
     {
-        $self = clone($this);
+        $self          = clone($this);
         $self->session = $session;
-        $data = $session->getFlash(ViewData::MY_KEY);
+        $data          = $session->getFlash(ViewData::MY_KEY);
         if ($data) {
             // if ViewData is taken from the session,
             // detach it from the object in the session.
             $self->viewData = clone($data);
         }
+
         return $self;
     }
 
@@ -105,8 +106,9 @@ class Responder
      */
     public function withResponse($response)
     {
-        $self = clone($this);
+        $self           = clone($this);
         $self->response = $response;
+
         return $self;
     }
 
@@ -122,8 +124,9 @@ class Responder
         if (!$this->viewData) {
             $this->viewData = new ViewData();
         }
-        $self = clone($this);
+        $self           = clone($this);
         $self->viewData = $closure($this->viewData);
+
         return $self;
     }
 
@@ -136,6 +139,7 @@ class Responder
     private function returnWith($responder, $request, $response)
     {
         $response = $response ?: $this->response;
+
         return $responder->withRequest($request, $response, $this->session, $this->viewData);
     }
 

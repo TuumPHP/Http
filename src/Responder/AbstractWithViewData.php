@@ -71,7 +71,7 @@ abstract class AbstractWithViewData
         if (!$self->session) {
             $self->session = $session ?: RequestHelper::getSessionMgr($request);
         }
-        $self->data     = $viewData ?: $self->retrieveViewData();
+        $self->data = $viewData ?: $self->retrieveViewData();
 
         return $self;
     }
@@ -86,9 +86,10 @@ abstract class AbstractWithViewData
     {
         $args = func_get_args();
         $self = clone($this);
-        foreach($args as $key) {
+        foreach ($args as $key) {
             $self->data->setData($key, $this->request->getAttribute($key));
         }
+
         return $self;
     }
 
