@@ -114,12 +114,11 @@ class Responder
 
     /**
      * modifies viewData.
-     * not immutable...
      *
      * @param callable $closure
      * @return Responder
      */
-    public function viewData(callable $closure)
+    public function withViewData(callable $closure)
     {
         if (!$this->viewData) {
             $this->viewData = new ViewData();

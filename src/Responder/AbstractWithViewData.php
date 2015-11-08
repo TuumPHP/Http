@@ -109,6 +109,20 @@ abstract class AbstractWithViewData
     }
 
     /**
+     * modifies viewData.
+     *
+     * @param callable $closure
+     * @return static
+     */
+    public function withViewData(callable $closure)
+    {
+        $self       = clone($this);
+        $self->data = $closure($this->data);
+
+        return $self;
+    }
+
+    /**
      * @param string|array $key
      * @param mixed        $value
      * @return $this

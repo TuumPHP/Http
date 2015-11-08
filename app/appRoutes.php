@@ -39,9 +39,12 @@ return function ($request) {
      */
     $jumper = function ($request) {
         return Respond::redirect($request)
-            ->withMessage('redirected back!')
-            ->withInputData(['jumped' => 'redirected text'])
-            ->withInputErrors(['jumped' => 'redirected error message'])
+            ->withViewData(function(ViewData $view) {
+                return $view
+                    ->success('redirected back!')
+                    ->inputData(['jumped' => 'redirected text'])
+                    ->inputErrors(['jumped' => 'redirected error message']);
+            })
             ->toPath('jump');
     };
 

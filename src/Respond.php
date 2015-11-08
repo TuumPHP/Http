@@ -48,7 +48,7 @@ class Respond
             throw new \BadMethodCallException;
         }
         if ($closure && is_callable($closure)) {
-            $responder = $responder->viewData($closure);
+            $responder = $responder->withViewData($closure);
             $request   = RequestHelper::withResponder($request, $responder);
         }
 

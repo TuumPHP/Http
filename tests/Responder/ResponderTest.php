@@ -43,14 +43,32 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function with_sets_viewData_which_is_passed_to_subsequent_responders()
+    function withViewData_sets_viewData_which_is_passed_to_subsequent_responders()
     {
-        $res = $this->responder->viewData(function(ViewData $view) {
+        $res = $this->responder->withViewData(function(ViewData $view) {
             $view->setData('test', 'responder-tested');
             return $view;
         });
         $request  = RequestHelper::createFromPath('/base/path');
         $response = $res->view($request)->asView('test/responder');
+        /** @var LocalView $view */
+        $this->assertEquals('responder-tested', $response->getBody()->__toString());
+        $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
+    }
+
+    /**
+     * @test
+     */
+    function View_withViewData_sets_viewData()
+    {
+        $request  = RequestHelper::createFromPath('/base/path');
+        $response = $this->responder
+            ->view($request)
+            ->withViewData(function(ViewData $view) {
+                $view->setData('test', 'responder-tested');
+            return $view;
+            })
+            ->asView('test/responder');
         /** @var LocalView $view */
         $this->assertEquals('responder-tested', $response->getBody()->__toString());
         $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
