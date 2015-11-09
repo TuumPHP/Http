@@ -88,7 +88,7 @@ abstract class AbstractWithViewData
     {
         $self = clone($this);
         $self->data = clone($this->data);
-        call_user_func_array([$self->data, $method], $args);
+        call_user_func_array([$self->data, $method], $args); // let it fail!
 
         return $self;
     }
@@ -102,8 +102,9 @@ abstract class AbstractWithViewData
      */
     public function withReqAttribute($arg)
     {
-        $args = func_get_args();
-        $self = clone($this);
+        $args       = func_get_args();
+        $self       = clone($this);
+        $self->data = clone($this->data);
         foreach ($args as $key) {
             $self->data->data($key, $this->request->getAttribute($key));
         }
@@ -137,7 +138,8 @@ abstract class AbstractWithViewData
     public function withViewData(callable $closure)
     {
         $self       = clone($this);
-        $self->data = $closure($this->data);
+        $data       = clone($this->data);
+        $self->data = $closure($data);
 
         return $self;
     }
