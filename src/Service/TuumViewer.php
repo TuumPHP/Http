@@ -34,12 +34,16 @@ class TuumViewer implements ViewerInterface
      * creates a new ViewStream with Tuum\Renderer.
      * set $root for the root of the view/template directory.
      *
-     * @param string $root
+     * @param string    $root
+     * @param callable  $callable
      * @return static
      */
-    public static function forge($root)
+    public static function forge($root, $callable = null)
     {
         $renderer = Renderer::forge($root);
+        if (is_callable($callable)) {
+            $renderer = call_user_func($callable, $renderer);
+        }
 
         return new static($renderer);
     }

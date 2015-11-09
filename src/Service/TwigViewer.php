@@ -32,14 +32,18 @@ class TwigViewer implements ViewerInterface
     }
 
     /**
-     * @param string $root
-     * @param array  $options
+     * @param string   $root
+     * @param array    $options
+     * @param callable $callable
      * @return static
      */
-    public static function forge($root, array $options = [])
+    public static function forge($root, array $options = [], $callable = null)
     {
         $loader = new Twig_Loader_Filesystem($root);
         $twig   = new Twig_Environment($loader, $options);
+        if (is_callable($callable)) {
+            $twig = call_user_func($callable, $twig);
+        }
 
         return new static($twig);
     }
