@@ -6,6 +6,18 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Service\ViewData;
 
+/**
+ * Class AbstractWithViewData
+ *
+ * @package Tuum\Respond\Responder
+ *          
+ * @method static|$this withSuccess($message)
+ * @method static|$this withAlert($message)
+ * @method static|$this withError($message)
+ * @method static|$this withInputData(array $array)
+ * @method static|$this withInputErrors(array $array)
+ * @method static|$this withData($key, $value)
+ */
 abstract class AbstractWithViewData
 {
     /**
@@ -55,6 +67,33 @@ abstract class AbstractWithViewData
     }
 
     /**
+     * @param string $method
+     * @param array  $args
+     * @return $this|static
+     */
+    public function __call($method, $args)
+    {
+        if (substr($method, 0, 4) === 'with') {
+            return $this->callViewData(substr($method, 4), $args);
+        }
+        throw new \BadMethodCallException;
+    }
+
+    /**
+     * @param string $method
+     * @param array  $args
+     * @return static|$this
+     */
+    private function callViewData($method, $args)
+    {
+        $self = clone($this);
+        $self->data = clone($this->data);
+        call_user_func_array([$self->data, $method], $args);
+
+        return $self;
+    }
+
+    /**
      * copies request's attributes into data using keys.
      *
      * @api
@@ -66,7 +105,7 @@ abstract class AbstractWithViewData
         $args = func_get_args();
         $self = clone($this);
         foreach ($args as $key) {
-            $self->data->setData($key, $this->request->getAttribute($key));
+            $self->data->data($key, $this->request->getAttribute($key));
         }
 
         return $self;
@@ -101,78 +140,5 @@ abstract class AbstractWithViewData
         $self->data = $closure($this->data);
 
         return $self;
-    }
-
-    /**
-     * @param string|array $key
-     * @param mixed        $value
-     * @return $this
-     */
-    public function with($key, $value = null)
-    {
-        $this->data = clone($this->data);
-        $this->data->setData($key, $value);
-
-        return $this;
-    }
-
-    /**
-     * @param array $input
-     * @return $this
-     */
-    public function withInputData(array $input)
-    {
-        $this->data = clone($this->data);
-        $this->data->inputData($input);
-
-        return $this;
-    }
-
-    /**
-     * @param array $errors
-     * @return $this
-     */
-    public function withInputErrors(array $errors)
-    {
-        $this->data = clone($this->data);
-        $this->data->inputErrors($errors);
-
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withMessage($message)
-    {
-        $this->data = clone($this->data);
-        $this->data->success($message);
-
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withAlertMsg($message)
-    {
-        $this->data = clone($this->data);
-        $this->data->alert($message);
-
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function withErrorMsg($message)
-    {
-        $this->data = clone($this->data);
-        $this->data->error($message);
-
-        return $this;
     }
 }

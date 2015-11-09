@@ -41,7 +41,7 @@ return function ($request, $responder) {
      */
     $jumper = function ($request) {
         return Respond::redirect($request)
-            ->withMessage('redirected back!')
+            ->withSuccess('redirected back!')
             ->withInputData(['jumped' => 'redirected text'])
             ->withInputErrors(['jumped' => 'redirected error message'])
             ->toPath('jump');
@@ -69,28 +69,31 @@ return function ($request, $responder) {
      */
     $up = function(ServerRequestInterface $request) {
 
-        $responder = Respond::view($request);
         if ($request->getMethod()==='POST') {
 
-            $uploaded = $request->getUploadedFiles();
-            $responder
-                ->with('isUploaded', true)
-                ->with('dump', print_r($uploaded, true));
-            /** @var UploadedFile $upload */
-            $upload = $uploaded['up'][0];
-            $responder->with('upload', $upload);
+            $request = Respond::withViewData($request, function(ViewData $view) use($request) {
 
-            if ($upload->getError()===UPLOAD_ERR_NO_FILE) {
-                $responder->withErrorMsg('please uploaded a file');
-            } elseif ($upload->getError()===UPLOAD_ERR_FORM_SIZE || $upload->getError()===UPLOAD_ERR_INI_SIZE) {
-                $responder->withErrorMsg('uploaded file size too large!');
-            } elseif ($upload->getError()!==UPLOAD_ERR_OK) {
-                $responder->withErrorMsg('uploading failed!');
-            } else {
-                $responder->withMessage('uploaded a file');
-            }
+                /** @var UploadedFile $upload */
+                $uploaded = $request->getUploadedFiles();
+                $upload   = $uploaded['up'][0];
+                $view
+                    ->data('isUploaded', true)
+                    ->data('dump', print_r($uploaded, true))
+                    ->data('upload', $upload);
+
+                if ($upload->getError()===UPLOAD_ERR_NO_FILE) {
+                    $view->error('please uploaded a file');
+                } elseif ($upload->getError()===UPLOAD_ERR_FORM_SIZE || $upload->getError()===UPLOAD_ERR_INI_SIZE) {
+                    $view->error('uploaded file size too large!');
+                } elseif ($upload->getError()!==UPLOAD_ERR_OK) {
+                    $view->error('uploading failed!');
+                } else {
+                    $view->error('uploaded a file');
+                }
+                return $view;
+            });
         }
-        return $responder
+        return Respond::view($request)
             ->asView('upload');
     };
     /**

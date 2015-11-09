@@ -92,7 +92,7 @@ class ViewData
      * @param mixed        $value
      * @return $this
      */
-    public function setData($key, $value = null)
+    public function data($key, $value = null)
     {
         if (is_array($key)) {
             $this->data = array_merge($this->data, $key);

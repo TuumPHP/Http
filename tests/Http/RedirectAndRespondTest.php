@@ -51,10 +51,10 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $request  = ReqBuilder::createFromPath('/path/test');
         $response = $this->responder->redirect($request)
             ->withFlashData('with', 'val1')
-            ->with('more', 'with')
-            ->withMessage('message')
-            ->withAlertMsg('notice-msg')
-            ->withErrorMsg('error-msg')
+            ->withData('more', 'with')
+            ->withSuccess('message')
+            ->withAlert('notice-msg')
+            ->withError('error-msg')
             ->withInputData(['more' => 'test'])
             ->withInputErrors(['more' => 'done'])
             ->toAbsoluteUri('/more/test');

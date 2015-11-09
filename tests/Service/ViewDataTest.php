@@ -30,7 +30,7 @@ class ViewDataTest  extends \PHPUnit_Framework_TestCase
             ->success('message: success')
             ->alert('message: alert')
             ->error('message: error')
-            ->setData('value', 'tested');
+            ->data('value', 'tested');
         
         $this->assertEquals(['inputs' => 'tested'], $this->view->getInputData());
         $this->assertEquals(['errors' => 'tested'], $this->view->getInputErrors());

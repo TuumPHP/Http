@@ -83,7 +83,7 @@ class View extends AbstractWithViewData
     public function asContents($content, $contents_file = null)
     {
         $contents_file = $contents_file ?: $this->content_view;
-        $this->data->setData('contents', $content);
+        $this->data->data('contents', $content);
 
         return $this->asViewStream($contents_file);
     }

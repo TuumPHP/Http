@@ -117,10 +117,10 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     {
         $request  = ReqBuilder::createFromPath('/path/test');
         $respond  = $this->responder->view($request)
-            ->with('some', 'value')
-            ->withMessage('message')
-            ->withAlertMsg('notice-msg')
-            ->withErrorMsg('error-msg')
+            ->withData('some', 'value')
+            ->withSuccess('message')
+            ->withAlert('notice-msg')
+            ->withError('error-msg')
             ->withInputData(['more' => 'test'])
             ->withInputErrors(['more' => 'done']);
 
@@ -164,7 +164,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $request = ReqBuilder::createFromPath('/path/test');
         $request = Respond::withResponder($request, $this->responder);
         $request = Respond::withViewData($request, function(ViewData $view) {
-            $view->setData('test', 'tested');
+            $view->data('test', 'tested');
             return $view;
         });
         $view   = Respond::view($request);
