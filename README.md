@@ -27,7 +27,7 @@ To see `Tuum/Respond` working in a sample site, use git and PHP's internal serve
 ```sh
 $ git clone https://github.com/TuumPHP/Respond
 $ cd Respond
-$ composer update
+$ composer install
 $ cd public
 $ php -S localhost:8888
 ```
@@ -56,7 +56,7 @@ Overview
 
 ### Accessing Responder Object
 
-There are two ways to access the responder object: by injecting the responder object, or by storing the responder object in $request's attribute. 
+There are two ways to access the responder object: by injecting the `$responder` object, or access by static method in `Respond` after storing the `$responder` object in $request's attribute. 
 
 Here's an example for rendering a template. 
 
@@ -71,9 +71,8 @@ $app->get('/' function ($request) use($responder) {
 To use `Respond` class, set the responder object in prior to of using. 
 
 ```php
-// set $responder object. 
+// set $responder object in a middleware or somewhere. 
 $request = Respond::withResponder($request, $responder);
-
 
 // use Respond class to access responder object. 
 $app->get('/jump', $jump = function($request, $response) {
@@ -204,9 +203,9 @@ All of `$responder` and associated responder objects has
 ```php
 $responder = $responder->withViewData(
 	function(ViewData $view) {
-		$view->success('success message');
-		$view->inputData(['key' => 'value']);
-		$view->inputError(['key' => 'some error']);
+		$view->setSuccess('success message');
+		$view->setInputData(['key' => 'value']);
+		$view->setInputError(['key' => 'some error']);
 		return $view;
 });
 ```
@@ -294,29 +293,95 @@ Respond::error($request)->asView($status); // error $status
 
 
 
+Viewer, ErrorView, and Session
+--------------------
 
-# HERE HERE HERE 
+### `ViewerInterface`
 
-to-be-written
-
-View, Template, and `ViewerInterface`
--------------------------------------
-
-### ViewerInterface
-
-### ErrorViewInterface
-
-### Twig Template Files
-
-### Tuum/View Template Files
-
-### Form Helpers
-
-### ErrorView object
-
-`ErrorViewInterface` is essentially the same as `ViewerInterface`, except that the object is expected to take the status code from the `ViewData`, and finds the template file for the code, and renders it. 
+This simple interface defines objects that renders a view from template files. 
 
 ```php
+interface ViewerInterface
+{
+    /**
+     * renders $view and returns a new $response.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param ViewData               $view
+     * @return ResponseInterface
+     */
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view);
+}
+```
+
+There are two implementations of the `ViewerInterface`: `TwigViewer` for using Twig template and `TuumViewer` for using plain a PHP file as template. 
+
+#### TwigViewer
+
+The `TwigViewer`'s constructor takes the `Twig_Environment` object as argument:
+
+```php
+$loader = new Twig_Loader_Filesystem($root_dir);
+$twig   = new Twig_Environment($loader, $options);
+$view   = new TwigViewer($twig);
+```
+
+Where the `$root_dir` is the root of Twig template files, and `$options` is an array to store options. 
+
+There are a simple factory method as well;
+
+```php
+use Tuum\Respond\Service\TwigViewer;
+
+$view = TwigViewer::forge($root_dir, $options, 
+	function(Twig_Environment $twig) {
+		// further configure $twig renderer...
+		return $twig;
+	});
+```
+
+The third closure is an optional argument. 
+
+#### TuumViewer
+
+Easy way to construct `TuumViewer` is to use a factory method. 
+
+```php
+use Tuum\Respond\Service\TuumViewer;
+use Tuum\View\Renderer;
+
+$view = TuumViewer::forge($root_dir, 
+	function(Renderer $renderer) {
+		// further configure $twig renderer...
+		return $renderer;
+	});
+```
+
+The second closure is an optional argument. 
+
+### `ErrorViewInterface`
+
+The `ErrorViewInterface` is essentially the same as the `ViewerInterface`,
+
+```php
+interface ErrorViewInterface extends ViewerInterface {}
+```
+
+ but the interface object is expected to 
+
+1. take the http response status code from ViewData, 
+2. finds the template file for the status, 
+3. renders the template, and 
+4. return a response. 
+
+#### ErrorView object
+
+A factory method is avaible to construct the default `ErrorView` object; 
+
+```php
+use Tuum\Respond\Service\ErrorView;
+
 $error = ErrorView::forge(
     ViewStream::forge($error_view_dir), [
     'default' => 'errors/error',
@@ -332,10 +397,6 @@ $error = ErrorView::forge(
     *   **default**: default error view name,
     *   **status**: error code and associated view name.
 
-
-
-Other Services
-------
 
 
 ### SessionStorageInterface
@@ -388,17 +449,27 @@ public static methods.
 *  `getLocation(ResponseInterface $response): string`:
 *  `fill(ResponseInterface $response, string|resource $input, int $status, array $header): ResponseInterface `: 
 
-Views and Template
+Template and Form Helpers
 -----
 
-### ViewData Class
+The template and form helpers need to understand the `ViewData`'s information: 
 
-Turned out that this ViewData class is one of the center piece of this package, by managing data used for rendering a view template. 
+* messages (success, alert, and error), 
+* inputData, and 
+* inputErrors. 
 
-The ViewData is the core of the responders which is used to transfer data between requests as well as from request to view's renderer. 
+The current implementation uses `Tuum/Form` form helpers to renders or escape these data. 
 
 
 ### Tuum/Form
+
+to-be-written.
+
+#### TwigViewer
+
+#### TuumViewer
+
+### Template
 
 Tuum/Form provides helper objects which (not surprisingly) correspond to each of the data in the `ViewData`. All the helpers are combined into `$view` object in the template file. 
 
