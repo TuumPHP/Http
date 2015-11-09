@@ -53,9 +53,9 @@ return function ($request, $responder) {
      */
     $jumped = function ($request) use($jump) {
         $request = Respond::withViewData($request, function(ViewData $view) {
-            $view->success('redrawn form!');
-            $view->inputData(['jumped' => 'redrawn text']);
-            $view->inputErrors(['jumped' => 'redrawn error message']);
+            $view->setSuccess('redrawn form!');
+            $view->setInputData(['jumped' => 'redrawn text']);
+            $view->setInputErrors(['jumped' => 'redrawn error message']);
             return $view;
         });
         return $jump($request);
@@ -77,18 +77,18 @@ return function ($request, $responder) {
                 $uploaded = $request->getUploadedFiles();
                 $upload   = $uploaded['up'][0];
                 $view
-                    ->data('isUploaded', true)
-                    ->data('dump', print_r($uploaded, true))
-                    ->data('upload', $upload);
+                    ->setData('isUploaded', true)
+                    ->setData('dump', print_r($uploaded, true))
+                    ->setData('upload', $upload);
 
                 if ($upload->getError()===UPLOAD_ERR_NO_FILE) {
-                    $view->error('please uploaded a file');
+                    $view->setError('please uploaded a file');
                 } elseif ($upload->getError()===UPLOAD_ERR_FORM_SIZE || $upload->getError()===UPLOAD_ERR_INI_SIZE) {
-                    $view->error('uploaded file size too large!');
+                    $view->setError('uploaded file size too large!');
                 } elseif ($upload->getError()!==UPLOAD_ERR_OK) {
-                    $view->error('uploading failed!');
+                    $view->setError('uploading failed!');
                 } else {
-                    $view->error('uploaded a file');
+                    $view->setError('uploaded a file');
                 }
                 return $view;
             });

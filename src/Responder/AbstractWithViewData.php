@@ -74,7 +74,7 @@ abstract class AbstractWithViewData
     public function __call($method, $args)
     {
         if (substr($method, 0, 4) === 'with') {
-            return $this->callViewData(substr($method, 4), $args);
+            return $this->callViewData('set'.substr($method, 4), $args);
         }
         throw new \BadMethodCallException;
     }
@@ -106,7 +106,7 @@ abstract class AbstractWithViewData
         $self       = clone($this);
         $self->data = clone($this->data);
         foreach ($args as $key) {
-            $self->data->data($key, $this->request->getAttribute($key));
+            $self->data->setData($key, $this->request->getAttribute($key));
         }
 
         return $self;

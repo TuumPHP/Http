@@ -46,7 +46,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     function withViewData_sets_viewData_which_is_passed_to_subsequent_responders()
     {
         $res = $this->responder->withViewData(function(ViewData $view) {
-            $view->data('test', 'responder-tested');
+            $view->setData('test', 'responder-tested');
             return $view;
         });
         $request  = ReqBuilder::createFromPath('/base/path');
@@ -65,7 +65,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $response = $this->responder
             ->view($request)
             ->withViewData(function(ViewData $view) {
-                $view->data('test', 'responder-tested');
+                $view->setData('test', 'responder-tested');
             return $view;
             })
             ->asView('test/responder');

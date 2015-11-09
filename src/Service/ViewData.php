@@ -92,7 +92,7 @@ class ViewData
      * @param mixed        $value
      * @return $this
      */
-    public function data($key, $value = null)
+    public function setData($key, $value = null)
     {
         if (is_array($key)) {
             $this->data = array_merge($this->data, $key);
@@ -117,7 +117,7 @@ class ViewData
      * @param array $value
      * @return $this
      */
-    public function inputData(array $value)
+    public function setInputData(array $value)
     {
         $this->inputData = $value;
 
@@ -139,7 +139,7 @@ class ViewData
      * @param array $errors
      * @return $this
      */
-    public function inputErrors(array $errors)
+    public function setInputErrors(array $errors)
     {
         $this->inputErrors = $errors;
 
@@ -162,7 +162,7 @@ class ViewData
      * @param string $type
      * @return $this
      */
-    public function message($message, $type)
+    public function setMessage($message, $type)
     {
         $this->messages[] = [
             'message' => $message,
@@ -184,27 +184,27 @@ class ViewData
      * @param string $message
      * @return $this
      */
-    public function success($message)
+    public function setSuccess($message)
     {
-        return $this->message($message, self::MESSAGE_SUCCESS);
+        return $this->setMessage($message, self::MESSAGE_SUCCESS);
     }
 
     /**
      * @param string $message
      * @return $this
      */
-    public function alert($message)
+    public function setAlert($message)
     {
-        return $this->message($message, self::MESSAGE_ALERT);
+        return $this->setMessage($message, self::MESSAGE_ALERT);
     }
 
     /**
      * @param string $message
      * @return $this
      */
-    public function error($message)
+    public function setError($message)
     {
-        return $this->message($message, self::MESSAGE_ERROR);
+        return $this->setMessage($message, self::MESSAGE_ERROR);
     }
 
     /**

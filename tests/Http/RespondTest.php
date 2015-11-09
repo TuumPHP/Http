@@ -164,7 +164,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $request = ReqBuilder::createFromPath('/path/test');
         $request = Respond::withResponder($request, $this->responder);
         $request = Respond::withViewData($request, function(ViewData $view) {
-            $view->data('test', 'tested');
+            $view->setData('test', 'tested');
             return $view;
         });
         $view   = Respond::view($request);
