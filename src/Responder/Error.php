@@ -28,7 +28,7 @@ class Error extends AbstractWithViewData
 
     /**
      * index of method name and associated http status code.
-     * 
+     *
      * @var array
      */
     public $methodStatus = [
