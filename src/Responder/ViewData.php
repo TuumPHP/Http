@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Respond\Service;
+namespace Tuum\Respond\Responder;
 
 /**
  * Class ViewData
@@ -13,7 +13,7 @@ namespace Tuum\Respond\Service;
  * - inputErrors (Errors helper), and
  * - rawData (raw values are populated).
  *
- * @package Tuum\Respond\Service
+ * @package Tuum\Respond
  */
 class ViewData
 {

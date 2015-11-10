@@ -7,7 +7,7 @@ use Tuum\Respond\Responder;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class RespondTest extends \PHPUnit_Framework_TestCase

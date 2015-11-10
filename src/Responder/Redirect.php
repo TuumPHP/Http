@@ -4,7 +4,6 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\Helper\ReqAttr;
-use Tuum\Respond\Service\ViewData;
 
 class Redirect extends AbstractWithViewData
 {

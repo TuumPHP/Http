@@ -5,7 +5,7 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class ResponderTest extends \PHPUnit_Framework_TestCase

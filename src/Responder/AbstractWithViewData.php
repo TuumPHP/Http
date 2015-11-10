@@ -4,12 +4,11 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
-use Tuum\Respond\Service\ViewData;
 
 /**
  * Class AbstractWithViewData
  *
- * @package Tuum\Respond\Responder
+ * @package Tuum\Respond
  *          
  * @method static|$this withSuccess($message)
  * @method static|$this withAlert($message)

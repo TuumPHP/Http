@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Service\ErrorView;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\ViewerInterface;
 use Tuum\Respond\Service\ViewerTrait;
 use Zend\Diactoros\Request;

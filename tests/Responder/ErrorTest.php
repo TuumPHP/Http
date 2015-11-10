@@ -4,7 +4,7 @@ namespace tests\Responder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class ErrorTest extends \PHPUnit_Framework_TestCase

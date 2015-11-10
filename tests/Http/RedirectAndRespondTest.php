@@ -7,7 +7,7 @@ use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase

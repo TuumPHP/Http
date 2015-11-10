@@ -5,7 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\UploadedFile;
 
 /**

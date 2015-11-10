@@ -3,7 +3,7 @@ namespace tests\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\ViewerInterface;
 
 class LocalView implements ViewerInterface

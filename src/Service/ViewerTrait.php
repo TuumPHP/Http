@@ -2,6 +2,7 @@
 namespace Tuum\Respond\Service;
 
 use Tuum\Form\DataView;
+use Tuum\Respond\Responder\ViewData;
 
 trait ViewerTrait
 {

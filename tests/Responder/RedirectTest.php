@@ -8,7 +8,7 @@ use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class RedirectTest extends \PHPUnit_Framework_TestCase

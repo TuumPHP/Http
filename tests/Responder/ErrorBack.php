@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\Service\ErrorViewInterface;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 
 class ErrorBack implements ErrorViewInterface
 {

@@ -9,7 +9,7 @@ use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorViewInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\ViewerInterface;
 
 class Responder

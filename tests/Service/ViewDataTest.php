@@ -1,7 +1,7 @@
 <?php
 namespace tests\Service;
 
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\ViewData;
 
 class ViewDataTest  extends \PHPUnit_Framework_TestCase
 {
@@ -17,7 +17,7 @@ class ViewDataTest  extends \PHPUnit_Framework_TestCase
     
     function test()
     {
-        $this->assertEquals('Tuum\Respond\Service\ViewData', get_class($this->view));
+        $this->assertEquals('Tuum\Respond\Responder\ViewData', get_class($this->view));
     }
 
     /**
