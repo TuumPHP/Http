@@ -90,13 +90,13 @@ class Error extends AbstractWithViewData
     /**
      * @param string $method
      * @param array  $args
-     * @return ResponseInterface
+     * @return ResponseInterface|$this|static
      */
     public function __call($method, $args)
     {
         if (isset($this->methodStatus[$method])) {
             return $this->asView($this->methodStatus[$method]);
         }
-        throw new \BadMethodCallException;
+        return parent::__call($method, $args);
     }
 }
