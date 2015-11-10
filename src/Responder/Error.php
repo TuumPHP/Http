@@ -5,6 +5,15 @@ use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\ErrorViewInterface;
 
+/**
+ * Class Error
+ *
+ * @package Tuum\Respond\Responder
+ *
+ * @method ResponseInterface unauthorized()
+ * @method ResponseInterface forbidden()
+ * @method ResponseInterface notFound()
+ */
 class Error extends AbstractWithViewData
 {
     const UNAUTHORIZED = 401;
@@ -16,6 +25,17 @@ class Error extends AbstractWithViewData
      * @var null|ErrorViewInterface
      */
     private $view;
+
+    /**
+     * index of method name and associated http status code.
+     * 
+     * @var array
+     */
+    public $methodStatus = [
+        'unauthorized' => self::UNAUTHORIZED,
+        'forbidden'    => self::ACCESS_DENIED,
+        'notFound'     => self::FILE_NOT_FOUND,
+    ];
 
     // +----------------------------------------------------------------------+
     //  construction
@@ -68,26 +88,15 @@ class Error extends AbstractWithViewData
     }
 
     /**
+     * @param string $method
+     * @param array  $args
      * @return ResponseInterface
      */
-    public function unauthorized()
+    public function __call($method, $args)
     {
-        return $this->asView(self::UNAUTHORIZED);
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function forbidden()
-    {
-        return $this->asView(self::ACCESS_DENIED);
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function notFound()
-    {
-        return $this->asView(self::FILE_NOT_FOUND);
+        if (isset($this->methodStatus[$method])) {
+            return $this->asView($this->methodStatus[$method]);
+        }
+        throw new \BadMethodCallException;
     }
 }
