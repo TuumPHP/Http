@@ -7,6 +7,7 @@ use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\UploadedFile;
+use Koriym\Printo\Printo;
 
 /**
  * set routes and dispatch.
@@ -105,6 +106,11 @@ return function ($request, $responder) {
             ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
     };
 
+    $objGraph = function(ServerRequestInterface $request) {
+        echo (new Printo(Respond::getResponder($request)));
+        exit;
+    };
+
     /**
      * @throw \Exception
      */
@@ -122,6 +128,7 @@ return function ($request, $responder) {
         '/throw'  => $throw,
         '/upload' => $up,
         '/content'=> $content,
+        '/objGraph' => $objGraph,
         '/'       => $all,
     );
 

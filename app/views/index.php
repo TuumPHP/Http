@@ -34,3 +34,10 @@ $this->setLayout('layouts/layout');
     <li><a href="not-such-file">not found</a></li>
     <li><a href="throw">catch exception</a> </li>
 </ul>
+
+<h3>graphs</h3>
+
+<ul>
+    <li><a href="objGraph">object graph</a> </li>
+</ul>
+
