@@ -68,7 +68,7 @@ abstract class AbstractWithViewData
     /**
      * @param string $method
      * @param array  $args
-     * @return $this|static
+     * @return mixed
      */
     public function __call($method, $args)
     {

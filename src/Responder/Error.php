@@ -90,7 +90,7 @@ class Error extends AbstractWithViewData
     /**
      * @param string $method
      * @param array  $args
-     * @return ResponseInterface|$this|static
+     * @return ResponseInterface|$this|static|mixed
      */
     public function __call($method, $args)
     {
