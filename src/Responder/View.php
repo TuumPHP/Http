@@ -14,7 +14,7 @@ class View extends AbstractWithViewData
      *
      * @var null|string
      */
-    public $content_view;
+    public $content_view = 'layouts/contents';
 
     /**
      * @var ViewerInterface
@@ -31,7 +31,7 @@ class View extends AbstractWithViewData
     public function __construct(ViewerInterface $view, $content_view = null)
     {
         $this->view         = $view;
-        $this->content_view = $content_view;
+        $this->content_view = $content_view ?: $this->content_view;
     }
 
     // +----------------------------------------------------------------------+

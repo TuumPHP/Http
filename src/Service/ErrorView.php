@@ -15,12 +15,16 @@ class ErrorView implements ErrorViewInterface
     /**
      * @var string
      */
-    public $default_error = '';
+    public $default_error = 'errors/error';
 
     /**
      * @var array
      */
-    public $statusView = [];
+    public $statusView = [
+        401 => 'errors/unauthorized',  // for login error.
+        403 => 'errors/forbidden',     // for CSRF token error.
+        404 => 'errors/notFound',      // for not found.
+    ];
 
     /**
      * @var
@@ -36,6 +40,13 @@ class ErrorView implements ErrorViewInterface
     }
 
     /**
+     * construct ErrorView object.
+     * set $viewStream is to render template.
+     * set $options as array of:
+     *   'default' : default error template file name.
+     *   'status'  : index of http code to file name (i.e. ['code' => 'file']).
+     *   'files'   : index of ile name to http code(s) (i.e. ['file' => [123, 234]]
+     *
      * @param ViewerInterface $viewStream
      * @param array           $options
      * @return static
@@ -48,9 +59,15 @@ class ErrorView implements ErrorViewInterface
         $options += [
             'default' => null,
             'status'  => [],
+            'files'   => [],
         ];
         $error->default_error = $options['default'];
         $error->statusView    = $options['status'];
+        foreach($options['files'] as $file => $codes) {
+            foreach((array) $codes as $code) {
+                $error->statusView[$code] = $file;
+            }
+        }
 
         return $error;
     }

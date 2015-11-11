@@ -1,11 +1,13 @@
 <?php
 namespace tests\Responder;
 
+use Tuum\Respond\Helper\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Service\TuumViewer;
 use Zend\Diactoros\Response;
 
 class ResponderTest extends \PHPUnit_Framework_TestCase
@@ -72,5 +74,19 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         /** @var LocalView $view */
         $this->assertEquals('responder-tested', $response->getBody()->__toString());
         $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
+    }
+
+    function test_builder()
+    {
+        $responder = Builder::forge('some/contents')
+            ->buildTuum(__DIR__)
+            ->addMethods('errorMethod', 123)
+            ->useAnotherViewerForError(TuumViewer::forge('/some/path'))
+            ->buildErrorView(['files' => [
+                'errorMore' => [234, 345]
+            ]])
+            ->useAsViewData(new ViewData())
+            ->buildWithSession();
+        $this->assertEquals('Tuum\Respond\Responder', get_class($responder));
     }
 }
