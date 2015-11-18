@@ -11,11 +11,11 @@
     "require": {
         "psr/http-message": "~1.0",
         "aura/session": "~2.0",
-        "tuum/form": "1.0.0-RC1"
+        "tuum/form": "1.0.0-RC2"
     },
     "require-dev":{
         "zendframework/zend-diactoros": "~1.0",
-        "tuum/view": "1.0.0-RC1",
+        "tuum/view": "1.0.0-RC2",
         "twig/twig": "~1.0",
         "koriym/printo": " ~1.0"
     },
