@@ -119,12 +119,21 @@ return function ($request, $responder) {
     };
 
     /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    $forms = function(ServerRequestInterface $request) {
+        return Respond::view($request)->asView('forms');
+    };
+
+    /**
      * $routes to aggregate all the routes.
      */
     $routes = array(
         '/jump'   => $jump,
         '/jumper' => $jumper,
         '/jumped' => $jumped,
+        '/forms'  => $forms,
         '/throw'  => $throw,
         '/upload' => $up,
         '/content'=> $content,

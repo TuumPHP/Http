@@ -41,3 +41,8 @@ $this->setLayout('layouts/layout');
     <li><a href="objGraph">object graph</a> </li>
 </ul>
 
+<h3>Form Samples</h3>
+
+<ul>
+    <li><a href="forms" >form samples</a></li>
+</ul>
