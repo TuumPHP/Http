@@ -80,19 +80,19 @@ $dates = $view->dates->withClass('form-control');
 
     <dt>normal date</dt>
     <dd><?= $dates
-            ->useMonth(MonthList::forge()->useFullText())
+            ->setMonth(MonthList::forge()->useFullText())
             ->dateYMD('date', date('Y-m-d'), '%2$s %3$s, %1$s')->resetWidth(); ?></dd>
 
     <dt>in Japanese</dt>
     <dd><?= $dates
-            ->useYear(YearList::forge()->useJpnGenGou())
-            ->useMonth(MonthList::forge())
+            ->setYear(YearList::forge()->useJpnGenGou())
+            ->setMonth(MonthList::forge())
             ->dateYMD('date', date('Y-m-d'), '%s年%s月%s日')
             ->resetWidth(); ?></dd>
 
     <dt>time</dt>
     <dd><?= $dates
-            ->useMinute(MinuteList::forge(0, 60, 1))
-            ->useSecond(SecondList::forge(0, 60, 10))
+            ->setMinute(MinuteList::forge(0, 60, 1))
+            ->setSecond(SecondList::forge(0, 60, 10))
             ->timeHis('time', date('H:i:s'))->resetWidth(); ?></dd>
 </dl>
