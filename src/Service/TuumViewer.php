@@ -3,6 +3,7 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Form\DataView;
 use Tuum\Respond\Responder\ViewData;
 use Tuum\View\Renderer;
 
@@ -24,11 +25,18 @@ class TuumViewer implements ViewerInterface
     private $renderer;
 
     /**
-     * @param Renderer $renderer
+     * @var null|DataView
      */
-    public function __construct($renderer)
+    private $dataView;
+
+    /**
+     * @param Renderer $renderer
+     * @param DataView $view
+     */
+    public function __construct($renderer, $view = null)
     {
         $this->renderer = $renderer;
+        $this->dataView = $view;
     }
 
     /**
@@ -46,7 +54,7 @@ class TuumViewer implements ViewerInterface
             $renderer = call_user_func($callable, $renderer);
         }
 
-        return new static($renderer);
+        return new static($renderer, new DataView());
     }
 
     /**
@@ -79,7 +87,7 @@ class TuumViewer implements ViewerInterface
         if (!$data) {
             return [];
         }
-        $view              = $this->forgeDataView($data);
+        $view              = $this->forgeDataView($data, $this->dataView);
         $view_data         = $data->getRawData();
         $view_data['view'] = $view;
 

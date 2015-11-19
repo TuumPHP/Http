@@ -8,11 +8,12 @@ trait ViewerTrait
 {
     /**
      * @param ViewData $data
+     * @param DataView $view
      * @return DataView
      */
-    protected function forgeDataView(ViewData $data)
+    protected function forgeDataView(ViewData $data, $view = null)
     {
-        $view = new DataView();
+        $view = $view ?: new DataView();
         $view->setData($data->getData());
         $view->setErrors($data->getInputErrors());
         $view->setInputs($data->getInputData());
