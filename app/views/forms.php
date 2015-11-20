@@ -8,7 +8,7 @@ use Tuum\View\Renderer;
 $this->setLayout('layouts/layout');
 $inputs = $view->setInputs(['old' => 'this value is set as old-inputs'])->inputs;
 $forms = $view->forms->withClass('form-control');
-$dates = $view->dates->withClass('form-control');
+$dates = $view->dates->setClass('form-control');
 
 
 ?>
