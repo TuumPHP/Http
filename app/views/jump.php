@@ -25,7 +25,7 @@ $forms = $view->forms->withClass('form-control');
     $forms->formGroup(
         $forms->label('some text here:', 'jumped'),
         $forms->text('jumper', 'original text')->id(),
-        $view->errors->get('jumped')
+        $view->errors->p('jumped')
     )->class($view->errors->exists('jumped')?'has-error':null);
     ?>
     <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
@@ -45,7 +45,7 @@ $forms = $view->forms->withClass('form-control');
     $forms->formGroup(
         $forms->label('some text here:', 'jumped'),
         $forms->text('jumped', 'original text')->id(),
-        $view->errors->get('jumped')
+        $view->errors->p('jumped')
     )->class($view->errors->exists('jumped')?'has-error':null);
     ?>
     <?= $forms->submit('re-draw!')->class('btn btn-primary'); ?>&nbsp;
