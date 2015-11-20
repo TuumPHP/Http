@@ -2,10 +2,7 @@
 /** @var Renderer $this */
 /** @var DataView $view */
 use Tuum\Form\DataView;
-use Tuum\Form\Lists\MinuteList;
-use Tuum\Form\Lists\MonthList;
-use Tuum\Form\Lists\SecondList;
-use Tuum\Form\Lists\YearList;
+use Tuum\Form\Lists\Lists;
 use Tuum\View\Renderer;
 
 $this->setLayout('layouts/layout');
@@ -80,19 +77,20 @@ $dates = $view->dates->withClass('form-control');
 
     <dt>normal date</dt>
     <dd><?= $dates
-            ->setMonth(MonthList::forge()->useFullText())
+            ->setMonth(Lists::months()->useFullText())
             ->dateYMD('date', date('Y-m-d'), '%2$s %3$s, %1$s')->resetWidth(); ?></dd>
 
     <dt>in Japanese</dt>
     <dd><?= $dates
-            ->setYear(YearList::forge()->useJpnGenGou())
-            ->setMonth(MonthList::forge())
-            ->dateYMD('date', date('Y-m-d'), '%s年%s月%s日')
+            ->setYear(Lists::years(1900, 2010, 10)->useJpnGenGou())
+            ->setMonth(Lists::months()->usePrintFormat('%s月'))
+            ->setDay(Lists::days()->usePrintFormat('%s日'))
+            ->dateYMD('date', date('Y-m-d'), '%s %s %s')
             ->resetWidth(); ?></dd>
 
     <dt>time</dt>
     <dd><?= $dates
-            ->setMinute(MinuteList::forge(0, 60, 1))
-            ->setSecond(SecondList::forge(0, 60, 10))
+            ->setMinute(Lists::minutes(0, 60, 1))
+            ->setSecond(Lists::seconds(0, 60, 10))
             ->timeHis('time', date('H:i:s'))->resetWidth(); ?></dd>
 </dl>
