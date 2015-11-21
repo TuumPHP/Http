@@ -1,9 +1,7 @@
 Tuum/Respond
 =========
 
-`Tuum/Respond` is a framework agnostic module to simplify PSR-7 response object composition, which can be used with many of the PSR-7 based middlewares and micro-frameworks. 
-
-This module helps to develop an ordinary web site which requires Post-Redirect-Get pattern and similar techniques. 
+`Tuum/Respond` is a framework agnostic module to compose a PSR-7 response object for Post-Redirect-Get pattern and similar techniques. With this module, many of the PSR-7 based micro-frameworks will be a good choice for building, well, an ordinary web site. 
 
 ### License
 
@@ -54,7 +52,17 @@ and for development,
 Overview
 --------
 
-The `$responder` object can be used to render a template file;
+### Sample Construction
+
+Following code shows one way to build a `$responder` object:
+
+```php
+$view = Tuum\Respond\Service\TwigView::forge('/dir/twig');
+$error = Tuum\Respond\Service\ErrorView::forge($view);
+$responder = Tuum\Respond\Responder::forge($view, $error, 'layout/contents');
+```
+
+To render a template file: 
 
 ```php
 // use $responder object to render index page. 
@@ -66,7 +74,7 @@ $app->get('/' function($request, $response) use($responder) {
 
 ### Respond Class
 
-The `Respond` class offers an easier way to manage the responder object;
+`Respond` class offers an easy way to manage the responder object;
 
 ```php
 // set $responder object in a middleware or somewhere. 
@@ -82,30 +90,12 @@ $app->get('/jump', $jump);
 
 The `$responder` object is set as an attribute of the `$request` object, and accessible anywhere using `Respond`'s static method. 
 
-> The responder object is immutable. This seems to be the safest way to carry around the modified $responder object. But it is also possible to inject the responder object, as well. 
 
-### Post-Redirect-Get Pattern
+### Adding Extra Information to the View
 
-The Responder simplifies implementing Post-Redirect-Get pattern by saving data in session's flash data and access it across http requests. For instance, 
+The main focus of `Tuum/Respond` is to display a HTML form with extra information such as bad-input data and error messages. 
 
-```php
-// redirects to /jumped.
-$app->get('/jumper', function($request, $response) {
-	return Respond::redirect($request, $response)
-        ->withMessage('redirected back!')
-        ->withInputData(['jumped' => 'redirected text'])
-        ->withInputErrors(['jumped' => 'redirected error message'])
-	    ->toPath('/jump');
-	});
-```
-
-Accessing `/jumper` will redirect to `/jump` with the message __"redirected back!"__ and other data. These data are retrieved in the subsequent request, and passed to the view automatically. 
-
-> looks familiar API? I like Laravel very much!
-
-### Before the View
-
-There's another way of displaying view with extra information. This example shows when accessing `/jumped` path, it draws a page using the `$jump` closure. But in prior to the rendering, it sets various data to $responder to be drawn in the view. 
+The following example shows how to add extra information before rendering a page using `$form` closure (as defined in the above). 
 
 ```php
 $app->get('/jumped', function($request, $response) use ($jump) {
@@ -118,6 +108,30 @@ $app->get('/jumped', function($request, $response) use ($jump) {
     return $jump($request, $response);
 });
 ```
+
+> The responder object is immutable. Using $request to carry around the $responder object seems to be the correct way to get the latest object to compose a response. 
+
+
+
+### Post-Redirect-Get Pattern
+
+Another example is implementing Post-Redirect-Get pattern by saving data in session's flash data and access it across http requests. Nearly identical code but redirecting to a path, `/jump`. 
+
+```php
+// redirects to /jumped.
+$app->get('/jumper', function($request, $response) {
+	return Respond::redirect($request, $response)
+        ->withMessage('redirected back!')
+        ->withInputData(['jumped' => 'redirected text'])
+        ->withInputErrors(['jumped' => 'redirected error message'])
+	    ->toPath('/jump');
+	});
+```
+
+The extra data are stored in a session flash data, and automatically retrieved in the subsequent request, and passed to the view automatically. 
+
+> looks familiar API? I like Laravel very much!
+
 
 Responders
 ---------
@@ -348,6 +362,22 @@ $inputs = $view->inputs;
 <?= $errors->get('jumped'); ?>
 ```
 
+### content file
+
+The `asContent` method will render any text content within a template layout if `$content_file` is set. The content file **must have a section named "contents"**, which may look like, 
+
+```php
+{% extends "layouts/layout.twig" %}
+
+{% block content %}
+
+    {{ contents|raw }}
+
+{% endblock %}
+```
+
+which must have the `contents`. 
+
 
 
 
@@ -402,22 +432,6 @@ $view = new Tuum\Respond\Responder\View(
     'layout/contents'
 );
 ```
-
-#### content file
-
-The `asContent` method will render any text content within a template layout if `$content_file` is set. The content file **must have a section named "contents"**, which may look like, 
-
-```php
-{% extends "layouts/layout.twig" %}
-
-{% block content %}
-
-    {{ contents|raw }}
-
-{% endblock %}
-```
-
-which must have the `contents`. 
 
 ### Redirect Responder
 
@@ -589,8 +603,8 @@ Helper classes helps to manage PSR-7 http message objects.
 
 public static methods. 
 
-*   ```withBasePath``` / ```getBasePath``` / ```getPathInfo```: manage a base path. pathInfo is the remaining of the entire path minus the base path. 
-*   ```withReferrer``` / ```getReferrer```: getReferer returns a path set by withReferrer, or ```$_SEVER['HTTP_REFERER']```. 
+*   `withBasePath` / `getBasePath` / `getPathInfo`: manage a base path. pathInfo is the remaining of the entire path minus the base path. 
+*   `withReferrer` / `getReferrer`: getReferer returns a path set by withReferrer, or `$_SEVER['HTTP_REFERER']`. 
 
 
 ### ResponseHelper
@@ -606,3 +620,6 @@ public static methods.
 *  `getLocation(ResponseInterface $response): string`:
 *  `fill(ResponseInterface $response, string|resource $input, int $status, array $header): ResponseInterface `: 
 
+### Referrer
+
+manages referrer. 
