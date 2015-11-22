@@ -1,10 +1,10 @@
 <?php
 namespace tests\Http;
 
+use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponseHelper;
-use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Responder\ViewData;
@@ -31,11 +31,9 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $this->setPhpTestFunc($this->session_factory);
 
         $view = TuumViewer::forge('');
-        $this->responder = Responder::build(
-            $view,
-            new ErrorView($view)
-        )->withResponse(new Response())
-        ->withSession($this->session_factory);
+        $this->responder = ResponderBuilder::withView($view)
+            ->withResponse(new Response())
+            ->withSession($this->session_factory);
     }
 
     /**

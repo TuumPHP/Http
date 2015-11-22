@@ -3,6 +3,7 @@ namespace tests\Responder;
 
 use tests\Http\TesterTrait;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorage;
@@ -33,7 +34,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $_SESSION = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
-        $this->responder = Responder::build(
+        $this->responder = ResponderBuilder::withServices(
             new LocalView(),
             new ErrorBack()
         )->withResponse(new Response())

@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
@@ -42,7 +43,7 @@ return function (ServerRequestInterface $request) use ($next) {
         ],
         'handler' => true,
     ]);
-    $responder = Responder::build($view, $error, 'layouts/contents')
+    $responder = ResponderBuilder::withServices($view, $error, 'layouts/contents')
         ->withResponse(new Response())
         ->withSession($session);
     $request   = Respond::withResponder($request, $responder);

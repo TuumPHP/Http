@@ -7,10 +7,8 @@ use Tuum\Respond\Responder\AbstractWithViewData;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Service\ErrorViewInterface;
 use Tuum\Respond\Service\SessionStorageInterface;
 use Tuum\Respond\Responder\ViewData;
-use Tuum\Respond\Service\ViewerInterface;
 
 class Responder
 {
@@ -60,26 +58,6 @@ class Responder
         $this->redirect = $redirect;
         $this->error    = $error;
         $this->viewData = $viewData ?: new ViewData();
-    }
-
-    /**
-     * @param ViewerInterface    $view
-     * @param ErrorViewInterface $error
-     * @param null|string        $content_view
-     * @return static
-     */
-    public static function build(
-        ViewerInterface $view,
-        ErrorViewInterface $error,
-        $content_view = null
-    ) {
-        $self = new static(
-            new View($view, $content_view),
-            new Redirect(),
-            new Error($error)
-        );
-
-        return $self;
     }
 
     /**
