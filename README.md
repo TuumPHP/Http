@@ -54,15 +54,16 @@ Overview
 
 ### Sample Construction
 
-Following code shows one way to build a `$responder` object:
+Following shows an example code way to build a `$responder` object:
 
 ```php
-$view = Tuum\Respond\Service\TwigView::forge('/dir/twig');
-$error = Tuum\Respond\Service\ErrorView::forge($view);
-$responder = Tuum\Respond\Responder::forge($view, $error, 'layout/contents');
+use Tuum\Respond\Service\TwigView;
+use Tuum\Respond\Helper\ResponderBuilder;
+
+$responder = ResponderBuilder::withView(TwigView::forge('/dir/twig'));
 ```
 
-To render a template file: 
+To render a template file (using some virtual `$app`): 
 
 ```php
 // use $responder object to render index page. 
@@ -154,6 +155,12 @@ Respond::view($request)->asHtml('<h1>Hello World</h1>');
 Respond::view($request)->asDownload($fp, 'some.dat');
 Respond::view($request)->asFileContents('tuum.pdf', 'application/pdf');
 Respond::view($request)->asContent('<h1>My Content</h1>');
+```
+
+to use `asContent` method, specify a template file name for rendering a content as second argument of the constructor: 
+
+```php
+new View($view, 'contet-file-name');
 ```
 
 
@@ -384,31 +391,60 @@ which must have the `contents`.
 Constructing Responders
 ------------------
 
-### Constructing Responder Object
+### Constructing a Responder Object
 
-The constructor looks like;
+`Responder` object takes 3 responders, ViewData instances at the construction; then set SessionStorageInterface object.
 
 ```php
-$responder = (new Responder(new View, new Redirect, new Error))
-	->withSession($session);
+$responder = (new Responder(
+	new View, 
+	new Redirect, 
+	new Error, 
+	new ViewData)
+)->withSession($session);
 ```
 
-But the easier way to build a responder object, currently, is to use `Responder::build` method, which takes, `ViewerInterface`, `SessionStorageInterface` object, and some configuration array for errors. 
+#### `ResponderBuilder` class
+
+`ResponderBuilder` class offers a simple static factory methods to construct the `$responder` object. 
+
+A factory method, `ResponderBuilder::withView`, takes 3 arguments: `ViewerInterface` object, option for `ErrorView` class, and template file name for content view. 
+
+```php
+$responder = Responder::withView(
+	TwigViewer::forge(__DIR__ . '/twigs'), 
+	[
+	    'default' => 'errors/error',
+	    'status'  => [
+	        404 => 'errors/notFound',
+	]],
+   'layouts/contents');
+```
+
+Another factory method, `ResponderBuilder::withServices`, also takes 3 arguments: `ViewerInterface` object, `ErrorViewInterface` object, and template file name for content view. 
 
 ```php
 $view    = TwigViewer::forge(__DIR__ . '/twigs');
-$session = SessionStorage::forge('sample');
-$error   = ErrorView::forge($view, [
-    'default' => 'errors/error',
-    'status'  => [
-        404 => 'errors/notFound',
-    ],
-]);
+$error   = ErrorView::forge(
+	TwigViewer::forge(__DIR__.'/errors'), [
+	    'default' => 'errors/error',
+	    'status'  => [
+	        404 => 'errors/notFound',
+	    ],
+	]);
 $content_file = 'layouts/contents';
-$responder = Responder::build($view, $error, $content_file)
-    ->withResponse(new Response())
-    ->withSession($session);
+$responder = Responder::withServices($view, $error, $content_file)
+    ->withSession(SessionStorage::forge('sample'));
 ```
+
+#### setting `$session` object
+
+The responders need `SessionStorageInterfae` object in order to pass data from one request to another. The responder takes the session object using `withSession` method, not in constructor. 
+
+```php
+$responder = $responder->withSession($session);
+```
+
 
 #### setting `$response` object
 
@@ -422,7 +458,7 @@ return $responder->view($request)->asView('index');
 > Responder needs a `$response` object to return since it does not know how to construct a response object. (as it being a framework agnostic module).
 
 
-### View Responder
+### `View` Responder
 
 The `View` Responder takes `ViewerInterface` object, and optionally the template filename for content rendering. 
 
@@ -433,7 +469,7 @@ $view = new Tuum\Respond\Responder\View(
 );
 ```
 
-### Redirect Responder
+### `Redirect` Responder
 
 construction of Redirect responder does not take any arguments; 
 
@@ -441,7 +477,7 @@ construction of Redirect responder does not take any arguments;
 $redirect = new Tuum\Respond\Responder\Redirect();
 ```
 
-### Error Responder
+### `Error` Responder
 
 The `Error` responder takes `ErrorViewInterface` object as argument;
 
@@ -484,7 +520,7 @@ interface ViewerInterface
 
 There are two implementations of the `ViewerInterface`: `TwigViewer` for using Twig template and `TuumViewer` for using plain a PHP file as template. 
 
-#### TwigViewer
+#### `TwigViewer`
 
 The `TwigViewer`'s constructor takes the `Twig_Environment` object as argument:
 
@@ -510,7 +546,7 @@ $view = TwigViewer::forge($root_dir, $options,
 
 The third closure is an optional argument. 
 
-#### TuumViewer
+#### `TuumViewer`
 
 Easy way to construct `TuumViewer` is to use a factory method. 
 
@@ -546,7 +582,7 @@ interface ErrorViewInterface extends ViewerInterface {}
 3. renders the template, and 
 4. return a response. 
 
-#### ErrorView object
+#### `ErrorView` object
 
 A factory method is avaible to construct the default `ErrorView` object; 
 
@@ -570,7 +606,7 @@ $error = ErrorView::forge(
 
 
 
-### SessionStorageInterface
+### `SessionStorageInterface`
 
 ```SessionStorageInterface``` provides ways to access session and flash data storage, whose API is taken from `Aura.Session`'s Segment class. 
 
