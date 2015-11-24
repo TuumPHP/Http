@@ -4,6 +4,7 @@ namespace Tuum\Respond;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 
@@ -108,6 +109,18 @@ class Respond
     public static function error($request, $response = null)
     {
         return self::_getResponder('error', $request, $response);
+    }
+
+    /**
+     * get an error responder, Responder\Error.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface|null $response
+     * @return Presenter
+     */
+    public static function presenter($request, $response = null)
+    {
+        return self::_getResponder('presenter', $request, $response);
     }
 
     /**

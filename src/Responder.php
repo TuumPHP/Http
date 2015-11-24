@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder\AbstractWithViewData;
 use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorageInterface;
@@ -43,21 +44,29 @@ class Responder
     private $response;
 
     /**
-     * @param View     $view
-     * @param Redirect $redirect
-     * @param Error    $error
-     * @param ViewData $viewData
+     * @var Presenter
+     */
+    private $presenter;
+
+    /**
+     * @param View      $view
+     * @param Redirect  $redirect
+     * @param Error     $error
+     * @param ViewData  $viewData
+     * @param Presenter $presenter
      */
     public function __construct(
         View $view,
         Redirect $redirect,
         Error $error,
-        $viewData = null
+        $viewData = null,
+        Presenter $presenter = null
     ) {
         $this->view     = $view;
         $this->redirect = $redirect;
         $this->error    = $error;
         $this->viewData = $viewData ?: new ViewData();
+        $this->presenter = $presenter ?: new Presenter();
     }
 
     /**
@@ -163,6 +172,18 @@ class Responder
         ResponseInterface $response = null
     ) {
         return $this->returnWith($this->error, $request, $response);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface|null $response
+     * @return Presenter
+     */
+    public function presenter(
+        ServerRequestInterface $request,
+        ResponseInterface $response = null
+    ) {
+        return $this->returnWith($this->presenter, $request, $response);
     }
 
     /**

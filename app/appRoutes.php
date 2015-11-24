@@ -59,7 +59,7 @@ return function ($request, $responder) {
             $view->setInputErrors(['jumped' => 'redrawn error message']);
             return $view;
         });
-        return $jump($request);
+        return Respond::presenter($request)->call($jump);
     };
 
     /**
