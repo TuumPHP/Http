@@ -1,22 +1,12 @@
 <?php
 namespace tests\Responder;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\ViewerInterface;
 use Zend\Diactoros\Response;
-
-class TestViewer implements ViewerInterface
-{
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
-    {
-        return 'tested: viewer';
-    }
-}
 
 class PresenterTest extends \PHPUnit_Framework_TestCase
 {
@@ -44,9 +34,15 @@ class PresenterTest extends \PHPUnit_Framework_TestCase
      */
     function executes_ViewerInterface_object()
     {
-        $presenter = $this->presenter->withRequest(ReqBuilder::createFromPath('test'), new Response('test'), SessionStorage::forge('test'), new ViewData);
-        $string = $presenter->call(new TestViewer());
-        $this->assertEquals('tested: viewer', $string);
+        $stub = $this->getMockBuilder(ViewerInterface::class)->getMock();
+        $stub->method('withView')->willReturn('tested: mock');
+        $presenter = $this->presenter->withRequest(
+            ReqBuilder::createFromPath('test'),
+            new Response('test'),
+            SessionStorage::forge('test'),
+            new ViewData);
+        $string = $presenter->call($stub);
+        $this->assertEquals('tested: mock', $string);
     }
 
     /**
