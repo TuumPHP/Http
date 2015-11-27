@@ -14,21 +14,6 @@ use Tuum\Respond\Responder\ViewData;
 class Responder
 {
     /**
-     * @var View
-     */
-    private $view;
-
-    /**
-     * @var Redirect
-     */
-    private $redirect;
-
-    /**
-     * @var Error
-     */
-    private $error;
-
-    /**
      * @var SessionStorageInterface
      */
     private $session;
@@ -44,9 +29,9 @@ class Responder
     private $response;
 
     /**
-     * @var Presenter
+     * @var AbstractWithViewData[]
      */
-    private $presenter;
+    private $responders = [];
 
     /**
      * @param View      $view
@@ -62,11 +47,13 @@ class Responder
         $viewData = null,
         Presenter $presenter = null
     ) {
-        $this->view     = $view;
-        $this->redirect = $redirect;
-        $this->error    = $error;
         $this->viewData = $viewData ?: new ViewData();
-        $this->presenter = $presenter ?: new Presenter();
+        $this->responders = [
+            'view' => $view,
+            'redirect' => $redirect,
+            'error' => $error,
+            'presenter' => $presenter ?: new Presenter(),
+        ];
     }
 
     /**
@@ -126,13 +113,14 @@ class Responder
     }
 
     /**
-     * @param AbstractWithViewData   $responder
+     * @param string   $responder
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
      * @return AbstractWithViewData
      */
     private function returnWith($responder, $request, $response)
     {
+        $responder = $this->responders[$responder];
         $response = $response ?: $this->response;
 
         return $responder->withRequest($request, $response, $this->session, $this->viewData);
@@ -147,7 +135,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith($this->view, $request, $response);
+        return $this->returnWith('view', $request, $response);
     }
 
     /**
@@ -159,7 +147,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith($this->redirect, $request, $response);
+        return $this->returnWith('redirect', $request, $response);
     }
 
     /**
@@ -171,7 +159,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith($this->error, $request, $response);
+        return $this->returnWith('error', $request, $response);
     }
 
     /**
@@ -183,7 +171,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith($this->presenter, $request, $response);
+        return $this->returnWith('presenter', $request, $response);
     }
 
     /**
