@@ -75,7 +75,7 @@ class UploadController
         });
 
         return Respond::presenter($request)
-            ->call($this->viewer);
+            ->call([$this->viewer, 'withView']);
     }
 
     /**
