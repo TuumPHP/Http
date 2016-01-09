@@ -2,7 +2,7 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Service\PresenterInterface;
 
 class Presenter extends AbstractWithViewData
 {
@@ -28,12 +28,12 @@ class Presenter extends AbstractWithViewData
     /**
      * calls the presenter to create a view to respond.
      *
-     * @param callable|ViewerInterface|string $presenter
+     * @param callable|PresenterInterface|string $presenter
      * @return ResponseInterface
      */
     public function call($presenter)
     {
-        if ($presenter instanceof ViewerInterface) {
+        if ($presenter instanceof PresenterInterface) {
             return $this->execCallable([$presenter, 'withView']);
         }
         if (is_callable($presenter)) {

@@ -5,20 +5,20 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder\ViewData;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Service\PresenterInterface;
 use Zend\Diactoros\UploadedFile;
 
 class UploadController
 {
     /**
-     * @var ViewerInterface
+     * @var PresenterInterface
      */
     private $viewer;
 
     /**
      * UploadController constructor.
      *
-     * @param ViewerInterface $viewer
+     * @param PresenterInterface $viewer
      */
     public function __construct($viewer)
     {
@@ -75,7 +75,7 @@ class UploadController
         });
 
         return Respond::presenter($request)
-            ->call([$this->viewer, 'withView']);
+            ->call([$this->viewer, 'withView']); // callable
     }
 
     /**

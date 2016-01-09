@@ -5,9 +5,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder\ViewData;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Service\PresenterInterface;
 
-class UploadViewer implements ViewerInterface
+class UploadViewer implements PresenterInterface
 {
     /**
      * renders $view and returns a new $response.

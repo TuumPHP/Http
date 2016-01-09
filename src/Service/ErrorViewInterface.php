@@ -1,6 +1,6 @@
 <?php
 namespace Tuum\Respond\Service;
 
-interface ErrorViewInterface extends ViewerInterface
+interface ErrorViewInterface extends PresenterInterface
 {
 }

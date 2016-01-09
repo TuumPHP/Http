@@ -12,15 +12,6 @@ use Tuum\Respond\Responder\ViewData;
  *
  * @package Tuum\Application\Service
  */
-interface ViewerInterface
+interface ViewerInterface extends PresenterInterface
 {
-    /**
-     * renders $view and returns a new $response.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param ViewData               $view
-     * @return ResponseInterface
-     */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view);
 }
