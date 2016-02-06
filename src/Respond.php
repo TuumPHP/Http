@@ -112,18 +112,6 @@ class Respond
     }
 
     /**
-     * get an error responder, Responder\Error.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return Presenter
-     */
-    public static function presenter($request, $response = null)
-    {
-        return self::_getResponder('presenter', $request, $response);
-    }
-
-    /**
      * @param ServerRequestInterface $request
      * @return Service\SessionStorageInterface
      */

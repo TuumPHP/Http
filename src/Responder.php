@@ -38,21 +38,18 @@ class Responder
      * @param Redirect  $redirect
      * @param Error     $error
      * @param ViewData  $viewData
-     * @param Presenter $presenter
      */
     public function __construct(
         View $view,
         Redirect $redirect,
         Error $error,
-        $viewData = null,
-        Presenter $presenter = null
+        $viewData = null
     ) {
         $this->viewData = $viewData ?: new ViewData();
         $this->responders = [
             'view' => $view,
             'redirect' => $redirect,
             'error' => $error,
-            'presenter' => $presenter ?: new Presenter(),
         ];
     }
 
@@ -160,18 +157,6 @@ class Responder
         ResponseInterface $response = null
     ) {
         return $this->returnWith('error', $request, $response);
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return Presenter
-     */
-    public function presenter(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
-    ) {
-        return $this->returnWith('presenter', $request, $response);
     }
 
     /**

@@ -50,7 +50,7 @@ class UploadController
      */
     public function onGet(ServerRequestInterface $request)
     {
-        return Respond::presenter($request)
+        return Respond::view($request)
             ->call($this->viewer);
     }
 
@@ -74,7 +74,7 @@ class UploadController
             return $view;
         });
 
-        return Respond::presenter($request)
+        return Respond::view($request)
             ->call([$this->viewer, 'withView']); // callable
     }
 

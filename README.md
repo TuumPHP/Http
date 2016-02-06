@@ -38,7 +38,7 @@ and access ```localhost:8888``` by any browser. The sample site uses external bo
 
 `Tuum/Respond` depends on the following packages. 
 
-*	[psr/http-message](http://www.php-fig.org/psr/psr-7/), the PSR-7 specification,
+*  [psr/http-message](http://www.php-fig.org/psr/psr-7/), the PSR-7 specification,
 *  [Aura/Session]() for managing session and flash storage,
 *  [Tuum/Form](https://github.com/TuumPHP/Form) for html form elements and data helpers, 
 
@@ -56,7 +56,7 @@ Overview
 
 ### Sample Construction
 
-Following shows an example code way to build a `$responder` object:
+Following shows an example code for building a `$responder` object:
 
 ```php
 use Tuum\Respond\Service\TwigView;
@@ -182,6 +182,7 @@ Respond::view($request)->asHtml('<h1>Hello World</h1>'); // returns as text/html
 Respond::view($request)->asDownload($fp, 'some.dat'); // binary for download. 
 Respond::view($request)->asFileContents('tuum.pdf', 'application/pdf'); // reads the file and sends as mime type. 
 Respond::view($request)->asContent('<h1>My Content</h1>'); // renders the text inside a contents template file. 
+Respond::view($request)->call($presenter);
 ```
 
 to use `asContent` method, specify a template file name for rendering a content as second argument of the constructor: 
@@ -189,6 +190,11 @@ to use `asContent` method, specify a template file name for rendering a content 
 ```php
 new View($view, 'contet-file-name');
 ```
+
+to use `call` method, the `$presenter` is;
+
+*   an object implementing `ViewerInterface`, or
+*   a callable with argument same as the `ViewerInterface::withView`. 
 
 
 ### Redirect Responder
@@ -216,18 +222,6 @@ Respond::error($request)->notFound();      // 404: file not found
 Respond::error($request)->asView($status); // error $status
 ```
 
-### Presenter Responder
-
-Presenter responder allows to use any callable or `ViewerInterface` object for composing a respose. 
-
-```php
-Responde::presenter($request)->call($presenter);
-```
-
-The presenter can be, 
-
-*   an object implementing `ViewerInterface`, 
-*   a callable with argument same as the `ViewerInterface::withView`. 
 
 
 ### Session Storage
@@ -272,7 +266,7 @@ $session   = Resopnd::session($request);
 Manipulating `ViewData`
 ---------
 
-Essentially, the responder modules are desinged for setting data for view.
+Essentially, the responder modules are designed for setting data for view.
 
 The central part is `ViewData` object, which acts as data-transfer-object between objects as well as between requests by saving the object into session's flash storage.
 
