@@ -104,7 +104,7 @@ class Responder
     public function withViewData(callable $closure)
     {
         $self           = clone($this);
-        $self->viewData = $closure($this->viewData);
+        $self->viewData = $closure(clone($this->viewData));
 
         return $self;
     }
