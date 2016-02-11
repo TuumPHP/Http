@@ -20,12 +20,14 @@ class UploadController
      *
      * @param PresenterInterface $viewer
      */
-    public function __construct($viewer)
+    private function __construct($viewer)
     {
         $this->viewer = $viewer;
     }
 
     /**
+     * factory for this class.
+     * 
      * @return UploadController
      */
     public static function forge()
@@ -60,21 +62,21 @@ class UploadController
      */
     public function onPost(ServerRequestInterface $request)
     {
-        $request = Respond::withViewData($request, function(ViewData $view) use($request) {
-
-            /** @var UploadedFile $upload */
-            $uploaded = $request->getUploadedFiles();
-            $upload   = $uploaded['up'][0];
-            $view
-                ->setData('isUploaded', true)
-                ->setData('dump', print_r($uploaded, true))
-                ->setData('upload', $upload);
-
-            $this->setUpMessage($view, $upload);
-            return $view;
-        });
-
         return Respond::view($request)
+            ->withViewData(function (ViewData $view) use ($request) {
+
+                /** @var UploadedFile $upload */
+                $uploaded = $request->getUploadedFiles();
+                $upload   = $uploaded['up'][0];
+                $view
+                    ->setData('isUploaded', true)
+                    ->setData('dump', print_r($uploaded, true))
+                    ->setData('upload', $upload);
+
+                $this->setUpMessage($view, $upload);
+
+                return $view;
+            })
             ->call([$this->viewer, 'withView']); // callable
     }
 

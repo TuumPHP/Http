@@ -20,6 +20,9 @@ return function ($request, $responder) {
 
     $app = new Dispatcher();
 
+    /**
+     * for top page /
+     */
     $app->add('/',
         function (ServerRequestInterface $request) use($responder) {
             return $responder->view($request)
@@ -60,10 +63,13 @@ return function ($request, $responder) {
         });
 
     /**
-     * file upload sample.
+     * file upload sample, /upload.
      */
     $app->add('/upload', UploadController::class);
 
+    /**
+     * for other samples
+     */
     $app->add('/content',
         function(ServerRequestInterface $request) {
             return Respond::view($request)
