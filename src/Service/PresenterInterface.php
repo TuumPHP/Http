@@ -5,6 +5,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder\ViewData;
 
+/**
+ * Interface PresenterInterface
+ *
+ * @package Tuum\Respond\Service
+ */
 interface PresenterInterface
 {
     /**
@@ -12,8 +17,8 @@ interface PresenterInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param null|ViewData          $view
+     * @param ViewData          $view
      * @return ResponseInterface
      */
-    public function render($request, $response, $view = null);
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view);
 }

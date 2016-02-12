@@ -3,6 +3,7 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
+use Tuum\Respond\Service\PresenterInterface;
 use Tuum\Respond\Service\ViewerInterface;
 
 class View extends AbstractWithViewData
@@ -21,17 +22,24 @@ class View extends AbstractWithViewData
      */
     protected $view;
 
+    /**
+     * @var callable|null
+     */
+    public $resolver;
+
     // +----------------------------------------------------------------------+
     //  construction
     // +----------------------------------------------------------------------+
     /**
      * @param ViewerInterface $view
      * @param null|string     $content_view
+     * @param null|callable   $resolver
      */
-    public function __construct(ViewerInterface $view, $content_view = null)
+    public function __construct(ViewerInterface $view, $content_view = null, $resolver = null)
     {
         $this->view         = $view;
         $this->content_view = $content_view ?: $this->content_view;
+        $this->resolver     = $resolver;
     }
 
     // +----------------------------------------------------------------------+
@@ -167,5 +175,37 @@ class View extends AbstractWithViewData
             'Cache-Control'       => 'public', // for IE8
             'Pragma'              => 'public', // for IE8
         ]);
+    }
+
+    /**
+     * calls the presenter to create a view to respond.
+     *
+     * @param callable|PresenterInterface|string $presenter
+     * @return ResponseInterface
+     */
+    public function call($presenter)
+    {
+        if ($presenter instanceof PresenterInterface) {
+            return $this->execCallable([$presenter, 'withView']);
+        }
+        if (is_callable($presenter)) {
+            return $this->execCallable($presenter);
+        }
+        if (!$resolver = $this->resolver) {
+            throw new \BadMethodCallException('set resolver to call a presenter!');
+        }
+        return $this->execCallable($resolver($presenter));
+    }
+
+    /**
+     * @param callable $callable
+     * @return ResponseInterface
+     */
+    private function execCallable($callable)
+    {
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException;
+        }
+        return call_user_func($callable, $this->request, $this->response, $this->data);
     }
 }

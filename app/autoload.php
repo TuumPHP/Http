@@ -8,10 +8,11 @@ call_user_func(function() {
         /** @noinspection PhpIncludeInspection */
         include_once($vendor.$auto);
     }
-    $vendor = dirname(dirname(dirname(__DIR__))).'/vendor';
-    if (file_exists($vendor)) {
-        /** @noinspection PhpIncludeInspection */
-        include_once($vendor.$auto);
-    }
+
+    $loader = new \Composer\Autoload\ClassLoader();
+
+    $loader->addPsr4('App\\', __DIR__);
+    $loader->register();
+
 },null);
 

@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder\AbstractWithViewData;
 use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorageInterface;
@@ -12,21 +13,6 @@ use Tuum\Respond\Responder\ViewData;
 
 class Responder
 {
-    /**
-     * @var View
-     */
-    private $view;
-
-    /**
-     * @var Redirect
-     */
-    private $redirect;
-
-    /**
-     * @var Error
-     */
-    private $error;
-
     /**
      * @var SessionStorageInterface
      */
@@ -43,10 +29,15 @@ class Responder
     private $response;
 
     /**
-     * @param View     $view
-     * @param Redirect $redirect
-     * @param Error    $error
-     * @param ViewData $viewData
+     * @var AbstractWithViewData[]
+     */
+    private $responders = [];
+
+    /**
+     * @param View      $view
+     * @param Redirect  $redirect
+     * @param Error     $error
+     * @param ViewData  $viewData
      */
     public function __construct(
         View $view,
@@ -54,10 +45,12 @@ class Responder
         Error $error,
         $viewData = null
     ) {
-        $this->view     = $view;
-        $this->redirect = $redirect;
-        $this->error    = $error;
         $this->viewData = $viewData ?: new ViewData();
+        $this->responders = [
+            'view' => $view,
+            'redirect' => $redirect,
+            'error' => $error,
+        ];
     }
 
     /**
@@ -111,19 +104,20 @@ class Responder
     public function withViewData(callable $closure)
     {
         $self           = clone($this);
-        $self->viewData = $closure($this->viewData);
+        $self->viewData = $closure(clone($this->viewData));
 
         return $self;
     }
 
     /**
-     * @param AbstractWithViewData   $responder
+     * @param string   $responder
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
      * @return AbstractWithViewData
      */
     private function returnWith($responder, $request, $response)
     {
+        $responder = $this->responders[$responder];
         $response = $response ?: $this->response;
 
         return $responder->withRequest($request, $response, $this->session, $this->viewData);
@@ -138,7 +132,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith($this->view, $request, $response);
+        return $this->returnWith('view', $request, $response);
     }
 
     /**
@@ -150,7 +144,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith($this->redirect, $request, $response);
+        return $this->returnWith('redirect', $request, $response);
     }
 
     /**
@@ -162,7 +156,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith($this->error, $request, $response);
+        return $this->returnWith('error', $request, $response);
     }
 
     /**

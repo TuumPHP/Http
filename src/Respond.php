@@ -4,6 +4,7 @@ namespace Tuum\Respond;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 

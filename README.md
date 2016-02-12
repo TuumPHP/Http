@@ -1,7 +1,9 @@
 Tuum/Respond
 =========
 
-`Tuum/Respond` is a framework agnostic module to compose a PSR-7 response object for Post-Redirect-Get pattern and similar techniques. With this module, many of the PSR-7 based micro-frameworks will be a good choice for building, well, an ordinary web site. 
+`Tuum/Respond` is a module for composing a view response (as in terms of MVC) for many PSR-7 based micro-frameworks by helping to implement Post-Redirect-Get pattern and similar techniques. 
+
+> With this module, many of the PSR-7 based micro-frameworks will be a good choice for building, well, an ordinary web site. 
 
 ### License
 
@@ -36,7 +38,7 @@ and access ```localhost:8888``` by any browser. The sample site uses external bo
 
 `Tuum/Respond` depends on the following packages. 
 
-*	[psr/http-message](http://www.php-fig.org/psr/psr-7/), the PSR-7 specification,
+*  [psr/http-message](http://www.php-fig.org/psr/psr-7/), the PSR-7 specification,
 *  [Aura/Session]() for managing session and flash storage,
 *  [Tuum/Form](https://github.com/TuumPHP/Form) for html form elements and data helpers, 
 
@@ -54,7 +56,7 @@ Overview
 
 ### Sample Construction
 
-Following shows an example code way to build a `$responder` object:
+Following shows an example code for building a `$responder` object:
 
 ```php
 use Tuum\Respond\Service\TwigView;
@@ -67,7 +69,7 @@ To render a template file (using some virtual `$app`):
 
 ```php
 // use $responder object to render index page. 
-$app->get('/' function($request, $response) use($responder) {
+$app->add('/' function($request, $response) use($responder) {
     return $responder->view($request , $response)
         ->asView('index');
 });
@@ -75,13 +77,16 @@ $app->get('/' function($request, $response) use($responder) {
 
 ### Respond Class
 
-`Respond` class offers an easy way to manage the responder object;
+`Respond` class offers an easy way to manage the responder object. Please set the `$responder` object in `$request` object as: 
 
 ```php
 // set $responder object in a middleware or somewhere. 
 $request = Respond::withResponder($request, $responder);
+```
 
-// use Respond class to access responder object. 
+The `$responder` object is set as an attribute of the `$request` object, and accessible anywhere using `Respond`'s static method. 
+
+```php
 $jump = function($request, $response) {
 	return Respond::view($request, $response)
 	    ->asView('jump'); // with the 'welcome!' message.
@@ -89,14 +94,15 @@ $jump = function($request, $response) {
 $app->get('/jump', $jump);
 ```
 
-The `$responder` object is set as an attribute of the `$request` object, and accessible anywhere using `Respond`'s static method. 
+> About using static method: The responder object is immutable. Using `$request` to carry around the `$responder` object seems to be safer than injecting one to each object using DIC.
+
 
 
 ### Adding Extra Information to the View
 
 The main focus of `Tuum/Respond` is to display a HTML form with extra information such as bad-input data and error messages. 
 
-The following example shows how to add extra information before rendering a page using `$form` closure (as defined in the above). 
+The following example shows that extra information are set to responder object, then the HTML form is rendered using `$form` closure (as defined in the above). 
 
 ```php
 $app->get('/jumped', function($request, $response) use ($jump) {
@@ -109,8 +115,6 @@ $app->get('/jumped', function($request, $response) use ($jump) {
     return $jump($request, $response);
 });
 ```
-
-> The responder object is immutable. Using $request to carry around the $responder object seems to be the correct way to get the latest object to compose a response. 
 
 
 
@@ -134,6 +138,29 @@ The extra data are stored in a session flash data, and automatically retrieved i
 > looks familiar API? I like Laravel very much!
 
 
+### Using Presenter Callable
+
+Some complex page deserves own class to manage a view. `Tuum/Respond` provides a presenter object/callables that is dedicated to provide a view. 
+
+```php
+class PresentController {
+    /** @var PresentViewer */
+    private $presenter;    
+    function present($request, $response) {
+        return Respond::presenter($request, $response)->call($this->presenter);
+    }
+}
+
+class PresentViewer implements ViewerInterface {
+    function withView($request, $response, $data) {
+        return Respond::view($request, $response)->asView('some view');
+    }
+}
+```
+
+You may want to inject a presenter object, which can be a an object implementing `ViewerInterface` or a callable/closure implementing the same argument of `ViewerInterface::withView` method. 
+
+
 Responders
 ---------
 
@@ -148,13 +175,14 @@ Also, there is `session` to help manage sessions.
 
 ```php
 use Tuum\Respond\Respond;
-Respond::view($request)->asView('template/filename');
-Respond::view($request)->asText('Hello World');
-Respond::view($request)->asJson(['Hello' => 'World']);
-Respond::view($request)->asHtml('<h1>Hello World</h1>');
-Respond::view($request)->asDownload($fp, 'some.dat');
-Respond::view($request)->asFileContents('tuum.pdf', 'application/pdf');
-Respond::view($request)->asContent('<h1>My Content</h1>');
+Respond::view($request)->asView('template/filename'); // renders a template file.
+Respond::view($request)->asText('Hello World'); // returns text/plain. 
+Respond::view($request)->asJson(['Hello' => 'World']); // returns text/json. 
+Respond::view($request)->asHtml('<h1>Hello World</h1>'); // returns as text/html. 
+Respond::view($request)->asDownload($fp, 'some.dat'); // binary for download. 
+Respond::view($request)->asFileContents('tuum.pdf', 'application/pdf'); // reads the file and sends as mime type. 
+Respond::view($request)->asContent('<h1>My Content</h1>'); // renders the text inside a contents template file. 
+Respond::view($request)->call($presenter);
 ```
 
 to use `asContent` method, specify a template file name for rendering a content as second argument of the constructor: 
@@ -162,6 +190,11 @@ to use `asContent` method, specify a template file name for rendering a content 
 ```php
 new View($view, 'contet-file-name');
 ```
+
+to use `call` method, the `$presenter` is;
+
+*   an object implementing `ViewerInterface`, or
+*   a callable with argument same as the `ViewerInterface::withView`. 
 
 
 ### Redirect Responder
@@ -188,6 +221,8 @@ Respond::error($request)->unauthorized();  // 401: unauthorized
 Respond::error($request)->notFound();      // 404: file not found
 Respond::error($request)->asView($status); // error $status
 ```
+
+
 
 ### Session Storage
 
@@ -231,7 +266,7 @@ $session   = Resopnd::session($request);
 Manipulating `ViewData`
 ---------
 
-Essentially, the responder modules are desinged for setting data for view.
+Essentially, the responder modules are designed for setting data for view.
 
 The central part is `ViewData` object, which acts as data-transfer-object between objects as well as between requests by saving the object into session's flash storage.
 
@@ -306,12 +341,12 @@ $viewData->setStatus($status);
 getters:
 
 ```php
-$viewData->getData();
-$viewData->getInputData();
-$viewData->getInputErrors();
-$viewData->getMessage();
-$viewData->getViewFile();
-$viewData->getStatus();
+$viewData->getData(); // getter for setData.
+$viewData->getInputData(); // getter for setInputData.
+$viewData->getInputErrors(); // getter for setInputErrors.
+$viewData->getMessage(); // getter for set{Message|Success|Alert|Error}. 
+$viewData->getViewFile(); // getter for setViewFile. 
+$viewData->getStatus(); // getter for setStatus. 
 ```
 
 Template and Form Helpers
