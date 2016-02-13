@@ -19,7 +19,7 @@ Tuum/Respond
 To install `Tuum/Respond`, use the composer. 
 
 ```sh
-$ composer require "tuum/respond"
+$ composer require "tuum/respond:^1.0"
 ```
 
 To see `Tuum/Respond` working in a sample site, use git and PHP's internal server at public folder as;
@@ -27,6 +27,7 @@ To see `Tuum/Respond` working in a sample site, use git and PHP's internal serve
 ```sh
 $ git clone https://github.com/TuumPHP/Respond
 $ cd Respond
+$ git checkout 1.x
 $ composer install
 $ cd public
 $ php -S localhost:8888
