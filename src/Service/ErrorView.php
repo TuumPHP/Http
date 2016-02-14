@@ -27,11 +27,6 @@ class ErrorView implements ErrorViewInterface
     ];
 
     /**
-     * @var
-     */
-    private $exitOnTerminate = true;
-
-    /**
      * @param ViewerInterface $viewStream
      */
     public function __construct(ViewerInterface $viewStream)
@@ -103,13 +98,5 @@ class ErrorView implements ErrorViewInterface
             $response = $response->withStatus($status);
         }
         return $response;
-    }
-
-    /**
-     * @param bool $exitOnTerminate
-     */
-    public function setExitOnTerminate($exitOnTerminate)
-    {
-        $this->exitOnTerminate = $exitOnTerminate;
     }
 }
