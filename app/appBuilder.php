@@ -17,48 +17,47 @@ return function(Responder $responder) {
      * for top page /
      */
     $app->add('/',
-        function (ServerRequestInterface $request) use($responder) {
-            return $responder->view($request)
+        function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
+            return $responder->view($request, $response)
                 ->asView('index');
         });
 
-    /** @noinspection PhpUnusedParameterInspection */
     /**
      * for displaying form for /jump
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $res
+     * @param ResponseInterface      $response
      * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    $presentJump = function (ServerRequestInterface $request, $res, $view) {
-        return Respond::view($request)
+    $presentJump = function (ServerRequestInterface $request, ResponseInterface $response, $view) {
+        return Respond::view($request, $response)
             ->asView('jump', $view);
     };
 
-    $app->add('/jump', function ($request) use($presentJump) {
+    $app->add('/jump', function ($request, $response) use($presentJump) {
         $view = Respond::getResponder($request)->getViewData();
-        return Respond::view($request)->call($presentJump, $view);
+        return Respond::view($request, $response)->call($presentJump, $view);
     });
 
     $app->add('/jumper',
-        function(ServerRequestInterface $request) {
+        function(ServerRequestInterface $request, ResponseInterface $response) {
             $view = Respond::getResponder($request)->getViewData();
             $view->setSuccess('redirected back!')
                 ->setInputData(['jumped' => 'redirected text'])
                 ->setInputErrors(['jumped' => 'redirected error message']);
 
-            return Respond::redirect($request)
+            return Respond::redirect($request, $response)
                 ->toPath('jump', null, $view);
         });
 
     $app->add('/jumped',
-        function ($request) use($presentJump) {
+        function ($request, $response) use($presentJump) {
             $view = Respond::getResponder($request)->getViewData()
                 ->setSuccess('redrawn form!')
                 ->setInputData(['jumped' => 'redrawn text'])
                 ->setInputErrors(['jumped' => 'redrawn error message']);
-            return Respond::view($request)->call($presentJump, $view);
+            return Respond::view($request, $response)->call($presentJump, $view);
         });
 
     /**
@@ -70,8 +69,8 @@ return function(Responder $responder) {
      * for other samples
      */
     $app->add('/content',
-        function(ServerRequestInterface $request) {
-            return Respond::view($request)
+        function(ServerRequestInterface $request, $response) {
+            return Respond::view($request, $response)
                 ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
         });
 
@@ -94,8 +93,8 @@ return function(Responder $responder) {
      * @return ResponseInterface
      */
     $app->add('/forms',
-        function(ServerRequestInterface $request) {
-            return Respond::view($request)->asView('forms');
+        function(ServerRequestInterface $request, $response) {
+            return Respond::view($request, $response)->asView('forms');
         });
 
     return $app;

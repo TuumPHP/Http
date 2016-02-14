@@ -108,11 +108,9 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
             ],
             'handler' => false,
         ]);
-        $this->viewData->setStatus(123);
         $error->withView($this->req, $this->res, 123, $this->viewData);
         $this->assertEquals('tested-status', $this->view->getViewFile());
 
-        $this->viewData->setStatus(234);
         $error->withView($this->req, $this->res, 234, $this->viewData);
         $this->assertEquals('tested-default', $this->view->getViewFile());
     }

@@ -19,7 +19,7 @@ class UploadViewer implements PresenterInterface
      */
     public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
-        return Respond::view($request)
+        return Respond::view($request, $response)
             ->asView('upload', $view);
     }
 }
