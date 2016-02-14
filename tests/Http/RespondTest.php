@@ -114,19 +114,16 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_populates_ViewData_object()
     {
         $request  = ReqBuilder::createFromPath('/path/test');
-        $respond  = $this->responder->view($request)
-            ->withData('some', 'value')
-            ->withSuccess('message')
-            ->withAlert('notice-msg')
-            ->withError('error-msg')
-            ->withInputData(['more' => 'test'])
-            ->withInputErrors(['more' => 'done']);
+        $view     = $this->responder->getViewData()
+            ->setData('some', 'value')
+            ->setSuccess('message')
+            ->setAlert('notice-msg')
+            ->setError('error-msg')
+            ->setInputData(['more' => 'test'])
+            ->setInputErrors(['more' => 'done'])        ;
+        $respond  = $this->responder->view($request);
 
-        $refObj  = new \ReflectionObject($respond);
-        $refData = $refObj->getProperty('data');
-        $refData->setAccessible(true);
-        /** @var ViewData $data */
-        $data    = $refData->getValue($respond);
+        $data    = $view;
 
         $this->assertEquals('value', $data->getData()['some']);
         $this->assertEquals('message', $data->getMessages()[0]['message']);
@@ -134,43 +131,5 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('error-msg', $data->getMessages()[2]['message']);
         $this->assertEquals('test', $data->getInputData()['more']);
         $this->assertEquals('done', $data->getInputErrors()['more']);
-    }
-
-    /**
-     * @test
-     */
-    function Respond_passes_data_by_withFlashData()
-    {
-        $request  = ReqBuilder::createFromPath('/path/test');
-        $this->responder->view($request)->withFlashData('with-flash', 'value1');
-
-        /*
-         * next request.
-         * move the flash, i.e. next request.
-         */
-        $this->session_factory->commit();
-        $this->moveFlash($this->session_factory);
-
-        $this->assertEquals('value1', $this->responder->session()->getFlash('with-flash'));
-    }
-
-    /**
-     * @test
-     */
-    function with()
-    {
-        $request = ReqBuilder::createFromPath('/path/test');
-        $request = Respond::withResponder($request, $this->responder);
-        $request = Respond::withViewData($request, function(ViewData $view) {
-            $view->setData('test', 'tested');
-            return $view;
-        });
-        $view   = Respond::view($request);
-        $refObj = new \ReflectionObject($view);
-        $refPro = $refObj->getProperty('data');
-        $refPro->setAccessible(true);
-        /** @var ViewData $data */
-        $data   = $refPro->getValue($view);
-        $this->assertEquals('tested', $data->getData()['test']);
     }
 }

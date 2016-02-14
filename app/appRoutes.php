@@ -29,37 +29,43 @@ return function ($request, $responder) {
                 ->asView('index');
         });
 
+    /** @noinspection PhpUnusedParameterInspection */
     /**
      * for displaying form for /jump
      *
      * @param ServerRequestInterface $request
+     * @param ResponseInterface      $res
+     * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    $presentJump = function (ServerRequestInterface $request) {
+    $presentJump = function (ServerRequestInterface $request, $res, $view) {
         return Respond::view($request)
-            ->asView('jump');
+            ->asView('jump', $view);
     };
 
-    $app->add('/jump', $presentJump);
+    $app->add('/jump', function ($request) use($presentJump) {
+        $view = Respond::getResponder($request)->getViewData();
+        return Respond::view($request)->call($presentJump, $view);
+    });
 
     $app->add('/jumper',
         function(ServerRequestInterface $request) {
+            $view = Respond::getResponder($request)->getViewData();
+            $view->setSuccess('redirected back!')
+                ->setInputData(['jumped' => 'redirected text'])
+                ->setInputErrors(['jumped' => 'redirected error message']);
+            
             return Respond::redirect($request)
-                ->withSuccess('redirected back!')
-                ->withInputData(['jumped' => 'redirected text'])
-                ->withInputErrors(['jumped' => 'redirected error message'])
-                ->toPath('jump');
+                ->toPath('jump', null, $view);
         });
 
     $app->add('/jumped',
         function ($request) use($presentJump) {
-            $request = Respond::withViewData($request, function(ViewData $view) {
-                $view->setSuccess('redrawn form!');
-                $view->setInputData(['jumped' => 'redrawn text']);
-                $view->setInputErrors(['jumped' => 'redrawn error message']);
-                return $view;
-            });
-            return Respond::view($request)->call($presentJump);
+            $view = Respond::getResponder($request)->getViewData()
+                ->setSuccess('redrawn form!')
+                ->setInputData(['jumped' => 'redrawn text'])
+                ->setInputErrors(['jumped' => 'redrawn error message']);
+            return Respond::view($request)->call($presentJump, $view);
         });
 
     /**

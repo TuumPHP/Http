@@ -45,8 +45,7 @@ class ViewStreamFuncTest extends \PHPUnit_Framework_TestCase
      */
     function get_contents()
     {
-        $this->viewData->setViewFile('simple-text');
-        $res = $this->view->withView($this->req, $this->res, $this->viewData);
+        $res = $this->view->withView($this->req, $this->res, 'simple-text', $this->viewData);
         $this->assertEquals('this is a simple text.', $res->getBody()->__toString());
     }
 

@@ -24,7 +24,7 @@ class Error extends AbstractWithViewData
     /**
      * @var null|ErrorViewInterface
      */
-    private $view;
+    private $errorView;
 
     /**
      * index of method name and associated http status code.
@@ -45,7 +45,7 @@ class Error extends AbstractWithViewData
      */
     public function __construct(ErrorViewInterface $view)
     {
-        $this->view = $view;
+        $this->errorView = $view;
     }
 
     // +----------------------------------------------------------------------+
@@ -77,14 +77,13 @@ class Error extends AbstractWithViewData
     }
 
     /**
-     * @param int $status
+     * @param int  $status
+     * @param mixed|ViewData $data
      * @return ResponseInterface
      */
-    public function asView($status)
+    public function asView($status, $data = null)
     {
-        $this->data->setStatus($status);
-
-        return $this->view->withView($this->request, $this->response, $this->data);
+        return $this->errorView->withView($this->request, $this->response, $status, $data);
     }
 
     /**
@@ -95,8 +94,9 @@ class Error extends AbstractWithViewData
     public function __call($method, $args)
     {
         if (isset($this->methodStatus[$method])) {
-            return $this->asView($this->methodStatus[$method]);
+            $data = isset($args[0]) ? $args[0]: null; 
+            return $this->asView($this->methodStatus[$method], $data);
         }
-        return parent::__call($method, $args);
+        throw new \BadMethodCallException;
     }
 }

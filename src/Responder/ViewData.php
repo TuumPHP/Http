@@ -66,7 +66,7 @@ class ViewData
      *
      * @param string $key
      * @param mixed  $value
-     * @return $this
+     * @return ViewData
      */
     public function setRawData($key, $value)
     {
@@ -90,7 +90,7 @@ class ViewData
      *
      * @param string|array $key
      * @param mixed        $value
-     * @return $this
+     * @return ViewData
      */
     public function setData($key, $value = null)
     {
@@ -115,7 +115,7 @@ class ViewData
      * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
-     * @return $this
+     * @return ViewData
      */
     public function setInputData(array $value)
     {
@@ -137,7 +137,7 @@ class ViewData
      * for Errors helper.
      *
      * @param array $errors
-     * @return $this
+     * @return ViewData
      */
     public function setInputErrors(array $errors)
     {
@@ -160,7 +160,7 @@ class ViewData
      *
      * @param string $message
      * @param string $type
-     * @return $this
+     * @return ViewData
      */
     public function setMessage($message, $type)
     {
@@ -182,7 +182,7 @@ class ViewData
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewData
      */
     public function setSuccess($message)
     {
@@ -191,7 +191,7 @@ class ViewData
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewData
      */
     public function setAlert($message)
     {
@@ -200,7 +200,7 @@ class ViewData
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewData
      */
     public function setError($message)
     {

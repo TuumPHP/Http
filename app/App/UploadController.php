@@ -52,8 +52,9 @@ class UploadController
      */
     public function onGet(ServerRequestInterface $request)
     {
+        $view = Respond::getResponder($request)->getViewData();
         return Respond::view($request)
-            ->call($this->viewer);
+            ->call($this->viewer, $view);
     }
 
     /**
@@ -62,22 +63,16 @@ class UploadController
      */
     public function onPost(ServerRequestInterface $request)
     {
+        /** @var UploadedFile $upload */
+        $uploaded = $request->getUploadedFiles();
+        $upload   = $uploaded['up'][0];
+        $view = Respond::getResponder($request)->getViewData()
+            ->setData('isUploaded', true)
+            ->setData('dump', print_r($uploaded, true))
+            ->setData('upload', $upload);
+        $this->setUpMessage($view, $upload);
         return Respond::view($request)
-            ->withViewData(function (ViewData $view) use ($request) {
-
-                /** @var UploadedFile $upload */
-                $uploaded = $request->getUploadedFiles();
-                $upload   = $uploaded['up'][0];
-                $view
-                    ->setData('isUploaded', true)
-                    ->setData('dump', print_r($uploaded, true))
-                    ->setData('upload', $upload);
-
-                $this->setUpMessage($view, $upload);
-
-                return $view;
-            })
-            ->call([$this->viewer, 'withView']); // callable
+            ->call([$this->viewer, 'withView'], $view); // callable
     }
 
     /**

@@ -24,12 +24,13 @@ class ViewForError implements ViewerInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewData               $view
+     * @param string                 $view_file
+     * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
     {
-        $this->view_file = $view->getViewFile();
+        $this->view_file = $view_file;
         $this->view_data = $view;
         return $this;
     }
@@ -108,11 +109,11 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
             'handler' => false,
         ]);
         $this->viewData->setStatus(123);
-        $error->withView($this->req, $this->res, $this->viewData);
+        $error->withView($this->req, $this->res, 123, $this->viewData);
         $this->assertEquals('tested-status', $this->view->getViewFile());
 
         $this->viewData->setStatus(234);
-        $error->withView($this->req, $this->res, $this->viewData);
+        $error->withView($this->req, $this->res, 234, $this->viewData);
         $this->assertEquals('tested-default', $this->view->getViewFile());
     }
 }

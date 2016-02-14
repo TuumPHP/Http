@@ -43,8 +43,8 @@ class TuumViewer implements ViewerInterface
      * creates a new ViewStream with Tuum\Renderer.
      * set $root for the root of the view/template directory.
      *
-     * @param string    $root
-     * @param callable  $callable
+     * @param string   $root
+     * @param callable $callable
      * @return static
      */
     public static function forge($root, $callable = null)
@@ -62,33 +62,31 @@ class TuumViewer implements ViewerInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewData               $view
+     * @param string                 $view_file
+     * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
     {
-        $view_file = $view->getViewFile();
         $view_data = $this->setDataView($view);
 
         $response->getBody()->write($this->renderer->render($view_file, $view_data));
-        if ($status = $view->getStatus()) {
-            $response = $response->withStatus($status);
-        }
 
         return $response;
     }
 
     /**
-     * @param ViewData $data
+     * @param mixed|ViewData $data
      * @return array
      */
     private function setDataView($data)
     {
-        if (!$data) {
-            return [];
+        $view = $this->forgeDataView($data, $this->dataView);
+        if ($data instanceof ViewData) {
+            $view_data = $data->getRawData();
+        } else {
+            $view_data = [];
         }
-        $view              = $this->forgeDataView($data, $this->dataView);
-        $view_data         = $data->getRawData();
         $view_data['view'] = $view;
 
         return $view_data;

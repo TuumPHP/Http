@@ -4,7 +4,6 @@ namespace Tuum\Respond;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder\Error;
-use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 
@@ -53,26 +52,6 @@ class Respond
          */
 
         return $responder->$name($request, $response);
-    }
-
-    /**
-     * get responder object while updating viewData with $closure.
-     *
-     * @param ServerRequestInterface $request
-     * @param callable               $closure
-     * @return ServerRequestInterface
-     */
-    public static function withViewData($request, callable $closure = null)
-    {
-        if (!$responder = Respond::getResponder($request)) {
-            throw new \BadMethodCallException;
-        }
-        if ($closure && is_callable($closure)) {
-            $responder = $responder->withViewData($closure);
-            $request   = Respond::withResponder($request, $responder);
-        }
-
-        return $request;
     }
 
     /**

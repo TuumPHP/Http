@@ -90,15 +90,19 @@ class ErrorView implements ErrorViewInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewData               $data
+     * @param int                    $status
+     * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $data)
+    public function withView(ServerRequestInterface $request, ResponseInterface $response, $status, $view)
     {
-        $status = $data->getStatus();
-        $data->setViewFile($this->findViewFromStatus($status));
+        $file = $this->findViewFromStatus($status);
 
-        return $this->view->withView($request, $response, $data);
+        $response = $this->view->withView($request, $response, $file, $view);
+        if ($response instanceof ResponseInterface) {
+            $response = $response->withStatus($status);
+        }
+        return $response;
     }
 
     /**

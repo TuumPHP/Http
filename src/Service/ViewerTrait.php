@@ -11,13 +11,16 @@ trait ViewerTrait
      * @param DataView $view
      * @return DataView
      */
-    protected function forgeDataView(ViewData $data, $view = null)
+    protected function forgeDataView($data = null, $view = null)
     {
         $view = $view ?: new DataView();
-        $view->setData($data->getData());
-        $view->setErrors($data->getInputErrors());
-        $view->setInputs($data->getInputData());
-        $view->setMessage($data->getMessages());
+        $get = function($method) use($data) {
+            return ($data instanceof ViewData )? $data->$method(): [];
+        };
+        $view->setData($get('getData'));
+        $view->setErrors($get('getInputErrors'));
+        $view->setInputs($get('getInputData'));
+        $view->setMessage($get('getMessages'));
 
         return $view;
     }

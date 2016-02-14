@@ -5,7 +5,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder\AbstractWithViewData;
 use Tuum\Respond\Responder\Error;
-use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\SessionStorageInterface;
@@ -19,11 +18,6 @@ class Responder
     private $session;
 
     /**
-     * @var ViewData
-     */
-    private $viewData;
-
-    /**
      * @var ResponseInterface
      */
     private $response;
@@ -34,29 +28,49 @@ class Responder
     private $responders = [];
 
     /**
-     * @param View      $view
-     * @param Redirect  $redirect
-     * @param Error     $error
-     * @param ViewData  $viewData
+     * @param View     $view
+     * @param Redirect $redirect
+     * @param Error    $error
      */
     public function __construct(
         View $view,
         Redirect $redirect,
-        Error $error,
-        $viewData = null
+        Error $error
     ) {
-        $this->viewData = $viewData ?: new ViewData();
         $this->responders = [
-            'view' => $view,
+            'view'     => $view,
             'redirect' => $redirect,
-            'error' => $error,
+            'error'    => $error,
         ];
+    }
+
+    /**
+     * @return mixed|ViewData
+     */
+    public function getViewData()
+    {
+        if ($this->session) {
+            $view = $this->session->getFlash(ViewData::MY_KEY);
+            if ($view) {
+                return clone($view);
+            }
+        }
+
+        return $this->forgeViewData();
+    }
+
+    /**
+     * @return ViewData
+     */
+    protected function forgeViewData()
+    {
+        return new ViewData();
     }
 
     /**
      * set SessionStorage and retrieves ViewData from session's flash.
      * execute this method before using responders.
-     * 
+     *
      * @api
      * @param SessionStorageInterface $session
      * @return Responder
@@ -65,22 +79,16 @@ class Responder
     {
         $self          = clone($this);
         $self->session = $session;
-        $data          = $session->getFlash(ViewData::MY_KEY);
-        if ($data) {
-            // if ViewData is taken from the session,
-            // detach it from the object in the session.
-            $self->viewData = clone($data);
-        }
 
         return $self;
     }
 
     /**
-     * set response object when omitting $response when calling 
+     * set response object when omitting $response when calling
      * responders, such as:
      * Respond::view($request);
-     * 
-     * responders will return $response using this object. 
+     *
+     * responders will return $response using this object.
      *
      * @api
      * @param ResponseInterface $response
@@ -95,22 +103,7 @@ class Responder
     }
 
     /**
-     * modifies viewData.
-     *
-     * @api
-     * @param callable $closure
-     * @return Responder
-     */
-    public function withViewData(callable $closure)
-    {
-        $self           = clone($this);
-        $self->viewData = $closure(clone($this->viewData));
-
-        return $self;
-    }
-
-    /**
-     * @param string   $responder
+     * @param string                 $responder
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
      * @return AbstractWithViewData
@@ -118,9 +111,9 @@ class Responder
     private function returnWith($responder, $request, $response)
     {
         $responder = $this->responders[$responder];
-        $response = $response ?: $this->response;
+        $response  = $response ?: $this->response;
 
-        return $responder->withRequest($request, $response, $this->session, $this->viewData);
+        return $responder->withRequest($request, $response, $this->session);
     }
 
     /**
@@ -162,7 +155,8 @@ class Responder
     /**
      * @return SessionStorageInterface
      */
-    public function session() {
+    public function session()
+    {
         return $this->session;
     }
 }

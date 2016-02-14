@@ -6,9 +6,9 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
+use Tuum\Respond\Service\PresenterInterface;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\SessionStorageInterface;
-use Tuum\Respond\Service\ViewerInterface;
 use Zend\Diactoros\Response;
 
 class ViewTest extends \PHPUnit_Framework_TestCase
@@ -69,15 +69,6 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function asContents_returns_content_file_with_content_data()
-    {
-        $response = $this->view->asContents('test-content', 'testing/contents');
-        $this->assertEquals('testing/contents', $response->getHeaderLine('ViewFile'));
-    }
-
-    /**
-     * @test
-     */
     function asContents_uses_default_content_file()
     {
         $this->view->content_view = 'default/contents';
@@ -112,7 +103,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function executes_ViewerInterface_object()
     {
-        $stub = $this->getMockBuilder(ViewerInterface::class)->getMock();
+        $stub = $this->getMockBuilder(PresenterInterface::class)->getMock();
         $stub->method('withView')->willReturn('tested: mock');
         $string = $this->view->call($stub);
         $this->assertEquals('tested: mock', $string);

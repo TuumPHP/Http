@@ -40,38 +40,4 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Tuum\Respond\Responder\Redirect', get_class($this->responder->redirect($req)));
         $this->assertEquals('Tuum\Respond\Responder\Error', get_class($this->responder->error($req)));
     }
-
-    /**
-     * @test
-     */
-    function withViewData_sets_viewData_which_is_passed_to_subsequent_responders()
-    {
-        $res = $this->responder->withViewData(function(ViewData $view) {
-            $view->setData('test', 'responder-tested');
-            return $view;
-        });
-        $request  = ReqBuilder::createFromPath('/base/path');
-        $response = $res->view($request)->asView('test/responder');
-        /** @var LocalView $view */
-        $this->assertEquals('responder-tested', $response->getBody()->__toString());
-        $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
-    }
-
-    /**
-     * @test
-     */
-    function View_withViewData_sets_viewData()
-    {
-        $request  = ReqBuilder::createFromPath('/base/path');
-        $response = $this->responder
-            ->view($request)
-            ->withViewData(function(ViewData $view) {
-                $view->setData('test', 'responder-tested');
-            return $view;
-            })
-            ->asView('test/responder');
-        /** @var LocalView $view */
-        $this->assertEquals('responder-tested', $response->getBody()->__toString());
-        $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
-    }
 }
