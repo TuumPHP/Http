@@ -1,62 +1,45 @@
 <?php
 
+use App\App\Dispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\Error;
-use Tuum\Respond\Service\ErrorView;
-use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\TwigViewer;
-use Tuum\Respond\Service\TuumViewer;
 use Zend\Diactoros\Response;
-
-/** @var Closure $next */
-$next = include __DIR__ . '/appRoutes.php';
 
 /**
  * creates services.
  *
  * @param ServerRequestInterface $request
+ * @param ResponseInterface      $response
  * @return ResponseInterface
  */
-return function (ServerRequestInterface $request) use ($next) {
+return function (ServerRequestInterface $request, ResponseInterface $response) {
 
-    /**
-     * this is the view for template.
-     */
-    if ($request->getAttribute('view') === 'twig') {
-        $view = TwigViewer::forge(__DIR__ . '/twigs');
-    } else {
-        $view = TuumViewer::forge(__DIR__ . '/views');
-    }
 
-    /**
-     * construct responder.
-     */
-    $session   = SessionStorage::forge('sample');
-    $error     = ErrorView::forge($view, [
-        'default' => 'errors/error',
-        'status'  => [
-            Error::FILE_NOT_FOUND => 'errors/notFound',
-        ],
-        'handler' => true,
-    ]);
-    $responder = ResponderBuilder::withServices($view, $error, 'layouts/contents')
-        ->withResponse(new Response())
-        ->withSession($session);
+    /** @var callable $responderBuilder */
+    $responderBuilder = include __DIR__ . '/appResponder.php';
+
+    /** @var Responder $responder */
+    $responder = $responderBuilder($request, $response);
     $request   = Respond::withResponder($request, $responder);
+
+    /** @var callable $appBuilder */
+    $appBuilder = include __DIR__ . '/appBuilder.php';
+
+    /** @var Dispatcher $app */
+    $app = $appBuilder($responder);
 
     /**
      * run the next process!!!
      */
-    $response = $next($request, $responder) ?: Respond::error($request)->notFound();
+    try {
 
-    /**
-     * done. save session.
-     */
-    $session->commit();
+        $response = $app->run($request, $response) ?: $responder->error($request, $response)->notFound();
+        
+    } catch(\Exception $e) {
+        $response = $responder->error($request, $response)->asView(500);
+    }
 
     return $response;
 };

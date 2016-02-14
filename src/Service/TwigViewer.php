@@ -82,11 +82,11 @@ class TwigViewer implements ViewerInterface
      */
     private function setDataView($data)
     {
+        $view = $this->forgeDataView($data, $this->dataView);
+        $this->renderer->addGlobal('viewData', $view);
         if (!$data) {
             return [];
         }
-        $view = $this->forgeDataView($data, $this->dataView);
-        $this->renderer->addGlobal('viewData', $view);
         $view_data = $data->getData();
 
         return $view_data;

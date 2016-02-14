@@ -21,20 +21,19 @@ class Dispatcher
 
     /**
      * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function run($request)
+    public function run($request, $response)
     {
-        $response = null;
         $pathInfo = ReqAttr::getPathInfo($request);
         foreach ($this->routes as $path => $app) {
             if ($path === $pathInfo) {
                 $app = $this->resolve($app);
-                $response = $app($request);
-                break;
+                return $app($request, $response);
             }
         }
-        return $response;
+        return null;
     }
 
     /**

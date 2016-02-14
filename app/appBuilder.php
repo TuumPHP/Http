@@ -2,21 +2,14 @@
 
 use App\App\Dispatcher;
 use App\App\UploadController;
+use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\ViewData;
-use Koriym\Printo\Printo;
 
-/**
- * set routes and dispatch.
- *
- * @param ServerRequestInterface $request
- * @param Responder              $responder
- * @return ResponseInterface
- */
-return function ($request, $responder) {
+return function(Responder $responder) {
 
     $app = new Dispatcher();
 
@@ -54,7 +47,7 @@ return function ($request, $responder) {
             $view->setSuccess('redirected back!')
                 ->setInputData(['jumped' => 'redirected text'])
                 ->setInputErrors(['jumped' => 'redirected error message']);
-            
+
             return Respond::redirect($request)
                 ->toPath('jump', null, $view);
         });
@@ -105,6 +98,5 @@ return function ($request, $responder) {
             return Respond::view($request)->asView('forms');
         });
 
-    return $app->run($request);
-
+    return $app;
 };
