@@ -3,12 +3,27 @@ namespace App\App;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\PresenterInterface;
 
 class UploadViewer implements PresenterInterface
 {
+    /**
+     * @var Responder
+     */
+    private $responder;
+
+    /**
+     * @param Dispatcher $app
+     * @return UploadViewer
+     */
+    public static function forge($app)
+    {
+        $self = new self;
+        $self->responder = $app->get('responder');
+        return $self;
+    }
     /**
      * renders $view and returns a new $response.
      *
@@ -19,7 +34,7 @@ class UploadViewer implements PresenterInterface
      */
     public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
-        return Respond::view($request, $response)
+        return $this->responder->view($request, $response)
             ->asView('upload', $view);
     }
 }

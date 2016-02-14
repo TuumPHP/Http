@@ -11,7 +11,9 @@ use Tuum\Respond\Responder\ViewData;
 
 return function(Responder $responder) {
 
-    $app = new Dispatcher();
+    $app = new Dispatcher([
+        'responder' => $responder,
+    ]);
 
     /**
      * for top page /
@@ -41,9 +43,9 @@ return function(Responder $responder) {
     });
 
     $app->add('/jumper',
-        function(ServerRequestInterface $request, ResponseInterface $response) {
-            $view = Respond::getResponder($request)->getViewData();
-            $view->setSuccess('redirected back!')
+        function(ServerRequestInterface $request, ResponseInterface $response) use($responder) {
+            $view = $responder->getViewData()
+                ->setSuccess('redirected back!')
                 ->setInputData(['jumped' => 'redirected text'])
                 ->setInputErrors(['jumped' => 'redirected error message']);
 

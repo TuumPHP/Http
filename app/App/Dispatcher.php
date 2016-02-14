@@ -10,6 +10,22 @@ class Dispatcher
 {
     private $routes = [];
 
+    private $container = [];
+    
+    public function __construct(array $config = [])
+    {
+        $this->container = $config;
+    }
+
+    /**
+     * @param $key
+     * @return null|mixed
+     */
+    public function get($key)
+    {
+        return array_key_exists($key, $this->container) ? $this->container[$key] : null; 
+    }
+
     /**
      * @param string  $path
      * @param Closure $handler
@@ -46,7 +62,7 @@ class Dispatcher
             return $app;
         }
         if (is_string($app) && class_exists($app)) {
-            return call_user_func([$app,'forge']);
+            return call_user_func([$app,'forge'], $this);
         }
         throw new \InvalidArgumentException;
     }

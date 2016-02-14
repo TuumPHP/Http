@@ -3,7 +3,7 @@ namespace App\App;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\PresenterInterface;
 use Zend\Diactoros\UploadedFile;
@@ -16,6 +16,11 @@ class UploadController
     private $viewer;
 
     /**
+     * @var Responder
+     */
+    private $responder;
+    
+    /**
      * UploadController constructor.
      *
      * @param PresenterInterface $viewer
@@ -27,51 +32,57 @@ class UploadController
 
     /**
      * factory for this class.
-     * 
+     *
+     * @param Dispatcher $app
      * @return UploadController
      */
-    public static function forge()
+    public static function forge($app)
     {
-        $viewer = new UploadViewer();
-        return new self($viewer);
+        $viewer = UploadViewer::forge($app);
+        $self =  new self($viewer);
+        $self->responder = $app->get('responder');
+        return $self;
     }
 
     /**
      * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
     {
         $method = $request->getMethod()==='POST' ? 'onPost' : 'onGet';
-        return $this->$method($request);
+        return $this->$method($request, $response);
     }
 
     /**
      * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function onGet(ServerRequestInterface $request)
+    public function onGet(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $view = Respond::getResponder($request)->getViewData();
-        return Respond::view($request)
+        $view = $this->responder->getViewData();
+        return $this->responder->view($request, $response)
             ->call($this->viewer, $view);
     }
 
     /**
      * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function onPost(ServerRequestInterface $request)
+    public function onPost(ServerRequestInterface $request, ResponseInterface $response)
     {
         /** @var UploadedFile $upload */
         $uploaded = $request->getUploadedFiles();
         $upload   = $uploaded['up'][0];
-        $view = Respond::getResponder($request)->getViewData()
+        $view = $this->responder->getViewData()
             ->setData('isUploaded', true)
             ->setData('dump', print_r($uploaded, true))
             ->setData('upload', $upload);
         $this->setUpMessage($view, $upload);
-        return Respond::view($request)
+        return $this->responder->view($request, $response)
             ->call([$this->viewer, 'withView'], $view); // callable
     }
 
