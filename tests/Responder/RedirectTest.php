@@ -34,8 +34,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->redirect = $this->redirect->withRequest(
             ReqBuilder::createFromPath('test'), 
             new Response(), 
-            $this->session, 
-            new ViewData()
+            $this->session
         );
     }
 
@@ -68,8 +67,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->redirect = $this->redirect->withRequest(
             $request,
             new Response(),
-            $this->session,
-            new ViewData()
+            $this->session
         );
         $response = $this->redirect->toBasePath('path');
         $this->assertEquals('/base/path', ResponseHelper::getLocation($response));
@@ -85,8 +83,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->redirect = $this->redirect->withRequest(
             $request,
             new Response(),
-            $this->session,
-            new ViewData()
+            $this->session
         );
         $response = $this->redirect->toReferrer();
         $this->assertEquals('/referrer/', ResponseHelper::getLocation($response));

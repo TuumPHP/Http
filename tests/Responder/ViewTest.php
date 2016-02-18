@@ -58,7 +58,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function view_returns_viewStream()
     {
-        $response = $this->view->asView('test-view');
+        $response = $this->view->render( 'test-view');
         /** @var LocalView $stream */
         $stream = $response->getBody();
         $this->assertEquals('Zend\Diactoros\Response', get_class($response));

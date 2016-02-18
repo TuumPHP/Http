@@ -74,12 +74,8 @@ class Redirect extends AbstractWithViewData
         $base = ReqAttr::getBasePath($this->request);
         $path = rtrim($base, '/') . $path;
         $path = rtrim($path, '/');
-        $uri  = $this->request->getUri()->withPath($path);
-        if (!is_null($query)) {
-            $uri = $uri->withQuery($query);
-        }
 
-        return $this->toAbsoluteUri($uri, $data);
+        return $this->toPath($path, $query, $data);
     }
 
     /**

@@ -22,7 +22,7 @@ return function(Responder $responder) {
     $app->add('/',
         function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
             return $responder->view($request, $response)
-                ->asView('index');
+                ->render( 'index');
         });
 
     /**
@@ -35,7 +35,7 @@ return function(Responder $responder) {
      */
     $presentJump = function (ServerRequestInterface $request, ResponseInterface $response, $view) {
         return Respond::view($request, $response)
-            ->asView('jump', $view);
+            ->render( 'jump', $view);
     };
 
     $app->add('/jump', function ($request, $response) use($presentJump) {
@@ -97,7 +97,7 @@ return function(Responder $responder) {
      */
     $app->add('/forms',
         function(ServerRequestInterface $request, $response) {
-            return Respond::view($request, $response)->asView('forms');
+            return Respond::view($request, $response)->render( 'forms');
         });
 
     return $app;

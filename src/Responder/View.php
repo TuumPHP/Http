@@ -64,7 +64,7 @@ class View extends AbstractWithViewData
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
-    private function asViewStream($file, $data = null)
+    private function renderWithViewer( $file, $data = null)
     {
         return $this->view->__invoke( $this->request, $this->response, $file, $data);
     }
@@ -76,9 +76,9 @@ class View extends AbstractWithViewData
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
-    public function asView($file, $data = null)
+    public function render( $file, $data = null)
     {
-        return $this->asViewStream($file, $data);
+        return $this->renderWithViewer( $file, $data);
     }
 
     /**
@@ -96,7 +96,7 @@ class View extends AbstractWithViewData
         }
         $data->setData('contents', $content);
 
-        return $this->asViewStream($this->content_view, $data);
+        return $this->renderWithViewer( $this->content_view, $data);
     }
 
     /**
