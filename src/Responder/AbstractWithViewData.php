@@ -3,7 +3,7 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 
 /**
  * Class AbstractWithViewData

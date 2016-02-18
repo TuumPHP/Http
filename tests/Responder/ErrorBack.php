@@ -3,7 +3,7 @@ namespace tests\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Service\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ErrorViewInterface;
 use Tuum\Respond\Responder\ViewData;
 
 class ErrorBack implements ErrorViewInterface

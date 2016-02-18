@@ -7,7 +7,7 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 

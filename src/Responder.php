@@ -7,7 +7,7 @@ use Tuum\Respond\Responder\AbstractWithViewData;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Responder\ViewData;
 
 class Responder

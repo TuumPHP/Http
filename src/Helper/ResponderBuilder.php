@@ -8,8 +8,8 @@ use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\ErrorView;
-use Tuum\Respond\Service\ErrorViewInterface;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 
 class ResponderBuilder
 {

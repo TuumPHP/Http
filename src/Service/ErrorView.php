@@ -3,7 +3,9 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ErrorViewInterface;
 use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewerInterface;
 
 class ErrorView implements ErrorViewInterface
 {

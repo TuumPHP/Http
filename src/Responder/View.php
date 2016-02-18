@@ -3,8 +3,8 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
-use Tuum\Respond\Service\PresenterInterface;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 
 class View extends AbstractWithViewData
 {

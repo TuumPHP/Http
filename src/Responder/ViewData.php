@@ -1,6 +1,8 @@
 <?php
 namespace Tuum\Respond\Responder;
 
+use Tuum\Respond\Interfaces\ViewDataInterface;
+
 /**
  * Class ViewData
  *
@@ -15,7 +17,7 @@ namespace Tuum\Respond\Responder;
  *
  * @package Tuum\Respond
  */
-class ViewData
+class ViewData implements ViewDataInterface
 {
     /**
      * @var array

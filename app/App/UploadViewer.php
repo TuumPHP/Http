@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\ViewData;
-use Tuum\Respond\Service\PresenterInterface;
+use Tuum\Respond\Interfaces\PresenterInterface;
 
 class UploadViewer implements PresenterInterface
 {

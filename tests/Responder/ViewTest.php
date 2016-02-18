@@ -6,9 +6,9 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Service\PresenterInterface;
+use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\SessionStorageInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Zend\Diactoros\Response;
 
 class ViewTest extends \PHPUnit_Framework_TestCase

@@ -92,7 +92,7 @@ class Respond
 
     /**
      * @param ServerRequestInterface $request
-     * @return Service\SessionStorageInterface
+     * @return \Tuum\Respond\Interfaces\SessionStorageInterface
      */
     public static function session($request)
     {
