@@ -33,11 +33,8 @@ class Responder
      * @param Redirect $redirect
      * @param Error    $error
      */
-    public function __construct(
-        View $view,
-        Redirect $redirect,
-        Error $error
-    ) {
+    public function __construct($view, $redirect, $error)
+    {
         $this->responders = [
             'view'     => $view,
             'redirect' => $redirect,
