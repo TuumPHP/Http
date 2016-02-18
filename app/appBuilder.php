@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\ViewData;
 
 return function(Responder $responder) {
 

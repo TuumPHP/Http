@@ -7,8 +7,6 @@
  */
 namespace Tuum\Respond\Interfaces;
 
-use Tuum\Respond\Responder\ViewData;
-
 
 /**
  * Class ViewData
@@ -43,7 +41,7 @@ interface ViewDataInterface
      *
      * @param string $key
      * @param mixed  $value
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setRawData( $key, $value );
 
@@ -59,7 +57,7 @@ interface ViewDataInterface
      *
      * @param string|array $key
      * @param mixed        $value
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setData( $key, $value = null );
 
@@ -72,7 +70,7 @@ interface ViewDataInterface
      * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setInputData( array $value );
 
@@ -86,7 +84,7 @@ interface ViewDataInterface
      * for Errors helper.
      *
      * @param array $errors
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setInputErrors( array $errors );
 
@@ -101,7 +99,7 @@ interface ViewDataInterface
      *
      * @param string $message
      * @param string $type
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setMessage( $message, $type );
 
@@ -112,19 +110,19 @@ interface ViewDataInterface
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setSuccess( $message );
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setAlert( $message );
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewDataInterface
      */
     public function setError( $message );
 }
