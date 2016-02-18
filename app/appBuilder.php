@@ -50,7 +50,7 @@ return function (Responder $responder) {
                 ->setInputErrors(['jumped' => 'redirected error message']);
 
             return Respond::redirect($request, $response)
-                ->toPath('jump', null, $view);
+                ->toPath('jump', $view);
         });
 
     $app->add('/jumped',

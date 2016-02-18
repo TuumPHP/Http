@@ -8,14 +8,30 @@ use Tuum\Respond\Interfaces\ViewDataInterface;
 
 class Redirect extends AbstractWithViewData
 {
-    // +----------------------------------------------------------------------+
-    //  construction
-    // +----------------------------------------------------------------------+
+    /**
+     * @var string
+     */
+    private $query = '';
+
     /**
      *
      */
     public function __construct()
     {
+    }
+
+    /**
+     * @param array|string $query
+     * @return Redirect
+     */
+    public function withQuery($query)
+    {
+        if (is_array($query)) {
+            $query = http_build_query($query, null, '&');
+        }
+        $self = clone $this;
+        $self->query = $self->query ? $self->query . '&' . $query: $query;
+        return $self;
     }
 
     // +----------------------------------------------------------------------+
@@ -32,6 +48,7 @@ class Redirect extends AbstractWithViewData
     public function toAbsoluteUri($uri, $viewData = null)
     {
         if ($uri instanceof UriInterface) {
+            $uri = $uri->withQuery($this->query);
             $uri = (string)$uri;
         }
         if ($this->session && $viewData) {
@@ -48,34 +65,29 @@ class Redirect extends AbstractWithViewData
      * uses current hosts and scheme.
      *
      * @param string                  $path
-     * @param string                  $query
      * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toPath($path, $query = '', $viewData = null)
+    public function toPath($path, $viewData = null)
     {
         $uri = $this->request->getUri()->withPath($path);
-        if (!is_null($query)) {
-            $uri = $uri->withQuery($query);
-        }
 
         return $this->toAbsoluteUri($uri, $viewData);
     }
 
     /**
      * @param string                  $path
-     * @param string                  $query
      * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toBasePath($path = '', $query = '', $viewData = null)
+    public function toBasePath($path = '', $viewData = null)
     {
         $path = '/' . ltrim($path, '/');
         $base = ReqAttr::getBasePath($this->request);
         $path = rtrim($base, '/') . $path;
         $path = rtrim($path, '/');
 
-        return $this->toPath($path, $query, $viewData);
+        return $this->toPath($path, $viewData);
     }
 
     /**

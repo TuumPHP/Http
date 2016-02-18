@@ -87,4 +87,22 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $response       = $this->redirect->toReferrer();
         $this->assertEquals('/referrer/', ResponseHelper::getLocation($response));
     }
+
+    /**
+     * @test
+     */
+    function withQuery_sets_query_to_uri()
+    {
+        $res = $this->redirect->withQuery('test=tested')->toPath('query');
+        $this->assertEquals('/query?test=tested', $res->getHeaderLine('Location'));
+    }
+
+    /**
+     * @test
+     */
+    function withQuery_and_array_sets_query_to_uri()
+    {
+        $res = $this->redirect->withQuery(['test'=>'tested'])->toPath('query');
+        $this->assertEquals('/query?test=tested', $res->getHeaderLine('Location'));
+    }
 }
