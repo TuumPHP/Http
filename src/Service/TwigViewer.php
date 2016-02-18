@@ -64,13 +64,13 @@ class TwigViewer implements ViewerInterface
      * @param ServerRequestInterface  $request
      * @param ResponseInterface       $response
      * @param string                  $view_file
-     * @param mixed|ViewDataInterface $view
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $viewData)
     {
         $view_file = (substr($view_file, -4) === '.twig') ?: $view_file . '.twig';
-        $view_data = $this->setDataView($view);
+        $view_data = $this->setDataView($viewData);
 
         $response->getBody()->write($this->renderer->render($view_file, $view_data));
 
@@ -78,17 +78,17 @@ class TwigViewer implements ViewerInterface
     }
 
     /**
-     * @param ViewDataInterface $data
+     * @param ViewDataInterface $viewData
      * @return array
      */
-    private function setDataView($data)
+    private function setDataView($viewData)
     {
-        $view = $this->forgeDataView($data, $this->dataView);
+        $view = $this->forgeDataView($viewData, $this->dataView);
         $this->renderer->addGlobal('viewData', $view);
-        if (!$data) {
+        if (!$viewData) {
             return [];
         }
-        $view_data = $data->getData();
+        $view_data = $viewData->getData();
 
         return $view_data;
     }

@@ -19,8 +19,8 @@ interface ViewerInterface
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param string                 $view_file
-     * @param ViewDataInterface      $view
+     * @param ViewDataInterface      $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view);
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $viewData);
 }

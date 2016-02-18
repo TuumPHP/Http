@@ -12,8 +12,8 @@ interface ErrorViewInterface
      * @param ServerRequestInterface  $request
      * @param ResponseInterface       $response
      * @param int                     $status
-     * @param mixed|ViewDataInterface $view
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $view);
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $viewData);
 }

@@ -17,12 +17,12 @@ class ErrorBack implements ErrorViewInterface
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param int                    $status
-     * @param mixed|ViewData         $view
+     * @param mixed|ViewData         $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $viewData)
     {
-        $this->data = $view;
+        $this->data = $viewData;
         return $response->withStatus($status);
     }
 }

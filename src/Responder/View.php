@@ -61,24 +61,24 @@ class View extends AbstractWithViewData
 
     /**
      * @param string                  $file
-     * @param mixed|ViewDataInterface $data
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    private function renderWithViewer($file, $data = null)
+    private function renderWithViewer($file, $viewData = null)
     {
-        return $this->view->__invoke($this->request, $this->response, $file, $data);
+        return $this->view->__invoke($this->request, $this->response, $file, $viewData);
     }
 
     /**
      * creates a Response with as template view file, $file.
      *
      * @param string                  $file
-     * @param mixed|ViewDataInterface $data
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function render($file, $data = null)
+    public function render($file, $viewData = null)
     {
-        return $this->renderWithViewer($file, $data);
+        return $this->renderWithViewer($file, $viewData);
     }
 
     /**
@@ -86,17 +86,17 @@ class View extends AbstractWithViewData
      * use this to view a main contents with layout.
      *
      * @param string                  $content
-     * @param mixed|ViewDataInterface $data
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function asContents($content, $data = null)
+    public function asContents($content, $viewData = null)
     {
-        if (!$data instanceof ViewDataInterface) {
-            $data = new ViewData();
+        if (!$viewData instanceof ViewDataInterface) {
+            $viewData = new ViewData();
         }
-        $data->setData('contents', $content);
+        $viewData->setData('contents', $content);
 
-        return $this->renderWithViewer($this->content_view, $data);
+        return $this->renderWithViewer($this->content_view, $viewData);
     }
 
     /**
@@ -184,35 +184,35 @@ class View extends AbstractWithViewData
      * calls the presenter to create a view to respond.
      *
      * @param callable|PresenterInterface|string $presenter
-     * @param mixed|ViewDataInterface            $data
+     * @param mixed|ViewDataInterface            $viewData
      * @return ResponseInterface
      */
-    public function call($presenter, $data = null)
+    public function call($presenter, $viewData = null)
     {
         if ($presenter instanceof PresenterInterface) {
-            return $this->execCallable([$presenter, '__invoke'], $data);
+            return $this->execCallable([$presenter, '__invoke'], $viewData);
         }
         if (is_callable($presenter)) {
-            return $this->execCallable($presenter, $data);
+            return $this->execCallable($presenter, $viewData);
         }
         if (!$resolver = $this->resolver) {
             throw new \BadMethodCallException('set resolver to call a presenter!');
         }
 
-        return $this->execCallable($resolver($presenter), $data);
+        return $this->execCallable($resolver($presenter), $viewData);
     }
 
     /**
      * @param callable                $callable
-     * @param mixed|ViewDataInterface $data
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    private function execCallable($callable, $data)
+    private function execCallable($callable, $viewData)
     {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException;
         }
 
-        return call_user_func($callable, $this->request, $this->response, $data);
+        return call_user_func($callable, $this->request, $this->response, $viewData);
     }
 }

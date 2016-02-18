@@ -79,12 +79,12 @@ class Error extends AbstractWithViewData
 
     /**
      * @param int                     $status
-     * @param mixed|ViewDataInterface $data
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function asView($status, $data = null)
+    public function asView($status, $viewData = null)
     {
-        return $this->errorView->__invoke($this->request, $this->response, $status, $data);
+        return $this->errorView->__invoke($this->request, $this->response, $status, $viewData);
     }
 
     /**

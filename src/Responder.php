@@ -51,9 +51,9 @@ class Responder
     public function getViewData()
     {
         if ($this->session) {
-            $view = $this->session->getFlash(ViewDataInterface::MY_KEY);
-            if ($view) {
-                return clone($view);
+            $viewData = $this->session->getFlash(ViewDataInterface::MY_KEY);
+            if ($viewData) {
+                return clone($viewData);
             }
         }
 
