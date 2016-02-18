@@ -63,15 +63,15 @@ class TuumViewer implements ViewerInterface
      *
      * @param ServerRequestInterface  $request
      * @param ResponseInterface       $response
-     * @param string                  $view_file
+     * @param string                  $viewFile
      * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $viewData)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
         $view_data = $this->setDataView($viewData);
 
-        $response->getBody()->write($this->renderer->render($view_file, $view_data));
+        $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
         return $response;
     }
@@ -82,13 +82,14 @@ class TuumViewer implements ViewerInterface
      */
     private function setDataView($viewData)
     {
-        $view = $this->forgeDataView($viewData, $this->dataView);
         if ($viewData instanceof ViewDataInterface) {
             $view_data = $viewData->getRawData();
+        } elseif (is_array($viewData)) {
+            $view_data = $viewData;
         } else {
             $view_data = [];
         }
-        $view_data['view'] = $view;
+        $view_data['view'] = $this->forgeDataView($viewData, $this->dataView);
 
         return $view_data;
     }

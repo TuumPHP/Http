@@ -24,13 +24,13 @@ class ViewForError implements ViewerInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param string                 $view_file
+     * @param string                 $viewFile
      * @param mixed|ViewData         $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $viewData)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
-        $this->view_file = $view_file;
+        $this->view_file = $viewFile;
         $this->view_data = $viewData;
         return $this;
     }

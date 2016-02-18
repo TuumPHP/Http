@@ -86,15 +86,11 @@ class View extends AbstractWithViewData
      * use this to view a main contents with layout.
      *
      * @param string                  $content
-     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function asContents($content, $viewData = null)
+    public function asContents($content)
     {
-        if (!$viewData instanceof ViewDataInterface) {
-            $viewData = new ViewData();
-        }
-        $viewData->setData('contents', $content);
+        $viewData = ['contents' => $content];
 
         return $this->renderWithViewer($this->content_view, $viewData);
     }

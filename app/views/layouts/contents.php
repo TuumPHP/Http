@@ -5,4 +5,4 @@ use Tuum\Form\DataView;
 
 $this->setLayout('layouts/layout');
 ?>
-<?= $view->data->raw('contents'); ?>
+<?= isset($contents) ? $contents: ''; ?>
