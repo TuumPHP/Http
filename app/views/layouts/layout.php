@@ -31,7 +31,7 @@ use Tuum\View\Renderer;
 
     <div class="col-md-12">
 
-        <?= $this->getContent();?>
+        <?= $this->getContent(); ?>
 
     </div>
     <p>&nbsp;</p>

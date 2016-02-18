@@ -8,7 +8,6 @@ use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class RedirectTest extends \PHPUnit_Framework_TestCase
@@ -27,13 +26,13 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $_SESSION = [];
-        $this->session  = SessionStorage::forge('tuum-app');
+        $_SESSION      = [];
+        $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->redirect = new Redirect();
         $this->redirect = $this->redirect->withRequest(
-            ReqBuilder::createFromPath('test'), 
-            new Response(), 
+            ReqBuilder::createFromPath('test'),
+            new Response(),
             $this->session
         );
     }
@@ -62,14 +61,14 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
      */
     function toBasePath_sets_relative_to_basePath()
     {
-        $request  = ReqBuilder::createFromPath('/base/path');
-        $request  = ReqAttr::withBasePath($request, '/base/');
+        $request        = ReqBuilder::createFromPath('/base/path');
+        $request        = ReqAttr::withBasePath($request, '/base/');
         $this->redirect = $this->redirect->withRequest(
             $request,
             new Response(),
             $this->session
         );
-        $response = $this->redirect->toBasePath('path');
+        $response       = $this->redirect->toBasePath('path');
         $this->assertEquals('/base/path', ResponseHelper::getLocation($response));
     }
 
@@ -78,14 +77,14 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
      */
     function toReferrer_sets_referring_uri_as_location()
     {
-        $request  = ReqBuilder::createFromPath('/base/path');
-        $request  = ReqAttr::withReferrer($request, '/referrer/');
+        $request        = ReqBuilder::createFromPath('/base/path');
+        $request        = ReqAttr::withReferrer($request, '/referrer/');
         $this->redirect = $this->redirect->withRequest(
             $request,
             new Response(),
             $this->session
         );
-        $response = $this->redirect->toReferrer();
+        $response       = $this->redirect->toReferrer();
         $this->assertEquals('/referrer/', ResponseHelper::getLocation($response));
     }
 }

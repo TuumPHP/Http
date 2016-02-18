@@ -25,8 +25,8 @@ class Redirect extends AbstractWithViewData
      * redirects to $uri.
      * the $uri must be a full uri (like http://...), or a UriInterface object.
      *
-     * @param UriInterface|string $uri
-     * @param mixed|ViewDataInterface      $data
+     * @param UriInterface|string     $uri
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function toAbsoluteUri($uri, $data = null)
@@ -47,8 +47,8 @@ class Redirect extends AbstractWithViewData
      * redirects to a path in string.
      * uses current hosts and scheme.
      *
-     * @param string         $path
-     * @param string         $query
+     * @param string                  $path
+     * @param string                  $query
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
@@ -63,8 +63,8 @@ class Redirect extends AbstractWithViewData
     }
 
     /**
-     * @param string         $path
-     * @param string         $query
+     * @param string                  $path
+     * @param string                  $query
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */

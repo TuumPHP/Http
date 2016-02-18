@@ -9,7 +9,7 @@ use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
-return function(Responder $responder) {
+return function (Responder $responder) {
 
     $app = new Dispatcher([
         'responder' => $responder,
@@ -19,9 +19,9 @@ return function(Responder $responder) {
      * for top page /
      */
     $app->add('/',
-        function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
+        function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
             return $responder->view($request, $response)
-                ->render( 'index');
+                ->render('index');
         });
 
     /**
@@ -34,16 +34,16 @@ return function(Responder $responder) {
      */
     $presentJump = function (ServerRequestInterface $request, ResponseInterface $response, $view) {
         return Respond::view($request, $response)
-            ->render( 'jump', $view);
+            ->render('jump', $view);
     };
 
-    $app->add('/jump', function ($request, $response) use($presentJump) {
+    $app->add('/jump', function ($request, $response) use ($presentJump) {
         $view = Respond::getResponder($request)->getViewData();
         return Respond::view($request, $response)->call($presentJump, $view);
     });
 
     $app->add('/jumper',
-        function(ServerRequestInterface $request, ResponseInterface $response) use($responder) {
+        function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
             $view = $responder->getViewData()
                 ->setSuccess('redirected back!')
                 ->setInputData(['jumped' => 'redirected text'])
@@ -54,7 +54,7 @@ return function(Responder $responder) {
         });
 
     $app->add('/jumped',
-        function ($request, $response) use($presentJump) {
+        function ($request, $response) use ($presentJump) {
             $view = Respond::getResponder($request)->getViewData()
                 ->setSuccess('redrawn form!')
                 ->setInputData(['jumped' => 'redrawn text'])
@@ -71,13 +71,13 @@ return function(Responder $responder) {
      * for other samples
      */
     $app->add('/content',
-        function(ServerRequestInterface $request, $response) {
+        function (ServerRequestInterface $request, $response) {
             return Respond::view($request, $response)
                 ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
         });
 
     $app->add('/objGraph',
-        function(ServerRequestInterface $request) {
+        function (ServerRequestInterface $request) {
             echo (new Printo(Respond::getResponder($request)));
             exit;
         });
@@ -95,8 +95,8 @@ return function(Responder $responder) {
      * @return ResponseInterface
      */
     $app->add('/forms',
-        function(ServerRequestInterface $request, $response) {
-            return Respond::view($request, $response)->render( 'forms');
+        function (ServerRequestInterface $request, $response) {
+            return Respond::view($request, $response)->render('forms');
         });
 
     return $app;

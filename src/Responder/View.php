@@ -60,32 +60,32 @@ class View extends AbstractWithViewData
     }
 
     /**
-     * @param string         $file
+     * @param string                  $file
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
-    private function renderWithViewer( $file, $data = null)
+    private function renderWithViewer($file, $data = null)
     {
-        return $this->view->__invoke( $this->request, $this->response, $file, $data);
+        return $this->view->__invoke($this->request, $this->response, $file, $data);
     }
 
     /**
      * creates a Response with as template view file, $file.
      *
-     * @param string         $file
+     * @param string                  $file
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
-    public function render( $file, $data = null)
+    public function render($file, $data = null)
     {
-        return $this->renderWithViewer( $file, $data);
+        return $this->renderWithViewer($file, $data);
     }
 
     /**
      * creates a Response of view with given $content as a contents.
      * use this to view a main contents with layout.
      *
-     * @param string         $content
+     * @param string                  $content
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
@@ -96,7 +96,7 @@ class View extends AbstractWithViewData
         }
         $data->setData('contents', $content);
 
-        return $this->renderWithViewer( $this->content_view, $data);
+        return $this->renderWithViewer($this->content_view, $data);
     }
 
     /**
@@ -184,7 +184,7 @@ class View extends AbstractWithViewData
      * calls the presenter to create a view to respond.
      *
      * @param callable|PresenterInterface|string $presenter
-     * @param mixed|ViewDataInterface                     $data
+     * @param mixed|ViewDataInterface            $data
      * @return ResponseInterface
      */
     public function call($presenter, $data = null)
@@ -203,7 +203,7 @@ class View extends AbstractWithViewData
     }
 
     /**
-     * @param callable       $callable
+     * @param callable                $callable
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */

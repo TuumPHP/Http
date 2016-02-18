@@ -36,8 +36,8 @@ return function (ServerRequestInterface $request, ResponseInterface $response) {
     try {
 
         $response = $app->run($request, $response) ?: $responder->error($request, $response)->notFound();
-        
-    } catch(\Exception $e) {
+
+    } catch (\Exception $e) {
         $response = $responder->error($request, $response)->asView(500);
     }
 

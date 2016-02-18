@@ -16,9 +16,9 @@ class ViewForError implements ViewerInterface
     use ViewerTrait;
 
     public $view_file;
-    
+
     public $view_data;
-    
+
     /**
      * renders $view_file with $data.
      *
@@ -28,7 +28,7 @@ class ViewForError implements ViewerInterface
      * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
     {
         $this->view_file = $view_file;
         $this->view_data = $view;
@@ -39,18 +39,20 @@ class ViewForError implements ViewerInterface
     {
         return $this->view_file;
     }
-    
+
     public function getViewData()
     {
         return $this->view_data;
     }
-};
+}
+
+;
 
 class ErrorViewException extends \Exception
 {
 }
 
-class ErrorViewTest  extends \PHPUnit_Framework_TestCase
+class ErrorViewTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ViewForError
@@ -74,10 +76,10 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $this->view  = new ViewForError();
-        $this->req   = ReqBuilder::createFromPath('test');
-        $this->res   = new Response();
-        $this->viewData  = new ViewData();
+        $this->view     = new ViewForError();
+        $this->req      = ReqBuilder::createFromPath('test');
+        $this->res      = new Response();
+        $this->viewData = new ViewData();
     }
 
     /**
@@ -93,7 +95,7 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
             'handler' => false,
         ]);
         $this->assertEquals('tested-default', $error->default_error);
-        $this->assertEquals('tested-status',  $error->statusView['123']);
+        $this->assertEquals('tested-status', $error->statusView['123']);
     }
 
     /**
@@ -108,10 +110,10 @@ class ErrorViewTest  extends \PHPUnit_Framework_TestCase
             ],
             'handler' => false,
         ]);
-        $error->__invoke( $this->req, $this->res, 123, $this->viewData);
+        $error->__invoke($this->req, $this->res, 123, $this->viewData);
         $this->assertEquals('tested-status', $this->view->getViewFile());
 
-        $error->__invoke( $this->req, $this->res, 234, $this->viewData);
+        $error->__invoke($this->req, $this->res, 234, $this->viewData);
         $this->assertEquals('tested-default', $this->view->getViewFile());
     }
 }

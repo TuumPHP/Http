@@ -26,10 +26,10 @@ $forms = $view->forms->withClass('form-control');
         $forms->label('some text here:', 'jumped'),
         $forms->text('jumper', 'original text')->id(),
         $view->errors->p('jumped')
-    )->class($view->errors->exists('jumped')?'has-error':null);
+    )->class($view->errors->exists('jumped') ? 'has-error' : null);
     ?>
     <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
-    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" />
+    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
 
     <?= $forms->close(); ?>
 
@@ -46,10 +46,10 @@ $forms = $view->forms->withClass('form-control');
         $forms->label('some text here:', 'jumped'),
         $forms->text('jumped', 'original text')->id(),
         $view->errors->p('jumped')
-    )->class($view->errors->exists('jumped')?'has-error':null);
+    )->class($view->errors->exists('jumped') ? 'has-error' : null);
     ?>
     <?= $forms->submit('re-draw!')->class('btn btn-primary'); ?>&nbsp;
-    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" />
+    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
 
     <?= $forms->close(); ?>
 

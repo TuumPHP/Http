@@ -24,7 +24,7 @@ $this->setLayout('layouts/layout');
     <p>A plug-in responder module for composing PSR-7 responses. </p>
     <p>This module provides <strong>view functions (as in MVC concept)</strong>
         to implement Post-Redirect-Get pattern and similar techniques.
-        Many of the PSR-7 based micro-frameworks would become suitable for 
+        Many of the PSR-7 based micro-frameworks would become suitable for
         developing an ordinary web site.</p>
     <ul>
         <li>PSR-1, PSR-2, PSR-4, and PSR-7</li>
@@ -52,17 +52,17 @@ $this->setLayout('layouts/layout');
 
 <ul>
     <li><a href="not-such-file">not found</a></li>
-    <li><a href="throw">catch exception</a> </li>
+    <li><a href="throw">catch exception</a></li>
 </ul>
 
 <h3>graphs</h3>
 
 <ul>
-    <li><a href="objGraph">object graph</a> </li>
+    <li><a href="objGraph">object graph</a></li>
 </ul>
 
 <h3>Form Samples</h3>
 
 <ul>
-    <li><a href="forms" >form samples</a></li>
+    <li><a href="forms">form samples</a></li>
 </ul>

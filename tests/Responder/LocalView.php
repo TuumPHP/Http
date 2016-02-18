@@ -27,12 +27,12 @@ class LocalView implements ViewerInterface
      * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
     {
         $this->view_file = $view_file;
         $this->data      = $view;
-        $response = $response->withHeader('ViewFile', $view_file);
-        $response->getBody()->write(implode(',', $view ? $view->getData():[]));
+        $response        = $response->withHeader('ViewFile', $view_file);
+        $response->getBody()->write(implode(',', $view ? $view->getData() : []));
         return $response;
     }
 }

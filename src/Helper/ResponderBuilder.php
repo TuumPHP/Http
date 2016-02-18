@@ -3,10 +3,8 @@ namespace Tuum\Respond\Helper;
 
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
-use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
 use Tuum\Respond\Interfaces\ViewerInterface;

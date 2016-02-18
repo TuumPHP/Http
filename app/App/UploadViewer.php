@@ -20,10 +20,11 @@ class UploadViewer implements PresenterInterface
      */
     public static function forge($app)
     {
-        $self = new self;
+        $self            = new self;
         $self->responder = $app->get('responder');
         return $self;
     }
+
     /**
      * renders $view and returns a new $response.
      *
@@ -32,9 +33,9 @@ class UploadViewer implements PresenterInterface
      * @param ViewDataInterface      $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view)
     {
         return $this->responder->view($request, $response)
-            ->render( 'upload', $view);
+            ->render('upload', $view);
     }
 }

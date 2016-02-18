@@ -3,7 +3,6 @@ namespace Tuum\Respond\Interfaces;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Responder\ViewData;
 
 /**
  * Interface PresenterInterface
@@ -20,5 +19,5 @@ interface PresenterInterface
      * @param ViewDataInterface      $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view);
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view);
 }

@@ -8,14 +8,14 @@ trait ViewerTrait
 {
     /**
      * @param ViewDataInterface $data
-     * @param DataView $view
+     * @param DataView          $view
      * @return DataView
      */
     protected function forgeDataView($data = null, $view = null)
     {
         $view = $view ?: new DataView();
-        $get = function($method) use($data) {
-            return ($data instanceof ViewDataInterface )? $data->$method(): [];
+        $get  = function ($method) use ($data) {
+            return ($data instanceof ViewDataInterface) ? $data->$method() : [];
         };
         $view->setData($get('getData'));
         $view->setErrors($get('getInputErrors'));

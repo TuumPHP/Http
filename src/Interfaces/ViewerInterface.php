@@ -3,7 +3,6 @@ namespace Tuum\Respond\Interfaces;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Responder\ViewData;
 
 /**
  * Interface ViewStreamInterface
@@ -12,16 +11,16 @@ use Tuum\Respond\Responder\ViewData;
  *
  * @package Tuum\Application\Service
  */
-interface ViewerInterface 
+interface ViewerInterface
 {
     /**
      * renders $view_file with $data.
      *
-     * @param ServerRequestInterface  $request
-     * @param ResponseInterface       $response
-     * @param string                  $view_file
-     * @param ViewDataInterface       $view
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param string                 $view_file
+     * @param ViewDataInterface      $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view);
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view);
 }

@@ -7,7 +7,6 @@ use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
-use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class RespondTest extends \PHPUnit_Framework_TestCase
@@ -26,11 +25,11 @@ class RespondTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $_SESSION = [];
+        $_SESSION              = [];
         $this->session_factory = SessionStorage::forge('testing');
         $this->setPhpTestFunc($this->session_factory);
 
-        $view = TuumViewer::forge('');
+        $view            = TuumViewer::forge('');
         $this->responder = ResponderBuilder::withView($view)
             ->withResponse(new Response())
             ->withSession($this->session_factory);
@@ -46,8 +45,8 @@ class RespondTest extends \PHPUnit_Framework_TestCase
      */
     function Respond_class_invokes_responder_object()
     {
-        $request  = ReqBuilder::createFromPath('/path/test');
-        $request  = Respond::withResponder($request, $this->responder);
+        $request = ReqBuilder::createFromPath('/path/test');
+        $request = Respond::withResponder($request, $this->responder);
 
         $response = Respond::view($request)->asText('test Respond');
         $this->assertEquals('text/plain', $response->getHeader('Content-Type')[0]);
@@ -90,7 +89,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asJson_creates_json_response()
     {
         $request  = ReqBuilder::createFromPath('/path/test');
-        $response = $this->responder->view($request)->asJson(['jason'=>'type']);
+        $response = $this->responder->view($request)->asJson(['jason' => 'type']);
         $this->assertEquals('application/json', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('{"jason":"type"}', $response->getBody()->__toString());
     }
@@ -113,17 +112,15 @@ class RespondTest extends \PHPUnit_Framework_TestCase
      */
     function Respond_populates_ViewData_object()
     {
-        $request  = ReqBuilder::createFromPath('/path/test');
-        $view     = $this->responder->getViewData()
+        $view    = $this->responder->getViewData()
             ->setData('some', 'value')
             ->setSuccess('message')
             ->setAlert('notice-msg')
             ->setError('error-msg')
             ->setInputData(['more' => 'test'])
-            ->setInputErrors(['more' => 'done'])        ;
-        $respond  = $this->responder->view($request);
+            ->setInputErrors(['more' => 'done']);
 
-        $data    = $view;
+        $data = $view;
 
         $this->assertEquals('value', $data->getData()['some']);
         $this->assertEquals('message', $data->getMessages()[0]['message']);

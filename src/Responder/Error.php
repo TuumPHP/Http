@@ -17,8 +17,8 @@ use Tuum\Respond\Interfaces\ViewDataInterface;
  */
 class Error extends AbstractWithViewData
 {
-    const UNAUTHORIZED = 401;
-    const ACCESS_DENIED = 403;
+    const UNAUTHORIZED   = 401;
+    const ACCESS_DENIED  = 403;
     const FILE_NOT_FOUND = 404;
     const INTERNAL_ERROR = 500;
 
@@ -78,13 +78,13 @@ class Error extends AbstractWithViewData
     }
 
     /**
-     * @param int  $status
+     * @param int                     $status
      * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function asView($status, $data = null)
     {
-        return $this->errorView->__invoke( $this->request, $this->response, $status, $data);
+        return $this->errorView->__invoke($this->request, $this->response, $status, $data);
     }
 
     /**
@@ -95,7 +95,7 @@ class Error extends AbstractWithViewData
     public function __call($method, $args)
     {
         if (isset($this->methodStatus[$method])) {
-            $data = isset($args[0]) ? $args[0]: null; 
+            $data = isset($args[0]) ? $args[0] : null;
             return $this->asView($this->methodStatus[$method], $data);
         }
         throw new \BadMethodCallException;

@@ -33,8 +33,8 @@ interface ViewDataInterface
      * message types.
      */
     const MESSAGE_SUCCESS = 'message';
-    const MESSAGE_ALERT = 'alert';
-    const MESSAGE_ERROR = 'error';
+    const MESSAGE_ALERT   = 'alert';
+    const MESSAGE_ERROR   = 'error';
 
     /**
      * set a raw data.
@@ -43,7 +43,7 @@ interface ViewDataInterface
      * @param mixed  $value
      * @return ViewDataInterface
      */
-    public function setRawData( $key, $value );
+    public function setRawData($key, $value);
 
     /**
      * get a raw data.
@@ -59,7 +59,7 @@ interface ViewDataInterface
      * @param mixed        $value
      * @return ViewDataInterface
      */
-    public function setData( $key, $value = null );
+    public function setData($key, $value = null);
 
     /**
      * @return array
@@ -72,7 +72,7 @@ interface ViewDataInterface
      * @param array $value
      * @return ViewDataInterface
      */
-    public function setInputData( array $value );
+    public function setInputData(array $value);
 
     /**
      * @return array
@@ -86,7 +86,7 @@ interface ViewDataInterface
      * @param array $errors
      * @return ViewDataInterface
      */
-    public function setInputErrors( array $errors );
+    public function setInputErrors(array $errors);
 
     /**
      * @return array
@@ -101,7 +101,7 @@ interface ViewDataInterface
      * @param string $type
      * @return ViewDataInterface
      */
-    public function setMessage( $message, $type );
+    public function setMessage($message, $type);
 
     /**
      * @return array
@@ -112,17 +112,17 @@ interface ViewDataInterface
      * @param string $message
      * @return ViewDataInterface
      */
-    public function setSuccess( $message );
+    public function setSuccess($message);
 
     /**
      * @param string $message
      * @return ViewDataInterface
      */
-    public function setAlert( $message );
+    public function setAlert($message);
 
     /**
      * @param string $message
      * @return ViewDataInterface
      */
-    public function setError( $message );
+    public function setError($message);
 }

@@ -6,8 +6,8 @@ use Tuum\Respond\Respond;
 
 /**
  * Class ReqAttr
- * 
- * takes care of attributes of $request. 
+ *
+ * takes care of attributes of $request.
  *
  * @package Tuum\Respond\Helper
  */
@@ -15,8 +15,8 @@ class ReqAttr
 {
     const BASE_PATH = 'basePath';
     const PATH_INFO = 'pathInfo';
-    const METHOD = 'method';
-    const REFERRER = 'referrer';
+    const METHOD    = 'method';
+    const REFERRER  = 'referrer';
 
     /**
      * set the referrer uri.

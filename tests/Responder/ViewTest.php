@@ -32,15 +32,15 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $_SESSION = [];
+        $_SESSION      = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->responder = ResponderBuilder::withServices(
             new LocalView(),
             new ErrorBack()
         )->withResponse(new Response())
-        ->withSession($this->session);
-        $this->view   = $this->responder->view(ReqBuilder::createFromPath('test'));
+            ->withSession($this->session);
+        $this->view      = $this->responder->view(ReqBuilder::createFromPath('test'));
     }
 
     function tearDown()
@@ -58,7 +58,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function view_returns_viewStream()
     {
-        $response = $this->view->render( 'test-view');
+        $response = $this->view->render('test-view');
         /** @var LocalView $stream */
         $stream = $response->getBody();
         $this->assertEquals('Zend\Diactoros\Response', get_class($response));
@@ -94,7 +94,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function executes_callable()
     {
-        $string = $this->view->call(function() { return 'tested: closure';});
+        $string = $this->view->call(function () {
+            return 'tested: closure';
+        });
         $this->assertEquals('tested: closure', $string);
     }
 
@@ -124,7 +126,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function returning_non_callable_from_resolver_throws_exception()
     {
-        $view = new View(new LocalView(), null, function() {return 'not-a-callable';});
+        $view = new View(new LocalView(), null, function () {
+            return 'not-a-callable';
+        });
         $view->call('bad-input');
     }
 
@@ -135,8 +139,8 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     {
         $view   = new View(
             new LocalView(), null,
-            function() {
-                return function() {
+            function () {
+                return function () {
                     return 'tested: resolver';
                 };
             });

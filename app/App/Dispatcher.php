@@ -11,7 +11,7 @@ class Dispatcher
     private $routes = [];
 
     private $container = [];
-    
+
     public function __construct(array $config = [])
     {
         $this->container = $config;
@@ -23,7 +23,7 @@ class Dispatcher
      */
     public function get($key)
     {
-        return array_key_exists($key, $this->container) ? $this->container[$key] : null; 
+        return array_key_exists($key, $this->container) ? $this->container[$key] : null;
     }
 
     /**
@@ -62,7 +62,7 @@ class Dispatcher
             return $app;
         }
         if (is_string($app) && class_exists($app)) {
-            return call_user_func([$app,'forge'], $this);
+            return call_user_func([$app, 'forge'], $this);
         }
         throw new \InvalidArgumentException;
     }

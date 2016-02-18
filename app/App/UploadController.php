@@ -19,7 +19,7 @@ class UploadController
      * @var Responder
      */
     private $responder;
-    
+
     /**
      * UploadController constructor.
      *
@@ -38,8 +38,8 @@ class UploadController
      */
     public static function forge($app)
     {
-        $viewer = UploadViewer::forge($app);
-        $self =  new self($viewer);
+        $viewer          = UploadViewer::forge($app);
+        $self            = new self($viewer);
         $self->responder = $app->get('responder');
         return $self;
     }
@@ -51,7 +51,7 @@ class UploadController
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $method = $request->getMethod()==='POST' ? 'onPost' : 'onGet';
+        $method = $request->getMethod() === 'POST' ? 'onPost' : 'onGet';
         return $this->$method($request, $response);
     }
 
@@ -77,26 +77,26 @@ class UploadController
         /** @var UploadedFile $upload */
         $uploaded = $request->getUploadedFiles();
         $upload   = $uploaded['up'][0];
-        $view = $this->responder->getViewData()
+        $view     = $this->responder->getViewData()
             ->setData('isUploaded', true)
             ->setData('dump', print_r($uploaded, true))
             ->setData('upload', $upload);
         $this->setUpMessage($view, $upload);
         return $this->responder->view($request, $response)
-            ->call( [$this->viewer, '__invoke' ], $view); // callable
+            ->call([$this->viewer, '__invoke'], $view); // callable
     }
 
     /**
      * @param ViewDataInterface $view
-     * @param UploadedFile $upload
+     * @param UploadedFile      $upload
      */
     private function setUpMessage($view, $upload)
     {
-        if ($upload->getError()===UPLOAD_ERR_NO_FILE) {
+        if ($upload->getError() === UPLOAD_ERR_NO_FILE) {
             $view->setError('please uploaded a file');
-        } elseif ($upload->getError()===UPLOAD_ERR_FORM_SIZE || $upload->getError()===UPLOAD_ERR_INI_SIZE) {
+        } elseif ($upload->getError() === UPLOAD_ERR_FORM_SIZE || $upload->getError() === UPLOAD_ERR_INI_SIZE) {
             $view->setError('uploaded file size too large!');
-        } elseif ($upload->getError()!==UPLOAD_ERR_OK) {
+        } elseif ($upload->getError() !== UPLOAD_ERR_OK) {
             $view->setError('uploading failed!');
         } else {
             $view->setError('uploaded a file');

@@ -3,7 +3,6 @@ namespace Tuum\Respond\Interfaces;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Responder\ViewData;
 
 interface ErrorViewInterface
 {
@@ -16,5 +15,5 @@ interface ErrorViewInterface
      * @param mixed|ViewDataInterface $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $status, $view);
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $view);
 }

@@ -4,7 +4,7 @@ namespace Tuum\Respond\Service;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Interfaces\ViewerInterface;
 
 class ErrorView implements ErrorViewInterface
@@ -60,8 +60,8 @@ class ErrorView implements ErrorViewInterface
         ];
         $error->default_error = $options['default'];
         $error->statusView    = $options['status'];
-        foreach($options['files'] as $file => $codes) {
-            foreach((array) $codes as $code) {
+        foreach ($options['files'] as $file => $codes) {
+            foreach ((array)$codes as $code) {
                 $error->statusView[$code] = $file;
             }
         }
@@ -85,17 +85,17 @@ class ErrorView implements ErrorViewInterface
     /**
      * create a response for error view.
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param int                    $status
-     * @param mixed|ViewDataInterface         $view
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param int                     $status
+     * @param mixed|ViewDataInterface $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $status, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $view)
     {
         $file = $this->findViewFromStatus($status);
 
-        $response = $this->view->__invoke( $request, $response, $file, $view);
+        $response = $this->view->__invoke($request, $response, $file, $view);
         if ($response instanceof ResponseInterface) {
             $response = $response->withStatus($status);
         }

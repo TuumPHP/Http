@@ -15,7 +15,7 @@ use Tuum\Respond\Service\TwigViewer;
  * @param ResponseInterface      $response
  * @return Responder
  */
-return function(ServerRequestInterface $request, ResponseInterface $response) {
+return function (ServerRequestInterface $request, ResponseInterface $response) {
 
     /**
      * this is the view for template.

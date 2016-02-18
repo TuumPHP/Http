@@ -61,13 +61,13 @@ class TwigViewer implements ViewerInterface
     /**
      * renders $view and returns a new $response.
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param string                 $view_file
-     * @param mixed|ViewDataInterface         $view
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param string                  $view_file
+     * @param mixed|ViewDataInterface $view
      * @return ResponseInterface
      */
-    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
     {
         $view_file = (substr($view_file, -4) === '.twig') ?: $view_file . '.twig';
         $view_data = $this->setDataView($view);

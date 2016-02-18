@@ -26,7 +26,7 @@ trait TesterTrait
     {
         $session = new \ReflectionProperty($session_factory, 'session');
         $session->setAccessible(true);
-        $session = $session->getValue($session_factory);
+        $session   = $session->getValue($session_factory);
         $moveFlash = new \ReflectionMethod($session, 'moveFlash');
         $moveFlash->setAccessible(true);
         $moveFlash->invoke($session);
