@@ -4,6 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 
 /**
  * Class Error
@@ -78,7 +79,7 @@ class Error extends AbstractWithViewData
 
     /**
      * @param int  $status
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function asView($status, $data = null)

@@ -5,6 +5,7 @@ use App\App\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\ViewData;
@@ -27,9 +28,9 @@ return function(Responder $responder) {
     /**
      * for displaying form for /jump
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param mixed|ViewData         $view
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param mixed|ViewDataInterface $view
      * @return ResponseInterface
      */
     $presentJump = function (ServerRequestInterface $request, ResponseInterface $response, $view) {

@@ -4,7 +4,7 @@ namespace Tuum\Respond\Service;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Form\DataView;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Interfaces\ViewerInterface;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -64,7 +64,7 @@ class TwigViewer implements ViewerInterface
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param string                 $view_file
-     * @param mixed|ViewData         $view
+     * @param mixed|ViewDataInterface         $view
      * @return ResponseInterface
      */
     public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
@@ -78,7 +78,7 @@ class TwigViewer implements ViewerInterface
     }
 
     /**
-     * @param ViewData $data
+     * @param ViewDataInterface $data
      * @return array
      */
     private function setDataView($data)

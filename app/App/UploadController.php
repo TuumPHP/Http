@@ -3,8 +3,8 @@ namespace App\App;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Zend\Diactoros\UploadedFile;
 
@@ -87,7 +87,7 @@ class UploadController
     }
 
     /**
-     * @param ViewData $view
+     * @param ViewDataInterface $view
      * @param UploadedFile $upload
      */
     private function setUpMessage($view, $upload)

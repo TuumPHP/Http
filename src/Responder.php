@@ -3,6 +3,7 @@ namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder\AbstractWithViewData;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
@@ -45,12 +46,12 @@ class Responder
     }
 
     /**
-     * @return mixed|ViewData
+     * @return mixed|ViewDataInterface
      */
     public function getViewData()
     {
         if ($this->session) {
-            $view = $this->session->getFlash(ViewData::MY_KEY);
+            $view = $this->session->getFlash(ViewDataInterface::MY_KEY);
             if ($view) {
                 return clone($view);
             }
@@ -60,7 +61,7 @@ class Responder
     }
 
     /**
-     * @return ViewData
+     * @return ViewDataInterface
      */
     protected function forgeViewData()
     {

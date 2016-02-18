@@ -44,15 +44,6 @@ class ViewData implements ViewDataInterface
      */
     private $inputErrors = [];
 
-    const MY_KEY = '-view-data-key';
-
-    /*
-     * message types. 
-     */
-    const MESSAGE_SUCCESS = 'message';
-    const MESSAGE_ALERT = 'alert';
-    const MESSAGE_ERROR = 'error';
-
     /**
      * set a raw data.
      *
@@ -178,7 +169,7 @@ class ViewData implements ViewDataInterface
      */
     public function setSuccess($message)
     {
-        return $this->setMessage($message, self::MESSAGE_SUCCESS);
+        return $this->setMessage($message, ViewDataInterface::MESSAGE_SUCCESS);
     }
 
     /**
@@ -187,7 +178,7 @@ class ViewData implements ViewDataInterface
      */
     public function setAlert($message)
     {
-        return $this->setMessage($message, self::MESSAGE_ALERT);
+        return $this->setMessage($message, ViewDataInterface::MESSAGE_ALERT);
     }
 
     /**
@@ -196,6 +187,6 @@ class ViewData implements ViewDataInterface
      */
     public function setError($message)
     {
-        return $this->setMessage($message, self::MESSAGE_ERROR);
+        return $this->setMessage($message, ViewDataInterface::MESSAGE_ERROR);
     }
 }

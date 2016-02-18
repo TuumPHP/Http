@@ -4,6 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\Helper\ReqAttr;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 
 class Redirect extends AbstractWithViewData
 {
@@ -25,7 +26,7 @@ class Redirect extends AbstractWithViewData
      * the $uri must be a full uri (like http://...), or a UriInterface object.
      *
      * @param UriInterface|string $uri
-     * @param mixed|ViewData      $data
+     * @param mixed|ViewDataInterface      $data
      * @return ResponseInterface
      */
     public function toAbsoluteUri($uri, $data = null)
@@ -34,7 +35,7 @@ class Redirect extends AbstractWithViewData
             $uri = (string)$uri;
         }
         if ($this->session && $data) {
-            $this->session->setFlash(ViewData::MY_KEY, $data);
+            $this->session->setFlash(ViewDataInterface::MY_KEY, $data);
         }
 
         return $this->response
@@ -48,7 +49,7 @@ class Redirect extends AbstractWithViewData
      *
      * @param string         $path
      * @param string         $query
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function toPath($path, $query = '', $data = null)
@@ -64,7 +65,7 @@ class Redirect extends AbstractWithViewData
     /**
      * @param string         $path
      * @param string         $query
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function toBasePath($path = '', $query = '', $data = null)
@@ -82,7 +83,7 @@ class Redirect extends AbstractWithViewData
     }
 
     /**
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function toReferrer($data = null)

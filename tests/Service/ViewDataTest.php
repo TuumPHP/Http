@@ -1,6 +1,7 @@
 <?php
 namespace tests\Service;
 
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder\ViewData;
 
 class ViewDataTest  extends \PHPUnit_Framework_TestCase
@@ -35,8 +36,8 @@ class ViewDataTest  extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['inputs' => 'tested'], $this->view->getInputData());
         $this->assertEquals(['errors' => 'tested'], $this->view->getInputErrors());
         $this->assertEquals(['value' => 'tested'], $this->view->getData());
-        $this->assertEquals(['message' => 'message: success', 'type' => ViewData::MESSAGE_SUCCESS], $this->view->getMessages()[0]);
-        $this->assertEquals(['message' => 'message: alert', 'type' => ViewData::MESSAGE_ALERT], $this->view->getMessages()[1]);
-        $this->assertEquals(['message' => 'message: error', 'type' => ViewData::MESSAGE_ERROR], $this->view->getMessages()[2]);
+        $this->assertEquals(['message' => 'message: success', 'type' => ViewDataInterface::MESSAGE_SUCCESS], $this->view->getMessages()[0]);
+        $this->assertEquals(['message' => 'message: alert', 'type' => ViewDataInterface::MESSAGE_ALERT], $this->view->getMessages()[1]);
+        $this->assertEquals(['message' => 'message: error', 'type' => ViewDataInterface::MESSAGE_ERROR], $this->view->getMessages()[2]);
     }
 }

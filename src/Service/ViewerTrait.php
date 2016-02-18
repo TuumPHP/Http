@@ -2,12 +2,12 @@
 namespace Tuum\Respond\Service;
 
 use Tuum\Form\DataView;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 
 trait ViewerTrait
 {
     /**
-     * @param ViewData $data
+     * @param ViewDataInterface $data
      * @param DataView $view
      * @return DataView
      */
@@ -15,7 +15,7 @@ trait ViewerTrait
     {
         $view = $view ?: new DataView();
         $get = function($method) use($data) {
-            return ($data instanceof ViewData )? $data->$method(): [];
+            return ($data instanceof ViewDataInterface )? $data->$method(): [];
         };
         $view->setData($get('getData'));
         $view->setErrors($get('getInputErrors'));

@@ -4,6 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Interfaces\ViewerInterface;
 
 class View extends AbstractWithViewData
@@ -60,7 +61,7 @@ class View extends AbstractWithViewData
 
     /**
      * @param string         $file
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     private function asViewStream($file, $data = null)
@@ -72,7 +73,7 @@ class View extends AbstractWithViewData
      * creates a Response with as template view file, $file.
      *
      * @param string         $file
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function asView($file, $data = null)
@@ -85,12 +86,12 @@ class View extends AbstractWithViewData
      * use this to view a main contents with layout.
      *
      * @param string         $content
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     public function asContents($content, $data = null)
     {
-        if (!$data instanceof ViewData) {
+        if (!$data instanceof ViewDataInterface) {
             $data = new ViewData();
         }
         $data->setData('contents', $content);
@@ -183,7 +184,7 @@ class View extends AbstractWithViewData
      * calls the presenter to create a view to respond.
      *
      * @param callable|PresenterInterface|string $presenter
-     * @param mixed|ViewData                     $data
+     * @param mixed|ViewDataInterface                     $data
      * @return ResponseInterface
      */
     public function call($presenter, $data = null)
@@ -203,7 +204,7 @@ class View extends AbstractWithViewData
 
     /**
      * @param callable       $callable
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return ResponseInterface
      */
     private function execCallable($callable, $data)

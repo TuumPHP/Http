@@ -88,7 +88,7 @@ class ErrorView implements ErrorViewInterface
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param int                    $status
-     * @param mixed|ViewData         $view
+     * @param mixed|ViewDataInterface         $view
      * @return ResponseInterface
      */
     public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $status, $view)

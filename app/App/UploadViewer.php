@@ -3,8 +3,8 @@ namespace App\App;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Interfaces\PresenterInterface;
 
 class UploadViewer implements PresenterInterface
@@ -29,7 +29,7 @@ class UploadViewer implements PresenterInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewData               $view
+     * @param ViewDataInterface      $view
      * @return ResponseInterface
      */
     public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view)

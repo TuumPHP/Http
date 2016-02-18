@@ -27,11 +27,23 @@ use Tuum\Respond\Responder\ViewData;
 interface ViewDataInterface
 {
     /**
+     * a key string for storing view-data.
+     */
+    const MY_KEY = '-view-data-key';
+
+    /*
+     * message types.
+     */
+    const MESSAGE_SUCCESS = 'message';
+    const MESSAGE_ALERT = 'alert';
+    const MESSAGE_ERROR = 'error';
+
+    /**
      * set a raw data.
      *
      * @param string $key
      * @param mixed  $value
-     * @return ViewData
+     * @return $this
      */
     public function setRawData( $key, $value );
 
@@ -47,7 +59,7 @@ interface ViewDataInterface
      *
      * @param string|array $key
      * @param mixed        $value
-     * @return ViewData
+     * @return $this
      */
     public function setData( $key, $value = null );
 
@@ -60,7 +72,7 @@ interface ViewDataInterface
      * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
-     * @return ViewData
+     * @return $this
      */
     public function setInputData( array $value );
 
@@ -74,7 +86,7 @@ interface ViewDataInterface
      * for Errors helper.
      *
      * @param array $errors
-     * @return ViewData
+     * @return $this
      */
     public function setInputErrors( array $errors );
 
@@ -89,7 +101,7 @@ interface ViewDataInterface
      *
      * @param string $message
      * @param string $type
-     * @return ViewData
+     * @return $this
      */
     public function setMessage( $message, $type );
 
@@ -100,19 +112,19 @@ interface ViewDataInterface
 
     /**
      * @param string $message
-     * @return ViewData
+     * @return $this
      */
     public function setSuccess( $message );
 
     /**
      * @param string $message
-     * @return ViewData
+     * @return $this
      */
     public function setAlert( $message );
 
     /**
      * @param string $message
-     * @return ViewData
+     * @return $this
      */
     public function setError( $message );
 }

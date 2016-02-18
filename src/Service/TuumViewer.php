@@ -4,7 +4,7 @@ namespace Tuum\Respond\Service;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Form\DataView;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Interfaces\ViewerInterface;
 use Tuum\View\Renderer;
 
@@ -64,7 +64,7 @@ class TuumViewer implements ViewerInterface
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param string                 $view_file
-     * @param mixed|ViewData         $view
+     * @param mixed|ViewDataInterface         $view
      * @return ResponseInterface
      */
     public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
@@ -77,13 +77,13 @@ class TuumViewer implements ViewerInterface
     }
 
     /**
-     * @param mixed|ViewData $data
+     * @param mixed|ViewDataInterface $data
      * @return array
      */
     private function setDataView($data)
     {
         $view = $this->forgeDataView($data, $this->dataView);
-        if ($data instanceof ViewData) {
+        if ($data instanceof ViewDataInterface) {
             $view_data = $data->getRawData();
         } else {
             $view_data = [];

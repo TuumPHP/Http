@@ -32,8 +32,7 @@ class ResponderBuilder
         $self = new Responder(
             new View($view, $content_view, $resolver),
             new Redirect(),
-            new Error($error),
-            new ViewData()
+            new Error($error)
         );
 
         return $self;

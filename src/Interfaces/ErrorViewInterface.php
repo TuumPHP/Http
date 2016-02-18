@@ -10,10 +10,10 @@ interface ErrorViewInterface
     /**
      * renders $view_file with $data.
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param int                    $status
-     * @param mixed|ViewData         $view
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param int                     $status
+     * @param mixed|ViewDataInterface $view
      * @return ResponseInterface
      */
     public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $status, $view);
