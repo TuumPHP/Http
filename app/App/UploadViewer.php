@@ -32,7 +32,7 @@ class UploadViewer implements PresenterInterface
      * @param ViewData               $view
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view)
     {
         return $this->responder->view($request, $response)
             ->asView('upload', $view);

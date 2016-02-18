@@ -83,7 +83,7 @@ class UploadController
             ->setData('upload', $upload);
         $this->setUpMessage($view, $upload);
         return $this->responder->view($request, $response)
-            ->call([$this->viewer, 'withView'], $view); // callable
+            ->call( [$this->viewer, '__invoke' ], $view); // callable
     }
 
     /**

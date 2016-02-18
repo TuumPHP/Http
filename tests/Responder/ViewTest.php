@@ -104,7 +104,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     function executes_ViewerInterface_object()
     {
         $stub = $this->getMockBuilder(PresenterInterface::class)->getMock();
-        $stub->method('withView')->willReturn('tested: mock');
+        $stub->method('__invoke')->willReturn('tested: mock');
         $string = $this->view->call($stub);
         $this->assertEquals('tested: mock', $string);
     }

@@ -18,7 +18,7 @@ class TwigViewTest extends \PHPUnit_Framework_TestCase
         $twig = TwigViewer::forge(__DIR__.'/twig');
         $view = new ViewData();
         
-        $res = $twig->withView(ReqBuilder::createFromPath('test'), new Response(), 'twig-text', $view);
+        $res = $twig->__invoke( ReqBuilder::createFromPath( 'test'), new Response(), 'twig-text', $view);
         $this->assertEquals('this is a text from twig.', $res->getBody()->__toString());
     }
 

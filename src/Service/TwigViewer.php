@@ -67,7 +67,7 @@ class TwigViewer implements ViewerInterface
      * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
+    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
     {
         $view_file = (substr($view_file, -4) === '.twig') ?: $view_file . '.twig';
         $view_data = $this->setDataView($view);

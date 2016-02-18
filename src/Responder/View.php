@@ -65,7 +65,7 @@ class View extends AbstractWithViewData
      */
     private function asViewStream($file, $data = null)
     {
-        return $this->view->withView($this->request, $this->response, $file, $data);
+        return $this->view->__invoke( $this->request, $this->response, $file, $data);
     }
 
     /**
@@ -189,7 +189,7 @@ class View extends AbstractWithViewData
     public function call($presenter, $data = null)
     {
         if ($presenter instanceof PresenterInterface) {
-            return $this->execCallable([$presenter, 'withView'], $data);
+            return $this->execCallable([$presenter, '__invoke'], $data);
         }
         if (is_callable($presenter)) {
             return $this->execCallable($presenter, $data);

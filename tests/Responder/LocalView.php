@@ -27,7 +27,7 @@ class LocalView implements ViewerInterface
      * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
+    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $view_file, $view)
     {
         $this->view_file = $view_file;
         $this->data      = $view;

@@ -83,7 +83,7 @@ class Error extends AbstractWithViewData
      */
     public function asView($status, $data = null)
     {
-        return $this->errorView->withView($this->request, $this->response, $status, $data);
+        return $this->errorView->__invoke( $this->request, $this->response, $status, $data);
     }
 
     /**

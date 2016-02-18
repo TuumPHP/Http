@@ -16,5 +16,5 @@ interface ErrorViewInterface
      * @param mixed|ViewData         $view
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $status, $view);
+    public function __invoke( ServerRequestInterface $request, ResponseInterface $response, $status, $view);
 }
