@@ -29,6 +29,11 @@ class Responder
     private $responders = [];
 
     /**
+     * @var callable
+     */
+    private $viewDataForger;
+
+    /**
      * @param View     $view
      * @param Redirect $redirect
      * @param Error    $error
@@ -54,15 +59,32 @@ class Responder
             }
         }
 
-        return $this->forgeViewData();
+        $forger = $this->getViewDataForger();
+        return $forger();
     }
 
     /**
-     * @return ViewDataInterface
+     * @return callable
      */
-    protected function forgeViewData()
+    protected function getViewDataForger()
     {
-        return new ViewData();
+        if ($this->viewDataForger) {
+            return $this->viewDataForger;
+        }
+        return function () {
+            return new ViewData();
+        };
+    }
+
+    /**
+     * @param callable $callable
+     * @return Responder
+     */
+    public function withViewDataForger($callable)
+    {
+        $self                 = clone($this);
+        $self->viewDataForger = $callable;
+        return $self;
     }
 
     /**

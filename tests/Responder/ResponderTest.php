@@ -40,4 +40,13 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Tuum\Respond\Responder\Redirect', get_class($this->responder->redirect($req)));
         $this->assertEquals('Tuum\Respond\Responder\Error', get_class($this->responder->error($req)));
     }
+
+    /**
+     * @test
+     */
+    function setting_viewDataForger_returns_other_object()
+    {
+        $res = $this->responder->withViewDataForger(function() {return 'forged';});
+        $this->assertEquals('forged', $res->getViewData());
+    }
 }
