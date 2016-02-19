@@ -1,0 +1,46 @@
+{% extends "layouts/layout.twig" %}
+
+{% block content %}
+
+    <h1>Form Samples</h1>
+
+    <h2>simple forms</h2>
+
+    <dl class="dl-horizontal">
+
+        <dt>text inputs</dt>
+        <dd>{{ viewData.forms.text('text', 'text-value') }}</dd>
+
+        <dt>placeholder</dt>
+        <dd>{{ viewData.forms.text('text', '').placeholder('overwrite this water-mark text') }}</dd>
+
+        <dd>&nbsp;</dd>
+
+        <dt>from $inputs</dt>
+        <dd>
+            <span class="text-info">using $inputs object to set the value.</span>
+            <input type="text" name="old" id="old" value="{{ viewData.inputs.get('old', 'over-written') }}"
+                   class="form-control"/>
+            <label for="old"><span class="text-info">the value in the input field is automatically taken from $inputs object.</span></label>
+            {{ viewData.forms.text('old', 'over-written') }}
+        </dd>
+
+    </dl>
+
+    <h3>other than text input</h3>
+
+    <dl class="dl-horizontal">
+
+        <dt>date inputs</dt>
+        <dd>{{ viewData.forms.date('date')|raw }}</dd>
+
+        <dt>file inputs</dt>
+        <dd>{{ viewData.forms.file('file-name')|raw }}</dd>
+
+        <dt>radio/check</dt>
+        <dd><label>{{ viewData.forms.radio('radio', 'radio')|raw }} radio button</label>&nbsp;
+            <label>{{ viewData.forms.checkbox('check', 'check')|raw }}check box</label></dd>
+
+    </dl>
+
+{% endblock %}
