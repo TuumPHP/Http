@@ -35,7 +35,6 @@ return function (ServerRequestInterface $request, ResponseInterface $response) {
         'status'  => [
             Error::FILE_NOT_FOUND => 'errors/notFound',
         ],
-        'handler' => true,
     ]);
     $responder = ResponderBuilder::withServices($view, $error, 'layouts/contents')
         ->withResponse($response)

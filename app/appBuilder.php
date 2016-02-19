@@ -26,40 +26,24 @@ return function (Responder $responder) {
 
     /**
      * for displaying form for /jump
-     *
-     * @param ServerRequestInterface  $request
-     * @param ResponseInterface       $response
-     * @param mixed|ViewDataInterface $view
-     * @return ResponseInterface
      */
-    $presentJump = function (ServerRequestInterface $request, ResponseInterface $response, $view) {
-        return Respond::view($request, $response)
-            ->render('jump', $view);
-    };
-
-    $app->add('/jump', function ($request, $response) use ($presentJump) {
-        $view = Respond::getResponder($request)->getViewData();
-        return Respond::view($request, $response)->call($presentJump, $view);
-    });
+    $app->add('/jump',
+        function ($request, $response) use ($responder) {
+            $viewData = $responder->getViewData()
+                ->setSuccess('try jump to another URL. ');
+            return $responder->view($request, $response)
+                ->render('jump', $viewData);
+        });
 
     $app->add('/jumper',
-        function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
-            $view = $responder->getViewData()
-                ->setSuccess('redirected back!')
+        function ($request, $response) use ($responder) {
+            $viewData = $responder->getViewData()
+                ->setError('redirected back!')
                 ->setInputData(['jumped' => 'redirected text'])
                 ->setInputErrors(['jumped' => 'redirected error message']);
 
-            return Respond::redirect($request, $response)
-                ->toPath('jump', $view);
-        });
-
-    $app->add('/jumped',
-        function ($request, $response) use ($presentJump) {
-            $view = Respond::getResponder($request)->getViewData()
-                ->setSuccess('redrawn form!')
-                ->setInputData(['jumped' => 'redrawn text'])
-                ->setInputErrors(['jumped' => 'redrawn error message']);
-            return Respond::view($request, $response)->call($presentJump, $view);
+            return $responder->redirect($request, $response)
+                ->toPath('jump', $viewData);
         });
 
     /**
