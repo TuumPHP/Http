@@ -14,14 +14,32 @@
 
         <form method="post" action="jumper" class="">
 
-            {% if viewData.errors.exists('jumped') %}
-            <div class="form-group has-error">
-            {% else %}
-            <div class="form-group ">
-            {% endif %}
+
+            <div class="form-group{% if viewData.errors.exists('jumped') %} has-error{% endif %}">
                 {{ viewData.forms.label('some text:', 'jumped')|raw }}
                 {{ viewData.forms.text('jumped', 'original text').id().class('form-control')|raw }}
                 {{ viewData.errors.p('jumped')|raw }}
+            </div>
+
+            <div class="form-group{% if viewData.errors.exists('date') %} has-error{% endif %}">
+                <label for="date" >
+                    some date:
+                    <input type="date" name="date" value="{{ viewData.inputs.get('date') }}" class="form-control" style="width: 12em;" />
+                </label>
+            </div>
+
+            <div class="form-group{% if viewData.errors.exists('gender') %} has-error{% endif %}">
+                {{ viewData.forms.radio('gender', '1').class('form-control').label('male')|raw }}&nbsp;
+                {{ viewData.forms.radio('gender', '2').class('form-control').label('female')|raw }}&nbsp;
+                <label><input type="radio" name="gender" value="3" {{ viewData.inputs.checked('gender', '3') }} class="form-control" />other</label>
+                {{ viewData.errors.p('gender')|raw }}
+            </div>
+
+            <div class="form-group{% if viewData.errors.exists('movie') %} has-error{% endif %}">
+                {{ viewData.forms.checkbox('movie[]', '1').class('form-control').label('star wars')|raw }}&nbsp;
+                {{ viewData.forms.checkbox('movie[]', '2').class('form-control').label('star strek')|raw }}&nbsp;
+                <label><input type="checkbox" name="movie[]" value="3" {{ viewData.inputs.checked('movie[]', '3') }} class="form-control" />yamato</label>
+                {{ viewData.errors.p('movie')|raw }}
             </div>
 
             <input type="submit" value="jump!" class="btn btn-primary"/>&nbsp;

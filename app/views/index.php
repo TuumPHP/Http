@@ -16,6 +16,12 @@ $this->setLayout('layouts/layout');
         border: 2px solid #cccccc;
         border-radius: 10px;
     }
+    li {
+        margin-top: .5em;
+    }
+    li>a {
+        font-weight:bold;
+    }
 </style>
 <div class="broadcast">
 
@@ -33,36 +39,42 @@ $this->setLayout('layouts/layout');
 
 </div>
 
-<h3>redirect with messages sample</h3>
-<ul>
-    <li><a href="jump">jump!!!</a></li>
-</ul>
+<div class="col-md-6">
 
-<h3>file upload sample</h3>
-<ul>
-    <li><a href="upload">upload!!!</a></li>
-</ul>
+    <h3>samples</h3>
+    <ul>
+        <li><a href="jump">form and jump</a><br/>
+            form and post-redirect-get pattern sample</li>
 
-<h3>content</h3>
-<ul>
-    <li><a href="content">content</a></li>
-</ul>
+        <li><a href="upload">file upload</a><br/>
+            file upload sample using presentation object. </li>
+    </ul>
 
-<h3>error samples</h3>
+    <h3>content</h3>
+    <ul>
+        <li><a href="content">content</a></li>
+    </ul>
 
-<ul>
-    <li><a href="not-such-file">not found</a></li>
-    <li><a href="throw">catch exception</a></li>
-</ul>
+</div>
 
-<h3>graphs</h3>
+<div class="col-md-6">
 
-<ul>
-    <li><a href="objGraph">object graph</a></li>
-</ul>
+    <h3>error samples</h3>
 
-<h3>Form Samples</h3>
+    <ul>
+        <li><a href="not-such-file">not found</a><br/>
+            case for 404 not-found error.</li>
+        <li><a href="throw">catch exception</a><br/>
+            case for catching exception. </li>
+    </ul>
 
-<ul>
-    <li><a href="forms">form samples</a></li>
-</ul>
+    <h3>more samples</h3>
+
+    <ul>
+        <li><a href="forms">form samples</a><br/>
+            more form generation using Tuum/Form helpers.</li>
+        <li><a href="objGraph">object graph</a><br/>
+            view object graph of $responder using koriym/printo</li>
+    </ul>
+
+</div>

@@ -36,11 +36,16 @@ return function (Responder $responder) {
         });
 
     $app->add('/jumper',
-        function ($request, $response) use ($responder) {
+        function (ServerRequestInterface $request, $response) use ($responder) {
             $viewData = $responder->getViewData()
                 ->setError('redirected back!')
-                ->setInputData(['jumped' => 'redirected text'])
-                ->setInputErrors(['jumped' => 'redirected error message']);
+                ->setInputData($request->getParsedBody())
+                ->setInputErrors([
+                    'jumped' => 'redirected error message',
+                    'date' => 'your date',
+                    'gender' => 'your gender',
+                    'movie' => 'selected movie',
+                ]);
 
             return $responder->redirect($request, $response)
                 ->toPath('jump', $viewData);

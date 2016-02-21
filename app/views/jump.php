@@ -28,6 +28,35 @@ $forms = $view->forms->withClass('form-control');
         $view->errors->p('jumped')
     )->class($view->errors->exists('jumped') ? 'has-error' : null);
     ?>
+
+    <?=
+    $forms->formGroup(
+        $forms->label('some date here:', 'date'),
+        $forms->date('date', 'some date')->id()->width('12em'),
+        $view->errors->p('date')
+    )->class($view->errors->exists('date') ? 'has-error' : null);
+    ?>
+
+    <?=
+    $forms->formGroup(
+        $forms->radio('gender', '1')->label('male')->id(),
+        $forms->radio('gender', '2')->label('female')->id(),
+        $forms->radio('gender', '3')->label('other')->id(),
+        $view->errors->p('date')
+    )->class($view->errors->exists('date') ? 'has-error' : null);
+    ?>
+
+    <?=
+    $forms->formGroup(
+        $forms->checkList('movie', [
+            '1' => 'star wars',
+            '2' => 'star trek',
+            '3' => 'yamato',
+        ]),
+        $view->errors->p('movie')
+    )->class($view->errors->exists('movie') ? 'has-error' : null);
+    ?>
+
     <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
     <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
 
