@@ -20,8 +20,10 @@ return function (Responder $responder) {
      */
     $app->add('/',
         function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
+            $viewData = $responder->getViewData()
+                ->setSuccess('Thanks for downloading Tuum/Respond.');
             return $responder->view($request, $response)
-                ->render('index');
+                ->render('index', $viewData);
         });
 
     /**

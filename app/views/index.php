@@ -23,6 +23,7 @@ $this->setLayout('layouts/layout');
         font-weight:bold;
     }
 </style>
+
 <div class="broadcast">
 
     <h1>Tuum/Respond</h1>
@@ -38,6 +39,9 @@ $this->setLayout('layouts/layout');
     </ul>
 
 </div>
+
+<?= $view->message; ?>
+
 
 <div class="col-md-6">
 
