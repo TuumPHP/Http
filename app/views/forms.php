@@ -48,6 +48,9 @@ $dates  = $view->dates->setClass('form-control');
     <dt>file inputs</dt>
     <dd><?= $forms->file('file-name'); ?></dd>
 
+    <dt>select</dt>
+    <dd><?= $forms->select('select', ['1' => 'more', '2' => 'form', '3' => 'samples'])->style('width', '15em'); ?></dd>
+    
     <dt>radio/check</dt>
     <dd><label><?= $forms->radio('radio', 'radio'); ?> radio button</label>&nbsp;
         <label><?= $forms->checkbox('check', 'check'); ?>check box</label></dd>
