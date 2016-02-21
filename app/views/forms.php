@@ -9,6 +9,7 @@ $this->setLayout('layouts/layout');
 $inputs = $view->setInputs(['old' => 'this value is set as old-inputs'])->inputs;
 $forms  = $view->forms->withClass('form-control');
 $dates  = $view->dates->setClass('form-control');
+$data   = $view->data;
 
 
 ?>
@@ -20,7 +21,7 @@ $dates  = $view->dates->setClass('form-control');
 <dl class="dl-horizontal">
 
     <dt>text inputs</dt>
-    <dd><?= $forms->text('text', 'text-value'); ?></dd>
+    <dd><?= $forms->text('text', $data->raw('text')); ?></dd>
 
     <dt>placeholder</dt>
     <dd><?= $forms->text('text', '')->placeholder('overwrite this water-mark text'); ?></dd>
@@ -43,7 +44,7 @@ $dates  = $view->dates->setClass('form-control');
 <dl class="dl-horizontal">
 
     <dt>date inputs</dt>
-    <dd><?= $forms->date('date', date('Y-m-d')); ?></dd>
+    <dd><?= $forms->date('date', $data->raw('date')); ?></dd>
 
     <dt>file inputs</dt>
     <dd><?= $forms->file('file-name'); ?></dd>

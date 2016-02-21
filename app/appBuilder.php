@@ -85,7 +85,12 @@ return function (Responder $responder) {
      */
     $app->add('/forms',
         function (ServerRequestInterface $request, $response) {
-            return Respond::view($request, $response)->render('forms');
+            $viewData = Respond::getViewData($request)
+                ->setData([
+                    'text' => 'this is text-value',
+                    'date' => date('Y-m-d'),
+                ]);
+            return Respond::view($request, $response)->render('forms', $viewData);
         });
 
     return $app;

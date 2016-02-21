@@ -3,6 +3,7 @@ namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
@@ -54,6 +55,15 @@ class Respond
         return $responder->$name($request, $response);
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ViewDataInterface
+     */
+    public static function getViewData($request)
+    {
+        return self::getResponder($request)->getViewData();
+    }
+    
     /**
      * get a view responder, Responder\View.
      *
