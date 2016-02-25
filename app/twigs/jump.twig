@@ -26,8 +26,10 @@
                     some date:
                     <input type="date" name="date" value="{{ viewData.inputs.get('date') }}" class="form-control" style="width: 12em;" />
                 </label>
+                {{ viewData.errors.p('date')|raw }}
             </div>
 
+            <label>your gender</label>
             <div class="form-group{% if viewData.errors.exists('gender') %} has-error{% endif %}">
                 {{ viewData.forms.radio('gender', '1').class('form-control').label('male')|raw }}&nbsp;
                 {{ viewData.forms.radio('gender', '2').class('form-control').label('female')|raw }}&nbsp;
@@ -35,6 +37,7 @@
                 {{ viewData.errors.p('gender')|raw }}
             </div>
 
+            <label>your movie</label>
             <div class="form-group{% if viewData.errors.exists('movie') %} has-error{% endif %}">
                 {{ viewData.forms.checkbox('movie[]', '1').class('form-control').label('star wars')|raw }}&nbsp;
                 {{ viewData.forms.checkbox('movie[]', '2').class('form-control').label('star strek')|raw }}&nbsp;
