@@ -5,7 +5,6 @@ use App\App\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
@@ -20,8 +19,11 @@ return function (Responder $responder) {
      */
     $app->add('/',
         function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
-            $viewData = $responder->getViewData()
-                ->setSuccess('Thanks for downloading Tuum/Respond.');
+            $viewData = $responder->getViewData();
+            if (!$responder->session()->get('first.time')) {
+                $viewData->setSuccess('Thanks for downloading Tuum/Respond.');
+                $responder->session()->set('first.time', true);
+            }
             return $responder->view($request, $response)
                 ->render('index', $viewData);
         });
