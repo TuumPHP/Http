@@ -1,8 +1,12 @@
 <?php
 /** @var Renderer $this */
 /** @var DataView $view */
+use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Form\DataView;
 use Tuum\View\Renderer;
+
+/** @var ServerRequestInterface $request */
+$request = $this->view_data['server.request'];
 
 ?>
 <!DOCTYPE html>
@@ -44,6 +48,7 @@ use Tuum\View\Renderer;
     <div class="container">
         <h4>Tuum/Respond.</h4>
         <p><em>Tuum</em> means 'yours' in Latin; so it happens to the same pronunciation as 'stack' in Japanese. </p>
+        <p><?= $request->getMethod() ?>: <?= $request->getUri() ?></p>
     </div>
 </nav>
 

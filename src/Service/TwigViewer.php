@@ -71,6 +71,7 @@ class TwigViewer implements ViewerInterface
     {
         $viewFile  = (substr($viewFile, -4) === '.twig') ?: $viewFile . '.twig';
         $view_data = $this->setDataView($viewData);
+        $view_data['server_request'] = $request;
 
         $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 

@@ -70,6 +70,7 @@ class TuumViewer implements ViewerInterface
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
         $view_data = $this->setDataView($viewData);
+        $view_data['server.request'] = $request;
 
         $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
