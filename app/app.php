@@ -1,6 +1,8 @@
 <?php
 
 use App\App\Dispatcher;
+use DebugBar\StandardDebugBar;
+use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddlewareFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
@@ -14,7 +16,7 @@ use Zend\Diactoros\Response;
  * @param ResponseInterface      $response
  * @return ResponseInterface
  */
-return function (ServerRequestInterface $request, ResponseInterface $response) {
+$next = function (ServerRequestInterface $request, ResponseInterface $response) {
 
 
     /** @var callable $responderBuilder */
@@ -44,3 +46,11 @@ return function (ServerRequestInterface $request, ResponseInterface $response) {
     return $response;
 };
 
+return function (ServerRequestInterface $request, ResponseInterface $response) use($next) {
+
+    $factory  = new PhpDebugBarMiddlewareFactory();
+    $middle   = $factory();
+    $response = $middle($request, $response, $next);
+    return $response;
+
+};

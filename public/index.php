@@ -16,7 +16,7 @@ include dirname(__DIR__) . "/app/autoload.php";
  */
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
-$res = new Response();
+$res = (new Response())->withHeader('Content-Type', 'text/html');
 $res = $app($req, $res);
 
 $emitter = new SapiEmitter;
