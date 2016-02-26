@@ -45,6 +45,12 @@
                 {{ viewData.errors.p('movie')|raw }}
             </div>
 
+            <label>are you happy?</label>
+            <div class="form-group{% if viewData.errors.exists('happy') %} has-error{% endif %}">
+                <label><input type="checkbox" name="happy" id="happy" value="v" {{ viewData.inputs.checked('happy', 'v') | raw }} />&nbsp;Yes! I'm happy.</label>
+                {{ viewData.errors.p('happy') | raw }}
+            </div>
+
             <input type="submit" value="jump!" class="btn btn-primary"/>&nbsp;
             <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
 

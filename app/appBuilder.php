@@ -49,6 +49,7 @@ return function (Responder $responder) {
                     'date' => 'your date',
                     'gender' => 'your gender',
                     'movie' => 'selected movie',
+                    'happy' => 'be happy!'
                 ]);
 
             return $responder->redirect($request, $response)

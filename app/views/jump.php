@@ -37,6 +37,7 @@ $forms = $view->forms->withClass('form-control');
     )->class($view->errors->exists('date') ? 'has-error' : null);
     ?>
 
+    <label>your gender</label>
     <?=
     $forms->formGroup(
         $forms->radio('gender', '1')->label('male')->id(),
@@ -46,6 +47,7 @@ $forms = $view->forms->withClass('form-control');
     )->class($view->errors->exists('date') ? 'has-error' : null);
     ?>
 
+    <label>your movie</label>
     <?=
     $forms->formGroup(
         $forms->checkList('movie', [
@@ -55,6 +57,14 @@ $forms = $view->forms->withClass('form-control');
         ]),
         $view->errors->p('movie')
     )->class($view->errors->exists('movie') ? 'has-error' : null);
+    ?>
+
+    <label>are you happy? </label>
+    <?=
+    $forms->formGroup(
+        $forms->checkbox('happy', 'h'),
+        $view->errors->p('happy')
+    )->class($view->errors->exists('happy') ? 'has-error' : null);
     ?>
 
     <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
