@@ -3,7 +3,6 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Form\DataView;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Interfaces\ViewerInterface;
 use Twig_Environment;
@@ -19,8 +18,6 @@ use Twig_Loader_Filesystem;
  */
 class TwigViewer implements ViewerInterface
 {
-    use ViewerTrait;
-
     /**
      * @var Twig_Environment
      */
@@ -33,7 +30,7 @@ class TwigViewer implements ViewerInterface
 
     /**
      * @param Twig_Environment $renderer
-     * @param null|ViewHelper    $view
+     * @param null|ViewHelper  $view
      */
     public function __construct($renderer, $view = null)
     {
@@ -69,9 +66,9 @@ class TwigViewer implements ViewerInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
-        $this->viewHelper            = $this->viewHelper->start($request, $response);
-        $viewFile  = (substr($viewFile, -4) === '.twig') ?: $viewFile . '.twig';
-        $view_data = $this->setDataView($viewData);
+        $viewHelper = $this->viewHelper->start($request, $response);
+        $viewFile   = (substr($viewFile, -4) === '.twig') ?: $viewFile . '.twig';
+        $view_data  = $this->setDataView($viewHelper, $viewData);
 
         $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
@@ -79,12 +76,13 @@ class TwigViewer implements ViewerInterface
     }
 
     /**
+     * @param ViewHelper        $viewHelper
      * @param ViewDataInterface $viewData
      * @return array
      */
-    private function setDataView($viewData)
+    private function setDataView($viewHelper, $viewData)
     {
-        $view = $this->forgeDataView($viewData, $this->viewHelper);
+        $view = $viewHelper->setViewData($viewData);
         $this->renderer->addGlobal('viewData', $view);
         if ($viewData instanceof ViewDataInterface) {
             return array_merge($viewData->getData(), $viewData->getRawData());

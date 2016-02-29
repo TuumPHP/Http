@@ -3,7 +3,6 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Form\DataView;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Interfaces\ViewerInterface;
 use Tuum\View\Renderer;
@@ -18,8 +17,6 @@ use Tuum\View\Renderer;
  */
 class TuumViewer implements ViewerInterface
 {
-    use ViewerTrait;
-
     /**
      * @var Renderer
      */
@@ -31,7 +28,7 @@ class TuumViewer implements ViewerInterface
     private $viewHelper;
 
     /**
-     * @param Renderer $renderer
+     * @param Renderer   $renderer
      * @param ViewHelper $view
      */
     public function __construct($renderer, $view = null)
@@ -69,8 +66,8 @@ class TuumViewer implements ViewerInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
-        $this->viewHelper            = $this->viewHelper->start($request, $response); 
-        $view_data                   = $this->setDataView($viewData);
+        $viewHelper = $this->viewHelper->start($request, $response);
+        $view_data  = $this->setDataView($viewHelper, $viewData);
 
         $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
@@ -78,10 +75,11 @@ class TuumViewer implements ViewerInterface
     }
 
     /**
+     * @param ViewHelper              $viewHelper
      * @param mixed|ViewDataInterface $viewData
      * @return array
      */
-    private function setDataView($viewData)
+    private function setDataView($viewHelper, $viewData)
     {
         if ($viewData instanceof ViewDataInterface) {
             $view_data = $viewData->getRawData();
@@ -90,7 +88,7 @@ class TuumViewer implements ViewerInterface
         } else {
             $view_data = [];
         }
-        $view_data['view'] = $this->forgeDataView($viewData, $this->viewHelper);
+        $view_data['view'] = $viewHelper->setViewData($viewData);
 
         return $view_data;
     }

@@ -66,7 +66,10 @@ class View extends AbstractWithViewData
      */
     private function renderWithViewer($file, $viewData = null)
     {
-        return $this->view->__invoke($this->request, $this->response, $file, $viewData);
+        return $this->view->__invoke(
+            // todo: using request's attribute to carry around the View...
+            $this->request->withAttribute(self::class, $this), 
+            $this->response, $file, $viewData);
     }
 
     /**

@@ -15,20 +15,21 @@ use Tuum\Form\Forms;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder;
+use Tuum\Respond\Responder\View;
 use Tuum\Respond\Responder\ViewData;
 
 /**
  * Class ViewHelper
  *
  * @package Tuum\Respond\Service
- * 
- * @property Forms $forms
- * @property Dates $dates
- * @property Data  $data
+ *
+ * @property Forms   $forms
+ * @property Dates   $dates
+ * @property Data    $data
  * @property Message $message
- * @property Inputs $inputs
- * @property Errors $errors
- * @property Escape $escape
+ * @property Inputs  $inputs
+ * @property Errors  $errors
+ * @property Escape  $escape
  */
 class ViewHelper
 {
@@ -48,9 +49,14 @@ class ViewHelper
     private $response;
 
     /**
-     * @var Responder
+     * @var View
      */
-    private $responder;
+    private $view;
+
+    /**
+     * @var ViewData
+     */
+    private $viewData;
 
     /**
      * ViewHelper constructor.
@@ -73,14 +79,14 @@ class ViewHelper
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param Responder              $responder
+     * @param View                   $view
      * @return $this
      */
-    public function start($request, $response, $responder = null)
+    public function start($request, $response, $view = null)
     {
-        $this->request   = $request;
-        $this->response  = $response;
-        $this->responder = $responder;
+        $this->request  = $request;
+        $this->response = $response;
+        $this->view     = $view ?: $request->getAttribute(View::class, null);
 
         return $this;
     }
@@ -99,7 +105,8 @@ class ViewHelper
         $view->setErrors($get('getInputErrors'));
         $view->setInputs($get('getInputData'));
         $view->setMessage($get('getMessages'));
-        
+        $this->viewData = $viewData;
+
         return $this;
     }
 
@@ -200,7 +207,8 @@ class ViewHelper
      */
     public function call($presenter, $viewData = null)
     {
-        $response = $this->responder->view($this->request, $this->response)->call($presenter, $viewData);
+        $viewData = $viewData ?: $this->viewData;
+        $response = $this->view->call($presenter, $viewData);
 
         return $this->returnResponseBody($response);
     }
@@ -212,7 +220,8 @@ class ViewHelper
      */
     public function render($viewFile, $viewData = null)
     {
-        $response = $this->responder->view($this->request, $this->response)->render($viewFile, $viewData);
+        $viewData = $viewData ?: $this->viewData;
+        $response = $this->view->render($viewFile, $viewData);
 
         return $this->returnResponseBody($response);
     }
@@ -228,6 +237,9 @@ class ViewHelper
         }
         $response->getBody()->rewind();
 
-        return $response->getBody()->getContents();
+        $contents = $response->getBody()->getContents();
+        $response->getBody()->rewind();
+
+        return $contents;
     }
 }
