@@ -2,13 +2,9 @@
 
 {% block content %}
 
-    <h1>Hello Tuum/Respond</h1>
-
     {{ viewData.message.onlyOne|raw }}
 
-    <p>helpers and responders for Psr-7 http/messages.</p>
-    <p>This is a package to turn micro-framework into ordinary framework for ordinary web site.</p>
-    <p>a.k.a. Tuum/Http, </p>
+    {{ viewData.render('layouts/broadcast') | raw }}
 
     <h3>redirect with messages sample</h3>
     <ul>
