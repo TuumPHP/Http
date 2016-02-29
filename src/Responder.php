@@ -132,8 +132,11 @@ class Responder
     {
         $responder = $this->responders[$responder];
         $response  = $response ?: $this->response;
+        
+        // always set $responder as request attribute.
+        $request = Respond::withResponder($request, $this);
 
-        return $responder->withRequest($request, $response, $this->session);
+        return $responder->withRequest($request, $response);
     }
 
     /**

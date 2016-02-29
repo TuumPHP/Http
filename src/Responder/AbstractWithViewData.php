@@ -3,7 +3,6 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Interfaces\SessionStorageInterface;
 
 /**
  * Class AbstractWithViewData
@@ -30,29 +29,21 @@ abstract class AbstractWithViewData
     protected $response;
 
     /**
-     * @var SessionStorageInterface
-     */
-    protected $session;
-
-    /**
      * initializes responders with $request, $response, $viewData,
      * and optionally $session. intended to be internal API used
      * by Responder object and tests.
      *
      * @param ServerRequestInterface  $request
      * @param ResponseInterface       $response
-     * @param SessionStorageInterface $session
      * @return $this
      */
     public function withRequest(
         ServerRequestInterface $request,
-        ResponseInterface $response,
-        SessionStorageInterface $session
+        ResponseInterface $response
     ) {
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
-        $self->session  = $session;
 
         return $self;
     }

@@ -4,7 +4,6 @@ use App\App\Dispatcher;
 use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
-use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\TwigViewer;
@@ -28,15 +27,14 @@ return function (array $config, Dispatcher $app) {
      * construct responder.
      */
     $session   = SessionStorage::forge('sample');
-    $error     = ErrorView::forge($view, [
-        'default' => 'errors/error',
-        'status'  => [
-            Error::FILE_NOT_FOUND => 'errors/notFound',
-        ],
-    ]);
-    $responder = ResponderBuilder::withServices(
-        $view, 
-        $error, 
+    $responder = ResponderBuilder::withView(
+        $view,
+        [
+            'default' => 'errors/error',
+            'status'  => [
+                Error::FILE_NOT_FOUND => 'errors/notFound',
+            ],
+        ], 
         'layouts/contents',
         $app->getResolver()
     )->withSession($session);

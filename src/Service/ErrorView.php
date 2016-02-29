@@ -5,12 +5,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Interfaces\ViewerInterface;
+use Tuum\Respond\Responder\View;
 
 class ErrorView implements ErrorViewInterface
 {
     /**
-     * @var ViewerInterface
+     * @var View
      */
     private $view;
 
@@ -29,9 +29,9 @@ class ErrorView implements ErrorViewInterface
     ];
 
     /**
-     * @param ViewerInterface $viewStream
+     * @param View $viewStream
      */
-    public function __construct(ViewerInterface $viewStream)
+    public function __construct(View $viewStream)
     {
         $this->view = $viewStream;
     }
@@ -44,15 +44,15 @@ class ErrorView implements ErrorViewInterface
      *   'status'  : index of http code to file name (i.e. ['code' => 'file']).
      *   'files'   : index of ile name to http code(s) (i.e. ['file' => [123, 234]]
      *
-     * @param ViewerInterface $viewStream
-     * @param array           $options
+     * @param View  $view
+     * @param array $options
      * @return static
      */
     public static function forge(
-        ViewerInterface $viewStream,
+        View $view,
         array $options
     ) {
-        $error = new static($viewStream);
+        $error = new static($view);
         $options += [
             'default' => null,
             'status'  => [],
@@ -95,7 +95,7 @@ class ErrorView implements ErrorViewInterface
     {
         $file = $this->findViewFromStatus($status);
 
-        $response = $this->view->__invoke($request, $response, $file, $viewData);
+        $response = $this->view->withRequest($request, $response)->render($file, $viewData);
         if ($response instanceof ResponseInterface) {
             $response = $response->withStatus($status);
         }

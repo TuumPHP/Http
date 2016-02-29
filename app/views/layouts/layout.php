@@ -7,6 +7,7 @@ use Tuum\View\Renderer;
 
 ?>
 <!DOCTYPE html>
+<!--suppress JSUnresolvedLibraryURL -->
 <html>
 <head>
     <meta charset="UTF-8"/>
@@ -27,7 +28,7 @@ use Tuum\View\Renderer;
             <a class="navbar-brand" href="/">Tuum/Respond</a>
         </div>
         <!-- login form -->
-        <?php // $view->call(\App\App\LoginPresenter::class); ?>
+        <?php // echo $view->call(\App\App\LoginPresenter::class); ?>
         <!-- sample menu -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">

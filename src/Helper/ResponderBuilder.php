@@ -40,16 +40,23 @@ class ResponderBuilder
      * build responder object based on $view (ViewerInterface) object
      * and options for errors.
      *
-     * @param ViewerInterface $view
+     * @param ViewerInterface $viewer
      * @param array           $errorOption
      * @param string|null     $content_view
      * @param null|callable   $resolver
      * @return Responder
      */
-    public static function withView(ViewerInterface $view, $errorOption = [], $content_view = null, $resolver = null)
+    public static function withView(ViewerInterface $viewer, $errorOption = [], $content_view = null, $resolver = null)
     {
-        $errors = ErrorView::forge($view, $errorOption);
+        $view  = new View($viewer, $content_view, $resolver);
+        $error = ErrorView::forge($view, $errorOption);
 
-        return self::withServices($view, $errors, $content_view, $resolver);
+        $self = new Responder(
+            $view,
+            new Redirect(),
+            new Error($error)
+        );
+
+        return $self;
     }
 }

@@ -14,8 +14,8 @@ use Tuum\Form\Dates;
 use Tuum\Form\Forms;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\View;
 use Tuum\Respond\Responder\ViewData;
 
 /**
@@ -49,9 +49,9 @@ class ViewHelper
     private $response;
 
     /**
-     * @var View
+     * @var Responder
      */
-    private $view;
+    private $responder;
 
     /**
      * @var ViewData
@@ -79,14 +79,13 @@ class ViewHelper
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param View                   $view
      * @return $this
      */
-    public function start($request, $response, $view = null)
+    public function start($request, $response)
     {
-        $this->request  = $request;
-        $this->response = $response;
-        $this->view     = $view ?: $request->getAttribute(View::class, null);
+        $this->request   = $request;
+        $this->response  = $response;
+        $this->responder = Respond::getResponder($request);
 
         return $this;
     }
@@ -207,12 +206,12 @@ class ViewHelper
      */
     public function call($presenter, $viewData = null)
     {
-        if (!$this->view) {
+        if (!$this->responder) {
             return '';
         }
         $this->response->getBody()->rewind();
         $viewData = $viewData ?: $this->viewData;
-        $response = $this->view->call($presenter, $viewData);
+        $response = $this->responder->view($this->request, $this->response)->call($presenter, $viewData);
 
         return $this->returnResponseBody($response);
     }
@@ -224,12 +223,12 @@ class ViewHelper
      */
     public function render($viewFile, $viewData = null)
     {
-        if (!$this->view) {
+        if (!$this->responder) {
             return '';
         }
         $this->response->getBody()->rewind();
         $viewData = $viewData ?: $this->viewData;
-        $response = $this->view->render($viewFile, $viewData);
+        $response = $this->responder->view($this->request, $this->response)->render($viewFile, $viewData);
 
         return $this->returnResponseBody($response);
     }
