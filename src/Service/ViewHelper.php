@@ -209,9 +209,9 @@ class ViewHelper
         if (!$this->responder) {
             return '';
         }
-        $this->response->getBody()->rewind();
+        $response = $this->prepareResponseStream($this->response);
         $viewData = $viewData ?: $this->viewData;
-        $response = $this->responder->view($this->request, $this->response)->call($presenter, $viewData);
+        $response = $this->responder->view($this->request, $response)->call($presenter, $viewData);
 
         return $this->returnResponseBody($response);
     }
@@ -226,11 +226,38 @@ class ViewHelper
         if (!$this->responder) {
             return '';
         }
-        $this->response->getBody()->rewind();
+        $response = $this->prepareResponseStream($this->response);
         $viewData = $viewData ?: $this->viewData;
-        $response = $this->responder->view($this->request, $this->response)->render($viewFile, $viewData);
+        $response = $this->responder->view($this->request, $response)->render($viewFile, $viewData);
 
         return $this->returnResponseBody($response);
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return ResponseInterface
+     */
+    private function prepareResponseStream($response)
+    {
+        $stream = $response->getBody();
+        /** @noinspection PhpUndefinedClassInspection */
+        if ($stream instanceof \Zend\Diactoros\Stream) {
+            /** @var \Zend\Diactoros\Stream $stream */
+            $stream = clone $stream;
+            $stream->attach(fopen('php://temp', 'wr'));
+            return $response->withBody($stream);
+        }
+        /** @noinspection PhpUndefinedClassInspection */
+        if ($stream instanceof \Slim\Http\Stream) {
+            $stream = clone $stream;
+            /** @var \Slim\Http\Stream $stream */
+            $stream->detach();
+            $attach = new \ReflectionMethod($stream, 'attach');
+            $attach->setAccessible(true);
+            $stream->attach(fopen('php://temp', 'wr'));
+            return $response->withBody($stream);
+        }
+        throw new \BadMethodCallException('cannot use call or render from ViewHelper');
     }
 
     /**
