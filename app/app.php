@@ -1,7 +1,6 @@
 <?php
 
 use App\App\Dispatcher;
-use DebugBar\StandardDebugBar;
 use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddlewareFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,20 +17,26 @@ use Zend\Diactoros\Response;
  */
 $next = function (ServerRequestInterface $request, ResponseInterface $response) {
 
+    /** @var callable $appBuilder */
+    $appBuilder = include __DIR__ . '/appBuilder.php';
+
+    /** @var Dispatcher $app */
+    $app = $appBuilder();
+
 
     /** @var callable $responderBuilder */
     $responderBuilder = include __DIR__ . '/appResponder.php';
 
     /** @var Responder $responder */
-    $responder = $responderBuilder($request, $response);
+    $responder = $responderBuilder($request, $response, $app);
     $request   = Respond::withResponder($request, $responder);
+    $app->set('responder', $responder);
 
-    /** @var callable $appBuilder */
-    $appBuilder = include __DIR__ . '/appBuilder.php';
-
-    /** @var Dispatcher $app */
-    $app = $appBuilder($responder);
-
+    
+    /** @var callable $router */
+    $router = include __DIR__ . '/appRoutes.php';
+    $app    = $router($app, $responder);
+    
     /**
      * run the next process!!!
      */

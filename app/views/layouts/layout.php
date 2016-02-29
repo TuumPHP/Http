@@ -1,7 +1,7 @@
 <?php
 /** @var Renderer $this */
 /** @var ViewHelper $view */
-use Psr\Http\Message\ServerRequestInterface;
+
 use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 
@@ -25,6 +25,25 @@ use Tuum\View\Renderer;
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <a class="navbar-brand" href="/">Tuum/Respond</a>
+        </div>
+        <!-- login form -->
+        <?php // $view->call(\App\App\LoginPresenter::class); ?>
+        <!-- sample menu -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Samples <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/jump">Jump: form and redirect</a></li>
+                        <li><a href="/upload">Upload: uploading files</a></li>
+                        <li><a href="/content">Content: html rendering</a></li>
+                        <li><a href="/objGraph">Object graph</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/not-such-file">Not Found Error</a></li>
+                        <li><a href="/throw">Uncaught Exception</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

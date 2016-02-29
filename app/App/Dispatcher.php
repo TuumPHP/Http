@@ -66,4 +66,23 @@ class Dispatcher
         }
         throw new \InvalidArgumentException;
     }
+
+    /**
+     * @return Closure
+     */
+    public function getResolver()
+    {
+        return function($key) {
+            return $this->resolve($key);
+        };
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $service
+     */
+    public function set($key, $service)
+    {
+        $this->container[$key] = $service;
+    }
 }

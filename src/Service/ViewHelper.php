@@ -207,6 +207,10 @@ class ViewHelper
      */
     public function call($presenter, $viewData = null)
     {
+        if (!$this->view) {
+            return '';
+        }
+        $this->response->getBody()->rewind();
         $viewData = $viewData ?: $this->viewData;
         $response = $this->view->call($presenter, $viewData);
 
@@ -220,6 +224,10 @@ class ViewHelper
      */
     public function render($viewFile, $viewData = null)
     {
+        if (!$this->view) {
+            return '';
+        }
+        $this->response->getBody()->rewind();
         $viewData = $viewData ?: $this->viewData;
         $response = $this->view->render($viewFile, $viewData);
 

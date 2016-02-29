@@ -1,5 +1,6 @@
 <?php
 
+use App\App\Dispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ResponderBuilder;
@@ -13,9 +14,10 @@ use Tuum\Respond\Service\TwigViewer;
 /**
  * @param ServerRequestInterface $request
  * @param ResponseInterface      $response
+ * @param Dispatcher             $app
  * @return Responder
  */
-return function (ServerRequestInterface $request, ResponseInterface $response) {
+return function (ServerRequestInterface $request, ResponseInterface $response, Dispatcher $app) {
 
     /**
      * this is the view for template.
@@ -36,7 +38,11 @@ return function (ServerRequestInterface $request, ResponseInterface $response) {
             Error::FILE_NOT_FOUND => 'errors/notFound',
         ],
     ]);
-    $responder = ResponderBuilder::withServices($view, $error, 'layouts/contents')
+    $responder = ResponderBuilder::withServices(
+        $view, 
+        $error, 
+        'layouts/contents',
+        $app->getResolver())
         ->withResponse($response)
         ->withSession($session);
 
