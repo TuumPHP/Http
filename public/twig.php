@@ -16,9 +16,8 @@ include dirname(__DIR__) . "/app/autoload.php";
  */
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
-$req = $req->withAttribute('view', 'twig');
 $res = (new Response())->withHeader('Content-Type', 'text/html');
-$res = $app($req, $res);
+$res = $app(['view' => 'twig'], $req, $res);
 
 $emitter = new SapiEmitter;
 $emitter->emit($res);

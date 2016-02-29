@@ -17,6 +17,8 @@ use Zend\Diactoros\Response;
  */
 $next = function (ServerRequestInterface $request, ResponseInterface $response) {
 
+    $config = $request->getAttribute('config');
+    
     /** @var callable $appBuilder */
     $appBuilder = include __DIR__ . '/appBuilder.php';
 
@@ -28,7 +30,7 @@ $next = function (ServerRequestInterface $request, ResponseInterface $response) 
     $responderBuilder = include __DIR__ . '/appResponder.php';
 
     /** @var Responder $responder */
-    $responder = $responderBuilder($request, $response, $app);
+    $responder = $responderBuilder($config, $app);
     $request   = Respond::withResponder($request, $responder);
     $app->set('responder', $responder);
 
@@ -51,10 +53,11 @@ $next = function (ServerRequestInterface $request, ResponseInterface $response) 
     return $response;
 };
 
-return function (ServerRequestInterface $request, ResponseInterface $response) use($next) {
+return function (array $config, ServerRequestInterface $request, ResponseInterface $response) use($next) {
 
     $factory  = new PhpDebugBarMiddlewareFactory();
     $middle   = $factory();
+    $request  = $request->withAttribute('config', $config);
     $response = $middle($request, $response, $next);
     return $response;
 
