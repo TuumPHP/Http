@@ -1,15 +1,16 @@
 <?php
 /** @var Renderer $this */
-/** @var DataView $view */
-use Tuum\Form\DataView;
+/** @var ViewHelper $view */
+
+use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 use Zend\Diactoros\UploadedFile;
 
 $this->setLayout('layouts/layout');
-$form = $view->forms;
-$data = $view->data;
+$form = $view->forms();
+$data = $view->data();
 /** @var UploadedFile $upload */
-$upload = $view->data->upload ?: null;
+$upload = $view->data()->get('upload', null);
 
 ?>
 

@@ -1,15 +1,16 @@
 <?php
 /** @var Renderer $this */
-/** @var DataView $view */
-use Tuum\Form\DataView;
+/** @var ViewHelper $view */
+
 use Tuum\Form\Lists\Lists;
+use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 
 $this->setLayout('layouts/layout');
-$inputs = $view->setInputs(['old' => 'this value is set as old-inputs'])->inputs;
-$forms  = $view->forms->withClass('form-control');
-$dates  = $view->dates->setClass('form-control');
-$data   = $view->data;
+$inputs = $view->inputs();
+$forms  = $view->forms()->withClass('form-control');
+$dates  = $view->dates()->setClass('form-control');
+$data   = $view->data();
 
 
 ?>

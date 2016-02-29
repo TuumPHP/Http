@@ -1,7 +1,8 @@
 <?php
 /** @var Renderer $this */
-/** @var DataView $view */
-use Tuum\Form\DataView;
+/** @var ViewHelper $view */
+
+use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 
 $this->setLayout('layouts/layout');
@@ -40,7 +41,7 @@ $this->setLayout('layouts/layout');
 
 </div>
 
-<?= $view->message; ?>
+<?= $view->message(); ?>
 
 
 <div class="col-md-6">

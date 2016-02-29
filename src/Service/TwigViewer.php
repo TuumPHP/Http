@@ -27,18 +27,18 @@ class TwigViewer implements ViewerInterface
     private $renderer;
 
     /**
-     * @var null|DataView
+     * @var ViewHelper
      */
-    private $dataView;
+    private $viewHelper;
 
     /**
      * @param Twig_Environment $renderer
-     * @param null|DataView    $view
+     * @param null|ViewHelper    $view
      */
     public function __construct($renderer, $view = null)
     {
-        $this->renderer = $renderer;
-        $this->dataView = $view;
+        $this->renderer   = $renderer;
+        $this->viewHelper = $view;
     }
 
     /**
@@ -55,7 +55,7 @@ class TwigViewer implements ViewerInterface
             $twig = call_user_func($callable, $twig);
         }
 
-        return new static($twig, new DataView());
+        return new static($twig, ViewHelper::forge());
     }
 
     /**
@@ -69,9 +69,9 @@ class TwigViewer implements ViewerInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
+        $this->viewHelper            = $this->viewHelper->start($request, $response);
         $viewFile  = (substr($viewFile, -4) === '.twig') ?: $viewFile . '.twig';
         $view_data = $this->setDataView($viewData);
-        $view_data['server_request'] = $request;
 
         $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
@@ -84,7 +84,7 @@ class TwigViewer implements ViewerInterface
      */
     private function setDataView($viewData)
     {
-        $view = $this->forgeDataView($viewData, $this->dataView);
+        $view = $this->forgeDataView($viewData, $this->viewHelper);
         $this->renderer->addGlobal('viewData', $view);
         if ($viewData instanceof ViewDataInterface) {
             return array_merge($viewData->getData(), $viewData->getRawData());

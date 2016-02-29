@@ -1,7 +1,7 @@
 <?php
-use Tuum\Form\DataView;
+use Tuum\Respond\Service\ViewHelper;
 
-/** @var $view DataView */
+/** @var $view ViewHelper */
 
 $this->setLayout('layouts/layout');
 ?>

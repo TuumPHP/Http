@@ -1,11 +1,12 @@
 <?php
 /** @var Renderer $this */
-/** @var DataView $view */
-use Tuum\Form\DataView;
+/** @var ViewHelper $view */
+
+use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 
 $this->setLayout('layouts/layout');
-$forms = $view->forms->withClass('form-control');
+$forms = $view->forms()->withClass('form-control');
 
 ?>
 

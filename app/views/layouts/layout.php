@@ -1,12 +1,9 @@
 <?php
 /** @var Renderer $this */
-/** @var DataView $view */
+/** @var ViewHelper $view */
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Form\DataView;
+use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
-
-/** @var ServerRequestInterface $request */
-$request = $this->view_data['server.request'];
 
 ?>
 <!DOCTYPE html>
@@ -42,14 +39,16 @@ $request = $this->view_data['server.request'];
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
+    <p>&nbsp;</p>
 
 </div>
 
 <nav id="footer" class="nav navbar-fixed-bottom navbar-default">
     <div class="container">
         <h4>Tuum/Respond.</h4>
-        <p><em>Tuum</em> means 'yours' in Latin; so it happens to the same pronunciation as 'stack' in Japanese. </p>
-        <p><?= $request->getMethod() ?>: <?= $request->getUri() ?></p>
+        <p><em>Tuum</em> means 'yours' in Latin; so it happens to the same pronunciation as 'stack' in Japanese. <br/>
+            <?= $view->request()->getMethod() ?>: <?= $view->request()->getUri() ?></p>
+        <p>&nbsp;</p>
     </div>
 </nav>
 

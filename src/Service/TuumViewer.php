@@ -26,18 +26,18 @@ class TuumViewer implements ViewerInterface
     private $renderer;
 
     /**
-     * @var null|DataView
+     * @var ViewHelper
      */
-    private $dataView;
+    private $viewHelper;
 
     /**
      * @param Renderer $renderer
-     * @param DataView $view
+     * @param ViewHelper $view
      */
     public function __construct($renderer, $view = null)
     {
-        $this->renderer = $renderer;
-        $this->dataView = $view;
+        $this->renderer   = $renderer;
+        $this->viewHelper = $view;
     }
 
     /**
@@ -55,7 +55,7 @@ class TuumViewer implements ViewerInterface
             $renderer = call_user_func($callable, $renderer);
         }
 
-        return new static($renderer, new DataView());
+        return new static($renderer, ViewHelper::forge());
     }
 
     /**
@@ -69,8 +69,8 @@ class TuumViewer implements ViewerInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
-        $view_data = $this->setDataView($viewData);
-        $view_data['server.request'] = $request;
+        $this->viewHelper            = $this->viewHelper->start($request, $response); 
+        $view_data                   = $this->setDataView($viewData);
 
         $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
@@ -90,7 +90,7 @@ class TuumViewer implements ViewerInterface
         } else {
             $view_data = [];
         }
-        $view_data['view'] = $this->forgeDataView($viewData, $this->dataView);
+        $view_data['view'] = $this->forgeDataView($viewData, $this->viewHelper);
 
         return $view_data;
     }
