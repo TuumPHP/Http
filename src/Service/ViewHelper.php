@@ -239,25 +239,9 @@ class ViewHelper
      */
     private function prepareResponseStream($response)
     {
-        $stream = $response->getBody();
-        /** @noinspection PhpUndefinedClassInspection */
-        if ($stream instanceof \Zend\Diactoros\Stream) {
-            /** @var \Zend\Diactoros\Stream $stream */
-            $stream = clone $stream;
-            $stream->attach(fopen('php://temp', 'wr'));
-            return $response->withBody($stream);
-        }
-        /** @noinspection PhpUndefinedClassInspection */
-        if ($stream instanceof \Slim\Http\Stream) {
-            $stream = clone $stream;
-            /** @var \Slim\Http\Stream $stream */
-            $stream->detach();
-            $attach = new \ReflectionMethod($stream, 'attach');
-            $attach->setAccessible(true);
-            $stream->attach(fopen('php://temp', 'wr'));
-            return $response->withBody($stream);
-        }
-        throw new \BadMethodCallException('cannot use call or render from ViewHelper');
+        $response->getBody()->rewind();
+
+        return $response;
     }
 
     /**
@@ -269,9 +253,9 @@ class ViewHelper
         if (!$response->getBody()->isSeekable()) {
             throw new \InvalidArgumentException('not seekable response body. ');
         }
+        $position = $response->getBody()->tell();
         $response->getBody()->rewind();
-
-        $contents = $response->getBody()->getContents();
+        $contents = $response->getBody()->read($position);
         $response->getBody()->rewind();
 
         return $contents;
