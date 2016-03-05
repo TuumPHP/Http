@@ -4,36 +4,53 @@ namespace tests\Service;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Responder\ViewData;
-use Tuum\Respond\Interfaces\ViewerInterface;
 use Tuum\Respond\Service\ViewerTrait;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 
-class ViewForError implements ViewerInterface
+class ViewForError
 {
     use ViewerTrait;
 
     public $view_file;
 
     public $view_data;
+    
+    public $request;
+    
+    public $response;
 
     /**
      * renders $view_file with $data.
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
+     * @return $this
+     */
+    public function withRequest(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $this->request = $request;
+        $this->response = $response;
+
+        return $this;
+    }
+
+    /**
      * @param string                 $viewFile
      * @param mixed|ViewData         $viewData
-     * @return ResponseInterface
+     * @return $this
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
+    public function render( $viewFile, $viewData)
     {
         $this->view_file = $viewFile;
         $this->view_data = $viewData;
         return $this;
     }
+
+
 
     public function getViewFile()
     {
@@ -55,7 +72,7 @@ class ErrorViewException extends \Exception
 class ErrorViewTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ViewForError
+     * @var View|ViewForError
      */
     private $view;
 

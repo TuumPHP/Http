@@ -31,7 +31,7 @@ class ErrorView implements ErrorViewInterface
     /**
      * @param View $viewStream
      */
-    public function __construct(View $viewStream)
+    public function __construct($viewStream)
     {
         $this->view = $viewStream;
     }
@@ -49,7 +49,7 @@ class ErrorView implements ErrorViewInterface
      * @return static
      */
     public static function forge(
-        View $view,
+        $view,
         array $options
     ) {
         $error = new static($view);
