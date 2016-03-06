@@ -28,7 +28,11 @@ return function (Dispatcher $app, Responder $responder) {
         function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
             $post = $request->getParsedBody();
             $viewData = $responder->getViewData();
-            if (isset($post['login'])) {
+            if (isset($post['logout'])) {
+                $responder->session()->set('login.name', null);
+                $viewData->setSuccess('logged out');
+            }
+            elseif (isset($post['login'])) {
                 if ($post['login']) {
                     $responder->session()->set('login.name', $post['login']);
                     $viewData->setSuccess('logged as:' . $post['login']); // XSS!!!

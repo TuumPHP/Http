@@ -16,6 +16,7 @@
     "require-dev":{
         "zendframework/zend-diactoros": "~1.0",
         "tuum/view": "^1.0",
+        "league/plates": "3.*",
         "twig/twig": "~1.0",
         "koriym/printo": " ~1.0",
         "php-middleware/php-debug-bar": "^1.1.0"

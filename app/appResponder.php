@@ -5,11 +5,13 @@ use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\SessionStorage;
+use Tuum\Respond\Service\PlatesViewer;
 use Tuum\Respond\Service\TuumViewer;
 use Tuum\Respond\Service\TwigViewer;
 
 /**
- * @param Dispatcher             $app
+ * @param array      $config
+ * @param Dispatcher $app
  * @return Responder
  */
 return function (array $config, Dispatcher $app) {
@@ -19,6 +21,8 @@ return function (array $config, Dispatcher $app) {
      */
     if ($config['view'] === 'twig') {
         $view = TwigViewer::forge(__DIR__ . '/twigs');
+    } elseif ($config['view'] === 'plates') {
+        $view = PlatesViewer::forge(__DIR__ . '/plates');
     } else {
         $view = TuumViewer::forge(__DIR__ . '/views');
     }

@@ -1,4 +1,15 @@
+<?php
+/** @var Template $this */
+/** @var ViewHelper $view */
+
+use App\App\LoginPresenter;
+use League\Plates\Template\Template;
+use Tuum\Respond\Service\ViewHelper;
+use Tuum\View\Renderer;
+
+?>
 <!DOCTYPE html>
+<!--suppress JSUnresolvedLibraryURL -->
 <html>
 <head>
     <meta charset="UTF-8"/>
@@ -6,18 +17,20 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <!--suppress JSUnresolvedLibraryURL -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </head>
 <body>
 
 <nav id="header" class="nav navbar-inverse">
     <div class="container-fluid">
-        <!-- brand name -->
+        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">Tuum/Respond with Twig</a>
+            <a class="navbar-brand" href="/">Tuum/Respond with Plates</a>
         </div>
-        {{ viewData.call('\\App\\App\\LoginPresenter', viewData) |raw }}
+        <!-- login form -->
+        <?php echo $view->call(LoginPresenter::class); ?>
         <!-- sample menu -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
@@ -42,22 +55,21 @@
 
     <div class="col-md-12">
 
-        {% block content %} {% endblock %}
+        <?= $this->section('contents'); ?>
 
     </div>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
 
 </div>
-
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
 
 <nav id="footer" class="nav navbar-fixed-bottom navbar-default">
     <div class="container">
         <h4>Tuum/Respond.</h4>
         <p><em>Tuum</em> means 'yours' in Latin; so it happens to the same pronunciation as 'stack' in Japanese. <br/>
-            {{ viewData.request().getMethod() }}: {{ viewData.request().getUri() }}</p>
+            <?= $view->request()->getMethod() ?>: <?= $view->request()->getUri() ?></p>
         <p>&nbsp;</p>
     </div>
 </nav>

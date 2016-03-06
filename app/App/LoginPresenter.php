@@ -37,47 +37,13 @@ class LoginPresenter implements PresenterInterface
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewData)
     {
         $login = $this->responder->session()->get('login.name');
+        $viewData->setData('login', $login);
         if ($login) {
-            return $this->viewUserInfo($response, $login);
+            return $this->responder->view($request, $response)
+                ->render('layouts/UserHeaderLogIn', $viewData);
         }
 
-        return $this->viewLoginForm($response);
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @param string      $login
-     * @return ResponseInterface
-     */
-    private function viewUserInfo($response, $login)
-    {
-        $response->getBody()->write("
-            <!-- login form -->
-            <form class=\"navbar-form navbar-left\" role=\"search\" action=\"/login\" method=\"post\">
-                <div class=\"form-group\">
-                    <input type=\"text\"name=\"login\" class=\"form-control\" placeholder=\"User: {$login}\">
-                </div>
-                <button type=\"submit\" class=\"btn btn-default\">Login</button>
-            </form>
-        ");
-        return $response;
-    }
-
-    /**
-     * @param ResponseInterface      $response
-     * @return ResponseInterface
-     */
-    private function viewLoginForm($response)
-    {
-        $response->getBody()->write('
-            <!-- login form -->
-            <form class="navbar-form navbar-left" role="search" action="/login" method="post">
-                <div class="form-group">
-                    <input type="text" name="login" class="form-control" placeholder="user name">
-                </div>
-                <button type="submit" class="btn btn-default">Login</button>
-            </form>
-        ');
-        return $response;
+        return $this->responder->view($request, $response)
+            ->render('layouts/UserHeaderLoginForm');
     }
 }
