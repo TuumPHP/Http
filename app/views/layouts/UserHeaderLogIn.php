@@ -1,7 +1,13 @@
+<?php
+/** @var ViewHelper $view */
+use Tuum\Respond\Service\ViewHelper;
+
+?>
 <!-- login form -->
 <form class="navbar-form navbar-left" role="search" action="/login" method="post">
-<div class="form-group">
-    <input type="text" name="login" class="form-control" placeholder="User: <?= $view->data()->login ?>">
-</div>
-<button type="submit" class="btn btn-default">Login</button>
+    <span class="text-primary">LogIn: <strong><?= $login ?: '???' ?></strong></span>
+    <div class="form-group">
+        <input type="hidden" name="logout" value="">
+    </div>
+    <button type="submit" class="btn btn-default">Logout</button>
 </form>

@@ -134,6 +134,7 @@ class Responder
         $response  = $response ?: $this->response;
         
         // always set $responder as request attribute.
+        // ViewHelper::call method uses $responder.
         $request = Respond::withResponder($request, $this);
 
         return $responder->withRequest($request, $response);

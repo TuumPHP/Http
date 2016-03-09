@@ -37,10 +37,9 @@ class LoginPresenter implements PresenterInterface
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewData)
     {
         $login = $this->responder->session()->get('login.name');
-        $viewData->setData('login', $login);
         if ($login) {
             return $this->responder->view($request, $response)
-                ->render('layouts/UserHeaderLogIn', $viewData);
+                ->render('layouts/UserHeaderLogIn', ['login' => $login]);
         }
 
         return $this->responder->view($request, $response)

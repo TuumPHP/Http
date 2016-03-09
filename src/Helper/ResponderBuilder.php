@@ -49,7 +49,7 @@ class ResponderBuilder
     public static function withView(ViewerInterface $viewer, $errorOption = [], $content_view = null, $resolver = null)
     {
         $view  = new View($viewer, $content_view, $resolver);
-        $error = ErrorView::forge($view, $errorOption);
+        $error = ErrorView::forge($viewer, $errorOption);
 
         $self = new Responder(
             $view,

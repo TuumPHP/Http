@@ -5,12 +5,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 use Tuum\Respond\Responder\View;
 
 class ErrorView implements ErrorViewInterface
 {
     /**
-     * @var View
+     * @var ViewerInterface
      */
     private $view;
 
@@ -29,7 +30,7 @@ class ErrorView implements ErrorViewInterface
     ];
 
     /**
-     * @param View $viewStream
+     * @param ViewerInterface $viewStream
      */
     public function __construct($viewStream)
     {
@@ -44,7 +45,7 @@ class ErrorView implements ErrorViewInterface
      *   'status'  : index of http code to file name (i.e. ['code' => 'file']).
      *   'files'   : index of ile name to http code(s) (i.e. ['file' => [123, 234]]
      *
-     * @param View  $view
+     * @param ViewerInterface  $view
      * @param array $options
      * @return static
      */
@@ -95,7 +96,7 @@ class ErrorView implements ErrorViewInterface
     {
         $file = $this->findViewFromStatus($status);
 
-        $response = $this->view->withRequest($request, $response)->render($file, $viewData);
+        $response = $this->view->__invoke($request, $response, $file, $viewData);
         if ($response instanceof ResponseInterface) {
             $response = $response->withStatus($status);
         }

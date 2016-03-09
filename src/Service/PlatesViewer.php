@@ -27,6 +27,7 @@ class PlatesViewer implements ViewerInterface
     {
         $this->renderer   = $renderer;
         $this->viewHelper = $view;
+        $this->renderer->addData(['view' => $this->viewHelper]);
     }
 
     /**
@@ -74,17 +75,13 @@ class PlatesViewer implements ViewerInterface
     private function setDataView($viewHelper, $viewData)
     {
         if ($viewData instanceof ViewDataInterface) {
-            $this->renderer->addData(['view' => $viewHelper->setViewData($viewData)]);
-            $view_data = $viewData->getRawData();
+            $viewHelper->setViewData($viewData);
+            return $viewData->getRawData();
         } elseif (is_array($viewData)) {
-            $view_data = $viewData;
-        } else {
-            $view_data = [
-                'view' => $viewData
-            ];
+            return $viewData;
         }
 
-        return $view_data;
+        return [];
     }
 
 }

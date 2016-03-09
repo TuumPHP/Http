@@ -36,6 +36,7 @@ class TwigViewer implements ViewerInterface
     {
         $this->renderer   = $renderer;
         $this->viewHelper = $view;
+        $this->renderer->addGlobal('viewData', $view);
     }
 
     /**
@@ -82,9 +83,8 @@ class TwigViewer implements ViewerInterface
      */
     private function setDataView($viewHelper, $viewData)
     {
-        $view = $viewHelper->setViewData($viewData);
-        $this->renderer->addGlobal('viewData', $view);
         if ($viewData instanceof ViewDataInterface) {
+            $viewHelper->setViewData($viewData);
             return array_merge($viewData->getData(), $viewData->getRawData());
         } elseif (is_array($viewData)) {
             return $viewData;
