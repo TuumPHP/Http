@@ -2,9 +2,9 @@
 
 {% block content %}
 
-    {{ viewData.render('layouts/broadcast') | raw }}
+    {{ view.render('layouts/broadcast') | raw }}
 
-    {{ viewData.message.onlyOne|raw }}
+    {{ view.message.onlyOne|raw }}
 
     <h3>redirect with messages sample</h3>
     <ul>

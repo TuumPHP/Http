@@ -4,7 +4,7 @@
 
     <h1>File Upload</h1>
 
-    {{ viewData.message|raw }}
+    {{ view.message|raw }}
 
     <h2>Upload Form</h2>
 
@@ -15,8 +15,8 @@
 
         <div class="form-group">
 
-            {{ viewData.forms.label('file to upload', 'up')|raw }}
-            {{ viewData.forms.file('up[0]').class('form-control').id('up').width('70%')|raw }}
+            {{ view.forms.label('file to upload', 'up')|raw }}
+            {{ view.forms.file('up[0]').class('form-control').id('up').width('70%')|raw }}
 
         </div>
 

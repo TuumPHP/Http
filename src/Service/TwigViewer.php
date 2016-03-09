@@ -36,7 +36,7 @@ class TwigViewer implements ViewerInterface
     {
         $this->renderer   = $renderer;
         $this->viewHelper = $view;
-        $this->renderer->addGlobal('viewData', $view);
+        $this->renderer->addGlobal('view', $view);
     }
 
     /**
