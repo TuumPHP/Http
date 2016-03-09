@@ -1,10 +1,12 @@
 Tuum/Respond
 =========
 
-`Tuum/Respond` provides a view module (as in MVC2 architecture) to various PSR-7 based micro-frameworks, such as Slim3 and Zend-Expressive. 
+`Tuum/Respond` is a __View layer__ (as in MVC2 architecture) for various PSR-7 based micro-frameworks, 
+such as [Slim 3](http://www.slimframework.com) and [Zend-Expressive](https://zendframework.github.io/zend-expressive/).
 
-This module helps developing a traditional web site (html rendered at server) using these micro-frameworks by simplifying popular techniques, such as:
-
+It provides various methods for composing a response object, to help developing a __traditional web site__ 
+(html rendered at server) by simplifying the popular techniques, such as:
+    
 * Post-Redirect-Get pattern,
 * use of object as Presenter (or ViewModel), 
 * templates for errors (forbidden, etc.).
@@ -24,7 +26,7 @@ This module helps developing a traditional web site (html rendered at server) us
 To install `Tuum/Respond`, use the composer. 
 
 ```sh
-$ composer require "tuum/respond:^1.0"
+$ composer require "tuum/respond:^2.0"
 ```
 
 To see `Tuum/Respond` working in a sample site, use git and PHP's internal server at public folder as;
@@ -35,7 +37,7 @@ $ cd Respond
 $ git checkout 1.x
 $ composer install
 $ cd public
-$ php -S localhost:8888
+$ php -S localhost:8888 index.php
 ```
 
 and access ```localhost:8888``` by any browser. The sample site uses external bootstrap css and javascript. 
@@ -53,8 +55,9 @@ and access ```localhost:8888``` by any browser. The sample site uses external bo
 and for development, 
 
 *   [Zendframework/Zend-Diactoros](https://github.com/zendframework/zend-diactoros) as a default PSR-7 objects,
-*   [Twig](http://twig.sensiolabs.org/),
-*   [Tuum/View](https://github.com/TuumPHP/View) for rendering a PHP as a template.
+*   [League/Plates](httphttp://platesphp.com/),
+*   [Twig](http://twig.sensiolabs.org/), and maybe
+*   [Tuum/View](https://github.com/TuumPHP/View).
 
 
 Overview
@@ -78,19 +81,25 @@ $responder = ResponderBuilder::withView(
 To render a template file (using some virtual `$app`): 
 
 ```php
-// use $responder object to render index page. 
-$app->add('/' function($request, $response) use($responder) {
-    return $responder->view($request , $response)
-        ->render('index');
-});
+$app->add('/',
+    function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
+    
+        // 1. create $viewData and set success message, and
+        $viewData = $responder->getViewData()->setSuccess('Welcome!');
+    
+        // 2. render `index` template with the data. 
+        return $responder->view($request, $response)
+            ->render('index', $viewData);
+    });
 ```
 
-### Managing View Data
 
-Here's another example with some view data passed to a template. 
 
-1. Extract `$viewData` by `$responder->getViewData()`, and set a welcome message as default. 
-2. render `jump` template with the data, `$viewData`. 
+### Post-Redirect-Get Pattern
+
+A sample site at `localhost:8888/jump` shows a Post-Redirect-Get (PRG) Pattern. 
+
+The route callable simply renders `jump` template with default success message. 
 
 ```php
 $app->add('/jump',
@@ -102,57 +111,53 @@ $app->add('/jump',
     });
 ```
 
-> One of the main focus of `Tuum/Respond` is to manage the ViewData. 
-
-
-#### Post-Redirect-Get Pattern
-
-Next example is an implementation of Post-Redirect-Get pattern. 
-
-The following code redirects from `/jumper` back to the `/jump` url shown as the previous example, with some extra data to the view. 
+The page has a link to `/jumper` which is handled by the following callable.
 
 ```php
-// redirects to /jump.
 $app->add('/jumper',
     function ($request, $response) use ($responder) {
+
+        // 1. set error messages etc. to $viewData.
         $viewData = $responder->getViewData()
             ->setError('redirected back!')
             ->setInputData(['jumped' => 'redirected text'])
             ->setInputErrors(['jumped' => 'redirected error message']);
 
+        // 2. redirect back to /jump with the viewData. 
         return $responder->redirect($request, $response)
             ->toPath('jump', $viewData);
     });
 ```
 
-The `$view` data is saved as session's flash data, the retrieved in the subsequent request by `$responder->getViewData()` method. 
+The `$viewData` data is saved as session's flash data, 
+then retrieved in the subsequent request by `$responder->getViewData()` method. 
 
 
 ### Using Presenter Callable
 
-Some complex page deserves own class to manage a view. `Tuum/Respond` provides a presenter object/callables that is dedicated to provide a view. 
+Some complex page deserves a dedicated object to manage a view. 
+`Tuum/Respond` provides a presenter object/callable that is dedicated to provide a view. 
+
+A presenter class must implements `PresenterInterface`; as such.
 
 ```php
-class PresentController {
-    /** @var Responder */
-    private $responder;
-    function present($request, $response) {
-        return $this->responder->view($request, $response)
-            ->call(PresentViewer::class);
-    }
-}
-
 class PresentViewer implements PresenterInterface {
     /** @var Responder */
     private $responder;
     function __invoke($request, $response, $viewData) {
         return $this->responder->view($request, $response)
-        ->render('some view');
+        ->render('some view', $viewData);
     }
 }
 ```
 
-The `$responder` can have a resolver callable to instantiate an object as a presenter, a callable that implements `PresenterInterface`. 
+Then, call the presenter, as: 
+
+```php
+return $responder->view($request, $response)->call(PresentViewer::class);
+```
+
+It is possible to call a presenter inside a template. 
 
 
 Templates and Form Helpers

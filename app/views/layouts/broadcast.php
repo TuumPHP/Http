@@ -6,21 +6,28 @@
         border: 2px solid #cccccc;
         border-radius: 10px;
     }
+    div li {
+        line-height: 1em;
+    }
 </style>
 
 <div class="broadcast">
 
+    <h1>Welcome to Tuum/Respond</h1>
 
-    <h1>Tuum/Respond</h1>
+    <p><em>Tuum/Respond</em> is a <strong>View layer</strong> (as in MVC2 architecture) for various PSR-7 based micro-frameworks,
+        such as <a href="http://www.slimframework.com/docs/" >Slim3</a> and <a href="https://zendframework.github.io/zend-expressive/" >Zend-Expressive</a>.
 
-    <p>A plug-in responder module for composing PSR-7 responses. </p>
-    <p>This module provides <strong>view functions (as in MVC concept)</strong>
-        to implement Post-Redirect-Get pattern and similar techniques.
-        Many of the PSR-7 based micro-frameworks would become suitable for
-        developing an ordinary web site.</p>
+        It provides various methods for composing a response object, to help developing a <strong>traditional web site</strong>
+        (html rendered at server) by simplifying the popular techniques, such as:</p>
+
     <ul>
-        <li>PSR-1, PSR-2, PSR-4, and PSR-7</li>
-        <li>MIT License</li>
+        <li>Post-Redirect-Get pattern,</li>
+        <li>use of object as Presenter (or ViewModel),</li>
+        <li>templates for errors (forbidden, etc.).</li>
     </ul>
+
+    <p><strong>PSR:</strong> PSR-1, PSR-2, PSR-4, and PSR-7<br/>
+        <strong>License:</strong> MIT License</p>
 
 </div>

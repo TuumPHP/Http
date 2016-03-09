@@ -68,7 +68,7 @@ use Tuum\View\Renderer;
 <nav id="footer" class="nav navbar-fixed-bottom navbar-default">
     <div class="container">
         <h4>Tuum/Respond.</h4>
-        <p><em>Tuum</em> means 'yours' in Latin; so it happens to the same pronunciation as 'stack' in Japanese. <br/>
+        <p><em>Tuum</em> means 'yours' in Latin. <br/>
             <?= $view->request()->getMethod() ?>: <?= $view->request()->getUri() ?></p>
         <p>&nbsp;</p>
     </div>
