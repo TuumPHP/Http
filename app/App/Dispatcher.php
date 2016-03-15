@@ -44,9 +44,9 @@ class Dispatcher
     {
         $pathInfo = ReqAttr::getPathInfo($request);
         foreach ($this->routes as $path => $app) {
-            if ($path === $pathInfo) {
+            if ($args = $this->match($path, $pathInfo)) {
                 $app = $this->resolve($app);
-                return $app($request, $response);
+                return $app($request, $response, $args);
             }
         }
         return null;
@@ -84,5 +84,18 @@ class Dispatcher
     public function set($key, $service)
     {
         $this->container[$key] = $service;
+    }
+
+    /**
+     * @param string $path
+     * @param string $pathInfo
+     * @return bool|array
+     */
+    private function match($path, $pathInfo)
+    {
+        if (preg_match("!^{$path}$!", $pathInfo, $matched)) {
+            return $matched;
+        }
+        return false;
     }
 }

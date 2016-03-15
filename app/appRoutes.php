@@ -1,6 +1,7 @@
 <?php
 
 use App\App\Dispatcher;
+use App\App\DocumentMap;
 use App\App\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
@@ -113,5 +114,7 @@ return function (Dispatcher $app, Responder $responder) {
             return Respond::view($request, $response)->render('forms', $viewData);
         });
 
+    $app->add('/docs/(?P<pathInfo>.*)', DocumentMap::class);
+    
     return $app;
 };
