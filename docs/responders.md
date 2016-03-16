@@ -1,15 +1,30 @@
 Responders
 ==========
 
-Also, there is `session` to help manage sessions.
+There are `view`, `error`, and `redirect` responders. 
+
+```php
+$responder = new Responder($view, $redirect, $error);
+```
+
+You can access to the responder with `$request` and `$response` object, 
+
+```php
+$view     = $responder->view($request, $response);
+$redirect = $responder->redirect($request, $response);
+$error    = $responder->error($request, $response);
+```
+
+There is also `session` to help manage sessions. 
+
+#### construction helpers
+
+Since each of the responder also is dependent on other object (called services) 
+and options, there is a `ResponderBuilder` class to help construct a Responder. 
 
 
-Responders
+View, Error, and Redirect
 ----------
-
-There are 3 types of responders, `view`, `redirect`, and `error`, each of which specialized
-to compose a response object in its own way.
-
 
 ### View Responder
 
@@ -17,60 +32,110 @@ to compose a response object in its own way.
 
 
 ```php
-$responder->view($request)->asView('template/filename'); // renders a template file.
-$responder->view($request)->asText('Hello World'); // returns text/plain.
-$responder->view($request)->asJson(['Hello' => 'World']); // returns text/json.
-$responder->view($request)->asHtml('<h1>Hello World</h1>'); // returns as text/html.
-$responder->view($request)->asDownload($fp, 'some.dat'); // binary for download.
-$responder->view($request)->asFileContents('tuum.pdf', 'application/pdf'); // reads the file and sends as mime type.
-$responder->view($request)->asContent('<h1>My Content</h1>'); // renders the text inside a contents template file.
-$responder->view($request)->call($presenter);
+$view = $responder->view($request, $response);
+$view->render('template', $viewData);  // renders a template file.
+$view->call($presenter, $viewData);    // call a presenter, object or class name. 
 ```
 
-to use `asContent` method, specify a template file name for rendering a content as second argument of the constructor:
+to use `call` method, the `$presenter` must be;
+
+*   an object implementing `PresenterInterface`, or
+*   a class name implementing PresenterInterface if resolver is given.
+
+
+There are some useful method to return a response. 
 
 ```php
-new View($view, 'contet-file-name');
+$view = $responder->view($request, $response);
+$view->asText('Hello World');        // returns text/plain.
+$view->asJson(['Hello' => 'World']); // returns text/json.
+$view->asHtml('<h1>Hello</h1>');     // returns as text/html.
+$view->asDownload($fp, 'some.dat');  // binary for download.
+$view->asFileContents('tuum.pdf', 'application/pdf'); // reads the file and sends as mime type.
+$view->asContent('<h1>My Content</h1>'); // renders the text inside a contents template file.
 ```
 
-to use `call` method, the `$presenter` is;
-
-*   an object implementing `ViewerInterface`, or
-*   a callable with argument same as the `ViewerInterface::withView`.
+* to use `asContent` method, specify a template file name for rendering a content. 
 
 
-### Redirect Responder
+#### construction
 
-The `Redirect` responder creates redirect responce to uri, path, base-path, or referrer.
+`View`'s constructor takes 3 arguments: ViewerInterface object, content file name, and a resolver. 
 
 ```php
-$responder->redirect($request)->toAbsoluteUri(
-$request->getUri()->withPath('jump/to')
-);
-$responder->redirect($request)->toPath('jump/to');
-$responder->redirect($request)->toBasePath('to');
-$responder->redirect($request)->toReferrer();
+new View(
+    $viewer, 
+    'content-file',
+    $resolver);
 ```
 
-to add queries,
+* `$viewer` is an object implementing `ViewerInterface`.
+* 'content-file' is a template to render content.
+* `$resolver` is a invokable object to instantiate a class name (i.e some container). 
 
-```php
-$responder->redirect($request)
-->withQuery('some=value')
-->withQuery(['more'=>'array'])
-->toPath('with/query');
-```
 
 ### Error Responder
 
 The `Error` responder renders a template file according to the http status code
 
 ```php
-$responder->error($request)->forbidden();     // 403: access denied
-$responder->error($request)->unauthorized();  // 401: unauthorized
-$responder->error($request)->notFound();      // 404: file not found
-$responder->error($request)->asView($status); // error $status
+$error = $responder->error($request, $response);
+$error->forbidden();     // 403: access denied
+$error->unauthorized();  // 401: unauthorized
+$error->notFound();      // 404: file not found
+$error->asView($status, $viewData); // error $status
 ```
+
+#### construction
+
+```php
+$error = new Error($errorView);
+```
+
+where `$errorView` is an object implementing `ErrorViewInterface`. 
+
+
+#### add new method
+
+You should be able to add new error method,
+
+```php
+$error->methodStatus[
+    'teaPot'  => 418,
+    'illegal' => 451,
+];
+```
+
+### Redirect Responder
+
+The `Redirect` responder creates redirect response to uri, path, base-path, or referrer.
+
+```php
+$redirect = $responder->redirect($request, $response);
+$redirect->toAbsoluteUri($request->getUri()->withPath('jump/to'));
+$redirect->toPath('jump/to');
+$redirect->toBasePath('to');
+$redirect->toReferrer();
+```
+
+to add queries,
+
+```php
+$redirect
+    ->withQuery('some=value')
+    ->withQuery(['more'=>'array'])
+    ->toPath('with/query');
+```
+
+#### construction
+
+`Redirect` does not have any dependency. 
+
+```php
+$redirect = new Redirect();
+```
+
+
 
 Other Objects
 -------------
@@ -80,13 +145,22 @@ Other Objects
 The `SessionStorageInterface` object is not a responder but managed as part of Responder object.
 
 ```php
-$responder->session($request)->set($key, $value);
-$responder->session($request)->get($key);
-$responder->session($request)->setFlash($key, $value);
-$responder->session($request)->getFlash($key, $value);
-$responder->session($request)->getFlashNext($key);
-$responder->session($request)->validateToken($value);
-$responder->session($request)->getToken();
+$responder->session()->set($key, $value);
+$responder->session()->get($key);
+$responder->session()->setFlash($key, $value);
+$responder->session()->getFlash($key, $value);
+$responder->session()->getFlashNext($key);
+$responder->session()->validateToken($value);
+$responder->session()->getToken();
+```
+
+> `Redirect` responder uses the session to store $viewData in flash using `setFlash` method, and 
+> retrieved in `getViewData` method. 
+
+Set `session` in `$responder` using `withSession` method.  
+
+```php
+$responder = $responder->withSession(SessionStorage::forge('app'));
 ```
 
 
@@ -103,13 +177,12 @@ The `$responder` object is set as an attribute of the `$request` object, and acc
 
 ```php
 $app->get('/jump', function($request, $response) {
-return Respond::view($request, $response)
-->asView('jump');
+    return Respond::view($request, $response)
+        ->asView('jump');
 });
 ```
 
-
-You can access the responder, or each of resopnders as:
+You can access the responder, or each of responders as:
 
 ```php
 $responder = Resopnd::getResponder($request);
@@ -119,3 +192,15 @@ $error     = Resopnd::error($request, $response);
 $session   = Resopnd::session($request);
 ```
 
+### Response Object
+
+It is possible, but not recommended, to set `$response` object in `$responder` 
+to omit when calling responders. 
+
+```php
+$responder = $responder->withResponse($response);
+return $responder->redirect($request)->back();
+```
+
+The `$response` is an immutable object; the response object maybe an old one 
+when used in later in the code. 
