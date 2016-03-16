@@ -50,7 +50,9 @@ return function (Dispatcher $app, Responder $responder) {
     $app->add('/jump',
         function ($request, $response) use ($responder) {
             $viewData = $responder->getViewData()
-                ->setSuccess('try jump to another URL. ');
+                ->setSuccess('try jump to another URL. ')
+                ->setData('jumped', 'text in control')
+                ->setData('date', (new DateTime('now'))->format('Y-m-d'));
             return $responder->view($request, $response)
                 ->render('jump', $viewData);
         });

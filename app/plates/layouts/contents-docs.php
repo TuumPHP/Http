@@ -12,12 +12,17 @@ $this->layout('layouts/layout', ['view' => $view]);
 <?php $this->start('contents'); ?>
 
 <div class="col-md-3">
-    <h3>Documents</h3>
+    <h4>Getting Started</h4>
     <ul>
         <li><a href="/docs/introduction" >Introduction</a></li>
         <li><a href="/docs/samples" >Sample Codes</a></li>
         <li><a href="/docs/structure" >Directory Structure</a></li>
-        <li><a href="/docs/templates" >Template and Helpers</a></li>
+    </ul>
+    
+    <h4>Details</h4>
+    <ul>
+        <li><a href="/docs/responders" >Responders</a></li>
+        <li><a href="/docs/templates" >Template and Helpers</a></li>     
     </ul>
 </div>
 

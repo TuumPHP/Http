@@ -20,11 +20,11 @@ return function (array $config, Dispatcher $app) {
      * this is the view for template.
      */
     if ($config['view'] === 'twig') {
-        $view = TwigViewer::forge(__DIR__ . '/twigs');
+        $viewer = TwigViewer::forge(__DIR__ . '/twigs');
     } elseif ($config['view'] === 'plates') {
-        $view = PlatesViewer::forge(__DIR__ . '/plates');
+        $viewer = PlatesViewer::forge(__DIR__ . '/plates');
     } else {
-        $view = TuumViewer::forge(__DIR__ . '/views');
+        $viewer = TuumViewer::forge(__DIR__ . '/views');
     }
 
     /**
@@ -32,7 +32,7 @@ return function (array $config, Dispatcher $app) {
      */
     $session   = SessionStorage::forge('sample');
     $responder = ResponderBuilder::withView(
-        $view,
+        $viewer,
         [
             'default' => 'errors/error',
             'status'  => [

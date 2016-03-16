@@ -27,7 +27,7 @@ $forms = $view->forms()->withClass('form-control');
     <?=
     $forms->formGroup(
         $forms->label('some text here:', 'jumped'),
-        $forms->text('jumper', 'original text')->id(),
+        $forms->text('jumper', $view->data->raw('jumped'))->id(),
         $view->errors->p('jumped')
     )->class($view->errors->exists('jumped') ? 'has-error' : null);
     ?>

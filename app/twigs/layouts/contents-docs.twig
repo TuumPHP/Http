@@ -1,0 +1,26 @@
+{% extends "layouts/layout.twig" %}
+
+{% block content %}
+
+    <div class="col-md-3">
+        <br/>
+        <h4>Getting Started</h4>
+        <ul>
+            <li><a href="/docs/introduction" >Introduction</a></li>
+            <li><a href="/docs/samples" >Sample Codes</a></li>
+            <li><a href="/docs/structure" >Directory Structure</a></li>
+        </ul>
+
+        <h4>Details</h4>
+        <ul>
+            <li><a href="/docs/templates" >Template and Helpers</a></li>
+            <li><a href="/docs/responders" >Responders</a></li>
+        </ul>
+    </div>
+
+    <div class="col-md-9">
+        {{ contents|raw }}
+    </div>
+
+
+{% endblock %}
