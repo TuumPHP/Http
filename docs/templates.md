@@ -25,6 +25,44 @@ For `Twig`, the ViewData is passed as `view`.
 {{ view.message | raw }}
 ```
 
+### Sample Form Template
+
+Following shows a sample bootstrap form element in Twig. 
+
+```html
+<form method="post" action="jumper">
+    <div class="form-group{% if view.errors.exists('jumped') %} has-error{% endif %}">
+        <label for="jumped" >
+            some date:
+            <input type="text" id="jumped" name="jumped" 
+                value="{{ view.inputs.get('jumped', jump) }}" class="form-control" />
+        </label>
+        {{ view.errors.p('jumped')|raw }}
+    </div>
+</form>
+```
+
+The first if statement sets div with 'has-error' class if error exists for 'jumped' value. 
+
+```html
+<div class="form-group{% if view.errors.exists('jumped') %} has-error{% endif %}">
+```
+
+The value of the input element is set to `jumped` value in `ViewData` set in a controller or 
+presenter, but can be overwritten by old input value if it exists. 
+
+```html
+<input type="text" id="jumped" name="jumped" 
+    value="{{ view.inputs.get('jumped', jumped) }}" class="form-control" />
+```
+
+The last statement shows errors in `<p class="text-danger">...</p>` if error exists. 
+
+```html
+{{ view.errors.p('jumped')|raw }}
+```
+
+
 Data Helper
 ----
 
@@ -156,42 +194,68 @@ or, only one most severe message, as,
 echo $view->message->onlyOne();
 ```
 
+Other Features
+-----
 
-Sample Templates
----------
+### Form Helper
 
-Following shows a sample Twig code to construct a form element for bootstrap using the `ViewHelper`.
-
-```html
-<form method="post" action="jumper">
-    <div class="form-group{% if view.errors.exists('jumped') %} has-error{% endif %}">
-        <label for="jumped" >
-            some date:
-            <input type="text" id="jumped" name="jumped" 
-                value="{{ view.inputs.get('jumped', jump) }}" class="form-control" />
-        </label>
-        {{ view.errors.p('jumped')|raw }}
-    </div>
-</form>
+Use `Form` helper to create HTML forms. 
+ 
+```php
+<?php 
+/** @var ViewHelper $view */
+$forms = $view->forms;
+?>...<?=
+$forms->formGroup(
+    $forms->label('some text here:', 'jumped'),
+    $forms->text('jumper', $view->data->raw('jumped'))->id(),
+    $view->errors->p('jumped')
+)->class($view->errors->exists('jumped') ? 'has-error' : null);
+?>
 ```
 
-The first if statement sets div with 'has-error' class if error exists for 'jumped' value. 
+The `$forms` contains `$inputs` object to be used for constructing a value for an input tag. 
+
+### Calling Presenter
+
+To call a presenter from inside a template, use `call` method in `ViewHelper`. 
 
 ```html
-<div class="form-group{% if view.errors.exists('jumped') %} has-error{% endif %}">
+{{ view->call('MyPresenter') | raw }}
 ```
 
-The value of the input element is set to `jumped` value in `ViewData` set in a controller or 
-presenter, but can be overwritten by `inputsData` if it exists. 
+### Rendering Another Template
+
+It is possible to render another template using `ViewHelper`;
 
 ```html
-<input type="text" id="jumped" name="jumped" 
-    value="{{ view.inputs.get('jumped', jumped) }}" class="form-control" />
+{{ view->render('AnotherView') | raw }}
 ```
 
-The last statement shows errors in `<p class="text-danger">...</p>` if error exists. 
+When using `render` method, the same `ViewHelper` is passed to the view, 
+unless argument is specified, 
 
 ```html
-{{ view.errors.p('jumped')|raw }}
+{{ view->render('AnotherView2', ['some' => 'value']) | raw }}
 ```
 
+### Requests
+
+#### get request object
+
+```php
+$request = $view->request(); // get ServerRequestInterface object! 
+```
+
+#### get request attribute
+
+```php
+$value = $view->attribute('key', 'default value'); // get attribute of the $request
+```
+
+#### get URI object
+
+```php
+$uri  = $view->uri(); // get URI object in $request.
+$path = $view->uri()->getPath(); // get request path. 
+```
