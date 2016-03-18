@@ -183,3 +183,40 @@ $response = $next($request, $response); // call next
 $session->commit();
 ```
 
+
+Helper Classes
+-------
+
+Helper classes helps to manage PSR-7 http message objects. 
+
+
+### ReqBuilder
+
+*   `createFromPath`: static method to construct a request object. 
+*   `createFromGlobal`: another static method that constructs a request object. 
+
+
+### ReqAttr
+
+public static methods. 
+
+*   `withBasePath` / `getBasePath` / `getPathInfo`: manage a base path. pathInfo is the remaining of the entire path minus the base path. 
+*   `withReferrer` / `getReferrer`: getReferer returns a path set by withReferrer, or `$_SEVER['HTTP_REFERER']`. 
+
+
+### ResponseHelper
+
+*	`isOK(ResponseInterface $response): bool`: 
+* 	`isRedirect(ResponseInterface $response): bool`: 
+* 	`isInformational(ResponseInterface $response): bool`: 
+* 	`isSuccess(ResponseInterface $response): bool`: 
+* 	`isRedirection(ResponseInterface $response): bool`: 
+* 	`isClientError(ResponseInterface $response): bool`: 
+* 	`isServerError(ResponseInterface $response): bool`: 
+* 	`isError(ResponseInterface $response): bool`: 
+*  `getLocation(ResponseInterface $response): string`:
+*  `fill(ResponseInterface $response, string|resource $input, int $status, array $header): ResponseInterface `: 
+
+### Referrer
+
+manages referrer. 

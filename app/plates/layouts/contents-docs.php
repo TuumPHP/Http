@@ -12,6 +12,8 @@ $this->layout('layouts/layout', ['view' => $view]);
 <?php $this->start('contents'); ?>
 
 <div class="col-md-3">
+    <br/>
+    <h4><a href="index" >Document Top</a></h4>
     <h4>Getting Started</h4>
     <ul>
         <li><a href="/docs/introduction" >Introduction</a></li>
@@ -21,8 +23,9 @@ $this->layout('layouts/layout', ['view' => $view]);
     
     <h4>Details</h4>
     <ul>
+        <li><a href="/docs/templates" >Template and Helpers</a></li>
         <li><a href="/docs/responders" >Responders</a></li>
-        <li><a href="/docs/templates" >Template and Helpers</a></li>     
+        <li><a href="/docs/services" >Services</a></li>
     </ul>
 </div>
 

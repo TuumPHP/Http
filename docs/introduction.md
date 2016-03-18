@@ -20,10 +20,7 @@ It helps to compose a response object for developing a __traditional web site__
 *   PSR-1, PSR-2, PSR-4, and PSR-7.
 
 
-Installation and Demo
----------------------
-
-### installation
+### Installation
 
 To install `Tuum/Respond`, use the composer. 
 
@@ -31,7 +28,7 @@ To install `Tuum/Respond`, use the composer.
 $ composer require "tuum/respond:^2.0"
 ```
 
-### demo
+### Demo
 
 To see `Tuum/Respond` working in a sample site, use git and PHP's internal server at public folder as;
 

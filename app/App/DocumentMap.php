@@ -20,6 +20,11 @@ class DocumentMap
      */
     private $responder;
 
+    /**
+     * @var string
+     */
+    public $index_file = 'index';
+
     public function __construct(FileMap $mapper, $responder)
     {
         $this->mapper    = $mapper;
@@ -49,7 +54,7 @@ class DocumentMap
      */
     public function __invoke($request, $response, $args)
     {
-        $path = isset($args['pathInfo']) ? $args['pathInfo'] : '';
+        $path = isset($args['pathInfo']) && $args['pathInfo'] ? $args['pathInfo'] : $this->index_file;
         $info = $this->mapper->render($path);
         if (!$info->found()) {
             return $this->responder->error($request, $response)->notFound();

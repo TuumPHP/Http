@@ -1,4 +1,4 @@
-ViewData and Helpers
+Template and Helpers
 ====================
 
 The `ViewData` processed in controller or presenter is passed to template as `ViewHelper` object, 

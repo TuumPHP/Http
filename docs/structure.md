@@ -87,7 +87,7 @@ $error = ErrorView::forge(
 ```
 
 
-Building $responder
+Building `$responder`
 ----
 
 then, build `$responder` using the `$viewer` and `$error`, such as
