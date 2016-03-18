@@ -89,9 +89,9 @@ return function (Dispatcher $app, Responder $responder) {
         });
 
     $app->add('/objGraph',
-        function (ServerRequestInterface $request) {
-            echo (new Printo(Respond::getResponder($request)));
-            exit;
+        function (ServerRequestInterface $request, $response) {
+            return Respond::view($request, $response)
+                ->asContents((new Printo(Respond::getResponder($request))));
         });
 
     /**

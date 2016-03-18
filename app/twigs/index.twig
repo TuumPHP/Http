@@ -6,32 +6,70 @@
 
     {{ view.message.onlyOne|raw }}
 
-    <h3>redirect with messages sample</h3>
-    <ul>
-        <li><a href="jump">jump!!!</a></li>
-    </ul>
+    <style type="text/css">
+        li {
+            margin-top: .5em;
+        }
+        li>a {
+            font-weight:bold;
+        }
+    </style>
 
-    <h3>file upload sample</h3>
-    <ul>
-        <li><a href="upload">upload!!!</a></li>
-    </ul>
+    <div class="col-md-6">
 
-    <h3>error samples</h3>
+        <h3>Documents</h3>
 
-    <ul>
-        <li><a href="not-such-file">not found</a></li>
-        <li><a href="throw">catch exception</a></li>
-    </ul>
+        <p>more about Tuum/Respond</p>
 
-    <h3>other samples</h3>
+        <ul>
+            <li><h4><a href="/docs/index" >Document Top</a></h4></li>
+            <li><h4>Getting Started</h4>
+                <ul>
+                    <li><a href="/docs/introduction" >Introduction</a></li>
+                    <li><a href="/docs/samples" >Sample Codes</a></li>
+                    <li><a href="/docs/structure" >Directory Structure</a></li>
+                </ul></li>
+            <li>    <h4>Details</h4>
+                <ul>
+                    <li><a href="/docs/templates" >Template and Helpers</a></li>
+                    <li><a href="/docs/responders" >Responders</a></li>
+                    <li><a href="/docs/services" >Services</a></li>
+                </ul>
+            </li>
+        </ul>
 
-    <dl class="dl-horizontal">
+    </div>
 
-        <dt><a href="content">content</a></dt>
-        <dd>contains only main body. </dd>
+    <div class="col-md-6">
 
-        <dt><a href="objGraph">object graph</a></dt>
-        <dd>object graph of $responder object using <a href="https://github.com/koriym/print_o" >koriym/printo</a>.</dd>
+        <h3>samples</h3>
 
-    </dl>
+        <ul>
+            <li><a href="jump">form and jump</a><br/>
+                form and post-redirect-get pattern sample</li>
+
+            <li><a href="upload">file upload</a><br/>
+                file upload sample using presentation object. </li>
+        </ul>
+
+        <h3>error samples</h3>
+
+        <ul>
+            <li><a href="not-such-file">not found</a><br/>
+                case for 404 not-found error.</li>
+            <li><a href="throw">catch exception</a><br/>
+                case for catching exception. </li>
+        </ul>
+
+        <h3>more samples</h3>
+
+        <ul>
+            <li><a href="content">content</a><br/>
+                a simple html content sample. </li>
+            <li><a href="objGraph">object graph</a><br/>
+                view object graph of $responder using koriym/printo</li>
+        </ul>
+
+    </div>
+
 {% endblock %}
