@@ -7,6 +7,13 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiEmitter;
 
+if (php_sapi_name() == 'cli-server') {
+    $file = __DIR__ . '/' . $_SERVER["REQUEST_URI"];
+    if (file_exists($file) && is_file($file)) {
+        return false;
+    }
+}
+
 /** @var Closure $app */
 
 include dirname(__DIR__) . "/app/autoload.php";

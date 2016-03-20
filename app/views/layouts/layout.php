@@ -14,6 +14,7 @@ use Tuum\View\Renderer;
     <meta charset="UTF-8"/>
     <title>Tuum/Respond Sample</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/demo.css">
 
     <!-- Latest compiled and minified JavaScript -->
     <!--suppress JSUnresolvedLibraryURL -->

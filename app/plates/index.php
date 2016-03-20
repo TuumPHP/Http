@@ -11,15 +11,6 @@ $this->layout('layouts/layout');
 
 <?php $this->start('contents'); ?>
 
-<style type="text/css">
-    li {
-        margin-top: .5em;
-    }
-    li>a {
-        font-weight:bold;
-    }
-</style>
-
 <?= $view->render('layouts/broadcast'); ?>
 
 <?= $view->message(); ?>
