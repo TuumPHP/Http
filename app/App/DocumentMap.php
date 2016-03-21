@@ -23,7 +23,7 @@ class DocumentMap
     /**
      * @var string
      */
-    public $index_file = 'index';
+    public $index_file = 'readme';
 
     public function __construct(FileMap $mapper, $responder)
     {

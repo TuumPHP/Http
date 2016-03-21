@@ -15,7 +15,6 @@ $this->layout('layouts/layout');
 
 <?= $view->message(); ?>
 
-
 <div class="col-md-6">
 
     <h3>Documents</h3>
@@ -23,7 +22,7 @@ $this->layout('layouts/layout');
     <p>more about Tuum/Respond</p>
 
     <ul>
-        <li><h4><a href="/docs/index" >Document Top</a></h4></li>
+        <li><h4><a href="/docs/" >Document Top</a></h4></li>
         <li><h4>Getting Started</h4>
             <ul>
                 <li><a href="/docs/introduction" >Introduction</a></li>

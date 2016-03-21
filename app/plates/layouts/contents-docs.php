@@ -13,7 +13,7 @@ $this->layout('layouts/layout', ['view' => $view]);
 
 <div class="col-md-3">
     <br/>
-    <h4><a href="index" >Document Top</a></h4>
+    <h4><a href="/docs/" >Document Top</a></h4>
     <h4>Getting Started</h4>
     <ul>
         <li><a href="/docs/introduction" >Introduction</a></li>
