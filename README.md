@@ -1,10 +1,11 @@
 Tuum/Respond
 =========
 
-`Tuum/Respond` is a framework agnostic __View module__ (as in MVC2 architecture) for various PSR-7 based micro-frameworks, 
-such as [Slim 3](http://www.slimframework.com) and [Zend-Expressive](https://zendframework.github.io/zend-expressive/).
+`Tuum/Respond` is a framework agnostic __View module__ for PSR-7 based micro-frameworks. 
+It is intended to be used with frameworks, such as [Slim 3](http://www.slimframework.com) 
+and [Zend-Expressive](https://zendframework.github.io/zend-expressive/).
 
-It provides convenient functions for composing a response object, to help developing a __traditional web site__ 
+The module supplements these micro-framework in developing a __traditional web site__ 
 (html rendered at server) by simplifying the popular techniques, such as:
 
 * Post-Redirect-Get pattern,
@@ -40,7 +41,14 @@ $ cd public
 $ php -S localhost:8888 index.php
 ```
 
-and access ```localhost:8888``` by any browser. The sample site uses external bootstrap css and javascript. 
+and access ```localhost:8888``` by any browser. This demo uses Plates as a template engine. 
+To see the demo using Twig, run; 
+
+```sh
+$ php -S localhost:8888 twig.php
+```
+
+The demo uses external bootstrap css and javascript. 
 
 ### Dependencies
 
