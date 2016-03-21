@@ -3,8 +3,8 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Form\DataView;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
 
@@ -18,26 +18,25 @@ use Twig_Loader_Filesystem;
  */
 class TwigViewer implements ViewerInterface
 {
-    use ViewerTrait;
-
     /**
      * @var Twig_Environment
      */
     private $renderer;
 
     /**
-     * @var null|DataView
+     * @var ViewHelper
      */
-    private $dataView;
+    private $viewHelper;
 
     /**
      * @param Twig_Environment $renderer
-     * @param null|DataView    $view
+     * @param null|ViewHelper  $view
      */
     public function __construct($renderer, $view = null)
     {
-        $this->renderer = $renderer;
-        $this->dataView = $view;
+        $this->renderer   = $renderer;
+        $this->viewHelper = $view;
+        $this->renderer->addGlobal('view', $view);
     }
 
     /**
@@ -54,41 +53,43 @@ class TwigViewer implements ViewerInterface
             $twig = call_user_func($callable, $twig);
         }
 
-        return new static($twig, new DataView());
+        return new static($twig, ViewHelper::forge());
     }
 
     /**
      * renders $view and returns a new $response.
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param ViewData               $view
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param string                  $viewFile
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
-        $view_file = $view->getViewFile();
-        $view_file = (substr($view_file, -4) === '.twig') ?: $view_file . '.twig';
-        $view_data = $this->setDataView($view);
+        $viewHelper = $this->viewHelper->start($request, $response);
+        $viewFile   = (substr($viewFile, -4) === '.twig') ?: $viewFile . '.twig';
+        $view_data  = $this->setDataView($viewHelper, $viewData);
 
-        $response->getBody()->write($this->renderer->render($view_file, $view_data));
+        $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
         return $response;
     }
 
     /**
-     * @param ViewData $data
+     * @param ViewHelper        $viewHelper
+     * @param ViewDataInterface $viewData
      * @return array
      */
-    private function setDataView($data)
+    private function setDataView($viewHelper, $viewData)
     {
-        if (!$data) {
-            return [];
+        if ($viewData instanceof ViewDataInterface) {
+            $viewHelper->setViewData($viewData);
+            return array_merge($viewData->getData(), $viewData->getRawData());
+        } elseif (is_array($viewData)) {
+            return $viewData;
         }
-        $view = $this->forgeDataView($data, $this->dataView);
-        $this->renderer->addGlobal('viewData', $view);
-        $view_data = $data->getData();
 
-        return $view_data;
+        return [];
     }
 }

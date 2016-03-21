@@ -1,24 +1,17 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use Tuum\Form\DataView;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 
 trait ViewerTrait
 {
     /**
-     * @param ViewData $data
-     * @param DataView $view
-     * @return DataView
+     * @param ViewDataInterface      $viewData
+     * @param ViewHelper             $view
+     * @return ViewHelper
      */
-    protected function forgeDataView(ViewData $data, $view = null)
+    protected function forgeDataView($viewData = null, $view = null)
     {
-        $view = $view ?: new DataView();
-        $view->setData($data->getData());
-        $view->setErrors($data->getInputErrors());
-        $view->setInputs($data->getInputData());
-        $view->setMessage($data->getMessages());
-
-        return $view;
+        return $view->setViewData($viewData);
     }
 }

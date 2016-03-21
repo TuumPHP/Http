@@ -44,34 +44,9 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function withViewData_sets_viewData_which_is_passed_to_subsequent_responders()
+    function setting_viewDataForger_returns_other_object()
     {
-        $res = $this->responder->withViewData(function(ViewData $view) {
-            $view->setData('test', 'responder-tested');
-            return $view;
-        });
-        $request  = ReqBuilder::createFromPath('/base/path');
-        $response = $res->view($request)->asView('test/responder');
-        /** @var LocalView $view */
-        $this->assertEquals('responder-tested', $response->getBody()->__toString());
-        $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
-    }
-
-    /**
-     * @test
-     */
-    function View_withViewData_sets_viewData()
-    {
-        $request  = ReqBuilder::createFromPath('/base/path');
-        $response = $this->responder
-            ->view($request)
-            ->withViewData(function(ViewData $view) {
-                $view->setData('test', 'responder-tested');
-            return $view;
-            })
-            ->asView('test/responder');
-        /** @var LocalView $view */
-        $this->assertEquals('responder-tested', $response->getBody()->__toString());
-        $this->assertEquals('test/responder', $response->getHeaderLine('ViewFile'));
+        $res = $this->responder->withViewDataForger(function() {return 'forged';});
+        $this->assertEquals('forged', $res->getViewData());
     }
 }

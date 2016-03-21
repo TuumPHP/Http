@@ -1,65 +1,77 @@
 <?php
 
 use App\App\Dispatcher;
+use App\App\DocumentMap;
 use App\App\UploadController;
+use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\ViewData;
-use Koriym\Printo\Printo;
 
-/**
- * set routes and dispatch.
- *
- * @param ServerRequestInterface $request
- * @param Responder              $responder
- * @return ResponseInterface
- */
-return function ($request, $responder) {
-
-    $app = new Dispatcher();
+return function (Dispatcher $app, Responder $responder) {
 
     /**
      * for top page /
      */
     $app->add('/',
-        function (ServerRequestInterface $request) use($responder) {
-            return $responder->view($request)
-                ->asView('index');
+        function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
+            $viewData = $responder->getViewData();
+            if (!$responder->session()->get('first.time')) {
+                $viewData->setSuccess('Thanks for downloading Tuum/Respond.');
+                $responder->session()->set('first.time', true);
+            }
+            return $responder->view($request, $response)
+                ->render('index', $viewData);
+        });
+
+    $app->add('/login',
+        function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
+            $post = $request->getParsedBody();
+            $viewData = $responder->getViewData();
+            if (isset($post['logout'])) {
+                $responder->session()->set('login.name', null);
+                $viewData->setSuccess('logged out');
+            }
+            elseif (isset($post['login'])) {
+                if ($post['login']) {
+                    $responder->session()->set('login.name', $post['login']);
+                    $viewData->setSuccess('logged as:' . $post['login']); // XSS!!!
+                    return $responder->redirect($request, $response)->toPath('/', $viewData);
+                }
+                $viewData->setAlert('enter login name');
+            }
+            return $responder->redirect($request, $response)->toPath('/', $viewData);
         });
 
     /**
      * for displaying form for /jump
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
-    $presentJump = function (ServerRequestInterface $request) {
-        return Respond::view($request)
-            ->asView('jump');
-    };
-
-    $app->add('/jump', $presentJump);
-
-    $app->add('/jumper',
-        function(ServerRequestInterface $request) {
-            return Respond::redirect($request)
-                ->withSuccess('redirected back!')
-                ->withInputData(['jumped' => 'redirected text'])
-                ->withInputErrors(['jumped' => 'redirected error message'])
-                ->toPath('jump');
+    $app->add('/jump',
+        function ($request, $response) use ($responder) {
+            $viewData = $responder->getViewData()
+                ->setSuccess('try jump to another URL. ')
+                ->setData('jumped', 'text in control')
+                ->setData('date', (new DateTime('now'))->format('Y-m-d'));
+            return $responder->view($request, $response)
+                ->render('jump', $viewData);
         });
 
-    $app->add('/jumped',
-        function ($request) use($presentJump) {
-            $request = Respond::withViewData($request, function(ViewData $view) {
-                $view->setSuccess('redrawn form!');
-                $view->setInputData(['jumped' => 'redrawn text']);
-                $view->setInputErrors(['jumped' => 'redrawn error message']);
-                return $view;
-            });
-            return Respond::view($request)->call($presentJump);
+    $app->add('/jumper',
+        function (ServerRequestInterface $request, $response) use ($responder) {
+            $viewData = $responder->getViewData()
+                ->setError('redirected back!')
+                ->setInputData($request->getParsedBody())
+                ->setInputErrors([
+                    'jumped' => 'redirected error message',
+                    'date' => 'your date',
+                    'gender' => 'your gender',
+                    'movie' => 'selected movie',
+                    'happy' => 'be happy!'
+                ]);
+
+            return $responder->redirect($request, $response)
+                ->toPath('jump', $viewData);
         });
 
     /**
@@ -71,15 +83,15 @@ return function ($request, $responder) {
      * for other samples
      */
     $app->add('/content',
-        function(ServerRequestInterface $request) {
-            return Respond::view($request)
+        function (ServerRequestInterface $request, $response) {
+            return Respond::view($request, $response)
                 ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
         });
 
     $app->add('/objGraph',
-        function(ServerRequestInterface $request) {
-            echo (new Printo(Respond::getResponder($request)));
-            exit;
+        function (ServerRequestInterface $request, $response) {
+            return Respond::view($request, $response)
+                ->asContents((new Printo(Respond::getResponder($request))));
         });
 
     /**
@@ -95,10 +107,16 @@ return function ($request, $responder) {
      * @return ResponseInterface
      */
     $app->add('/forms',
-        function(ServerRequestInterface $request) {
-            return Respond::view($request)->asView('forms');
+        function (ServerRequestInterface $request, $response) {
+            $viewData = Respond::getViewData($request)
+                ->setData([
+                    'text' => 'this is text-value',
+                    'date' => date('Y-m-d'),
+                ]);
+            return Respond::view($request, $response)->render('forms', $viewData);
         });
 
-    return $app->run($request);
-
+    $app->add('/docs/(?P<pathInfo>.*)', DocumentMap::class);
+    
+    return $app;
 };

@@ -3,8 +3,9 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
-use Tuum\Respond\Service\PresenterInterface;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 
 class View extends AbstractWithViewData
 {
@@ -59,41 +60,39 @@ class View extends AbstractWithViewData
     }
 
     /**
-     * @param string $file
+     * @param string                  $file
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    private function asViewStream($file)
+    private function renderWithViewer($file, $viewData = null)
     {
-        $this->data->setViewFile($file);
-
-        return $this->view->withView($this->request, $this->response, $this->data);
+        return $this->view->__invoke($this->request, $this->response, $file, $viewData);
     }
 
     /**
      * creates a Response with as template view file, $file.
      *
-     * @param string $file
+     * @param string                  $file
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function asView($file)
+    public function render($file, $viewData = null)
     {
-        return $this->asViewStream($file);
+        return $this->renderWithViewer($file, $viewData);
     }
 
     /**
      * creates a Response of view with given $content as a contents.
      * use this to view a main contents with layout.
      *
-     * @param string      $content
-     * @param string|null $contents_file
+     * @param string                  $content
      * @return ResponseInterface
      */
-    public function asContents($content, $contents_file = null)
+    public function asContents($content)
     {
-        $contents_file = $contents_file ?: $this->content_view;
-        $this->data->setData('contents', $content);
+        $viewData = ['contents' => $content];
 
-        return $this->asViewStream($contents_file);
+        return $this->renderWithViewer($this->content_view, $viewData);
     }
 
     /**
@@ -181,31 +180,35 @@ class View extends AbstractWithViewData
      * calls the presenter to create a view to respond.
      *
      * @param callable|PresenterInterface|string $presenter
+     * @param mixed|ViewDataInterface            $viewData
      * @return ResponseInterface
      */
-    public function call($presenter)
+    public function call($presenter, $viewData = null)
     {
         if ($presenter instanceof PresenterInterface) {
-            return $this->execCallable([$presenter, 'withView']);
+            return $this->execCallable([$presenter, '__invoke'], $viewData);
         }
         if (is_callable($presenter)) {
-            return $this->execCallable($presenter);
+            return $this->execCallable($presenter, $viewData);
         }
         if (!$resolver = $this->resolver) {
             throw new \BadMethodCallException('set resolver to call a presenter!');
         }
-        return $this->execCallable($resolver($presenter));
+
+        return $this->execCallable($resolver($presenter), $viewData);
     }
 
     /**
-     * @param callable $callable
+     * @param callable                $callable
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    private function execCallable($callable)
+    private function execCallable($callable, $viewData)
     {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException;
         }
-        return call_user_func($callable, $this->request, $this->response, $this->data);
+
+        return call_user_func($callable, $this->request, $this->response, $viewData);
     }
 }

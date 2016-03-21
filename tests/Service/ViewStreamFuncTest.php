@@ -34,10 +34,10 @@ class ViewStreamFuncTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $this->view = TuumViewer::forge(__DIR__.'/views');
-        $this->req   = ReqBuilder::createFromPath('test');
-        $this->res   = new Response();
-        $this->viewData  = new ViewData();
+        $this->view     = TuumViewer::forge(__DIR__ . '/views');
+        $this->req      = ReqBuilder::createFromPath('test');
+        $this->res      = new Response();
+        $this->viewData = new ViewData();
     }
 
     /**
@@ -45,8 +45,7 @@ class ViewStreamFuncTest extends \PHPUnit_Framework_TestCase
      */
     function get_contents()
     {
-        $this->viewData->setViewFile('simple-text');
-        $res = $this->view->withView($this->req, $this->res, $this->viewData);
+        $res = $this->view->__invoke($this->req, $this->res, 'simple-text', $this->viewData);
         $this->assertEquals('this is a simple text.', $res->getBody()->__toString());
     }
 

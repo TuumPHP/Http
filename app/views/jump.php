@@ -1,17 +1,18 @@
 <?php
 /** @var Renderer $this */
-/** @var DataView $view */
-use Tuum\Form\DataView;
+/** @var ViewHelper $view */
+
+use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 
 $this->setLayout('layouts/layout');
-$forms = $view->forms->withClass('form-control');
+$forms = $view->forms()->withClass('form-control');
 
 ?>
 
 <h1>Let's Jump!!</h1>
 
-<?= $view->message; ?>
+<?= $view->message->onlyOne(); ?>
 
 <p>This sample shows how to create a form input and shows the error message from the redirection.</p>
 
@@ -26,31 +27,51 @@ $forms = $view->forms->withClass('form-control');
         $forms->label('some text here:', 'jumped'),
         $forms->text('jumper', 'original text')->id(),
         $view->errors->p('jumped')
-    )->class($view->errors->exists('jumped')?'has-error':null);
+    )->class($view->errors->exists('jumped') ? 'has-error' : null);
     ?>
-    <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
-    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" />
-
-    <?= $forms->close(); ?>
-
-</div>
-
-<h3>Sample Form - redrawn pattern</h3>
-
-<div style="margin-left: 2em;">
-
-    <?= $forms->open()->action('jumped')->method('post'); ?>
 
     <?=
     $forms->formGroup(
-        $forms->label('some text here:', 'jumped'),
-        $forms->text('jumped', 'original text')->id(),
-        $view->errors->p('jumped')
-    )->class($view->errors->exists('jumped')?'has-error':null);
+        $forms->label('some date here:', 'date'),
+        $forms->date('date', 'some date')->id()->width('12em'),
+        $view->errors->p('date')
+    )->class($view->errors->exists('date') ? 'has-error' : null);
     ?>
-    <?= $forms->submit('re-draw!')->class('btn btn-primary'); ?>&nbsp;
-    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default" />
+
+    <label>your gender</label>
+    <?=
+    $forms->formGroup(
+        $forms->radio('gender', '1')->label('male')->id(),
+        $forms->radio('gender', '2')->label('female')->id(),
+        $forms->radio('gender', '3')->label('other')->id(),
+        $view->errors->p('date')
+    )->class($view->errors->exists('date') ? 'has-error' : null);
+    ?>
+
+    <label>your movie</label>
+    <?=
+    $forms->formGroup(
+        $forms->checkList('movie', [
+            '1' => 'star wars',
+            '2' => 'star trek',
+            '3' => 'yamato',
+        ]),
+        $view->errors->p('movie')
+    )->class($view->errors->exists('movie') ? 'has-error' : null);
+    ?>
+
+    <label>are you happy? </label>
+    <?=
+    $forms->formGroup(
+        $forms->checkbox('happy', 'h'),
+        $view->errors->p('happy')
+    )->class($view->errors->exists('happy') ? 'has-error' : null);
+    ?>
+
+    <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
+    <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
 
     <?= $forms->close(); ?>
 
 </div>
+

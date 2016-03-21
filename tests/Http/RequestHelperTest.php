@@ -19,7 +19,7 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/http/test', $request->getUri()->getPath());
         $this->assertEquals('post', $request->getMethod());
     }
-    
+
     /**
      * @test
      */
@@ -57,12 +57,12 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
     function withResponder_and_getResponder_sets_and_return_same_object()
     {
         /** @var Responder $obj */
-        $obj = $this->getMockBuilder(Responder::class)
+        $obj     = $this->getMockBuilder(Responder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $request = ReqBuilder::createFromPath('/http/base/path/test');
         $request = Respond::withResponder($request, $obj);
-        $obj2 = Respond::getResponder($request);
+        $obj2    = Respond::getResponder($request);
         $this->assertSame($obj, $obj2);
     }
 

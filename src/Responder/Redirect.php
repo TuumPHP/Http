@@ -4,17 +4,35 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\Helper\ReqAttr;
+use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Respond;
 
 class Redirect extends AbstractWithViewData
 {
-    // +----------------------------------------------------------------------+
-    //  construction
-    // +----------------------------------------------------------------------+
+    /**
+     * @var string
+     */
+    private $query = '';
+
     /**
      *
      */
     public function __construct()
     {
+    }
+
+    /**
+     * @param array|string $query
+     * @return Redirect
+     */
+    public function withQuery($query)
+    {
+        if (is_array($query)) {
+            $query = http_build_query($query, null, '&');
+        }
+        $self = clone $this;
+        $self->query = $self->query ? $self->query . '&' . $query: $query;
+        return $self;
     }
 
     // +----------------------------------------------------------------------+
@@ -24,16 +42,18 @@ class Redirect extends AbstractWithViewData
      * redirects to $uri.
      * the $uri must be a full uri (like http://...), or a UriInterface object.
      *
-     * @param UriInterface|string $uri
+     * @param UriInterface|string     $uri
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toAbsoluteUri($uri)
+    public function toAbsoluteUri($uri, $viewData = null)
     {
         if ($uri instanceof UriInterface) {
+            $uri = $uri->withQuery($this->query);
             $uri = (string)$uri;
         }
-        if ($this->session) {
-            $this->session->setFlash(ViewData::MY_KEY, $this->data);
+        if ($viewData) {
+            Respond::session($this->request)->setFlash(ViewDataInterface::MY_KEY, $viewData);
         }
 
         return $this->response
@@ -45,47 +65,41 @@ class Redirect extends AbstractWithViewData
      * redirects to a path in string.
      * uses current hosts and scheme.
      *
-     * @param string $path
-     * @param string $query
+     * @param string                  $path
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toPath($path, $query = '')
+    public function toPath($path, $viewData = null)
     {
         $uri = $this->request->getUri()->withPath($path);
-        if (!is_null($query)) {
-            $uri = $uri->withQuery($query);
-        }
 
-        return $this->toAbsoluteUri($uri);
+        return $this->toAbsoluteUri($uri, $viewData);
     }
 
     /**
-     * @param string $path
-     * @param string $query
+     * @param string                  $path
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toBasePath($path = '', $query = '')
+    public function toBasePath($path = '', $viewData = null)
     {
         $path = '/' . ltrim($path, '/');
         $base = ReqAttr::getBasePath($this->request);
         $path = rtrim($base, '/') . $path;
         $path = rtrim($path, '/');
-        $uri  = $this->request->getUri()->withPath($path);
-        if (!is_null($query)) {
-            $uri = $uri->withQuery($query);
-        }
 
-        return $this->toAbsoluteUri($uri);
+        return $this->toPath($path, $viewData);
     }
 
     /**
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toReferrer()
+    public function toReferrer($viewData = null)
     {
         $referrer = ReqAttr::getReferrer($this->request);
 
-        return $this->toAbsoluteUri($referrer);
+        return $this->toAbsoluteUri($referrer, $viewData);
     }
 
 }

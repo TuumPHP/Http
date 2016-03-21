@@ -3,8 +3,8 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Form\DataView;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 use Tuum\View\Renderer;
 
 /**
@@ -17,34 +17,32 @@ use Tuum\View\Renderer;
  */
 class TuumViewer implements ViewerInterface
 {
-    use ViewerTrait;
-
     /**
      * @var Renderer
      */
     private $renderer;
 
     /**
-     * @var null|DataView
+     * @var ViewHelper
      */
-    private $dataView;
+    private $viewHelper;
 
     /**
-     * @param Renderer $renderer
-     * @param DataView $view
+     * @param Renderer   $renderer
+     * @param ViewHelper $view
      */
     public function __construct($renderer, $view = null)
     {
-        $this->renderer = $renderer;
-        $this->dataView = $view;
+        $this->renderer   = $renderer;
+        $this->viewHelper = $view;
     }
 
     /**
      * creates a new ViewStream with Tuum\Renderer.
      * set $root for the root of the view/template directory.
      *
-     * @param string    $root
-     * @param callable  $callable
+     * @param string   $root
+     * @param callable $callable
      * @return static
      */
     public static function forge($root, $callable = null)
@@ -54,42 +52,43 @@ class TuumViewer implements ViewerInterface
             $renderer = call_user_func($callable, $renderer);
         }
 
-        return new static($renderer, new DataView());
+        return new static($renderer, ViewHelper::forge());
     }
 
     /**
      * renders $view and returns a new $response.
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param ViewData               $view
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param string                  $viewFile
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
-        $view_file = $view->getViewFile();
-        $view_data = $this->setDataView($view);
+        $viewHelper = $this->viewHelper->start($request, $response);
+        $view_data  = $this->setDataView($viewHelper, $viewData);
 
-        $response->getBody()->write($this->renderer->render($view_file, $view_data));
-        if ($status = $view->getStatus()) {
-            $response = $response->withStatus($status);
-        }
+        $response->getBody()->write($this->renderer->render($viewFile, $view_data));
 
         return $response;
     }
 
     /**
-     * @param ViewData $data
+     * @param ViewHelper              $viewHelper
+     * @param mixed|ViewDataInterface $viewData
      * @return array
      */
-    private function setDataView($data)
+    private function setDataView($viewHelper, $viewData)
     {
-        if (!$data) {
-            return [];
+        if ($viewData instanceof ViewDataInterface) {
+            $view_data = $viewData->getRawData();
+        } elseif (is_array($viewData)) {
+            $view_data = $viewData;
+        } else {
+            $view_data = [];
         }
-        $view              = $this->forgeDataView($data, $this->dataView);
-        $view_data         = $data->getRawData();
-        $view_data['view'] = $view;
+        $view_data['view'] = $viewHelper->setViewData($viewData);
 
         return $view_data;
     }

@@ -3,11 +3,17 @@
 /**
  * a sample web application using Tuum/Respond.
  */
-use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ReqBuilder;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiEmitter;
 
-/** @var ResponseInterface $res */
+if (php_sapi_name() == 'cli-server') {
+    $file = __DIR__ . '/' . $_SERVER["REQUEST_URI"];
+    if (file_exists($file) && is_file($file)) {
+        return false;
+    }
+}
+
 /** @var Closure $app */
 
 include dirname(__DIR__) . "/app/autoload.php";
@@ -17,7 +23,8 @@ include dirname(__DIR__) . "/app/autoload.php";
  */
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
-$res = $app($req);
+$res = (new Response())->withHeader('Content-Type', 'text/html');
+$res = $app(['view' => 'plates'], $req, $res);
 
 $emitter = new SapiEmitter;
 $emitter->emit($res);

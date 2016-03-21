@@ -7,8 +7,8 @@ use Tuum\Respond\Respond;
 
 /**
  * Class Referrer
- * 
- * under development. 
+ *
+ * under development.
  *
  * @package Tuum\Respond\Helper
  */

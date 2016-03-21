@@ -1,11 +1,9 @@
 <?php
 namespace tests\Responder;
 
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
-use Tuum\Respond\Service\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ErrorViewInterface;
 use Tuum\Respond\Responder\ViewData;
 
 class ErrorBack implements ErrorViewInterface
@@ -18,13 +16,13 @@ class ErrorBack implements ErrorViewInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewData               $view
+     * @param int                    $status
+     * @param mixed|ViewData         $viewData
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $viewData)
     {
-        $this->code = $view->getStatus();
-        $this->data = $view;
-        return $response->withStatus($this->code);
+        $this->data = $viewData;
+        return $response->withStatus($status);
     }
 }

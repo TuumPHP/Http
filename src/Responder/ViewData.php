@@ -1,6 +1,8 @@
 <?php
 namespace Tuum\Respond\Responder;
 
+use Tuum\Respond\Interfaces\ViewDataInterface;
+
 /**
  * Class ViewData
  *
@@ -15,18 +17,8 @@ namespace Tuum\Respond\Responder;
  *
  * @package Tuum\Respond
  */
-class ViewData
+class ViewData implements ViewDataInterface
 {
-    /**
-     * @var int
-     */
-    private $status;
-
-    /**
-     * @var string
-     */
-    private $view_file;
-
     /**
      * @var array
      */
@@ -52,21 +44,12 @@ class ViewData
      */
     private $inputErrors = [];
 
-    const MY_KEY = '-view-data-key';
-
-    /*
-     * message types. 
-     */
-    const MESSAGE_SUCCESS = 'message';
-    const MESSAGE_ALERT = 'alert';
-    const MESSAGE_ERROR = 'error';
-
     /**
      * set a raw data.
      *
      * @param string $key
      * @param mixed  $value
-     * @return $this
+     * @return ViewData
      */
     public function setRawData($key, $value)
     {
@@ -90,7 +73,7 @@ class ViewData
      *
      * @param string|array $key
      * @param mixed        $value
-     * @return $this
+     * @return ViewData
      */
     public function setData($key, $value = null)
     {
@@ -115,7 +98,7 @@ class ViewData
      * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
-     * @return $this
+     * @return ViewData
      */
     public function setInputData(array $value)
     {
@@ -137,7 +120,7 @@ class ViewData
      * for Errors helper.
      *
      * @param array $errors
-     * @return $this
+     * @return ViewData
      */
     public function setInputErrors(array $errors)
     {
@@ -160,7 +143,7 @@ class ViewData
      *
      * @param string $message
      * @param string $type
-     * @return $this
+     * @return ViewData
      */
     public function setMessage($message, $type)
     {
@@ -182,66 +165,28 @@ class ViewData
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewData
      */
     public function setSuccess($message)
     {
-        return $this->setMessage($message, self::MESSAGE_SUCCESS);
+        return $this->setMessage($message, ViewDataInterface::MESSAGE_SUCCESS);
     }
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewData
      */
     public function setAlert($message)
     {
-        return $this->setMessage($message, self::MESSAGE_ALERT);
+        return $this->setMessage($message, ViewDataInterface::MESSAGE_ALERT);
     }
 
     /**
      * @param string $message
-     * @return $this
+     * @return ViewData
      */
     public function setError($message)
     {
-        return $this->setMessage($message, self::MESSAGE_ERROR);
-    }
-
-    /**
-     * @param string $view_file
-     * @return ViewData
-     */
-    public function setViewFile($view_file)
-    {
-        $this->view_file = $view_file;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getViewFile()
-    {
-        return $this->view_file;
-    }
-
-    /**
-     * @param int $status
-     * @return ViewData
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
+        return $this->setMessage($message, ViewDataInterface::MESSAGE_ERROR);
     }
 }

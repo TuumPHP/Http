@@ -4,6 +4,7 @@ namespace Tuum\Respond\Service;
 use Aura\Session\Segment;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 
 /**
  * Class SessionStorage

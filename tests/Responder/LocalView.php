@@ -3,8 +3,9 @@ namespace tests\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder\ViewData;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 
 class LocalView implements ViewerInterface
 {
@@ -23,15 +24,23 @@ class LocalView implements ViewerInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewData               $view
+     * @param string                 $viewFile
+     * @param mixed|ViewData         $viewData
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $view)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewFile, $viewData)
     {
-        $this->view_file = $view->getViewFile();
-        $this->data      = $view;
-        $response = $response->withHeader('ViewFile', $view->getViewFile());
-        $response->getBody()->write(implode(',',$view->getData()));
+        if ($viewData instanceof ViewDataInterface) {
+            $content = implode(',', $viewData->getData());
+        } elseif (is_array($viewData)) {
+            $content = implode(',', $viewData);
+        } else {
+            $content = '';
+        }
+        $this->view_file = $viewFile;
+        $this->data      = $viewData;
+        $response        = $response->withHeader('ViewFile', $viewFile);
+        $response->getBody()->write($content);
         return $response;
     }
 }

@@ -7,7 +7,6 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\TuumViewer;
-use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
@@ -26,20 +25,20 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $_SESSION = [];
+        $_SESSION              = [];
         $this->session_factory = SessionStorage::forge('test');
         $this->setPhpTestFunc($this->session_factory);
 
-        $view = TuumViewer::forge('');
+        $view            = TuumViewer::forge('');
         $this->responder = ResponderBuilder::withView($view)
             ->withResponse(new Response())
             ->withSession($this->session_factory);
     }
 
     /**
-     * create a redirect response with various data (error message, input data, input errors). 
-     * 
-     * the subsequent request will create a respond with the data set in the previous redirect response. 
+     * create a redirect response with various data (error message, input data, input errors).
+     *
+     * the subsequent request will create a respond with the data set in the previous redirect response.
      */
     function test()
     {
@@ -47,16 +46,18 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * a redirect response with various data.
          */
         $request  = ReqBuilder::createFromPath('/path/test');
+        $view     = $this->responder->getViewData()
+            ->setData('more', 'with')
+            ->setSuccess('message')
+            ->setAlert('notice-msg')
+            ->setError('error-msg')
+            ->setInputData(['more' => 'test'])
+            ->setInputErrors(['more' => 'done']);
         $response = $this->responder->redirect($request)
-            ->withFlashData('with', 'val1')
-            ->withData('more', 'with')
-            ->withSuccess('message')
-            ->withAlert('notice-msg')
-            ->withError('error-msg')
-            ->withInputData(['more' => 'test'])
-            ->withInputErrors(['more' => 'done'])
             ->toAbsoluteUri('/more/test');
-        
+        $this->responder->session()
+            ->setFlash('with', 'val1');
+
         $this->assertEquals('/more/test', ResponseHelper::getLocation($response));
 
         /*
@@ -64,22 +65,18 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * move the flash, i.e. next request.
          */
         $this->session_factory->commit();
-        $stored = serialize($_SESSION);
+        $stored   = serialize($_SESSION);
         $_SESSION = unserialize($stored);
-        
+
         $this->moveFlash($this->session_factory);
 
         /*
          * next request with the data from the previous redirection. 
          */
-        $session  = $this->session_factory->withStorage('test');
-        $responder= $this->responder->withSession($session);
-        
-        $refObj  = new \ReflectionObject($responder);
-        $refData = $refObj->getProperty('viewData');
-        $refData->setAccessible(true);
-        /** @var ViewData $data */
-        $data    = $refData->getValue($responder);
+        $session   = $this->session_factory->withStorage('test');
+        $responder = $this->responder->withSession($session);
+
+        $data = $view;
 
         $this->assertEquals('val1', $responder->session()->getFlash('with'));
         $this->assertEquals('with', $data->getData()['more']);

@@ -90,7 +90,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @param $status
      * @param $expected
-     * 
+     *
      * @test
      * @dataProvider isDirect_Provider
      */
@@ -99,17 +99,17 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
         $res = new Response('testing', $status);
         $this->assertEquals($expected, ResponseHelper::isRedirect($res));
     }
-    
+
     function isDirect_Provider()
     {
         return array(
-            [301, true ],
-            [302, true ],
-            [303, true ],
-            [307, true ],
-            [200, false ],
-            [304, false ],
-            [300, false ]
+            [301, true],
+            [302, true],
+            [303, true],
+            [307, true],
+            [200, false],
+            [304, false],
+            [300, false]
         );
     }
 
@@ -125,7 +125,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
         $res = new Response('testing', $status);
         $this->assertEquals($expected, ResponseHelper::$method($res));
     }
-    
+
     function isInformational_Provider()
     {
         $tests = array(
@@ -136,21 +136,23 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
             [500, 'isServerError'],
         );
         $bases = array(
-            [00, true ],
-            [01, true ],
-            [20, true ],
-            [99, true ],
-            [100, false ],
+            [00, true],
+            [01, true],
+            [20, true],
+            [99, true],
+            [100, false],
         );
-        $list = [];
-        foreach($tests as $test) {
+        $list  = [];
+        foreach ($tests as $test) {
             $method   = $test[1];
             $baseCode = $test[0];
-            foreach($bases as $base) {
+            foreach ($bases as $base) {
                 $code = $baseCode + $base[0];
-                if ($code > 599) continue;
+                if ($code > 599) {
+                    continue;
+                }
                 $list[] = [
-                    $method, 
+                    $method,
                     $code,
                     $base[1]
                 ];

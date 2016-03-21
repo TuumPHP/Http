@@ -6,9 +6,9 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
+use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\SessionStorageInterface;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Zend\Diactoros\Response;
 
 class ViewTest extends \PHPUnit_Framework_TestCase
@@ -32,15 +32,15 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $_SESSION = [];
+        $_SESSION      = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->responder = ResponderBuilder::withServices(
             new LocalView(),
             new ErrorBack()
         )->withResponse(new Response())
-        ->withSession($this->session);
-        $this->view   = $this->responder->view(ReqBuilder::createFromPath('test'));
+            ->withSession($this->session);
+        $this->view      = $this->responder->view(ReqBuilder::createFromPath('test'));
     }
 
     function tearDown()
@@ -58,21 +58,12 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function view_returns_viewStream()
     {
-        $response = $this->view->asView('test-view');
+        $response = $this->view->render('test-view');
         /** @var LocalView $stream */
         $stream = $response->getBody();
         $this->assertEquals('Zend\Diactoros\Response', get_class($response));
         $this->assertEquals('Zend\Diactoros\Stream', get_class($stream));
         $this->assertEquals('test-view', $response->getHeaderLine('ViewFile'));
-    }
-
-    /**
-     * @test
-     */
-    function asContents_returns_content_file_with_content_data()
-    {
-        $response = $this->view->asContents('test-content', 'testing/contents');
-        $this->assertEquals('testing/contents', $response->getHeaderLine('ViewFile'));
     }
 
     /**
@@ -103,7 +94,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function executes_callable()
     {
-        $string = $this->view->call(function() { return 'tested: closure';});
+        $string = $this->view->call(function () {
+            return 'tested: closure';
+        });
         $this->assertEquals('tested: closure', $string);
     }
 
@@ -112,8 +105,8 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function executes_ViewerInterface_object()
     {
-        $stub = $this->getMockBuilder(ViewerInterface::class)->getMock();
-        $stub->method('withView')->willReturn('tested: mock');
+        $stub = $this->getMockBuilder(PresenterInterface::class)->getMock();
+        $stub->method('__invoke')->willReturn('tested: mock');
         $string = $this->view->call($stub);
         $this->assertEquals('tested: mock', $string);
     }
@@ -133,7 +126,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     function returning_non_callable_from_resolver_throws_exception()
     {
-        $view = new View(new LocalView(), null, function() {return 'not-a-callable';});
+        $view = new View(new LocalView(), null, function () {
+            return 'not-a-callable';
+        });
         $view->call('bad-input');
     }
 
@@ -144,8 +139,8 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     {
         $view   = new View(
             new LocalView(), null,
-            function() {
-                return function() {
+            function () {
+                return function () {
                     return 'tested: resolver';
                 };
             });

@@ -4,7 +4,7 @@
 
     <h1>Let's Jump!!</h1>
 
-    {{ viewData.message|raw }}
+    {{ view.message.onlyOne|raw }}
 
     <p>This sample shows how to create a form input and shows the error message from the redirection.</p>
 
@@ -14,30 +14,44 @@
 
         <form method="post" action="jumper" class="">
 
-            <div class="form-group">
-                {{ viewData.forms.label('some text:', 'jumped')|raw }}
-                {{ viewData.forms.text('jumped', 'original text').id().class('form-control')|raw }}
-                {{ viewData.errors.get('jumped')|raw }}
+
+            <div class="form-group{% if view.errors.exists('jumped') %} has-error{% endif %}">
+                {{ view.forms.label('some text:', 'jumped')|raw }}
+                {{ view.forms.text('jumped', jumped).id().class('form-control')|raw }}
+                {{ view.errors.p('jumped')|raw }}
+            </div>
+
+            <div class="form-group{% if view.errors.exists('date') %} has-error{% endif %}">
+                <label for="date" >
+                    some date:
+                    <input type="date" name="date" value="{{ view.inputs.get('date', date) }}" class="form-control" style="width: 12em;" />
+                </label>
+                {{ view.errors.p('date')|raw }}
+            </div>
+
+            <label>your gender</label>
+            <div class="form-group{% if view.errors.exists('gender') %} has-error{% endif %}">
+                {{ view.forms.radio('gender', '1').class('form-control').label('male')|raw }}&nbsp;
+                {{ view.forms.radio('gender', '2').class('form-control').label('female')|raw }}&nbsp;
+                <label><input type="radio" name="gender" value="3" {{ view.inputs.checked('gender', '3') }} class="form-control" />other</label>
+                {{ view.errors.p('gender')|raw }}
+            </div>
+
+            <label>your movie</label>
+            <div class="form-group{% if view.errors.exists('movie') %} has-error{% endif %}">
+                {{ view.forms.checkbox('movie[]', '1').class('form-control').label('star wars')|raw }}&nbsp;
+                {{ view.forms.checkbox('movie[]', '2').class('form-control').label('star strek')|raw }}&nbsp;
+                <label><input type="checkbox" name="movie[]" value="3" {{ view.inputs.checked('movie[]', '3') }} class="form-control" />yamato</label>
+                {{ view.errors.p('movie')|raw }}
+            </div>
+
+            <label>are you happy?</label>
+            <div class="form-group{% if view.errors.exists('happy') %} has-error{% endif %}">
+                <label><input type="checkbox" name="happy" id="happy" value="v" {{ view.inputs.checked('happy', 'v') | raw }} />&nbsp;Yes! I'm happy.</label>
+                {{ view.errors.p('happy') | raw }}
             </div>
 
             <input type="submit" value="jump!" class="btn btn-primary"/>&nbsp;
-            <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
-
-        </form>
-
-    </div>
-
-    <div style="margin-left: 2em;">
-
-        <form method="post" action="jumped" class="">
-
-            <div class="form-group">
-                {{ viewData.forms.label('some text:', 'jumped')|raw }}
-                {{ viewData.forms.text('jumped', 'original text').id().class('form-control')|raw }}
-                {{ viewData.errors.get('jumped')|raw }}
-            </div>
-
-            <input type="submit" value="re-draw!" class="btn btn-primary"/>&nbsp;
             <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
 
         </form>

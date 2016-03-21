@@ -4,7 +4,6 @@ namespace tests\Responder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Responder\ViewData;
 use Zend\Diactoros\Response;
 
 class ErrorTest extends \PHPUnit_Framework_TestCase
@@ -17,7 +16,8 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     function setup()
     {
         $this->error = new Error(new ErrorBack());
-        $this->error = $this->error->withRequest(ReqBuilder::createFromPath('test'), new Response(), SessionStorage::forge('test'), new ViewData());
+        $this->error = $this->error->withRequest(ReqBuilder::createFromPath('test'), new Response(),
+            SessionStorage::forge('test'));
     }
 
     function test0()

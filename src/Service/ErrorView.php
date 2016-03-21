@@ -3,7 +3,10 @@ namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
+use Tuum\Respond\Responder\View;
 
 class ErrorView implements ErrorViewInterface
 {
@@ -27,14 +30,9 @@ class ErrorView implements ErrorViewInterface
     ];
 
     /**
-     * @var
-     */
-    private $exitOnTerminate = true;
-
-    /**
      * @param ViewerInterface $viewStream
      */
-    public function __construct(ViewerInterface $viewStream)
+    public function __construct($viewStream)
     {
         $this->view = $viewStream;
     }
@@ -47,15 +45,15 @@ class ErrorView implements ErrorViewInterface
      *   'status'  : index of http code to file name (i.e. ['code' => 'file']).
      *   'files'   : index of ile name to http code(s) (i.e. ['file' => [123, 234]]
      *
-     * @param ViewerInterface $viewStream
-     * @param array           $options
+     * @param ViewerInterface  $view
+     * @param array $options
      * @return static
      */
     public static function forge(
-        ViewerInterface $viewStream,
+        $view,
         array $options
     ) {
-        $error = new static($viewStream);
+        $error = new static($view);
         $options += [
             'default' => null,
             'status'  => [],
@@ -63,8 +61,8 @@ class ErrorView implements ErrorViewInterface
         ];
         $error->default_error = $options['default'];
         $error->statusView    = $options['status'];
-        foreach($options['files'] as $file => $codes) {
-            foreach((array) $codes as $code) {
+        foreach ($options['files'] as $file => $codes) {
+            foreach ((array)$codes as $code) {
                 $error->statusView[$code] = $file;
             }
         }
@@ -88,24 +86,20 @@ class ErrorView implements ErrorViewInterface
     /**
      * create a response for error view.
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param ViewData               $data
+     * @param ServerRequestInterface  $request
+     * @param ResponseInterface       $response
+     * @param int                     $status
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function withView(ServerRequestInterface $request, ResponseInterface $response, $data)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $viewData)
     {
-        $status = $data->getStatus();
-        $data->setViewFile($this->findViewFromStatus($status));
+        $file = $this->findViewFromStatus($status);
 
-        return $this->view->withView($request, $response, $data);
-    }
-
-    /**
-     * @param bool $exitOnTerminate
-     */
-    public function setExitOnTerminate($exitOnTerminate)
-    {
-        $this->exitOnTerminate = $exitOnTerminate;
+        $response = $this->view->__invoke($request, $response, $file, $viewData);
+        if ($response instanceof ResponseInterface) {
+            $response = $response->withStatus($status);
+        }
+        return $response;
     }
 }

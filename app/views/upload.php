@@ -1,25 +1,26 @@
 <?php
 /** @var Renderer $this */
-/** @var DataView $view */
-use Tuum\Form\DataView;
+/** @var ViewHelper $view */
+
+use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 use Zend\Diactoros\UploadedFile;
 
 $this->setLayout('layouts/layout');
-$form = $view->forms;
-$data = $view->data;
+$form = $view->forms();
+$data = $view->data();
 /** @var UploadedFile $upload */
-$upload = $view->data->upload ?: null;
+$upload = $view->data()->get('upload', null);
 
 ?>
 
-    <h1>File Upload</h1>
+<h1>File Upload</h1>
 
 <?= $view->message ?>
 
-    <h2>Upload Form</h2>
+<h2>Upload Form</h2>
 
-    <p>please upload any file less than 512 byte. </p>
+<p>please upload any file less than 512 byte. </p>
 
 <?= /** form open for upload */
 $form->open()->method('post')->uploader(); ?>

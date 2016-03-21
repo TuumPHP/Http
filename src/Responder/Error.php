@@ -3,7 +3,8 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
-use Tuum\Respond\Service\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 
 /**
  * Class Error
@@ -16,15 +17,15 @@ use Tuum\Respond\Service\ErrorViewInterface;
  */
 class Error extends AbstractWithViewData
 {
-    const UNAUTHORIZED = 401;
-    const ACCESS_DENIED = 403;
+    const UNAUTHORIZED   = 401;
+    const ACCESS_DENIED  = 403;
     const FILE_NOT_FOUND = 404;
     const INTERNAL_ERROR = 500;
 
     /**
      * @var null|ErrorViewInterface
      */
-    private $view;
+    private $errorView;
 
     /**
      * index of method name and associated http status code.
@@ -45,7 +46,7 @@ class Error extends AbstractWithViewData
      */
     public function __construct(ErrorViewInterface $view)
     {
-        $this->view = $view;
+        $this->errorView = $view;
     }
 
     // +----------------------------------------------------------------------+
@@ -77,14 +78,13 @@ class Error extends AbstractWithViewData
     }
 
     /**
-     * @param int $status
+     * @param int                     $status
+     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function asView($status)
+    public function asView($status, $viewData = null)
     {
-        $this->data->setStatus($status);
-
-        return $this->view->withView($this->request, $this->response, $this->data);
+        return $this->errorView->__invoke($this->request, $this->response, $status, $viewData);
     }
 
     /**
@@ -95,8 +95,9 @@ class Error extends AbstractWithViewData
     public function __call($method, $args)
     {
         if (isset($this->methodStatus[$method])) {
-            return $this->asView($this->methodStatus[$method]);
+            $data = isset($args[0]) ? $args[0] : null;
+            return $this->asView($this->methodStatus[$method], $data);
         }
-        return parent::__call($method, $args);
+        throw new \BadMethodCallException;
     }
 }

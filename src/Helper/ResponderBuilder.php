@@ -3,13 +3,11 @@ namespace Tuum\Respond\Helper;
 
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
-use Tuum\Respond\Responder\Presenter;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\ErrorView;
-use Tuum\Respond\Service\ErrorViewInterface;
-use Tuum\Respond\Service\ViewerInterface;
+use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\ViewerInterface;
 
 class ResponderBuilder
 {
@@ -32,8 +30,7 @@ class ResponderBuilder
         $self = new Responder(
             new View($view, $content_view, $resolver),
             new Redirect(),
-            new Error($error),
-            new ViewData()
+            new Error($error)
         );
 
         return $self;
@@ -43,16 +40,23 @@ class ResponderBuilder
      * build responder object based on $view (ViewerInterface) object
      * and options for errors.
      *
-     * @param ViewerInterface $view
+     * @param ViewerInterface $viewer
      * @param array           $errorOption
      * @param string|null     $content_view
      * @param null|callable   $resolver
      * @return Responder
      */
-    public static function withView(ViewerInterface $view, $errorOption = [], $content_view = null, $resolver = null)
+    public static function withView(ViewerInterface $viewer, $errorOption = [], $content_view = null, $resolver = null)
     {
-        $errors = ErrorView::forge($view, $errorOption);
+        $view  = new View($viewer, $content_view, $resolver);
+        $error = ErrorView::forge($viewer, $errorOption);
 
-        return self::withServices($view, $errors, $content_view, $resolver);
+        $self = new Responder(
+            $view,
+            new Redirect(),
+            new Error($error)
+        );
+
+        return $self;
     }
 }
