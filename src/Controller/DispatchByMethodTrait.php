@@ -10,17 +10,15 @@ trait DispatchByMethodTrait
     use ControllerTrait;
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return null|ResponseInterface
      */
-    protected function _dispatch($request, $response)
+    protected function _dispatch()
     {
         /*
          * set up request information
          */
-        $params = (array)$request->getQueryParams();
-        $method = ReqAttr::getMethod($request);
+        $params = (array)$this->request->getQueryParams();
+        $method = ReqAttr::getMethod($this->request);
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions();
         }

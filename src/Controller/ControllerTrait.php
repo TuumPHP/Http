@@ -27,15 +27,13 @@ trait ControllerTrait
     {
         $this->request  = $request;
         $this->response = $response;
-        return $this->_dispatch($request, $response);
+        return $this->_dispatch();
     }
     
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface|null
      */
-    abstract protected function _dispatch($request, $response);
+    abstract protected function _dispatch();
 
     /**
      * @return ServerRequestInterface

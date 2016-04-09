@@ -18,20 +18,18 @@ trait DispatchByRouteTrait
     abstract protected function getRoutes();
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return null|ResponseInterface
      */
-    protected function _dispatch($request, $response)
+    protected function _dispatch()
     {
         // dispatch by route
-        $method         = ReqAttr::getMethod($request);
-        $path           = ReqAttr::getPathInfo($request);
+        $method         = ReqAttr::getMethod($this->request);
+        $path           = ReqAttr::getPathInfo($this->request);
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions($path);
         }
 
-        return $this->dispatchRoute($request, $path, $method);
+        return $this->dispatchRoute($path, $method);
     }
 
     /**
@@ -57,18 +55,17 @@ trait DispatchByRouteTrait
     }
 
     /**
-     * @param ServerRequestInterface $request
      * @param string                 $path
      * @param string                 $method
      * @return ResponseInterface|null
      */
-    private function dispatchRoute($request, $path, $method)
+    private function dispatchRoute($path, $method)
     {
         $routes = $this->getRoutes();
         foreach ($routes as $pattern => $dispatch) {
             $params = Matcher::verify($pattern, $path, $method);
             if (!empty($params)) {
-                $params += $request->getQueryParams() ?: [];
+                $params += $this->request->getQueryParams() ?: [];
                 $method = 'on' . ucwords($dispatch);
 
                 return $this->dispatchMethod($method, $params);
