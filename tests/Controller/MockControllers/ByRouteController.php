@@ -3,7 +3,6 @@ namespace tests\Controller\MockControllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Controller\DispatchByMethodTrait;
 use Tuum\Respond\Controller\DispatchByRouteTrait;
 
 class ByRouteController
