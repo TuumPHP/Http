@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * ViewDataInterface or array.
  *
  * @package Tuum\Application\Service
+ * @deprecated 
  */
 interface ViewerInterface
 {

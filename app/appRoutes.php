@@ -6,6 +6,7 @@ use App\App\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
@@ -16,13 +17,14 @@ return function (Dispatcher $app, Responder $responder) {
      */
     $app->add('/',
         function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
-            $viewData = $responder->getViewData();
             if (!$responder->session()->get('first.time')) {
-                $viewData->setSuccess('Thanks for downloading Tuum/Respond.');
+                $responder->withView(function(ViewDataInterface $view) {
+                    return $view->setSuccess('Thanks for downloading Tuum/Respond.');
+                });
                 $responder->session()->set('first.time', true);
             }
             return $responder->view($request, $response)
-                ->render('index', $viewData);
+                ->render('index');
         });
 
     $app->add('/login',
@@ -31,17 +33,23 @@ return function (Dispatcher $app, Responder $responder) {
             $viewData = $responder->getViewData();
             if (isset($post['logout'])) {
                 $responder->session()->set('login.name', null);
-                $viewData->setSuccess('logged out');
+                $responder->withView(function(ViewDataInterface $view) {
+                    return $view->setSuccess('logged out');
+                });
             }
             elseif (isset($post['login'])) {
                 if ($post['login']) {
                     $responder->session()->set('login.name', $post['login']);
-                    $viewData->setSuccess('logged as:' . $post['login']); // XSS!!!
+                    $responder->withView(function(ViewDataInterface $view) {
+                        return $view->setSuccess('logged as:\' . $post[\'login\']');
+                    });
                     return $responder->redirect($request, $response)->toPath('/', $viewData);
                 }
-                $viewData->setAlert('enter login name');
+                $responder->withView(function(ViewDataInterface $view) {
+                    return $view->setAlert('enter login name');
+                });
             }
-            return $responder->redirect($request, $response)->toPath('/', $viewData);
+            return $responder->redirect($request, $response)->toPath('/');
         });
 
     /**
@@ -49,19 +57,20 @@ return function (Dispatcher $app, Responder $responder) {
      */
     $app->add('/jump',
         function ($request, $response) use ($responder) {
-            $viewData = $responder->getViewData()
-                ->setSuccess('try jump to another URL. ')
-                ->setData('jumped', 'text in control')
-                ->setData('date', (new DateTime('now'))->format('Y-m-d'));
+            $responder->withView(function (ViewDataInterface $viewData) {
+                return $viewData->setSuccess('try jump to another URL. ')
+                    ->setData('jumped', 'text in control')
+                    ->setData('date', (new DateTime('now'))->format('Y-m-d'));
+            });
             return $responder->view($request, $response)
-                ->render('jump', $viewData);
+                ->render('jump');
         });
 
     $app->add('/jumper',
         function (ServerRequestInterface $request, $response) use ($responder) {
-            $viewData = $responder->getViewData()
+            $responder->getViewData()
                 ->setError('redirected back!')
-                ->setInputData($request->getParsedBody())
+                ->setInput($request->getParsedBody())
                 ->setInputErrors([
                     'jumped' => 'redirected error message',
                     'date' => 'your date',
@@ -71,7 +80,7 @@ return function (Dispatcher $app, Responder $responder) {
                 ]);
 
             return $responder->redirect($request, $response)
-                ->toPath('jump', $viewData);
+                ->toPath('jump');
         });
 
     /**
@@ -108,12 +117,12 @@ return function (Dispatcher $app, Responder $responder) {
      */
     $app->add('/forms',
         function (ServerRequestInterface $request, $response) {
-            $viewData = Respond::getViewData($request)
+            Respond::getViewData($request)
                 ->setData([
                     'text' => 'this is text-value',
                     'date' => date('Y-m-d'),
                 ]);
-            return Respond::view($request, $response)->render('forms', $viewData);
+            return Respond::view($request, $response)->render('forms');
         });
 
     $app->add('/docs/(?P<pathInfo>.*)', DocumentMap::class);

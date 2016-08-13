@@ -1,7 +1,10 @@
 <?php
 namespace Tuum\Respond\Responder;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Service\ViewHelper;
 
 /**
  * Class ViewData
@@ -45,13 +48,64 @@ class ViewData implements ViewDataInterface
     private $inputErrors = [];
 
     /**
+     * @var ServerRequestInterface
+     */
+    private $request;
+
+    /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return ViewDataInterface
+     */
+    public function withRequest($request, $response)
+    {
+        $self = clone($this);
+        $self->request = $request;
+        $self->response = $response;
+        return $self;
+    }
+
+    /**
+     * @return ServerRequestInterface
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @return ViewHelper
+     */
+    public function createHelper()
+    {
+        $helper = ViewHelper::forge();
+        $helper->setViewData($this);
+        $helper->start($this->request, $this->response);
+        
+        return $helper;
+    }
+    
+    /**
      * set a raw data.
      *
      * @param string $key
      * @param mixed  $value
      * @return ViewData
      */
-    public function setRawData($key, $value)
+    public function setExtra($key, $value)
     {
         $this->rawData[$key] = $value;
 
@@ -63,7 +117,7 @@ class ViewData implements ViewDataInterface
      *
      * @return array
      */
-    public function getRawData()
+    public function getExtra()
     {
         return $this->rawData;
     }
@@ -100,7 +154,7 @@ class ViewData implements ViewDataInterface
      * @param array $value
      * @return ViewData
      */
-    public function setInputData(array $value)
+    public function setInput(array $value)
     {
         $this->inputData = $value;
 
@@ -110,7 +164,7 @@ class ViewData implements ViewDataInterface
     /**
      * @return array
      */
-    public function getInputData()
+    public function getInput()
     {
         return $this->inputData;
     }

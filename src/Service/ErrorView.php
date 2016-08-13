@@ -2,18 +2,16 @@
 namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Interfaces\ViewerInterface;
-use Tuum\Respond\Responder\View;
 
 class ErrorView implements ErrorViewInterface
 {
     /**
-     * @var ViewerInterface
+     * @var RendererInterface
      */
-    private $view;
+    private $renderer;
 
     /**
      * @var string
@@ -30,11 +28,11 @@ class ErrorView implements ErrorViewInterface
     ];
 
     /**
-     * @param ViewerInterface $viewStream
+     * @param RendererInterface $viewStream
      */
     public function __construct($viewStream)
     {
-        $this->view = $viewStream;
+        $this->renderer = $viewStream;
     }
 
     /**
@@ -45,7 +43,7 @@ class ErrorView implements ErrorViewInterface
      *   'status'  : index of http code to file name (i.e. ['code' => 'file']).
      *   'files'   : index of ile name to http code(s) (i.e. ['file' => [123, 234]]
      *
-     * @param ViewerInterface  $view
+     * @param RendererInterface  $view
      * @param array $options
      * @return static
      */
@@ -86,20 +84,16 @@ class ErrorView implements ErrorViewInterface
     /**
      * create a response for error view.
      *
-     * @param ServerRequestInterface  $request
-     * @param ResponseInterface       $response
      * @param int                     $status
      * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $status, $viewData)
+    public function __invoke($status, $viewData)
     {
         $file = $this->findViewFromStatus($status);
+        $view    = $viewData->createHelper();
+        $data    = ['view' => $view];
 
-        $response = $this->view->__invoke($request, $response, $file, $viewData);
-        if ($response instanceof ResponseInterface) {
-            $response = $response->withStatus($status);
-        }
-        return $response;
+        return $this->renderer->__invoke($file, $data);
     }
 }

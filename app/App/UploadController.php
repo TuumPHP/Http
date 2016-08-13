@@ -62,9 +62,8 @@ class UploadController
      */
     public function onGet(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $viewData = $this->responder->getViewData();
         return $this->responder->view($request, $response)
-            ->call($this->viewer, $viewData);
+            ->call($this->viewer);
     }
 
     /**
@@ -77,12 +76,12 @@ class UploadController
         /** @var UploadedFile $upload */
         $uploaded = $request->getUploadedFiles();
         $upload   = $uploaded['up'][0];
-        $viewData = $this->responder->getViewData()
+        $this->responder->getViewData()
             ->setData('isUploaded', true)
             ->setData('dump', print_r($uploaded, true))
             ->setData('upload', $upload)
             ->setData('error_code', $upload->getError());
         return $this->responder->view($request, $response)
-            ->call([$this->viewer, '__invoke'], $viewData); // callable
+            ->call([$this->viewer, '__invoke']); // callable
     }
 }

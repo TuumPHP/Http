@@ -51,7 +51,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
             ->setSuccess('message')
             ->setAlert('notice-msg')
             ->setError('error-msg')
-            ->setInputData(['more' => 'test'])
+            ->setInput(['more' => 'test'])
             ->setInputErrors(['more' => 'done']);
         $response = $this->responder->redirect($request)
             ->toAbsoluteUri('/more/test');
@@ -83,7 +83,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('message', $data->getMessages()[0]['message']);
         $this->assertEquals('notice-msg', $data->getMessages()[1]['message']);
         $this->assertEquals('error-msg', $data->getMessages()[2]['message']);
-        $this->assertEquals('test', $data->getInputData()['more']);
+        $this->assertEquals('test', $data->getInput()['more']);
         $this->assertEquals('done', $data->getInputErrors()['more']);
     }
 }

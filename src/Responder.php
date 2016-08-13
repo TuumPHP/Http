@@ -34,6 +34,11 @@ class Responder
     private $viewDataForger;
 
     /**
+     * @var ViewDataInterface
+     */
+    private $viewData;
+
+    /**
      * @param View     $view
      * @param Redirect $redirect
      * @param Error    $error
@@ -52,15 +57,19 @@ class Responder
      */
     public function getViewData()
     {
+        if (isset($this->viewData)) {
+            return $this->viewData;
+        }
         if ($this->session) {
-            $viewData = $this->session->getFlash(ViewDataInterface::MY_KEY);
-            if ($viewData) {
-                return clone($viewData);
+            if ($viewData = $this->session->getFlash(ViewDataInterface::MY_KEY)) {
+                $this->viewData = clone($viewData);
+                return $this->viewData;
             }
         }
 
         $forger = $this->getViewDataForger();
-        return $forger();
+        $this->viewData = $forger();
+        return $this->viewData;
     }
 
     /**
@@ -80,11 +89,10 @@ class Responder
      * @param callable $callable
      * @return Responder
      */
-    public function withViewDataForger($callable)
+    public function setViewDataForger($callable)
     {
-        $self                 = clone($this);
-        $self->viewDataForger = $callable;
-        return $self;
+        $this->viewDataForger = $callable;
+        return $this;
     }
 
     /**
@@ -123,6 +131,20 @@ class Responder
     }
 
     /**
+     * @param ViewDataInterface|callable $data
+     * @return $this
+     */
+    public function withView($data)
+    {
+        if (is_callable($data)) {
+            $this->viewData = $data($this->getViewData());
+        } else {
+            $this->viewData = $data;
+        }
+        return $this;
+    }
+
+    /**
      * @param string                 $responder
      * @param ServerRequestInterface $request
      * @param ResponseInterface|null $response
@@ -132,12 +154,13 @@ class Responder
     {
         $responder = $this->responders[$responder];
         $response  = $response ?: $this->response;
+        $viewData  = $this->getViewData();
         
         // always set $responder as request attribute.
         // ViewHelper::call method uses $responder.
         $request = Respond::withResponder($request, $this);
 
-        return $responder->withRequest($request, $response);
+        return $responder->withRequest($request, $response, $viewData);
     }
 
     /**

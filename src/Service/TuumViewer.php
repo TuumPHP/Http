@@ -82,7 +82,7 @@ class TuumViewer implements ViewerInterface
     private function setDataView($viewHelper, $viewData)
     {
         if ($viewData instanceof ViewDataInterface) {
-            $view_data = $viewData->getRawData();
+            $view_data = $viewData->getExtra();
         } elseif (is_array($viewData)) {
             $view_data = $viewData;
         } else {

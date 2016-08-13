@@ -85,7 +85,7 @@ class TwigViewer implements ViewerInterface
     {
         if ($viewData instanceof ViewDataInterface) {
             $viewHelper->setViewData($viewData);
-            return array_merge($viewData->getData(), $viewData->getRawData());
+            return array_merge($viewData->getData(), $viewData->getExtra());
         } elseif (is_array($viewData)) {
             return $viewData;
         }

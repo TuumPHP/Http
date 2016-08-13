@@ -7,6 +7,10 @@
  */
 namespace Tuum\Respond\Interfaces;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Service\ViewHelper;
+
 
 /**
  * Class ViewData
@@ -37,20 +41,42 @@ interface ViewDataInterface
     const MESSAGE_ERROR   = 'error';
 
     /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return ViewDataInterface
+     */
+    public function withRequest($request, $response);
+
+    /**
+     * @return ServerRequestInterface
+     */
+    public function getRequest();
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getResponse();
+
+    /**
+     * @return ViewHelper
+     */
+    public function createHelper();
+        
+    /**
      * set a raw data.
      *
      * @param string $key
      * @param mixed  $value
      * @return ViewDataInterface
      */
-    public function setRawData($key, $value);
+    public function setExtra($key, $value);
 
     /**
      * get a raw data.
      *
      * @return array
      */
-    public function getRawData();
+    public function getExtra();
 
     /**
      * set data for Data helper.
@@ -72,12 +98,12 @@ interface ViewDataInterface
      * @param array $value
      * @return ViewDataInterface
      */
-    public function setInputData(array $value);
+    public function setInput(array $value);
 
     /**
      * @return array
      */
-    public function getInputData();
+    public function getInput();
 
     /**
      * sets input errors, such as validation error messages.

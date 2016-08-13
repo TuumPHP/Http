@@ -4,8 +4,8 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Interfaces\ViewerInterface;
 
 class View extends AbstractWithViewData
 {
@@ -19,9 +19,9 @@ class View extends AbstractWithViewData
     public $content_view = 'layouts/contents';
 
     /**
-     * @var ViewerInterface
+     * @var RendererInterface
      */
-    protected $view;
+    protected $renderer;
 
     /**
      * @var callable|null
@@ -32,13 +32,13 @@ class View extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param ViewerInterface $view
+     * @param RendererInterface $view
      * @param null|string     $content_view
      * @param null|callable   $resolver
      */
-    public function __construct(ViewerInterface $view, $content_view = null, $resolver = null)
+    public function __construct(RendererInterface $view, $content_view = null, $resolver = null)
     {
-        $this->view         = $view;
+        $this->renderer     = $view;
         $this->content_view = $content_view ?: $this->content_view;
         $this->resolver     = $resolver;
     }
@@ -60,25 +60,32 @@ class View extends AbstractWithViewData
     }
 
     /**
-     * @param string                  $file
-     * @param mixed|ViewDataInterface $viewData
+     * @param string $file
+     * @param array  $data
      * @return ResponseInterface
      */
-    private function renderWithViewer($file, $viewData = null)
+    private function renderWithViewer($file, $data = [])
     {
-        return $this->view->__invoke($this->request, $this->response, $file, $viewData);
+        $view    = $this->viewData->createHelper();
+        $data['view'] = $view;
+        $content = $this->renderer->__invoke($file, $data);
+        $stream  = $this->response->getBody();
+        $stream->rewind();
+        $stream->write($content);
+        
+        return $this->response;
     }
 
     /**
      * creates a Response with as template view file, $file.
      *
-     * @param string                  $file
-     * @param mixed|ViewDataInterface $viewData
+     * @param string $file
+     * @param array  $data
      * @return ResponseInterface
      */
-    public function render($file, $viewData = null)
+    public function render($file, $data = [])
     {
-        return $this->renderWithViewer($file, $viewData);
+        return $this->renderWithViewer($file, $data);
     }
 
     /**
@@ -90,9 +97,7 @@ class View extends AbstractWithViewData
      */
     public function asContents($content)
     {
-        $viewData = ['contents' => $content];
-
-        return $this->renderWithViewer($this->content_view, $viewData);
+        return $this->renderWithViewer($this->content_view, ['contents' => $content]);
     }
 
     /**
@@ -180,22 +185,22 @@ class View extends AbstractWithViewData
      * calls the presenter to create a view to respond.
      *
      * @param callable|PresenterInterface|string $presenter
-     * @param mixed|ViewDataInterface            $viewData
      * @return ResponseInterface
      */
-    public function call($presenter, $viewData = null)
+    public function call($presenter)
     {
+        $viewData = clone($this->viewData);
         if ($presenter instanceof PresenterInterface) {
-            return $this->execCallable([$presenter, '__invoke'], $viewData);
+            return $this->callPresenter([$presenter, '__invoke'], $viewData);
         }
         if (is_callable($presenter)) {
-            return $this->execCallable($presenter, $viewData);
+            return $this->callPresenter($presenter, $viewData);
         }
         if (!$resolver = $this->resolver) {
             throw new \BadMethodCallException('set resolver to call a presenter!');
         }
 
-        return $this->execCallable($resolver($presenter), $viewData);
+        return $this->callPresenter($resolver($presenter), $viewData);
     }
 
     /**
@@ -203,7 +208,7 @@ class View extends AbstractWithViewData
      * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    private function execCallable($callable, $viewData)
+    private function callPresenter($callable, $viewData)
     {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException;

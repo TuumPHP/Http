@@ -76,7 +76,7 @@ class PlatesViewer implements ViewerInterface
     {
         if ($viewData instanceof ViewDataInterface) {
             $viewHelper->setViewData($viewData);
-            return $viewData->getRawData();
+            return $viewData->getExtra();
         } elseif (is_array($viewData)) {
             return $viewData;
         }

@@ -84,7 +84,12 @@ class Error extends AbstractWithViewData
      */
     public function asView($status, $viewData = null)
     {
-        return $this->errorView->__invoke($this->request, $this->response, $status, $viewData);
+        $contents = $this->errorView->__invoke($status, $viewData);
+        $stream = $this->response->getBody();
+        $stream->rewind();
+        $stream->write($contents);
+        
+        return $this->response;
     }
 
     /**
@@ -96,7 +101,7 @@ class Error extends AbstractWithViewData
     {
         if (isset($this->methodStatus[$method])) {
             $data = isset($args[0]) ? $args[0] : null;
-            return $this->asView($this->methodStatus[$method], $data);
+            return $this->asView($this->methodStatus[$method], $this->viewData);
         }
         throw new \BadMethodCallException;
     }

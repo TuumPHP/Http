@@ -102,7 +102,7 @@ class ViewHelper
         };
         $view->setData($get('getData'));
         $view->setErrors($get('getInputErrors'));
-        $view->setInputs($get('getInputData'));
+        $view->setInputs($get('getInput'));
         $view->setMessage($get('getMessages'));
         $this->viewData = $viewData;
 
@@ -218,17 +218,16 @@ class ViewHelper
 
     /**
      * @param string              $viewFile
-     * @param null|mixed|ViewData $viewData
+     * @param array $data
      * @return string
      */
-    public function render($viewFile, $viewData = null)
+    public function render($viewFile, $data = [])
     {
         if (!$this->responder) {
             return '';
         }
         $response = $this->prepareResponseStream($this->response);
-        $viewData = $viewData ?: $this->viewData;
-        $response = $this->responder->view($this->request, $response)->render($viewFile, $viewData);
+        $response = $this->responder->view($this->request, $response)->render($viewFile, $data);
 
         return $this->returnResponseBody($response);
     }

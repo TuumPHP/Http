@@ -4,6 +4,7 @@ use App\App\Dispatcher;
 use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
+use Tuum\Respond\Service\Renderer\Plates;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\PlatesViewer;
 use Tuum\Respond\Service\TuumViewer;
@@ -22,7 +23,7 @@ return function (array $config, Dispatcher $app) {
     if ($config['view'] === 'twig') {
         $viewer = TwigViewer::forge(__DIR__ . '/twigs');
     } elseif ($config['view'] === 'plates') {
-        $viewer = PlatesViewer::forge(__DIR__ . '/plates');
+        $viewer = Plates::forge(__DIR__ . '/plates');
     } else {
         $viewer = TuumViewer::forge(__DIR__ . '/views');
     }

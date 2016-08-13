@@ -46,7 +46,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
      */
     function setting_viewDataForger_returns_other_object()
     {
-        $res = $this->responder->withViewDataForger(function() {return 'forged';});
+        $res = $this->responder->setViewDataForger(function() {return 'forged';});
         $this->assertEquals('forged', $res->getViewData());
     }
 }
