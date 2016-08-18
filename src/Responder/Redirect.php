@@ -43,18 +43,15 @@ class Redirect extends AbstractWithViewData
      * the $uri must be a full uri (like http://...), or a UriInterface object.
      *
      * @param UriInterface|string     $uri
-     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toAbsoluteUri($uri, $viewData = null)
+    public function toAbsoluteUri($uri)
     {
         if ($uri instanceof UriInterface) {
             $uri = $uri->withQuery($this->query);
             $uri = (string)$uri;
         }
-        if ($viewData) {
-            Respond::session($this->request)->setFlash(ViewDataInterface::MY_KEY, $viewData);
-        }
+        Respond::session($this->request)->setFlash(ViewDataInterface::MY_KEY, $this->viewData);
 
         return $this->response
             ->withStatus(302)
@@ -66,40 +63,37 @@ class Redirect extends AbstractWithViewData
      * uses current hosts and scheme.
      *
      * @param string                  $path
-     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toPath($path, $viewData = null)
+    public function toPath($path)
     {
         $uri = $this->request->getUri()->withPath($path);
 
-        return $this->toAbsoluteUri($uri, $viewData);
+        return $this->toAbsoluteUri($uri);
     }
 
     /**
      * @param string                  $path
-     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toBasePath($path = '', $viewData = null)
+    public function toBasePath($path = '')
     {
         $path = '/' . ltrim($path, '/');
         $base = ReqAttr::getBasePath($this->request);
         $path = rtrim($base, '/') . $path;
         $path = rtrim($path, '/');
 
-        return $this->toPath($path, $viewData);
+        return $this->toPath($path);
     }
 
     /**
-     * @param mixed|ViewDataInterface $viewData
      * @return ResponseInterface
      */
-    public function toReferrer($viewData = null)
+    public function toReferrer()
     {
         $referrer = ReqAttr::getReferrer($this->request);
 
-        return $this->toAbsoluteUri($referrer, $viewData);
+        return $this->toAbsoluteUri($referrer);
     }
 
 }

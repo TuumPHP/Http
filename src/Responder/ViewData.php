@@ -59,41 +59,14 @@ class ViewData implements ViewDataInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ViewDataInterface
-     */
-    public function withRequest($request, $response)
-    {
-        $self = clone($this);
-        $self->request = $request;
-        $self->response = $response;
-        return $self;
-    }
-
-    /**
-     * @return ServerRequestInterface
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function getResponse()
-    {
-        return $this->response;
-    }
-
-    /**
+     * @param ResponseInterface      $response
      * @return ViewHelper
      */
-    public function createHelper()
+    public function createHelper(ServerRequestInterface $request, ResponseInterface $response)
     {
         $helper = ViewHelper::forge();
         $helper->setViewData($this);
-        $helper->start($this->request, $this->response);
+        $helper->start($request, $response);
         
         return $helper;
     }

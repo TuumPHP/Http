@@ -91,9 +91,7 @@ class ErrorView implements ErrorViewInterface
     public function __invoke($status, $viewData)
     {
         $file = $this->findViewFromStatus($status);
-        $view    = $viewData->createHelper();
-        $data    = ['view' => $view];
 
-        return $this->renderer->__invoke($file, $data);
+        return $this->renderer->__invoke($file, $viewData);
     }
 }

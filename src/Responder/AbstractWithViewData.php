@@ -52,7 +52,7 @@ abstract class AbstractWithViewData
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
-        $self->viewData = $viewData->withRequest($request, $response);
+        $self->viewData = $viewData;
 
         return $self;
     }

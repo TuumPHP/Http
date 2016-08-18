@@ -42,25 +42,10 @@ interface ViewDataInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ViewDataInterface
-     */
-    public function withRequest($request, $response);
-
-    /**
-     * @return ServerRequestInterface
-     */
-    public function getRequest();
-
-    /**
-     * @return ResponseInterface
-     */
-    public function getResponse();
-
-    /**
+     * @param ResponseInterface      $response
      * @return ViewHelper
      */
-    public function createHelper();
+    public function createHelper(ServerRequestInterface $request, ResponseInterface $response);
         
     /**
      * set a raw data.

@@ -43,7 +43,7 @@ return function (Dispatcher $app, Responder $responder) {
                     $responder->withView(function(ViewDataInterface $view) {
                         return $view->setSuccess('logged as:\' . $post[\'login\']');
                     });
-                    return $responder->redirect($request, $response)->toPath('/', $viewData);
+                    return $responder->redirect($request, $response)->toPath('/');
                 }
                 $responder->withView(function(ViewDataInterface $view) {
                     return $view->setAlert('enter login name');
