@@ -4,7 +4,6 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 
 /**
  * Class Error
@@ -79,13 +78,13 @@ class Error extends AbstractWithViewData
 
     /**
      * @param int                     $status
-     * @param mixed|ViewDataInterface $viewData
+     * @param array $data
      * @return ResponseInterface
      */
-    public function asView($status, $viewData = null)
+    public function asView($status, $data = [])
     {
-        $helper   = $this->viewData->createHelper($this->request, $this->response);
-        $contents = $this->errorView->__invoke($status, ['view' => $helper]);
+        $helper   = ['view' => $this->viewData->createHelper($this->request, $this->response)];
+        $contents = $this->errorView->__invoke($status, $data, $helper);
         $stream = $this->response->getBody();
         $stream->rewind();
         $stream->write($contents);
@@ -101,8 +100,8 @@ class Error extends AbstractWithViewData
     public function __call($method, $args)
     {
         if (isset($this->methodStatus[$method])) {
-            $data = isset($args[0]) ? $args[0] : null;
-            return $this->asView($this->methodStatus[$method], $this->viewData);
+            $data = isset($args[0]) ? $args[0] : [];
+            return $this->asView($this->methodStatus[$method], $data);
         }
         throw new \BadMethodCallException;
     }

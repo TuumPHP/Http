@@ -5,10 +5,9 @@ use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Service\Renderer\Plates;
+use Tuum\Respond\Service\Renderer\Tuum;
+use Tuum\Respond\Service\Renderer\Twig;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\PlatesViewer;
-use Tuum\Respond\Service\TuumViewer;
-use Tuum\Respond\Service\TwigViewer;
 
 /**
  * @param array      $config
@@ -21,11 +20,11 @@ return function (array $config, Dispatcher $app) {
      * this is the view for template.
      */
     if ($config['view'] === 'twig') {
-        $viewer = TwigViewer::forge(__DIR__ . '/twigs');
+        $viewer = Twig::forge(__DIR__ . '/twigs');
     } elseif ($config['view'] === 'plates') {
         $viewer = Plates::forge(__DIR__ . '/plates');
     } else {
-        $viewer = TuumViewer::forge(__DIR__ . '/views');
+        $viewer = Tuum::forge(__DIR__ . '/views');
     }
 
     /**

@@ -6,9 +6,10 @@ interface ErrorViewInterface
     /**
      * renders $view_file with $data.
      *
-     * @param int                     $status
-     * @param mixed|ViewDataInterface $viewData
+     * @param int   $status
+     * @param array $data
+     * @param array $helper
      * @return string
      */
-    public function __invoke($status, $viewData);
+    public function __invoke($status, array $data, array $helper = []);
 }

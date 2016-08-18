@@ -4,7 +4,6 @@ namespace Tuum\Respond\Service;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Interfaces\ErrorViewInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 
 class ErrorView implements ErrorViewInterface
 {
@@ -84,14 +83,15 @@ class ErrorView implements ErrorViewInterface
     /**
      * create a response for error view.
      *
-     * @param int                     $status
-     * @param mixed|ViewDataInterface $viewData
+     * @param int   $status
+     * @param array $data
+     * @param array $helper
      * @return ResponseInterface
      */
-    public function __invoke($status, $viewData)
+    public function __invoke($status, array $data, array $helper = [])
     {
         $file = $this->findViewFromStatus($status);
 
-        return $this->renderer->__invoke($file, $viewData);
+        return $this->renderer->__invoke($file, $data, $helper);
     }
 }

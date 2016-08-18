@@ -123,7 +123,7 @@ class SessionStorage implements SessionStorageInterface
      */
     public function getFlash($key, $alt = null)
     {
-        return $this->segment->getflash($key, $alt);
+        return $this->segment->getFlash($key, $alt);
     }
 
     /**

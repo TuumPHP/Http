@@ -13,7 +13,8 @@ interface RendererInterface
     /**
      * @param string $template
      * @param array  $data
+     * @param array  $helper
      * @return string
      */
-    public function __invoke($template, array $data);
+    public function __invoke($template, array $data, array $helper = []);
 }

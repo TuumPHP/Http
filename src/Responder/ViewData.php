@@ -48,16 +48,6 @@ class ViewData implements ViewDataInterface
     private $inputErrors = [];
 
     /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-
-    /**
-     * @var ResponseInterface
-     */
-    private $response;
-
-    /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @return ViewHelper

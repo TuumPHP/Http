@@ -1,22 +1,38 @@
 <?php
 namespace Tuum\Respond\Service\Renderer;
 
-use League\Plates\Engine;
 use Tuum\Respond\Interfaces\RendererInterface;
+use Tuum\Respond\Service\ViewHelper;
+use Tuum\View\Renderer;
 
-class Plates implements RendererInterface
+/**
+ * Class ViewStream
+ *
+ * uses Tuum/View as template renderer for ViewStream.
+ * include 1.0 or later version.
+ *
+ * @package Tuum\Respond\Service
+ */
+class Tuum implements RendererInterface
 {
     /**
-     * @var Engine
+     * @var Renderer
      */
     private $renderer;
 
     /**
-     * @param Engine   $renderer
+     * @var ViewHelper
      */
-    public function __construct($renderer)
+    private $viewHelper;
+
+    /**
+     * @param Renderer   $renderer
+     * @param ViewHelper $view
+     */
+    public function __construct($renderer, $view = null)
     {
         $this->renderer   = $renderer;
+        $this->viewHelper = $view;
     }
 
     /**
@@ -25,16 +41,16 @@ class Plates implements RendererInterface
      *
      * @param string   $root
      * @param callable $callable
-     * @return Plates
+     * @return static
      */
     public static function forge($root, $callable = null)
     {
-        $renderer = new Engine($root);
+        $renderer = Renderer::forge($root);
         if (is_callable($callable)) {
             $renderer = call_user_func($callable, $renderer);
         }
 
-        return new static($renderer);
+        return new static($renderer, ViewHelper::forge());
     }
 
     /**
@@ -45,9 +61,8 @@ class Plates implements RendererInterface
      */
     public function __invoke($template, array $data, array $helper = [])
     {
-        if (isset($helper)) {
-            $this->renderer->addData($helper);
-        }
-        return $this->renderer->render($template, $data);
+        $view_data = array_merge($data, $helper);
+
+        return $this->renderer->render($template, $view_data);
     }
 }
