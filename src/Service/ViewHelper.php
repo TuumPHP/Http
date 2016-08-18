@@ -201,17 +201,16 @@ class ViewHelper
 
     /**
      * @param string|PresenterInterface $presenter
-     * @param null|mixed|ViewData       $viewData
+     * @param null|mixed|ViewData       $data
      * @return string
      */
-    public function call($presenter, $viewData = null)
+    public function call($presenter, array $data = [])
     {
         if (!$this->responder) {
             return '';
         }
         $response = $this->prepareResponseStream($this->response);
-        $viewData = $viewData ?: $this->viewData;
-        $response = $this->responder->view($this->request, $response)->call($presenter, $viewData);
+        $response = $this->responder->view($this->request, $response)->call($presenter, $data);
 
         return $this->returnResponseBody($response);
     }

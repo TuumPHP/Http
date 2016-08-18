@@ -184,11 +184,13 @@ class View extends AbstractWithViewData
      * calls the presenter to create a view to respond.
      *
      * @param callable|PresenterInterface|string $presenter
+     * @param array                              $data
      * @return ResponseInterface
      */
-    public function call($presenter)
+    public function call($presenter, array $data = [])
     {
         $viewData = clone($this->viewData);
+        $viewData->setData($data);
         if ($presenter instanceof PresenterInterface) {
             return $this->callPresenter([$presenter, '__invoke'], $viewData);
         }
