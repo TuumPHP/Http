@@ -66,7 +66,7 @@ class View extends AbstractWithViewData
      */
     private function renderWithViewer($file, $data = [])
     {
-        $helper    = ['view' => $this->viewData->createHelper($this->request, $this->response, $this->responder)];
+        $helper    = ['view' => $this->getViewHelper()];
         $content = $this->renderer->__invoke($file, $data, $helper);
         $stream  = $this->response->getBody();
         $stream->rewind();

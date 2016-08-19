@@ -1,10 +1,7 @@
 <?php
 namespace Tuum\Respond\Responder;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Service\ViewHelper;
 
 /**
  * Class ViewData
@@ -47,20 +44,6 @@ class ViewData implements ViewDataInterface
      */
     private $inputErrors = [];
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @return ViewHelper
-     */
-    public function createHelper(ServerRequestInterface $request, ResponseInterface $response, $responder)
-    {
-        $helper = ViewHelper::forge();
-        $helper->setViewData($this);
-        $helper->start($request, $response, $responder);
-        
-        return $helper;
-    }
-    
     /**
      * set a raw data.
      *

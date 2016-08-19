@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder;
+use Tuum\Respond\Service\ViewHelper;
 
 /**
  * Class AbstractWithViewData
@@ -73,5 +74,13 @@ abstract class AbstractWithViewData
         $self           = clone($this);
         $self->viewData = is_callable($data) ? $data(clone($this->viewData)) : $data;
         return $self;
+    }
+
+    /**
+     * @return ViewHelper
+     */
+    protected function getViewHelper()
+    {
+        return ViewHelper::forge($this->request, $this->response, $this->responder, $this->viewData);
     }
 }

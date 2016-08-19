@@ -68,11 +68,19 @@ class ViewHelper
     }
 
     /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param Responder              $responder
+     * @param ViewDataInterface      $viewData
      * @return ViewHelper
      */
-    public static function forge()
+    public static function forge($request, $response, $responder, $viewData)
     {
-        return new self(new DataView());
+        $self = new self(new DataView());
+        $self->start($request, $response, $responder);
+        $self->setViewData($viewData);
+
+        return $self;
     }
 
     /**
