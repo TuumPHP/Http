@@ -3,18 +3,26 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 
 trait ControllerTrait
 {
     /**
      * @var ServerRequestInterface
      */
-    protected $request;
+    private $request;
 
     /**
      * @var ResponseInterface
      */
-    protected $response;
+    private $response;
+
+    /**
+     * @var Responder
+     */
+    private $responder;
 
     /**
      * call this dispatch method to respond.
@@ -27,10 +35,15 @@ trait ControllerTrait
     {
         $this->request  = $request;
         $this->response = $response;
+        if (!$this->responder) {
+            $this->responder = Respond::getResponder($request);
+        }
         return $this->_dispatch();
     }
     
     /**
+     * must implement this method, which dispatches one of own method.
+     *
      * @return ResponseInterface|null
      */
     abstract protected function _dispatch();
@@ -53,6 +66,14 @@ trait ControllerTrait
             $this->response->getBody()->write($string);
         }
         return $this->response;
+    }
+
+    /**
+     * @return Responder
+     */
+    protected function getResponder()
+    {
+        return $this->responder;
     }
     
     /**
