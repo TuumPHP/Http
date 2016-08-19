@@ -63,7 +63,8 @@ abstract class AbstractWithViewData
      */
     public function withView($data)
     {
-        $this->viewData = is_callable($data) ? $data($this->viewData) : $data;
-        return $this;
+        $self           = clone($this);
+        $self->viewData = is_callable($data) ? $data(clone($this->viewData)) : $data;
+        return $self;
     }
 }
