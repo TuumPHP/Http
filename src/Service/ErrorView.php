@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Interfaces\RenderErrorInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
 
-class RenderError implements RenderErrorInterface
+class ErrorView implements RenderErrorInterface
 {
     /**
      * @var RendererInterface

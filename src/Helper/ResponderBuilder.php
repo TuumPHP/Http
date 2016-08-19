@@ -6,7 +6,7 @@ use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Service\RenderError;
+use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Interfaces\RenderErrorInterface;
 
 class ResponderBuilder
@@ -49,7 +49,7 @@ class ResponderBuilder
     public static function withView(RendererInterface $viewer, $errorOption = [], $content_view = null, $resolver = null)
     {
         $view  = new View($viewer, $content_view, $resolver);
-        $error = RenderError::forge($viewer, $errorOption);
+        $error = ErrorView::forge($viewer, $errorOption);
 
         $self = new Responder(
             $view,
