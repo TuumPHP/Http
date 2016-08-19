@@ -1,7 +1,7 @@
 <?php
 namespace Tuum\Respond\Interfaces;
 
-interface ErrorViewInterface
+interface RenderErrorInterface
 {
     /**
      * renders $view_file with $data.

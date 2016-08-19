@@ -3,7 +3,7 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
-use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\RenderErrorInterface;
 
 /**
  * Class Error
@@ -22,7 +22,7 @@ class Error extends AbstractWithViewData
     const INTERNAL_ERROR = 500;
 
     /**
-     * @var null|ErrorViewInterface
+     * @var null|RenderErrorInterface
      */
     private $errorView;
 
@@ -41,9 +41,9 @@ class Error extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param ErrorViewInterface $view
+     * @param RenderErrorInterface $view
      */
-    public function __construct(ErrorViewInterface $view)
+    public function __construct(RenderErrorInterface $view)
     {
         $this->errorView = $view;
     }

@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Service\ErrorView;
+use Tuum\Respond\Service\RenderError;
 use Tuum\Respond\Responder\ViewData;
 use Tuum\Respond\Service\ViewerTrait;
 use Zend\Diactoros\Request;
@@ -104,7 +104,7 @@ class ErrorViewTest extends \PHPUnit_Framework_TestCase
      */
     function forget_sets_options()
     {
-        $error = ErrorView::forge($this->view, [
+        $error = RenderError::forge($this->view, [
             'default' => 'tested-default',
             'status'  => [
                 '123' => 'tested-status'
@@ -120,7 +120,7 @@ class ErrorViewTest extends \PHPUnit_Framework_TestCase
      */
     function getStream_returns_stream_with_error_code()
     {
-        $error = ErrorView::forge($this->view, [
+        $error = RenderError::forge($this->view, [
             'default' => 'tested-default',
             'status'  => [
                 '123' => 'tested-status'

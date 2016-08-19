@@ -2,10 +2,10 @@
 namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Interfaces\ErrorViewInterface;
+use Tuum\Respond\Interfaces\RenderErrorInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
 
-class ErrorView implements ErrorViewInterface
+class RenderError implements RenderErrorInterface
 {
     /**
      * @var RendererInterface

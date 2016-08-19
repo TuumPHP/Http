@@ -22,7 +22,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         class_exists(Respond::class);
         $this->responder = ResponderBuilder::withServices(
             new LocalView(),
-            new ErrorBack()
+            new RenderErrorBack()
         );
         $this->responder = $this->responder->withSession(SessionStorage::forge('tuum-app'))->withResponse(new Response());
     }
