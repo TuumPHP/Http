@@ -9,11 +9,11 @@ Simple Code
 Following shows an example code for building a `$responder` object:
 
 ```php
-use Tuum\Respond\Service\TwigView;
+use Tuum\Respond\Service\Renderer\Twig;
 use Tuum\Respond\Helper\ResponderBuilder;
 
 $responder = ResponderBuilder::withView(
-    TwigView::forge('/dir/twig')
+    Twig::forge('/template/dir/twig')
 );
 ```
 
@@ -26,11 +26,13 @@ $app->add('/',
     function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
     
         // 1. create $viewData and set success message, and
-        $viewData = $responder->getViewData()->setSuccess('Welcome!');
+        $responder = $responder->withView(function(ViewDataInterface $view) {
+            $view->setSuccess('Welcome!');
+        });
     
         // 2. render `index` template with the data. 
         return $responder->view($request, $response)
-            ->render('index', $viewData);
+            ->render('index');
     });
 ```
 
@@ -47,10 +49,12 @@ The route callable simply renders `jump` template with default success message.
 ```php
 $app->add('/jump',
     function ($request, $response) use ($responder) {
-        $viewData = $responder->getViewData()
+        $responder
+            ->getViewData()
             ->setSuccess('try jump to another URL. ');
-        return $responder->view($request, $response)
-            ->render('jump', $viewData);
+        return $responder
+            ->view($request, $response)
+            ->render('jump');
     });
 ```
 
@@ -63,14 +67,15 @@ $app->add('/jumper',
     function ($request, $response) use ($responder) {
 
         // 1. set error messages etc. to $viewData.
-        $viewData = $responder->getViewData()
+        $responder->getViewData()
             ->setError('redirected back!')
             ->setInputData(['jumped' => 'redirected text'])
             ->setInputErrors(['jumped' => 'redirected error message']);
 
         // 2. redirect back to /jump with the viewData. 
-        return $responder->redirect($request, $response)
-            ->toPath('jump', $viewData);
+        return $responder
+            ->redirect($request, $response)
+            ->toPath('jump');
     });
 ```
 
@@ -91,8 +96,10 @@ class PresentViewer implements PresenterInterface {
     /** @var Responder */
     private $responder;
     function __invoke($request, $response, $viewData) {
-        return $this->responder->view($request, $response)
-        ->render('some view', $viewData);
+        return $this->responder
+            ->withView($viewData)
+            ->view($request, $response)
+            ->render('some view', $viewData);
     }
 }
 ```

@@ -25,7 +25,7 @@ It helps to compose a response object for developing a __traditional web site__
 To install `Tuum/Respond`, use the composer. 
 
 ```sh
-$ composer require "tuum/respond:^2.0"
+$ composer require "tuum/respond:^3.0"
 ```
 
 ### Demo
@@ -35,7 +35,7 @@ To see `Tuum/Respond` working in a sample site, use git and PHP's internal serve
 ```sh
 $ git clone https://github.com/TuumPHP/Respond
 $ cd Respond
-$ git checkout 2.x-dev
+$ git checkout 3.x-dev
 $ composer install
 $ cd public
 $ php -S localhost:8888 index.php

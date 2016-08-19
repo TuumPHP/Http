@@ -136,12 +136,9 @@ class Responder
      */
     public function withView($data)
     {
-        if (is_callable($data)) {
-            $this->viewData = $data($this->getViewData());
-        } else {
-            $this->viewData = $data;
-        }
-        return $this;
+        $self           = clone($this);
+        $self->viewData = is_callable($data) ? $data(clone($this->getViewData())) : $data;
+        return $self;
     }
 
     /**

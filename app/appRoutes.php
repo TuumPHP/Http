@@ -18,38 +18,36 @@ return function (Dispatcher $app, Responder $responder) {
     $app->add('/',
         function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
             if (!$responder->session()->get('first.time')) {
-                $responder->withView(function(ViewDataInterface $view) {
+                $responder->session()->set('first.time', true);
+                $responder = $responder->withView(function(ViewDataInterface $view) {
                     return $view->setSuccess('Thanks for downloading Tuum/Respond.');
                 });
-                $responder->session()->set('first.time', true);
             }
-            return $responder->view($request, $response)
+            return $responder
+                ->view($request, $response)
                 ->render('index');
         });
 
     $app->add('/login',
         function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
             $post = $request->getParsedBody();
-            $viewData = $responder->getViewData();
+            $view = $responder->getViewData();
             if (isset($post['logout'])) {
                 $responder->session()->set('login.name', null);
-                $responder->withView(function(ViewDataInterface $view) {
-                    return $view->setSuccess('logged out');
-                });
+                $view->setSuccess('logged out');
             }
             elseif (isset($post['login'])) {
                 if ($post['login']) {
                     $responder->session()->set('login.name', $post['login']);
-                    $responder->withView(function(ViewDataInterface $view) {
-                        return $view->setSuccess('logged as:\' . $post[\'login\']');
-                    });
-                    return $responder->redirect($request, $response)->toPath('/');
+                    $view->setSuccess('logged as: ' . $post['login']);
+                } else {
+                    $view->setAlert('enter login name');
                 }
-                $responder->withView(function(ViewDataInterface $view) {
-                    return $view->setAlert('enter login name');
-                });
             }
-            return $responder->redirect($request, $response)->toPath('/');
+            return $responder
+                ->withView($view)
+                ->redirect($request, $response)
+                ->toPath('/');
         });
 
     /**
@@ -57,12 +55,11 @@ return function (Dispatcher $app, Responder $responder) {
      */
     $app->add('/jump',
         function ($request, $response) use ($responder) {
-            $responder->withView(function (ViewDataInterface $viewData) {
+            return $responder->withView(function (ViewDataInterface $viewData) {
                 return $viewData->setSuccess('try jump to another URL. ')
                     ->setData('jumped', 'text in control')
                     ->setData('date', (new DateTime('now'))->format('Y-m-d'));
-            });
-            return $responder->view($request, $response)
+            })  ->view($request, $response)
                 ->render('jump');
         });
 
@@ -79,7 +76,8 @@ return function (Dispatcher $app, Responder $responder) {
                     'happy' => 'be happy!'
                 ]);
 
-            return $responder->redirect($request, $response)
+            return $responder
+                ->redirect($request, $response)
                 ->toPath('jump');
         });
 
