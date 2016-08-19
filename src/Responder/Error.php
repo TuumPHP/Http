@@ -83,7 +83,7 @@ class Error extends AbstractWithViewData
      */
     public function asView($status, $data = [])
     {
-        $helper   = ['view' => $this->viewData->createHelper($this->request, $this->response)];
+        $helper   = ['view' => $this->viewData->createHelper($this->request, $this->response, $this->responder)];
         $contents = $this->errorView->__invoke($status, $data, $helper);
         $stream = $this->response->getBody();
         $stream->rewind();
@@ -95,7 +95,7 @@ class Error extends AbstractWithViewData
     /**
      * @param string $method
      * @param array  $args
-     * @return ResponseInterface|$this|static|mixed
+     * @return ResponseInterface
      */
     public function __call($method, $args)
     {

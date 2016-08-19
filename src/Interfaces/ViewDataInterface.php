@@ -9,6 +9,7 @@ namespace Tuum\Respond\Interfaces;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Service\ViewHelper;
 
 
@@ -43,9 +44,10 @@ interface ViewDataInterface
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
+     * @param Responder              $responder
      * @return ViewHelper
      */
-    public function createHelper(ServerRequestInterface $request, ResponseInterface $response);
+    public function createHelper(ServerRequestInterface $request, ResponseInterface $response, $responder);
         
     /**
      * set a raw data.

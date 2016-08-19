@@ -52,11 +52,11 @@ class ViewData implements ViewDataInterface
      * @param ResponseInterface      $response
      * @return ViewHelper
      */
-    public function createHelper(ServerRequestInterface $request, ResponseInterface $response)
+    public function createHelper(ServerRequestInterface $request, ResponseInterface $response, $responder)
     {
         $helper = ViewHelper::forge();
         $helper->setViewData($this);
-        $helper->start($request, $response);
+        $helper->start($request, $response, $responder);
         
         return $helper;
     }

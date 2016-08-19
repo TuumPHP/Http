@@ -14,7 +14,6 @@ use Tuum\Form\Dates;
 use Tuum\Form\Forms;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\ViewData;
 
@@ -79,13 +78,14 @@ class ViewHelper
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
+     * @param Responder              $responder
      * @return $this
      */
-    public function start($request, $response)
+    public function start($request, $response, $responder)
     {
         $this->request   = $request;
         $this->response  = $response;
-        $this->responder = Respond::getResponder($request);
+        $this->responder = $responder;
 
         return $this;
     }

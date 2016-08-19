@@ -4,6 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Responder;
 
 /**
  * Class AbstractWithViewData
@@ -35,24 +36,30 @@ abstract class AbstractWithViewData
     protected $viewData;
 
     /**
+     * @var Responder
+     */
+    protected $responder;
+
+    /**
      * initializes responders with $request, $response, $viewData,
      * and optionally $session. intended to be internal API used
      * by Responder object and tests.
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewDataInterface      $viewData
+     * @param Responder              $responder
      * @return $this
      */
     public function withRequest(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        ViewDataInterface $viewData
+        Responder $responder
     ) {
         $self           = clone($this);
         $self->request  = $request;
         $self->response = $response;
-        $self->viewData = $viewData;
+        $self->responder = $responder;
+        $self->viewData  = clone($responder->getViewData());
 
         return $self;
     }
