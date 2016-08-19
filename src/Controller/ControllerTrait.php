@@ -3,7 +3,6 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
@@ -22,7 +21,7 @@ trait ControllerTrait
     /**
      * @var Responder
      */
-    private $responder;
+    protected $responder;
 
     /**
      * call this dispatch method to respond.

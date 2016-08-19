@@ -3,22 +3,21 @@ namespace App\App;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Responder;
+use Psr\Http\Message\UploadedFileInterface;
+use Tuum\Respond\Controller\DispatchByMethodTrait;
+use Tuum\Respond\Controller\ResponderHelperTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
-use Zend\Diactoros\UploadedFile;
 
 class UploadController
 {
+    use DispatchByMethodTrait;
+
+    use ResponderHelperTrait;
+
     /**
      * @var PresenterInterface
      */
     private $viewer;
-
-    /**
-     * @var Responder
-     */
-    private $responder;
 
     /**
      * UploadController constructor.
@@ -51,37 +50,27 @@ class UploadController
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $method = $request->getMethod() === 'POST' ? 'onPost' : 'onGet';
-        return $this->$method($request, $response);
+        return $this->dispatch($request, $response);
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function onGet(ServerRequestInterface $request, ResponseInterface $response)
+    public function onGet()
     {
-        return $this->responder->view($request, $response)
-            ->call($this->viewer);
+        return $this->call([$this->viewer, 'onGet']);
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function onPost(ServerRequestInterface $request, ResponseInterface $response)
+    public function onPost()
     {
-        /** @var UploadedFile $upload */
-        $uploaded = $request->getUploadedFiles();
+        /** @var UploadedFileInterface $upload */
+        $uploaded = $this->getRequest()->getUploadedFiles();
         $upload   = $uploaded['up'][0];
-        $this->responder->getViewData()
-            ->setData('isUploaded', true)
-            ->setData('dump', print_r($uploaded, true))
-            ->setData('upload', $upload)
-            ->setData('error_code', $upload->getError());
-        return $this->responder->view($request, $response)
-            ->call([$this->viewer, '__invoke']); // callable
+        return $this->call([$this->viewer, 'onPost'], [
+            'upload' => $upload,
+        ]);
     }
 }

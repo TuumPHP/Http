@@ -2,17 +2,14 @@
 namespace App\App;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
+use Tuum\Respond\Controller\PresenterTrait;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Responder;
 use Tuum\Respond\Interfaces\PresenterInterface;
 
 class UploadViewer implements PresenterInterface
 {
-    /**
-     * @var Responder
-     */
-    private $responder;
+    use PresenterTrait;
 
     /**
      * @param Dispatcher $app
@@ -26,37 +23,38 @@ class UploadViewer implements PresenterInterface
     }
 
     /**
-     * renders $view and returns a new $response.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @param ViewDataInterface      $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewData)
+    protected function onGet($viewData)
+    {
+        $viewData
+            ->setSuccess('Please upload a file (max 512 byte). ')
+            ->setData('isUploaded', false);
+        return $this->view($viewData)->render('upload');
+    }
+
+    /**
+     * @param ViewDataInterface      $viewData
+     * @return ResponseInterface
+     */
+    protected function onPost($viewData)
     {
         $data = $viewData->getData();
-        if (!isset($data['isUploaded']) || !$data['isUploaded']) {
-            $viewData->setSuccess('Please upload a file (max 512 byte). ');
-        } else {
-            $viewData = $this->setUpMessage($viewData);
-        }
-        return $this->responder->view($request, $response)
-            ->withView($viewData)
-            ->render('upload');
+        $viewData = $this->setUpMessage($viewData, $data['upload']);
+
+        return $this->view($viewData)->render('upload');
     }
 
     /**
      * @param ViewDataInterface $viewData
+     * @param UploadedFileInterface      $upload
      * @return ViewDataInterface
      */
-    private function setUpMessage($viewData)
+    private function setUpMessage($viewData, $upload)
     {
-        $data       = $viewData->getData();
-        $error_code = isset($data['error_code']) ? $data['error_code'] : null;
-        if (!$error_code) {
-            return $viewData;
-        }
+        $error_code = $upload->getError();
+
         if ($error_code === UPLOAD_ERR_NO_FILE) {
             $viewData->setError('please uploaded a file');
         } elseif ($error_code === UPLOAD_ERR_FORM_SIZE) {
@@ -68,6 +66,11 @@ class UploadViewer implements PresenterInterface
         } else {
             $viewData->setError('uploaded a file');
         }
+        $viewData
+            ->setData('isUploaded', true)
+            ->setData('dump', print_r($upload, true))
+            ->setData('upload', $upload)
+            ->setData('error_code', $error_code);
         return $viewData;
     }
 }

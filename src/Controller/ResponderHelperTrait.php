@@ -3,13 +3,14 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 
-trait ResponderTrait
+trait ResponderHelperTrait
 {
     /**
      * @return Responder
@@ -55,11 +56,30 @@ trait ResponderTrait
     }
 
     /**
+     * @return SessionStorageInterface
+     */
+    protected function session()
+    {
+        return $this->getResponder()->session();
+    }
+
+    /**
      * @return ViewDataInterface
      */
     protected function getViewData()
     {
         return $this->getResponder()->getViewData();
+    }
+
+    /**
+     * @param mixed $presenter
+     * @param array $data
+     * @return ResponseInterface
+     */
+    protected function call($presenter, array $data = [])
+    {
+        return $this->getResponder()->view($this->getRequest(), $this->getResponse())
+            ->call($presenter, $data);
     }
 
     /**
