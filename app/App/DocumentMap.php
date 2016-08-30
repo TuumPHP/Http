@@ -40,7 +40,7 @@ class DocumentMap
     public static function forge($app)
     {
         $docs_dir = dirname(dirname(__DIR__)) . '/docs';
-        $mapper   = new FileMap(new Locator($docs_dir), MarkUp::forge($docs_dir, null));
+        $mapper   = FileMap::forge($docs_dir);
         $self     = new self($mapper, $app->get('responder'));
 
         return $self;
