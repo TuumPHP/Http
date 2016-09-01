@@ -1,6 +1,7 @@
 <?php
 namespace Tuum\Respond;
 
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
@@ -14,9 +15,9 @@ use Tuum\Respond\Responder\ViewData;
 class Responder
 {
     /**
-     * @var SessionStorageInterface
+     * @var ContainerInterface
      */
-    private $session;
+    private $container;
 
     /**
      * @var ResponseInterface
@@ -24,7 +25,7 @@ class Responder
     private $response;
 
     /**
-     * @var AbstractWithViewData[]
+     * @var string[]
      */
     private $responders = [];
 
@@ -39,16 +40,15 @@ class Responder
     private $viewData;
 
     /**
-     * @param View     $view
-     * @param Redirect $redirect
-     * @param Error    $error
+     * @param ContainerInterface $c
      */
-    public function __construct($view, $redirect, $error)
+    public function __construct(ContainerInterface $c)
     {
+        $this->container = $c;
         $this->responders = [
-            'view'     => $view,
-            'redirect' => $redirect,
-            'error'    => $error,
+            'view'     => View::class,
+            'redirect' => Redirect::class,
+            'error'    => Error::class,
         ];
     }
 
@@ -60,8 +60,8 @@ class Responder
         if (isset($this->viewData)) {
             return $this->viewData;
         }
-        if ($this->session) {
-            if ($viewData = $this->session->getFlash(ViewDataInterface::MY_KEY)) {
+        if ($session = $this->session()) {
+            if ($viewData = $session->getFlash(ViewDataInterface::MY_KEY)) {
                 $this->viewData = clone($viewData);
                 return $this->viewData;
             }
@@ -93,22 +93,6 @@ class Responder
     {
         $this->viewDataForger = $callable;
         return $this;
-    }
-
-    /**
-     * set SessionStorage and retrieves ViewData from session's flash.
-     * execute this method before using responders.
-     *
-     * @api
-     * @param SessionStorageInterface $session
-     * @return Responder
-     */
-    public function withSession(SessionStorageInterface $session)
-    {
-        $self          = clone($this);
-        $self->session = $session;
-
-        return $self;
     }
 
     /**
@@ -149,7 +133,8 @@ class Responder
      */
     private function returnWith($responder, $request, $response)
     {
-        $responder = $this->responders[$responder];
+        /** @var AbstractWithViewData $responder */
+        $responder = $this->container->get($this->responders[$responder]);
         $response  = $response ?: $this->response;
 
         return $responder->withRequest($request, $response, $this);
@@ -196,6 +181,6 @@ class Responder
      */
     public function session()
     {
-        return $this->session;
+        return $this->container->get(SessionStorageInterface::class);
     }
 }

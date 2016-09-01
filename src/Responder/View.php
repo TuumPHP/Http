@@ -1,6 +1,7 @@
 <?php
 namespace Tuum\Respond\Responder;
 
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
@@ -24,7 +25,7 @@ class View extends AbstractWithViewData
     protected $renderer;
 
     /**
-     * @var callable|null
+     * @var ContainerInterface|null
      */
     public $resolver;
 
@@ -34,7 +35,7 @@ class View extends AbstractWithViewData
     /**
      * @param RendererInterface $view
      * @param null|string     $content_view
-     * @param null|callable   $resolver
+     * @param null|ContainerInterface   $resolver
      */
     public function __construct(RendererInterface $view, $content_view = null, $resolver = null)
     {
@@ -197,11 +198,10 @@ class View extends AbstractWithViewData
         if (is_callable($presenter)) {
             return $this->callPresenter($presenter, $viewData);
         }
-        if (!$resolver = $this->resolver) {
-            throw new \BadMethodCallException('set resolver to call a presenter!');
+        if ($this->resolver) {
+            return $this->callPresenter($this->resolver->get($presenter), $viewData);
         }
-
-        return $this->callPresenter($resolver($presenter), $viewData);
+        throw new \BadMethodCallException('cannot resolve a presenter.');
     }
 
     /**
@@ -212,7 +212,7 @@ class View extends AbstractWithViewData
     private function callPresenter($callable, $viewData)
     {
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException('resolver is not a callable.');
         }
 
         return call_user_func($callable, $this->request, $this->response, $viewData);

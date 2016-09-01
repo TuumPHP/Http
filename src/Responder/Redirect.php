@@ -5,7 +5,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Respond;
 
 class Redirect extends AbstractWithViewData
 {
@@ -51,7 +50,7 @@ class Redirect extends AbstractWithViewData
             $uri = $uri->withQuery($this->query);
             $uri = (string)$uri;
         }
-        Respond::session($this->request)->setFlash(ViewDataInterface::MY_KEY, $this->viewData);
+        $this->responder->session()->setFlash(ViewDataInterface::MY_KEY, $this->viewData);
 
         return $this->response
             ->withStatus(302)
