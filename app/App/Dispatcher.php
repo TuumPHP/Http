@@ -55,12 +55,11 @@ class Dispatcher
     {
         try {
 
-            $response = $this->_run($request, $response);
-            if (!$response) {
-                $responder = $this->get(Responder::class);
-                $response = $responder->error($request, $response)->notFound();
+            if ($response_returned = $this->_run($request, $response)) {
+                return $response_returned;
             }
-            return $response;
+            $responder = $this->get(Responder::class);
+            return $responder->error($request, $response)->notFound();
             
         } catch (\Exception $e) {
             $responder = $this->get(Responder::class);
