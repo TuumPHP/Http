@@ -41,7 +41,7 @@ class DocumentMap
     {
         $docs_dir = dirname(dirname(__DIR__)) . '/docs';
         $mapper   = FileMap::forge($docs_dir);
-        $self     = new self($mapper, $app->get('responder'));
+        $self     = new self($mapper, $app->get(Responder::class));
 
         return $self;
     }

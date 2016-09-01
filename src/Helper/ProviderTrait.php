@@ -29,7 +29,7 @@ trait ProviderTrait
             'app-name'       => 'tuum-app',
             // rendering options
             'template-path'  => null,
-            'content-file'   => 'layout/content',
+            'content-file'   => 'layouts/contents',
             // set up renderer
             'renderer'       => 'plates',   // set renderer type: plates, twig, or tuum.
             'plates-options' => [

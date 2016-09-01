@@ -10,8 +10,11 @@ use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
-return function (Dispatcher $app, Responder $responder) {
+return function (Dispatcher $app) {
 
+    /** @var Responder $responder */
+    $responder = $app->get(Responder::class);
+    
     /**
      * for top page /
      */

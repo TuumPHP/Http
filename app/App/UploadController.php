@@ -7,6 +7,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Tuum\Respond\Controller\DispatchByMethodTrait;
 use Tuum\Respond\Controller\ResponderHelperTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Responder;
 
 class UploadController
 {
@@ -39,7 +40,7 @@ class UploadController
     {
         $viewer          = UploadViewer::forge($app);
         $self            = new self($viewer);
-        $self->responder = $app->get('responder');
+        $self->responder = $app->get(Responder::class);
         return $self;
     }
 

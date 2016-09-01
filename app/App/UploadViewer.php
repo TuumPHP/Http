@@ -6,6 +6,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Tuum\Respond\Controller\PresenterTrait;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Responder;
 
 class UploadViewer implements PresenterInterface
 {
@@ -18,7 +19,7 @@ class UploadViewer implements PresenterInterface
     public static function forge($app)
     {
         $self            = new self;
-        $self->responder = $app->get('responder');
+        $self->responder = $app->get(Responder::class);
         return $self;
     }
 

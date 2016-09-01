@@ -5,25 +5,36 @@ use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqAttr;
+use Tuum\Respond\Responder;
 
 class Dispatcher
 {
     private $routes = [];
 
+    /**
+     * @var Container;
+     */
     private $container = [];
 
     public function __construct(array $config = [])
     {
-        $this->container = $config;
+        $this->container = new Container($config);
     }
 
+    /**
+     * @return Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
     /**
      * @param $key
      * @return null|mixed
      */
     public function get($key)
     {
-        return array_key_exists($key, $this->container) ? $this->container[$key] : null;
+        return $this->container->get($key);
     }
 
     /**
@@ -42,48 +53,38 @@ class Dispatcher
      */
     public function run($request, $response)
     {
+        try {
+
+            $response = $this->_run($request, $response);
+            if (!$response) {
+                $responder = $this->get(Responder::class);
+                $response = $responder->error($request, $response)->notFound();
+            }
+            return $response;
+            
+        } catch (\Exception $e) {
+            $responder = $this->get(Responder::class);
+            return $responder->error($request, $response)->asView(500);
+        }
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @return ResponseInterface
+     */
+    public function _run($request, $response)
+    {
         $pathInfo = ReqAttr::getPathInfo($request);
         foreach ($this->routes as $path => $app) {
             if ($args = $this->match($path, $pathInfo)) {
-                $app = $this->resolve($app);
+                if (!is_callable($app)) {
+                    $app = $this->container->get($app);
+                }
                 return $app($request, $response, $args);
             }
         }
         return null;
-    }
-
-    /**
-     * @param mixed $app
-     * @return callable
-     */
-    private function resolve($app)
-    {
-        if (is_callable($app)) {
-            return $app;
-        }
-        if (is_string($app) && class_exists($app)) {
-            return call_user_func([$app, 'forge'], $this);
-        }
-        throw new \InvalidArgumentException;
-    }
-
-    /**
-     * @return Closure
-     */
-    public function getResolver()
-    {
-        return function($key) {
-            return $this->resolve($key);
-        };
-    }
-
-    /**
-     * @param string $key
-     * @param mixed  $service
-     */
-    public function set($key, $service)
-    {
-        $this->container[$key] = $service;
     }
 
     /**

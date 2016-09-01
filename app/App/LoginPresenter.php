@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Controller\PresenterTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Responder;
 
 class LoginPresenter implements PresenterInterface
 {
@@ -17,7 +18,7 @@ class LoginPresenter implements PresenterInterface
     public static function forge($app)
     {
         $self            = new self;
-        $self->responder = $app->get('responder');
+        $self->responder = $app->get(Responder::class);
 
         return $self;
     }
