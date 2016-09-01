@@ -98,8 +98,6 @@ trait ProviderTrait
             SessionStorageInterface::class => 'getSessionStorage',
             RenderErrorInterface::class    => 'getErrorView',
             RendererInterface::class       => 'getRenderer',
-            Plates::class                  => 'getRendererPlates',
-            Twig::class                    => 'getRendererTwig',
         ];
     }
 
