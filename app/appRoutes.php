@@ -117,6 +117,10 @@ return function (Dispatcher $app) {
             throw new \Exception('always throws exception');
         });
 
+    $app->add('/forbidden', function ($req, $res) use($responder) {
+        return $responder->view($req, $res)->render('forbidden');
+    });
+
     /**
      * @param ServerRequestInterface $request
      * @return ResponseInterface

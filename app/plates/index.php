@@ -59,6 +59,7 @@ $this->layout('layouts/layout');
             case for 404 not-found error.</li>
         <li><a href="throw">catch exception</a><br/>
             case for catching exception. </li>
+        <li><form method="post" action="forbidden.php" ><input type="submit" value="case for forbidden errors" class="btn btn-xs" /></form></li>
     </ul>
 
     <h3>more samples</h3>

@@ -65,6 +65,7 @@ $nav  = isset($nav) ? $nav : new NavBar(null);
                     <ul class="dropdown-menu">
                         <li class="<?= $nav->m('errors', 'general');?>"><a href="/throw">General Errors</a></li>
                         <li class="<?= $nav->m('errors', 'notFound');?>"><a href="/not-such-file">Not Found Error</a></li>
+                        <li class="<?= $nav->m('errors', 'forbidden');?>"><a href="/forbidden">Forbidden Error</a></li>
                     </ul>
                 </li>
             </ul>

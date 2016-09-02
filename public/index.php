@@ -25,6 +25,14 @@ include dirname(__DIR__) . "/app/autoload.php";
 $config = [
     'renderer'      => 'plates',
     'template-path' => dirname(__DIR__) . '/app/plates',
+    'error-files'   => [
+        'default' => 'errors/error',
+        'status' => [
+            401 => 'errors/forbidden',
+            403 => 'errors/forbidden',
+            404 => 'errors/notFound',      // for not found.
+        ],
+    ],
 ];
 
 $app = include dirname(__DIR__) . '/app/app.php';
