@@ -21,10 +21,15 @@ include dirname(__DIR__) . "/app/autoload.php";
 /**
  * run web application for the request.
  */
+$config = [
+    'renderer'      => 'tuum',
+    'template-path' => dirname(__DIR__) . '/app/views',
+];
+
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
 $res = (new Response())->withHeader('Content-Type', 'text/html');
-$res = $app(['view' => 'tuum'], $req, $res);
+$res = $app($req, $res);
 
 $emitter = new SapiEmitter;
 $emitter->emit($res);

@@ -11,6 +11,7 @@ use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorView;
 use Tuum\Respond\Service\Renderer\Plates;
+use Tuum\Respond\Service\Renderer\Tuum;
 use Tuum\Respond\Service\Renderer\Twig;
 use Tuum\Respond\Service\SessionStorage;
 
@@ -209,5 +210,17 @@ trait ProviderTrait
         $options      = $twigOptions['options'];
 
         return Twig::forge($templatePath, $options, $callback);
+    }
+
+    /**
+     * @return Tuum
+     */
+    protected function getRendererTuum()
+    {
+        $templatePath  = $this->option('template-path');
+        $platesOptions = $this->option('tuu-options');
+        $callback      = $platesOptions['callback'];
+
+        return Tuum::forge($templatePath, $callback);
     }
 }

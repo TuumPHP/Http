@@ -21,18 +21,11 @@ class Tuum implements RendererInterface
     private $renderer;
 
     /**
-     * @var ViewHelper
-     */
-    private $viewHelper;
-
-    /**
      * @param Renderer   $renderer
-     * @param ViewHelper $view
      */
-    public function __construct($renderer, $view = null)
+    public function __construct($renderer)
     {
         $this->renderer   = $renderer;
-        $this->viewHelper = $view;
     }
 
     /**
@@ -50,7 +43,7 @@ class Tuum implements RendererInterface
             $renderer = call_user_func($callable, $renderer);
         }
 
-        return new static($renderer, ViewHelper::forge());
+        return new static($renderer);
     }
 
     /**
