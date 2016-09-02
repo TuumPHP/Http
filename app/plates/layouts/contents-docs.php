@@ -1,13 +1,13 @@
 <?php
 use League\Plates\Template\Template;
+use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
 /** @var Template $this */
 /** @var $view ViewHelper */
 
 $this->layout('layouts/layout', [
-    'menu' => 'documents',
-    'item' => basename($view->request()->getUri()->getPath()),
+    'nav' => new NavBar('documents', basename($view->request()->getUri()->getPath())),
 ]);
 
 ?>

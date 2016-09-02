@@ -3,12 +3,12 @@
 /** @var ViewHelper $view */
 
 use League\Plates\Template\Template;
+use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 use Zend\Diactoros\UploadedFile;
 
 $this->layout('layouts/layout', [
-    'menu' => 'samples',
-    'item' => 'upload',
+    'nav' => new NavBar('samples', 'upload'),
 ]);
 $form = $view->forms();
 $data = $view->data();

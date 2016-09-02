@@ -4,8 +4,10 @@
 
 use App\App\LoginPresenter;
 use League\Plates\Template\Template;
+use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
+$nav  = isset($nav) ? $nav : new NavBar(null);
 $menu = isset($menu) ? $menu: '';
 $item = isset($item) ? $item: '';
 
@@ -51,27 +53,27 @@ $_active = function($name, $name2=null) use($menu, $item) {
         <!-- sample menu -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown<?= $_active('documents');?>">
+                <li class="dropdown<?= $nav->m('documents');?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Documents <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="<?= $_active('documents', 'docs');?>"><a href="/docs/" >Document Top</a></li>
+                        <li class="<?= $nav->m('documents', 'docs');?>"><a href="/docs/" >Document Top</a></li>
                         <li role="separator" class="divider"></li>
-                        <li class="<?= $_active('documents', 'introduction');?>"><a href="/docs/introduction" >Introduction</a></li>
-                        <li class="<?= $_active('documents', 'samples');?>"><a href="/docs/samples" >Sample Codes</a></li>
-                        <li class="<?= $_active('documents', 'structure');?>"><a href="/docs/structure" >Directory Structure</a></li>
+                        <li class="<?= $nav->m('documents', 'introduction');?>"><a href="/docs/introduction" >Introduction</a></li>
+                        <li class="<?= $nav->m('documents', 'samples');?>"><a href="/docs/samples" >Sample Codes</a></li>
+                        <li class="<?= $nav->m('documents', 'structure');?>"><a href="/docs/structure" >Directory Structure</a></li>
                         <li role="separator" class="divider"></li>
-                        <li class="<?= $_active('documents', 'templates');?>"><a href="/docs/templates" >Template and Helpers</a></li>
-                        <li class="<?= $_active('documents', 'responders');?>"><a href="/docs/responders" >Responders</a></li>
-                        <li class="<?= $_active('documents', 'services');?>"><a href="/docs/services" >Services</a></li>
+                        <li class="<?= $nav->m('documents', 'templates');?>"><a href="/docs/templates" >Template and Helpers</a></li>
+                        <li class="<?= $nav->m('documents', 'responders');?>"><a href="/docs/responders" >Responders</a></li>
+                        <li class="<?= $nav->m('documents', 'services');?>"><a href="/docs/services" >Services</a></li>
                     </ul>
                 </li>
-                <li class="dropdown<?= $_active('samples');?>">
+                <li class="dropdown<?= $nav->m('samples');?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Samples <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="<?= $_active('samples', 'jump');?>"><a href="/jump">Jump: form and redirect</a></li>
-                        <li class="<?= $_active('samples', 'upload');?>"><a href="/upload">Upload: uploading files</a></li>
-                        <li><a href="/content">Content: html rendering</a></li>
-                        <li><a href="/objGraph">Object graph</a></li>
+                        <li class="<?= $nav->m('samples', 'jump');?>"><a href="/jump">Jump: form and redirect</a></li>
+                        <li class="<?= $nav->m('samples', 'upload');?>"><a href="/upload">Upload: uploading files</a></li>
+                        <li class="<?= $nav->m('samples', 'content');?>"><a href="/content">Content: html rendering</a></li>
+                        <li class="<?= $nav->m('samples', 'objGraph');?>"><a href="/objGraph">Object graph</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="/not-such-file">Not Found Error</a></li>
                         <li><a href="/throw">Uncaught Exception</a></li>
