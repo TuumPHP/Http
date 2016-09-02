@@ -5,7 +5,6 @@
 use App\App\LoginPresenter;
 use League\Plates\Template\Template;
 use Tuum\Respond\Service\ViewHelper;
-use Tuum\View\Renderer;
 
 $menu = isset($menu) ? $menu: '';
 $item = isset($item) ? $item: '';
