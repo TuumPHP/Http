@@ -95,9 +95,10 @@ class View extends AbstractWithViewData
      * @param string                  $content
      * @return ResponseInterface
      */
-    public function asContents($content)
+    public function asContents($content, $data = [])
     {
-        return $this->renderWithViewer($this->content_view, ['contents' => $content]);
+        $data['contents'] = $content;
+        return $this->renderWithViewer($this->content_view, $data);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\App\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
@@ -95,13 +96,17 @@ return function (Dispatcher $app) {
     $app->add('/content',
         function (ServerRequestInterface $request, $response) {
             return Respond::view($request, $response)
-                ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
+                ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>', [
+                    'nav' => new NavBar('samples', 'content')
+                ]);
         });
 
     $app->add('/objGraph',
         function (ServerRequestInterface $request, $response) {
             return Respond::view($request, $response)
-                ->asContents((new Printo(Respond::getResponder($request))));
+                ->asContents((new Printo(Respond::getResponder($request))), [
+                    'nav' => new NavBar('samples', 'objGraph')
+                ]);
         });
 
     /**

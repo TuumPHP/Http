@@ -5,7 +5,11 @@ use Tuum\Respond\Service\ViewHelper;
 /** @var Template $this */
 /** @var $view ViewHelper */
 
-$this->layout('layouts/layout', ['view' => $view]);
+$_view_data = [];
+if (isset($nav)) {
+    $_view_data['nav'] = $nav;
+}
+$this->layout('layouts/layout', $_view_data);
 
 ?>
 
