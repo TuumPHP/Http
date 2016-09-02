@@ -18,10 +18,13 @@ class Provider
     }
 
     /**
-     * @return array
+     * @param Container $container
      */
-    public function getService()
+    public function load(Container $container)
     {
-        return $this->getRespondList();
+        $list = $this->getRespondList();
+        foreach($list as $key => $method) {
+            $container->set($key, [$this, $method]);
+        }
     }
 }

@@ -21,14 +21,12 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param Provider $provider
+     * @param string $id
+     * @param mixed $target
      */
-    public function load(Provider $provider)
+    public function set($id, $target)
     {
-        $list = $provider->getService();
-        foreach($list as $key => $method) {
-            $this->container[$key] = [$provider, $method];
-        }
+        $this->container[$id] = $target;
     }
     
     /**

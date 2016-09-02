@@ -12,10 +12,12 @@ $builder = function() {
 
     /** @var Dispatcher $app */
     $app = new Dispatcher();
-    $app->getContainer()->load(new \App\App\Provider([
-        'renderer' => 'plates',
+
+    $provider = new \App\App\Provider([
+        'renderer'      => 'plates',
         'template-path' => __DIR__ . '/plates',
-    ]));
+    ]);
+    $provider->load($app->getContainer());
 
     /** @var callable $router */
     $router = include __DIR__ . '/appRoutes.php';
