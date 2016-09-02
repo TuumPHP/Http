@@ -5,7 +5,10 @@
 use League\Plates\Template\Template;
 use Tuum\Respond\Service\ViewHelper;
 
-$this->layout('layouts/layout');
+$this->layout('layouts/layout', [
+    'menu' => 'samples',
+    'item' => 'jump',
+]);
 $forms = $view->forms()->withClass('form-control');
 
 ?>

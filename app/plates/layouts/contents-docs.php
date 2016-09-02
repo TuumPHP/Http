@@ -5,7 +5,10 @@ use Tuum\Respond\Service\ViewHelper;
 /** @var Template $this */
 /** @var $view ViewHelper */
 
-$this->layout('layouts/layout', ['view' => $view]);
+$this->layout('layouts/layout', [
+    'menu' => 'documents',
+    'item' => basename($view->request()->getUri()->getPath()),
+]);
 
 ?>
 

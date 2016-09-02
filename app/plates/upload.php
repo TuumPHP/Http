@@ -6,7 +6,10 @@ use League\Plates\Template\Template;
 use Tuum\Respond\Service\ViewHelper;
 use Zend\Diactoros\UploadedFile;
 
-$this->layout('layouts/layout');
+$this->layout('layouts/layout', [
+    'menu' => 'samples',
+    'item' => 'upload',
+]);
 $form = $view->forms();
 $data = $view->data();
 /** @var UploadedFile $upload */
