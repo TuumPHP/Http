@@ -8,22 +8,6 @@ use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
 $nav  = isset($nav) ? $nav : new NavBar(null);
-$menu = isset($menu) ? $menu: '';
-$item = isset($item) ? $item: '';
-
-$_active = function($name, $name2=null) use($menu, $item) {
-    if ($name !== $menu) {
-        return '';
-    }
-    if (is_null($name2)) {
-        return ' active';
-    }
-    if ($name2 === $item) {
-        return ' active';
-    }
-    return '';
-}
-
 
 ?>
 <!DOCTYPE html>
