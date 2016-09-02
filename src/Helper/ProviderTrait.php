@@ -206,7 +206,7 @@ trait ProviderTrait
         $templatePath = $this->option('template-path');
         $twigOptions  = $this->option('twig-options');
         $callback     = $twigOptions['callback'];
-        $options      = $twigOptions('options');
+        $options      = $twigOptions['options'];
 
         return Twig::forge($templatePath, $options, $callback);
     }

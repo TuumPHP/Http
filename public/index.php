@@ -21,6 +21,12 @@ include dirname(__DIR__) . "/app/autoload.php";
 /**
  * run web application for the request.
  */
+
+$config = [
+    'renderer'      => 'plates',
+    'template-path' => dirname(__DIR__) . '/app/plates',
+];
+
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
 $res = (new Response())->withHeader('Content-Type', 'text/html');

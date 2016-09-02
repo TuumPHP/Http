@@ -8,15 +8,12 @@ use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Zend\Diactoros\Response;
 
-$builder = function() {
+$builder = function($config) {
 
     /** @var Dispatcher $app */
     $app = new Dispatcher();
 
-    $provider = new \App\App\Provider([
-        'renderer'      => 'plates',
-        'template-path' => __DIR__ . '/plates',
-    ]);
+    $provider = new \App\App\Provider($config);
     $provider->load($app->getContainer());
 
     /** @var callable $router */
@@ -27,7 +24,8 @@ $builder = function() {
 };
 
 /** @var Dispatcher $app */
-$app = $builder();
+$config = isset($config) ? $config : [];
+$app = $builder($config);
 
 /**
  * creates services.

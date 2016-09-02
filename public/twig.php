@@ -21,10 +21,16 @@ include dirname(__DIR__) . "/app/autoload.php";
 /**
  * run web application for the request.
  */
+
+$config = [
+    'renderer'      => 'twig',
+    'template-path' => dirname(__DIR__) . '/app/twigs',
+];
+
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
 $res = (new Response())->withHeader('Content-Type', 'text/html');
-$res = $app(['view' => 'twig'], $req, $res);
+$res = $app($req, $res);
 
 $emitter = new SapiEmitter;
 $emitter->emit($res);

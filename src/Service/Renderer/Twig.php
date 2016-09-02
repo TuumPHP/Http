@@ -14,19 +14,11 @@ class Twig   implements RendererInterface
     private $renderer;
 
     /**
-     * @var ViewHelper
-     */
-    private $viewHelper;
-
-    /**
      * @param Twig_Environment $renderer
-     * @param null|ViewHelper  $view
      */
-    public function __construct($renderer, $view = null)
+    public function __construct($renderer)
     {
         $this->renderer   = $renderer;
-        $this->viewHelper = $view;
-        $this->renderer->addGlobal('view', $view);
     }
 
     /**
@@ -43,7 +35,7 @@ class Twig   implements RendererInterface
             $twig = call_user_func($callable, $twig);
         }
 
-        return new static($twig, ViewHelper::forge());
+        return new static($twig);
     }
 
     /**
@@ -54,7 +46,7 @@ class Twig   implements RendererInterface
      */
     public function __invoke($template, array $data, array $helper = [])
     {
-        $viewFile   = (substr($template, -4) === '.twig') ?: $template . '.twig';
+        $viewFile   = (substr($template, -5) === '.twig') ?: $template . '.twig';
         foreach($helper as $key => $help) {
             $this->renderer->addGlobal($key, $help);
         }
