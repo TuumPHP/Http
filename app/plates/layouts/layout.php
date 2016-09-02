@@ -58,9 +58,13 @@ $nav  = isset($nav) ? $nav : new NavBar(null);
                         <li class="<?= $nav->m('samples', 'upload');?>"><a href="/upload">Upload: uploading files</a></li>
                         <li class="<?= $nav->m('samples', 'content');?>"><a href="/content">Content: html rendering</a></li>
                         <li class="<?= $nav->m('samples', 'objGraph');?>"><a href="/objGraph">Object graph</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="/not-such-file">Not Found Error</a></li>
-                        <li><a href="/throw">Uncaught Exception</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown<?= $nav->m('errors');?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Errors <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="<?= $nav->m('errors', 'general');?>"><a href="/throw">General Errors</a></li>
+                        <li class="<?= $nav->m('errors', 'notFound');?>"><a href="/not-such-file">Not Found Error</a></li>
                     </ul>
                 </li>
             </ul>
