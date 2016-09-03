@@ -74,6 +74,19 @@ trait ControllerTrait
     {
         return $this->responder;
     }
+
+    /**
+     * @param null|string $name
+     * @return array|null|object
+     */
+    protected function getPost($name = null)
+    {
+        if (is_null($name)) {
+            return $this->request->getParsedBody();
+        }
+        $post = $this->request->getParsedBody();
+        return array_key_exists($name, $post) ? $post[$name] : null;
+    }
     
     /**
      * @param string $method
