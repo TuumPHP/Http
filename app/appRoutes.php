@@ -2,7 +2,7 @@
 
 use App\App\Dispatcher;
 use App\App\DocumentMap;
-use App\App\UploadController;
+use App\App\Controller\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

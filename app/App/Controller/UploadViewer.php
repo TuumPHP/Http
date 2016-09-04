@@ -1,5 +1,5 @@
 <?php
-namespace App\App;
+namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -13,14 +13,11 @@ class UploadViewer implements PresenterInterface
     use PresenterTrait;
 
     /**
-     * @param Dispatcher $app
-     * @return UploadViewer
+     * @param Responder $responder
      */
-    public static function forge($app)
+    public function __construct($responder)
     {
-        $self            = new self;
-        $self->responder = $app->get(Responder::class);
-        return $self;
+        $this->responder = $responder;
     }
 
     /**

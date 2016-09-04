@@ -2,6 +2,8 @@
 namespace App\App;
 
 use App\App\Controller\JumpController;
+use App\App\Controller\UploadController;
+use App\App\Controller\UploadViewer;
 use Tuum\Respond\Helper\ProviderTrait;
 use Tuum\Respond\Responder;
 
@@ -26,6 +28,8 @@ class Provider
     {
         $list = $this->getRespondList();
         $list[JumpController::class] = 'getJumpController';
+        $list[UploadController::class] = 'getUploadController';
+        $list[UploadViewer::class] = 'getUploadViewer';
         
         foreach($list as $key => $method) {
             $container->set($key, [$this, $method]);
@@ -39,5 +43,23 @@ class Provider
     public function getJumpController(Container $container)
     {
         return new JumpController($container->get(Responder::class));
+    }
+
+    /**
+     * @param Container $container
+     * @return UploadController
+     */
+    public function getUploadController(Container $container)
+    {
+        return new UploadController($container->get(UploadViewer::class), $container->get(Responder::class));
+    }
+
+    /**
+     * @param Container $container
+     * @return UploadViewer
+     */
+    public function getUploadViewer(Container $container)
+    {
+        return new UploadViewer($container->get(Responder::class));
     }
 }

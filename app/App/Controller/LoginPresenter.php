@@ -1,6 +1,7 @@
 <?php
-namespace App\App;
+namespace App\App\Controller;
 
+use App\App\Dispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Controller\PresenterTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;

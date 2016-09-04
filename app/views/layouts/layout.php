@@ -2,7 +2,7 @@
 /** @var Renderer $this */
 /** @var ViewHelper $view */
 
-use App\App\LoginPresenter;
+use App\App\Controller\LoginPresenter;
 use Tuum\Respond\Service\ViewHelper;
 use Tuum\View\Renderer;
 

@@ -1,5 +1,5 @@
 <?php
-namespace App\App;
+namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,24 +24,12 @@ class UploadController
      * UploadController constructor.
      *
      * @param PresenterInterface $viewer
+     * @param Responder          $responder
      */
-    private function __construct($viewer)
+    public function __construct($viewer, $responder)
     {
         $this->viewer = $viewer;
-    }
-
-    /**
-     * factory for this class.
-     *
-     * @param Dispatcher $app
-     * @return UploadController
-     */
-    public static function forge($app)
-    {
-        $viewer          = UploadViewer::forge($app);
-        $self            = new self($viewer);
-        $self->responder = $app->get(Responder::class);
-        return $self;
+        $this->responder = $responder;
     }
 
     /**
