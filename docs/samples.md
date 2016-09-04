@@ -1,46 +1,57 @@
 Sample Codes
 ============
 
-Simple Code
+This section dissects sample codes in this Demo. 
+The code assumes that the `$responder` object of `Responder` class 
+is already constructed in prior. 
+
+The route and handler are defined in `/app/appRoute.php` file. 
+
+Simple View
 -----------
 
-### Construction
+### Closure Callable
 
-Following shows an example code for building a `$responder` object:
-
-```php
-use Tuum\Respond\Service\Renderer\Twig;
-use Tuum\Respond\Helper\ResponderBuilder;
-
-$responder = ResponderBuilder::withView(
-    Twig::forge('/template/dir/twig')
-);
-```
-
-### Simple View
-
-To render a template file (using some virtual `$app`): 
+The root page shows a simple case of rendering a view template 
+from a closure. 
 
 ```php
 $app->add('/',
     function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
     
-        // 1. create $viewData and set success message, and
-        $responder = $responder->withView(function(ViewDataInterface $view) {
-            $view->setSuccess('Welcome!');
-        });
-    
-        // 2. render `index` template with the data. 
-        return $responder->view($request, $response)
+        // set welcome message if visiting for the first time. 
+        if (!$responder->session()->get('first.time')) {
+            $responder->session()->set('first.time', true);
+            $responder->getViewData()
+                ->setSuccess('Thanks for downloading Tuum/Respond.');
+        }
+        return $responder
+            ->view($request, $response)
             ->render('index');
     });
 ```
+
+* `$responder->session()` returns `SessionStorageInterface` object 
+to manage session variables, flash storage, as well as CSRF token. 
+* `$responder->getViewData()` returns a `ViewDataInterface` data 
+transfer object shared inside `Tuum/Respond` objects. The message 
+is carried to View template, `index`. 
+* `$resopnder->view(...)->render(...)` renders a `index` template 
+and returns a view response. 
+
+### View Template
 
 
 Post-Redirect-Get Pattern
 -------------------------
 
 A sample site at `localhost:8888/jump` shows a Post-Redirect-Get (PRG) Pattern. 
+
+```php
+$app->add('/jump', \App\App\Controller\JumpController::class);
+```
+
+The `JumpController` 
 
 #### Get a Form
 

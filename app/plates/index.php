@@ -25,7 +25,6 @@ $this->layout('layouts/layout');
         <li><h4><a href="/docs/" >Document Top</a></h4></li>
         <li><h4>Getting Started</h4>
             <ul>
-                <li><a href="/docs/introduction" >Introduction</a></li>
                 <li><a href="/docs/samples" >Sample Codes</a></li>
                 <li><a href="/docs/structure" >Directory Structure</a></li>
             </ul></li>
