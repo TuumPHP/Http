@@ -25,7 +25,7 @@ $forms = $view->forms()->withClass('form-control');
 
 <div style="margin-left: 2em;">
 
-    <?= $forms->open()->action('jumper')->method('post'); ?>
+    <?= $forms->open()->action('')->method('post'); ?>
     <input type="hidden" name="_token" value="<?= $view->attributes('_token');?>">
 
     <?=

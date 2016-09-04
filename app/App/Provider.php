@@ -1,7 +1,9 @@
 <?php
 namespace App\App;
 
+use App\App\Controller\JumpController;
 use Tuum\Respond\Helper\ProviderTrait;
+use Tuum\Respond\Responder;
 
 class Provider
 {
@@ -23,8 +25,19 @@ class Provider
     public function load(Container $container)
     {
         $list = $this->getRespondList();
+        $list[JumpController::class] = 'getJumpController';
+        
         foreach($list as $key => $method) {
             $container->set($key, [$this, $method]);
         }
+    }
+
+    /**
+     * @param Container $container
+     * @return JumpController
+     */
+    public function getJumpController(Container $container)
+    {
+        return new JumpController($container->get(Responder::class));
     }
 }

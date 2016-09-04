@@ -23,9 +23,8 @@ return function (Dispatcher $app) {
         function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
             if (!$responder->session()->get('first.time')) {
                 $responder->session()->set('first.time', true);
-                $responder = $responder->withView(function(ViewDataInterface $view) {
-                    return $view->setSuccess('Thanks for downloading Tuum/Respond.');
-                });
+                $responder->getViewData()
+                    ->setSuccess('Thanks for downloading Tuum/Respond.');
             }
             return $responder
                 ->view($request, $response)
@@ -57,33 +56,7 @@ return function (Dispatcher $app) {
     /**
      * for displaying form for /jump
      */
-    $app->add('/jump',
-        function ($request, $response) use ($responder) {
-            return $responder->withView(function (ViewDataInterface $viewData) {
-                return $viewData->setSuccess('try jump to another URL. ')
-                    ->setData('jumped', 'text in control')
-                    ->setData('date', (new DateTime('now'))->format('Y-m-d'));
-            })  ->view($request, $response)
-                ->render('jump');
-        });
-
-    $app->add('/jumper',
-        function (ServerRequestInterface $request, $response) use ($responder) {
-            $responder->getViewData()
-                ->setError('redirected back!')
-                ->setInput($request->getParsedBody())
-                ->setInputErrors([
-                    'jumped' => 'redirected error message',
-                    'date' => 'your date',
-                    'gender' => 'your gender',
-                    'movie' => 'selected movie',
-                    'happy' => 'be happy!'
-                ]);
-
-            return $responder
-                ->redirect($request, $response)
-                ->toPath('jump');
-        });
+    $app->add('/jump', \App\App\Controller\JumpController::class);
 
     /**
      * file upload sample, /upload.
