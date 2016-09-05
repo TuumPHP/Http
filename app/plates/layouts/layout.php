@@ -55,6 +55,7 @@ if (isset($bread)) {
                         <li class="<?= $nav->m('documents', 'templates');?>"><a href="/docs/templates" >Template and Helpers</a></li>
                         <li class="<?= $nav->m('documents', 'responders');?>"><a href="/docs/responders" >Responders</a></li>
                         <li class="<?= $nav->m('documents', 'services');?>"><a href="/docs/services" >Services</a></li>
+                        <li class="<?= $nav->m('documents', 'breadcrumb');?>"><a href="/docs/breadcrumb" >BreadCrumb</a></li>
                     </ul>
                 </li>
                 <li class="dropdown<?= $nav->m('samples');?>">

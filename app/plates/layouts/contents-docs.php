@@ -39,6 +39,7 @@ $this->layout('layouts/layout', [
         <li role="presentation" class="<?= $nav->m('documents', 'templates'); ?>"><a href="/docs/templates" >Template and Helpers</a></li>
         <li role="presentation" class="<?= $nav->m('documents', 'responders'); ?>"><a href="/docs/responders" >Responders</a></li>
         <li role="presentation" class="<?= $nav->m('documents', 'services'); ?>"><a href="/docs/services" >Services</a></li>
+        <li role="presentation" class="<?= $nav->m('documents', 'breadcrumb'); ?>"><a href="/docs/breadcrumb" >BreadCrumb</a></li>
     </ul>
 </div>
 
