@@ -4,10 +4,16 @@
 
 use App\App\Controller\LoginPresenter;
 use League\Plates\Template\Template;
+use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
 $nav  = isset($nav) ? $nav : new NavBar(null);
+if (isset($bread)) {
+    $bread->add('Home', '/');
+} else {
+    $bread = null; // no breadcrumb!
+}
 
 ?>
 <!DOCTYPE html>
@@ -58,6 +64,7 @@ $nav  = isset($nav) ? $nav : new NavBar(null);
                         <li class="<?= $nav->m('samples', 'upload');?>"><a href="/upload">Upload: uploading files</a></li>
                         <li class="<?= $nav->m('samples', 'pagination');?>"><a href="/pagination?_page">Pagination sample</a></li>
                         <li class="<?= $nav->m('samples', 'content');?>"><a href="/content">Content: html rendering</a></li>
+                        <li class="<?= $nav->m('samples', 'forms');?>"><a href="/forms">Forms: html inputs</a></li>
                         <li class="<?= $nav->m('samples', 'objGraph');?>"><a href="/objGraph">Object graph</a></li>
                     </ul>
                 </li>
@@ -75,6 +82,19 @@ $nav  = isset($nav) ? $nav : new NavBar(null);
 </nav>
 
 <div class="content">
+    <?php if (isset($bread)): ?>
+    <ol class="breadcrumb">
+        <?php foreach ($bread as $url => $label): ?>
+            <?php
+            if ($bread->isLast()) {
+                echo "<li class='active'>{$label}</li>";
+            } else {
+                echo "<li><a href='{$url}' >{$label}</a></li>";
+            }
+            ?>
+        <?php endforeach; ?>
+    </ol>
+    <?php endif; ?>
 
     <div class="col-md-12">
 

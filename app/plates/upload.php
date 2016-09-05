@@ -3,12 +3,14 @@
 /** @var ViewHelper $view */
 
 use League\Plates\Template\Template;
+use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 use Zend\Diactoros\UploadedFile;
 
 $this->layout('layouts/layout', [
     'nav' => new NavBar('samples', 'upload'),
+    'bread' => BreadCrumb::forge('Upload Samples')->add('Samples', '#'),
 ]);
 $form = $view->forms();
 $data = $view->data();
