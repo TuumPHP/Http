@@ -56,6 +56,7 @@ $nav  = isset($nav) ? $nav : new NavBar(null);
                     <ul class="dropdown-menu">
                         <li class="<?= $nav->m('samples', 'jump');?>"><a href="/jump">Jump: form and redirect</a></li>
                         <li class="<?= $nav->m('samples', 'upload');?>"><a href="/upload">Upload: uploading files</a></li>
+                        <li class="<?= $nav->m('samples', 'pagination');?>"><a href="/pagination?_page">Pagination sample</a></li>
                         <li class="<?= $nav->m('samples', 'content');?>"><a href="/content">Content: html rendering</a></li>
                         <li class="<?= $nav->m('samples', 'objGraph');?>"><a href="/objGraph">Object graph</a></li>
                     </ul>

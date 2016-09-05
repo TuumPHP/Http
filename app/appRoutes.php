@@ -1,5 +1,6 @@
 <?php
 
+use App\App\Controller\PaginationController;
 use App\App\Dispatcher;
 use App\App\DocumentMap;
 use App\App\Controller\UploadController;
@@ -62,6 +63,11 @@ return function (Dispatcher $app) {
      * file upload sample, /upload.
      */
     $app->add('/upload', UploadController::class);
+
+    /**
+     * pagination sample, /pagination.
+     */
+    $app->add('/pagination', PaginationController::class);
 
     /**
      * for other samples
