@@ -33,6 +33,7 @@ $this->layout('layouts/layout');
                 <li><a href="/docs/templates" >Template and Helpers</a></li>
                 <li><a href="/docs/responders" >Responders</a></li>
                 <li><a href="/docs/services" >Services</a></li>
+                <li><a href="/docs/breadcrumb" >BreadCrumb</a></li>
             </ul>
         </li>
     </ul>
@@ -49,6 +50,9 @@ $this->layout('layouts/layout');
 
         <li><a href="upload">file upload</a><br/>
             file upload sample using presentation object. </li>
+
+        <li><a href="pagination">pagination </a><br/>
+            pagination sample page. </li>
     </ul>
 
     <h3>error samples</h3>

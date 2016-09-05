@@ -2,8 +2,10 @@
 namespace App\App;
 
 use App\App\Controller\JumpController;
+use App\App\Controller\PaginationController;
 use App\App\Controller\UploadController;
 use App\App\Controller\UploadViewer;
+use Tuum\Pagination\Pager;
 use Tuum\Respond\Helper\ProviderTrait;
 use Tuum\Respond\Responder;
 
@@ -30,10 +32,20 @@ class Provider
         $list[JumpController::class] = 'getJumpController';
         $list[UploadController::class] = 'getUploadController';
         $list[UploadViewer::class] = 'getUploadViewer';
-        
+        $list[PaginationController::class] = 'getPaginationController';
+
         foreach($list as $key => $method) {
             $container->set($key, [$this, $method]);
         }
+    }
+
+    /**
+     * @param Container $container
+     * @return PaginationController
+     */
+    public function getPaginationController(Container $container)
+    {
+        return new PaginationController($container->get(Responder::class), new Pager());
     }
 
     /**

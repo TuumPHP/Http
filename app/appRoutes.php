@@ -1,11 +1,13 @@
 <?php
 
+use App\App\Controller\PaginationController;
 use App\App\Dispatcher;
 use App\App\DocumentMap;
 use App\App\Controller\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
@@ -64,13 +66,19 @@ return function (Dispatcher $app) {
     $app->add('/upload', UploadController::class);
 
     /**
+     * pagination sample, /pagination.
+     */
+    $app->add('/pagination', PaginationController::class);
+
+    /**
      * for other samples
      */
     $app->add('/content',
         function (ServerRequestInterface $request, $response) {
             return Respond::view($request, $response)
                 ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>', [
-                    'nav' => new NavBar('samples', 'content')
+                    'nav' => new NavBar('samples', 'content'),
+                    'bread' => BreadCrumb::forge('Contents')->add('Samples', '#'),
                 ]);
         });
 
@@ -78,7 +86,8 @@ return function (Dispatcher $app) {
         function (ServerRequestInterface $request, $response) {
             return Respond::view($request, $response)
                 ->asContents((new Printo(Respond::getResponder($request))), [
-                    'nav' => new NavBar('samples', 'objGraph')
+                    'nav' => new NavBar('samples', 'objGraph'),
+                    'bread' => BreadCrumb::forge('Object Graph')->add('Samples', '#'),
                 ]);
         });
 
