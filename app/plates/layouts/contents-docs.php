@@ -12,9 +12,6 @@ $this->layout('layouts/layout', [
     'nav' => $nav,
 ]);
 
-$nav = clone($nav);
-$nav->onItem = 'active'
-
 ?>
 
 <?php $this->start('contents'); ?>
