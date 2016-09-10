@@ -48,7 +48,6 @@ if (isset($bread)) {
                     <ul class="dropdown-menu">
                         <li class="<?= $nav->m('documents', 'docs');?>"><a href="/docs/" >Document Top</a></li>
                         <li role="separator" class="divider"></li>
-                        <li class="<?= $nav->m('documents', 'introduction');?>"><a href="/docs/introduction" >Introduction</a></li>
                         <li class="<?= $nav->m('documents', 'samples');?>"><a href="/docs/samples" >Sample Codes</a></li>
                         <li class="<?= $nav->m('documents', 'structure');?>"><a href="/docs/structure" >Directory Structure</a></li>
                         <li role="separator" class="divider"></li>
