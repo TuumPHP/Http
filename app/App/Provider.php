@@ -27,9 +27,9 @@ class Provider
     }
 
     /**
-     * @param Container $container
+     * @return array
      */
-    public function load(Container $container)
+    public function getServices()
     {
         $self = Provider::class;
         $list = $this->provider->getServices();
@@ -38,9 +38,7 @@ class Provider
         $list[UploadViewer::class] = [$self, 'getUploadViewer'];
         $list[PaginationController::class] = [$self, 'getPaginationController'];
 
-        foreach($list as $key => $factory) {
-            $container->set($key, $factory);
-        }
+        return $list;
     }
 
     /**

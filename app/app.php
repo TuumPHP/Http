@@ -16,12 +16,11 @@ use Tuum\Respond\Responder;
  */
 $builder = function($config) {
 
-    /** @var Dispatcher $app */
-    $app = new Dispatcher();
-
-    $provider = new \App\App\Provider($config);
-    $provider->load($app->getContainer());
-
+    $provider  = new \App\App\Provider($config);
+    $container = new \App\App\Container([]);
+    $container->loadServices($provider);
+    $app = new Dispatcher($container);
+    
     /** @var callable $router */
     $router = include __DIR__ . '/appRoutes.php';
     $app    = $router($app);

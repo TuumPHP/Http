@@ -2,6 +2,7 @@
 namespace App\App;
 
 use Closure;
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Helper\ReqAttr;
@@ -12,17 +13,22 @@ class Dispatcher
     private $routes = [];
 
     /**
-     * @var Container;
+     * @var ContainerInterface;
      */
     private $container = [];
 
-    public function __construct(array $config = [])
+    /**
+     * Dispatcher constructor.
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct($container)
     {
-        $this->container = new Container($config);
+        $this->container = $container;
     }
 
     /**
-     * @return Container
+     * @return ContainerInterface
      */
     public function getContainer()
     {

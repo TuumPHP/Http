@@ -29,6 +29,17 @@ class Container implements ContainerInterface
     }
 
     /**
+     * @param Provider $provider
+     */
+    public function loadServices($provider)
+    {
+        $services = $provider->getServices();
+        foreach($services as $key => $factory) {
+            $this->set($key, $factory);
+        }
+    }
+
+    /**
      * @param string $id
      * @param mixed $target
      */
