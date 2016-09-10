@@ -6,12 +6,15 @@ use App\App\Controller\PaginationController;
 use App\App\Controller\UploadController;
 use App\App\Controller\UploadViewer;
 use Tuum\Pagination\Pager;
-use Tuum\Respond\Helper\ProviderTrait;
+use Tuum\Respond\Helper\TuumProvider;
 use Tuum\Respond\Responder;
 
 class Provider
 {
-    use ProviderTrait;
+    /**
+     * @var TuumProvider
+     */
+    private $provider;
 
     /**
      * Provider constructor.
@@ -20,7 +23,7 @@ class Provider
      */
     public function __construct(array $options = [])
     {
-        $this->setOptions($options);
+        $this->provider = new TuumProvider($options);
     }
 
     /**
@@ -28,14 +31,15 @@ class Provider
      */
     public function load(Container $container)
     {
-        $list = $this->getRespondList();
-        $list[JumpController::class] = 'getJumpController';
-        $list[UploadController::class] = 'getUploadController';
-        $list[UploadViewer::class] = 'getUploadViewer';
-        $list[PaginationController::class] = 'getPaginationController';
+        $self = Provider::class;
+        $list = $this->provider->getServices();
+        $list[JumpController::class] = [$self, 'getJumpController'];
+        $list[UploadController::class] = [$self, 'getUploadController'];
+        $list[UploadViewer::class] = [$self, 'getUploadViewer'];
+        $list[PaginationController::class] = [$self, 'getPaginationController'];
 
-        foreach($list as $key => $method) {
-            $container->set($key, [$this, $method]);
+        foreach($list as $key => $factory) {
+            $container->set($key, $factory);
         }
     }
 
@@ -43,7 +47,7 @@ class Provider
      * @param Container $container
      * @return PaginationController
      */
-    public function getPaginationController(Container $container)
+    public static function getPaginationController(Container $container)
     {
         return new PaginationController($container->get(Responder::class), new Pager());
     }
@@ -52,7 +56,7 @@ class Provider
      * @param Container $container
      * @return JumpController
      */
-    public function getJumpController(Container $container)
+    public static function getJumpController(Container $container)
     {
         return new JumpController($container->get(Responder::class));
     }
@@ -61,7 +65,7 @@ class Provider
      * @param Container $container
      * @return UploadController
      */
-    public function getUploadController(Container $container)
+    public static function getUploadController(Container $container)
     {
         return new UploadController($container->get(UploadViewer::class), $container->get(Responder::class));
     }
@@ -70,7 +74,7 @@ class Provider
      * @param Container $container
      * @return UploadViewer
      */
-    public function getUploadViewer(Container $container)
+    public static function getUploadViewer(Container $container)
     {
         return new UploadViewer($container->get(Responder::class));
     }

@@ -8,8 +8,16 @@ use \InvalidArgumentException;
 
 class Container implements ContainerInterface
 {
-    private $container = [];
+    /**
+     * @var callable[]|mixed[]
+     */
+    private $factories = [];
 
+    /**
+     * @var mixed[]
+     */
+    private $entries = [];
+    
     /**
      * Container constructor.
      *
@@ -17,7 +25,7 @@ class Container implements ContainerInterface
      */
     public function __construct(array $config)
     {
-        $this->container = $config;
+        $this->factories = $config;
     }
 
     /**
@@ -26,7 +34,7 @@ class Container implements ContainerInterface
      */
     public function set($id, $target)
     {
-        $this->container[$id] = $target;
+        $this->factories[$id] = $target;
     }
     
     /**
@@ -42,18 +50,24 @@ class Container implements ContainerInterface
     public function get($id)
     {
         if (!$this->has($id)) {
-            throw new InvalidArgumentException;
+            throw new InvalidArgumentException("not found: ". $id);
         }
-        if (array_key_exists($id, $this->container)) {
-            $found = $this->container[$id];
+        if (array_key_exists($id, $this->entries)) {
+            return $this->entries[$id];
+        }
+        if (array_key_exists($id, $this->factories)) {
+            $found = $this->factories[$id];
             if (is_callable($found)) {
                 $found = $found($this);
             }
+            $this->entries[$id] = $found;
             return $found;
         } elseif (class_exists($id) && method_exists($id, 'forge')) {
-            return $id::forge($this);
+            $found = $id::forge($this);
+            $this->entries[$id] = $found;
+            return $found;
         }
-        throw new InvalidArgumentException;
+        throw new InvalidArgumentException("id:" . $id);
     }
 
     /**
@@ -66,7 +80,10 @@ class Container implements ContainerInterface
      */
     public function has($id)
     {
-        if (array_key_exists($id, $this->container)) {
+        if (array_key_exists($id, $this->entries)) {
+            return true;
+        }
+        if (array_key_exists($id, $this->factories)) {
             return true;
         }
         if (class_exists($id) && method_exists($id, 'forge')) {

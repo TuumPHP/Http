@@ -15,17 +15,14 @@ use Tuum\Respond\Service\Renderer\Tuum;
 use Tuum\Respond\Service\Renderer\Twig;
 use Tuum\Respond\Service\SessionStorage;
 
-trait ProviderTrait
+class TuumProvider
 {
-    /**
-     * @var array
-     */
-    private $options = [];
+    const TUUM_CONFIG = 'Tuum-configuration';
 
     /**
      * @var array
      */
-    public $default_options
+    public $options
         = [
             'app-name'       => 'tuum-app',
             // rendering options
@@ -59,71 +56,48 @@ trait ProviderTrait
      *
      * @param array $options
      */
+    public function __construct(array $options = [])
+    {
+        $this->setOptions($options);
+    }
+
+    /**
+     * Provider constructor.
+     *
+     * @param array $options
+     * @return $this
+     */
     public function setOptions(array $options)
     {
-        $this->options = $options;
-    }
-
-    /**
-     * @param string $key
-     * @return mixed|null
-     */
-    private function getDefaultOptions($key)
-    {
-        return array_key_exists($key, $this->default_options)
-            ? $this->default_options[$key]
-            : null;
-    }
-
-    /**
-     * @param string $key
-     * @return mixed|null
-     */
-    private function option($key)
-    {
-        return array_key_exists($key, $this->options)
-            ? $this->options[$key]
-            : $this->getDefaultOptions($key);
+        $this->options = array_merge($this->options, $options);
+        return $this;
     }
 
     /**
      * @return array
      */
-    public function getRespondList()
+    public function getServices()
     {
+        $self = TuumProvider::class;
         return [
-            Responder::class               => 'getResponder',
-            View::class                    => 'getView',
-            Redirect::class                => 'getRedirect',
-            Error::class                   => 'getError',
-            SessionStorageInterface::class => 'getSessionStorage',
-            RenderErrorInterface::class    => 'getErrorView',
-            RendererInterface::class       => 'getRenderer',
+            self::TUUM_CONFIG              => function() {
+                return $this->options;
+            },
+            Responder::class               => [$self, 'getResponder'],
+            View::class                    => [$self, 'getView'],
+            Redirect::class                => [$self, 'getRedirect'],
+            Error::class                   => [$self, 'getError'],
+            SessionStorageInterface::class => [$self, 'getSessionStorage'],
+            RenderErrorInterface::class    => [$self, 'getErrorView'],
+            RendererInterface::class       => [$self, 'getRenderer'],
         ];
-    }
-
-    /**
-     * @param string $name
-     * @param array  $args
-     * @return mixed
-     */
-    public function __call($name, $args)
-    {
-        static $singletons = [];
-        if (!array_key_exists($name, $singletons)) {
-            if (!method_exists($this, $name)) {
-                throw new \BadMethodCallException("provider method '{$name}' not found. ");
-            }
-            $singletons[$name] = $this->$name($args[0]);
-        }
-        return $singletons[$name];
     }
 
     /**
      * @param ContainerInterface $c
      * @return Responder
      */
-    protected function getResponder(ContainerInterface $c)
+    public static function getResponder(ContainerInterface $c)
     {
         return new Responder($c);
     }
@@ -132,9 +106,9 @@ trait ProviderTrait
      * @param ContainerInterface $c
      * @return View
      */
-    protected function getView(ContainerInterface $c)
+    public static function getView(ContainerInterface $c)
     {
-        $contentFile = $this->option('content-file');
+        $contentFile = $c->get(self::TUUM_CONFIG)['content-file'];
 
         return new View($c->get(RendererInterface::class), $contentFile, $c);
     }
@@ -142,17 +116,18 @@ trait ProviderTrait
     /**
      * @return Redirect
      */
-    protected function getRedirect()
+    public static function getRedirect()
     {
         return new Redirect();
     }
 
     /**
+     * @param ContainerInterface $c
      * @return SessionStorage
      */
-    protected function getSessionStorage()
+    public static function getSessionStorage(ContainerInterface $c)
     {
-        $appName = $this->option('app-name');
+        $appName = $c->get(self::TUUM_CONFIG)['app-name'];
 
         return SessionStorage::forge($appName);
     }
@@ -161,9 +136,9 @@ trait ProviderTrait
      * @param ContainerInterface $c
      * @return RenderErrorInterface
      */
-    protected function getErrorView(ContainerInterface $c)
+    public static function getErrorView(ContainerInterface $c)
     {
-        $errorFiles = $this->option('error-files');
+        $errorFiles = $c->get(self::TUUM_CONFIG)['error-files'];
 
         return ErrorView::forge($c->get(RendererInterface::class), $errorFiles);
     }
@@ -172,40 +147,43 @@ trait ProviderTrait
      * @param ContainerInterface $c
      * @return Error
      */
-    protected function getError(ContainerInterface $c)
+    public static function getError(ContainerInterface $c)
     {
         return new Error($c->get(RenderErrorInterface::class));
     }
 
     /**
+     * @param ContainerInterface $c
      * @return RendererInterface
      */
-    protected function getRenderer()
+    public static function getRenderer(ContainerInterface $c)
     {
-        $view   = $this->option('renderer');
+        $view   = $c->get(self::TUUM_CONFIG)['renderer'];
         $method = 'getRenderer' . ucwords($view);
-        return $this->$method();
+        return self::$method($c);
     }
 
     /**
+     * @param ContainerInterface $c
      * @return Plates
      */
-    protected function getRendererPlates()
+    public static function getRendererPlates(ContainerInterface $c)
     {
-        $templatePath  = $this->option('template-path');
-        $platesOptions = $this->option('plate-options');
+        $templatePath  = $c->get(self::TUUM_CONFIG)['template-path'];
+        $platesOptions = $c->get(self::TUUM_CONFIG)['plates-options'];
         $callback      = $platesOptions['callback'];
 
         return Plates::forge($templatePath, $callback);
     }
 
     /**
+     * @param ContainerInterface $c
      * @return Twig
      */
-    protected function getRendererTwig()
+    public static function getRendererTwig(ContainerInterface $c)
     {
-        $templatePath = $this->option('template-path');
-        $twigOptions  = $this->option('twig-options');
+        $templatePath = $c->get(self::TUUM_CONFIG)['template-path'];
+        $twigOptions  = $c->get(self::TUUM_CONFIG)['twig-options'];
         $callback     = $twigOptions['callback'];
         $options      = $twigOptions['options'];
 
@@ -213,12 +191,13 @@ trait ProviderTrait
     }
 
     /**
+     * @param ContainerInterface $c
      * @return Tuum
      */
-    protected function getRendererTuum()
+    public static function getRendererTuum(ContainerInterface $c)
     {
-        $templatePath  = $this->option('template-path');
-        $platesOptions = $this->option('tuu-options');
+        $templatePath  = $c->get(self::TUUM_CONFIG)['template-path'];
+        $platesOptions = $c->get(self::TUUM_CONFIG)['tuum-options'];
         $callback      = $platesOptions['callback'];
 
         return Tuum::forge($templatePath, $callback);
