@@ -18,7 +18,7 @@ $this->layout('layouts/layout', [
 
 <p>The form below do not have the C.R.S.F. token to cause forbidden error.</p>
 
-<form method="post" action="forbidden.php">
+<form method="post" action="forbidden">
 
     <input type="submit" value="generate forbidden error" class="btn btn-primary">
 
