@@ -21,36 +21,35 @@ class UploadViewer implements PresenterInterface
     }
 
     /**
-     * @param ViewDataInterface      $viewData
+     * @param array $data
      * @return ResponseInterface
      */
-    protected function onGet($viewData)
+    protected function onGet($data)
     {
-        $viewData
+        $this->getViewData()
             ->setSuccess('Please upload a file (max 512 byte). ')
             ->setData('isUploaded', false);
-        return $this->view($viewData)->render('upload');
+        return $this->view($data)->render('upload');
     }
 
     /**
-     * @param ViewDataInterface      $viewData
+     * @param array $data
      * @return ResponseInterface
      */
-    protected function onPost($viewData)
+    protected function onPost($data)
     {
-        $data = $viewData->getData();
-        $viewData = $this->setUpMessage($viewData, $data['upload']);
+        $viewData = $this->setUpMessage($data['upload']);
 
         return $this->view($viewData)->render('upload');
     }
 
     /**
-     * @param ViewDataInterface $viewData
      * @param UploadedFileInterface      $upload
      * @return ViewDataInterface
      */
-    private function setUpMessage($viewData, $upload)
+    private function setUpMessage($upload)
     {
+        $viewData   = $this->getViewData();
         $error_code = $upload->getError();
 
         if ($error_code === UPLOAD_ERR_NO_FILE) {
@@ -62,7 +61,7 @@ class UploadViewer implements PresenterInterface
         } elseif ($error_code !== UPLOAD_ERR_OK) {
             $viewData->setError('uploading failed!');
         } else {
-            $viewData->setError('uploaded a file');
+            $viewData->setSuccess('uploaded a file');
         }
         $viewData
             ->setData('isUploaded', true)

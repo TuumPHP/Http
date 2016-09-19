@@ -6,7 +6,6 @@ use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 
 class View extends AbstractWithViewData
 {
@@ -92,7 +91,8 @@ class View extends AbstractWithViewData
      * creates a Response of view with given $content as a contents.
      * use this to view a main contents with layout.
      *
-     * @param string                  $content
+     * @param string $content
+     * @param array  $data
      * @return ResponseInterface
      */
     public function asContents($content, $data = [])
@@ -191,31 +191,29 @@ class View extends AbstractWithViewData
      */
     public function call($presenter, array $data = [])
     {
-        $viewData = clone($this->viewData);
-        $viewData->setData($data);
         if ($presenter instanceof PresenterInterface) {
-            return $this->callPresenter([$presenter, '__invoke'], $viewData);
+            return $this->callPresenter([$presenter, '__invoke'], $data);
         }
         if (is_callable($presenter)) {
-            return $this->callPresenter($presenter, $viewData);
+            return $this->callPresenter($presenter, $data);
         }
         if ($this->resolver) {
-            return $this->callPresenter($this->resolver->get($presenter), $viewData);
+            return $this->callPresenter($this->resolver->get($presenter), $data);
         }
         throw new \BadMethodCallException('cannot resolve a presenter.');
     }
 
     /**
      * @param callable                $callable
-     * @param mixed|ViewDataInterface $viewData
+     * @param array|mixed   $data
      * @return ResponseInterface
      */
-    private function callPresenter($callable, $viewData)
+    private function callPresenter($callable, $data)
     {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException('resolver is not a callable.');
         }
 
-        return call_user_func($callable, $this->request, $this->response, $viewData);
+        return call_user_func($callable, $this->request, $this->response, $data);
     }
 }
