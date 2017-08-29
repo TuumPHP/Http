@@ -6,7 +6,7 @@ use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\Response;
 
 class ResponderTest extends \PHPUnit_Framework_TestCase
@@ -22,7 +22,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         class_exists(Respond::class);
         $this->responder = ResponderBuilder::withServices(
             new LocalView(),
-            new RenderErrorBack()
+            new ErrorFileBack()
         );
         $this->responder = $this->responder->withSession(SessionStorage::forge('tuum-app'))->withResponse(new Response());
     }

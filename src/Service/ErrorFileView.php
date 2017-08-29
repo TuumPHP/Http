@@ -2,13 +2,13 @@
 namespace Tuum\Respond\Service;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Interfaces\RenderErrorInterface;
-use Tuum\Respond\Interfaces\RendererInterface;
+use Tuum\Respond\Interfaces\ErrorFileInterface;
+use Tuum\Respond\Responder\View;
 
-class ErrorView implements RenderErrorInterface
+class ErrorFileView implements ErrorFileInterface
 {
     /**
-     * @var RendererInterface
+     * @var View
      */
     private $renderer;
 
@@ -17,6 +17,10 @@ class ErrorView implements RenderErrorInterface
      */
     public $default_error = 'errors/error';
 
+    public $request;
+    
+    public $response;
+    
     /**
      * @var array
      */
@@ -27,9 +31,9 @@ class ErrorView implements RenderErrorInterface
     ];
 
     /**
-     * @param RendererInterface $viewStream
+     * @param View $viewStream
      */
-    public function __construct($viewStream)
+    public function __construct(View $viewStream)
     {
         $this->renderer = $viewStream;
     }
@@ -42,12 +46,12 @@ class ErrorView implements RenderErrorInterface
      *   'status'  : index of http code to file name (i.e. ['code' => 'file']).
      *   'files'   : index of ile name to http code(s) (i.e. ['file' => [123, 234]]
      *
-     * @param RendererInterface  $view
+     * @param View  $view
      * @param array $options
      * @return static
      */
     public static function forge(
-        $view,
+        View $view,
         array $options
     ) {
         $error = new static($view);
@@ -56,8 +60,10 @@ class ErrorView implements RenderErrorInterface
             'status'  => [],
             'files'   => [],
         ];
-        $error->default_error = $options['default'];
-        $error->statusView    = $options['status'];
+        $error->default_error = $options['default'] ?: $error->default_error;
+        foreach($options['status'] as $status => $file) {
+            $error->statusView['status'][$status] = $file;
+        }
         foreach ($options['files'] as $file => $codes) {
             foreach ((array)$codes as $code) {
                 $error->statusView[$code] = $file;
@@ -71,27 +77,12 @@ class ErrorView implements RenderErrorInterface
      * @param int $status
      * @return string
      */
-    private function findViewFromStatus($status)
+    public function find($status)
     {
         $status = (string)$status;
 
         return isset($this->statusView[$status]) ?
             $this->statusView[$status] :
             $this->default_error;
-    }
-
-    /**
-     * create a response for error view.
-     *
-     * @param int   $status
-     * @param array $data
-     * @param array $helper
-     * @return ResponseInterface
-     */
-    public function __invoke($status, array $data, array $helper = [])
-    {
-        $file = $this->findViewFromStatus($status);
-
-        return $this->renderer->__invoke($file, $data, $helper);
     }
 }

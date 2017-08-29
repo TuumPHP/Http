@@ -3,10 +3,10 @@ namespace tests\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Interfaces\RenderErrorInterface;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Interfaces\ErrorFileInterface;
+use Tuum\Respond\Service\ViewData;
 
-class RenderErrorBack implements RenderErrorInterface
+class ErrorFileBack implements ErrorFileInterface
 {
     public $code;
     public $data;

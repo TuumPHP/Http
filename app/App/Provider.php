@@ -5,17 +5,21 @@ use App\App\Controller\JumpController;
 use App\App\Controller\PaginationController;
 use App\App\Controller\UploadController;
 use App\App\Controller\UploadViewer;
+use Interop\Container\ContainerInterface;
+use League\Plates\Engine;
 use Tuum\Pagination\Pager;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\TuumProvider;
 use Tuum\Respond\Responder;
+use Tuum\Respond\Service\Renderer\Plates;
 
 class Provider
 {
     /**
-     * @var TuumProvider
+     * @var array
      */
-    private $provider;
-
+    private $options = [];
+    
     /**
      * Provider constructor.
      *
@@ -23,7 +27,7 @@ class Provider
      */
     public function __construct(array $options = [])
     {
-        $this->provider = new TuumProvider($options);
+        $this->options = $options;
     }
 
     /**
@@ -32,7 +36,8 @@ class Provider
     public function getServices()
     {
         $self = Provider::class;
-        $list = $this->provider->getServices();
+        $list = [];
+        $list[Responder::class] = [$self, 'getResponder'];
         $list[JumpController::class] = [$self, 'getJumpController'];
         $list[UploadController::class] = [$self, 'getUploadController'];
         $list[UploadViewer::class] = [$self, 'getUploadViewer'];
@@ -75,5 +80,18 @@ class Provider
     public static function getUploadViewer(Container $container)
     {
         return new UploadViewer($container->get(Responder::class));
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return Responder
+     */    
+    public static function getResponder(ContainerInterface $container)
+    {
+        return new Responder(
+            (new Builder('TuumDemo'))
+                ->setContainer($container)
+                ->setRenderer(new Plates(new Engine(dirname(__DIR__) . '/plates')))
+        );
     }
 }

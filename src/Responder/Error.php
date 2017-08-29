@@ -3,7 +3,8 @@ namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
-use Tuum\Respond\Interfaces\RenderErrorInterface;
+use Tuum\Respond\Interfaces\ErrorFileInterface;
+use Tuum\Respond\Service\SessionStorage;
 
 /**
  * Class Error
@@ -14,7 +15,7 @@ use Tuum\Respond\Interfaces\RenderErrorInterface;
  * @method ResponseInterface forbidden()
  * @method ResponseInterface notFound()
  */
-class Error extends AbstractWithViewData
+class Error extends AbstractResponder
 {
     const UNAUTHORIZED   = 401;
     const ACCESS_DENIED  = 403;
@@ -22,9 +23,14 @@ class Error extends AbstractWithViewData
     const INTERNAL_ERROR = 500;
 
     /**
-     * @var null|RenderErrorInterface
+     * @var View
      */
-    private $errorView;
+    private $view;
+    
+    /**
+     * @var null|ErrorFileInterface
+     */
+    private $errorFile;
 
     /**
      * index of method name and associated http status code.
@@ -41,13 +47,17 @@ class Error extends AbstractWithViewData
     //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param RenderErrorInterface $view
+     * @param ErrorFileInterface $errorFile
+     * @param View               $view
+     * @param SessionStorage     $session
      */
-    public function __construct(RenderErrorInterface $view)
+    public function __construct(ErrorFileInterface $errorFile, View $view, SessionStorage $session)
     {
-        $this->errorView = $view;
+        parent::__construct($session);
+        $this->errorFile = $errorFile;
+        $this->view = $view;
     }
-
+    
     // +----------------------------------------------------------------------+
     //  methods for saving data for response.
     // +----------------------------------------------------------------------+
@@ -83,13 +93,10 @@ class Error extends AbstractWithViewData
      */
     public function asView($status, $data = [])
     {
-        $helper   = ['view' => $this->getViewHelper()];
-        $contents = $this->errorView->__invoke($status, $data, $helper);
-        $stream = $this->response->getBody();
-        $stream->rewind();
-        $stream->write($contents);
-        
-        return $this->response;
+        $this->errorFile->request = $this->request;
+        $this->errorFile->response = $this->response;
+        $file = $this->errorFile->find($status);
+        return $this->view->start($this->request, $this->response)->render($file, $data);
     }
 
     /**

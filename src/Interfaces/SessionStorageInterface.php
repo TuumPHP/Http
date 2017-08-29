@@ -1,6 +1,8 @@
 <?php
 namespace Tuum\Respond\Interfaces;
 
+use Tuum\Respond\Service\ViewData;
+
 /**
  * Interface SessionStorageInterface
  *
@@ -55,4 +57,15 @@ interface SessionStorageInterface
      * @return string
      */
     public function getToken();
+    
+    /**
+     * @return ViewData
+     */
+    public function getViewData();
+
+
+    /**
+     *
+     */
+    public function saveViewData();
 }

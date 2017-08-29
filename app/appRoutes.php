@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
@@ -55,7 +54,6 @@ return function (Dispatcher $app) {
                 }
             }
             return $responder
-                ->withView($view)
                 ->redirect($request, $response)
                 ->toPath('/');
         });
@@ -81,7 +79,8 @@ return function (Dispatcher $app) {
     $app->add('/content',
         function (ServerRequestInterface $request, $response) {
             return Respond::view($request, $response)
-                ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>', [
+                ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>', 
+                    null, [
                     'nav' => new NavBar('samples', 'content'),
                     'bread' => BreadCrumb::forge('Contents')->add('Samples', '#'),
                 ]);
@@ -90,7 +89,7 @@ return function (Dispatcher $app) {
     $app->add('/objGraph',
         function (ServerRequestInterface $request, $response) {
             return Respond::view($request, $response)
-                ->asContents((new Printo(Respond::getResponder($request))), [
+                ->asContents((new Printo(Respond::getResponder())), null, [
                     'nav' => new NavBar('samples', 'objGraph'),
                     'bread' => BreadCrumb::forge('Object Graph')->add('Samples', '#'),
                 ]);
@@ -114,7 +113,7 @@ return function (Dispatcher $app) {
      */
     $app->add('/forms',
         function (ServerRequestInterface $request, $response) {
-            Respond::getViewData($request)
+            Respond::getViewData()
                 ->setData([
                     'text' => 'this is text-value',
                     'date' => date('Y-m-d'),

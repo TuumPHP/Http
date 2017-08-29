@@ -47,14 +47,14 @@ class Tuum implements RendererInterface
     }
 
     /**
-     * @param string $template
-     * @param array  $data
-     * @param array  $helper
+     * @param string     $template
+     * @param ViewHelper $helper
+     * @param array      $data
      * @return string
      */
-    public function __invoke($template, array $data, array $helper = [])
+    public function __invoke($template, ViewHelper $helper, array $data = [])
     {
-        $view_data = array_merge($data, $helper);
+        $view_data = array_merge($data, ['view' => $helper]);
 
         return $this->renderer->render($template, $view_data);
     }

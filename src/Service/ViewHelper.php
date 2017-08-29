@@ -14,8 +14,7 @@ use Tuum\Form\Dates;
 use Tuum\Form\Forms;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Responder\View;
 
 /**
  * Class ViewHelper
@@ -48,9 +47,9 @@ class ViewHelper
     private $response;
 
     /**
-     * @var Responder
+     * @var View
      */
-    private $responder;
+    private $renderer;
 
     /**
      * @var ViewData
@@ -70,11 +69,11 @@ class ViewHelper
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param Responder              $responder
      * @param ViewDataInterface      $viewData
+     * @param View     $responder
      * @return ViewHelper
      */
-    public static function forge($request, $response, $responder, $viewData)
+    public static function forge($request, $response, $viewData, $responder)
     {
         $self = new self(new DataView());
         $self->start($request, $response, $responder);
@@ -86,14 +85,14 @@ class ViewHelper
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param Responder              $responder
+     * @param View     $renderer
      * @return $this
      */
-    public function start($request, $response, $responder)
+    public function start($request, $response, $renderer)
     {
         $this->request   = $request;
         $this->response  = $response;
-        $this->responder = $responder;
+        $this->renderer = $renderer;
 
         return $this;
     }
@@ -214,11 +213,10 @@ class ViewHelper
      */
     public function call($presenter, array $data = [])
     {
-        if (!$this->responder) {
+        if (!$this->renderer) {
             return '';
         }
-        $response = $this->prepareResponseStream($this->response);
-        $response = $this->responder->view($this->request, $response)->call($presenter, $data);
+        $response = $this->renderer->call($presenter, $data);
 
         return $this->returnResponseBody($response);
     }
@@ -230,11 +228,11 @@ class ViewHelper
      */
     public function render($viewFile, $data = [])
     {
-        if (!$this->responder) {
+        if (!$this->renderer) {
             return '';
         }
         $response = $this->prepareResponseStream($this->response);
-        $response = $this->responder->view($this->request, $response)->render($viewFile, $data);
+        $response = $this->renderer->start($this->request, $response)->render($viewFile, $data);
 
         return $this->returnResponseBody($response);
     }

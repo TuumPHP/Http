@@ -66,7 +66,7 @@ trait PresenterTrait
         $this->request = $request;
         $this->response = $response;
         if (!$this->responder) {
-            $this->responder = Respond::getResponder($this->request);
+            $this->responder = Respond::getResponder();
         }
 
         return $this->$name($data);

@@ -3,6 +3,7 @@ namespace Tuum\Respond\Service\Renderer;
 
 use League\Plates\Engine;
 use Tuum\Respond\Interfaces\RendererInterface;
+use Tuum\Respond\Service\ViewHelper;
 
 class Plates implements RendererInterface
 {
@@ -38,15 +39,15 @@ class Plates implements RendererInterface
     }
 
     /**
-     * @param string $template
-     * @param array  $data
-     * @param array  $helper
+     * @param string     $template
+     * @param ViewHelper $helper
+     * @param array      $data
      * @return string
      */
-    public function __invoke($template, array $data, array $helper = [])
+    public function __invoke($template, ViewHelper $helper, array $data = [])
     {
         if (isset($helper)) {
-            $this->renderer->addData($helper);
+            $this->renderer->addData(['view' => $helper]);
         }
         return $this->renderer->render($template, $data);
     }

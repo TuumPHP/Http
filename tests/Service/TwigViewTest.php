@@ -3,7 +3,7 @@ namespace tests\Service;
 
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Service\TwigViewer;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';

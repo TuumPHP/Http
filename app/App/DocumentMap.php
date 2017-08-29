@@ -63,7 +63,6 @@ class DocumentMap
             return $this->responder->view($request, $response)->asFileContents($fp, $info->getMimeType());
         }
         $view = $this->responder->view($request, $response);
-        $view->content_view = 'layouts/contents-docs';
-        return $view->asContents($info->getContents());
+        return $view->asContents($info->getContents(), 'layouts/contents-docs');
     }
 }

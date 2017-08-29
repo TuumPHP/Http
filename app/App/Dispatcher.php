@@ -45,7 +45,7 @@ class Dispatcher
 
     /**
      * @param string  $path
-     * @param Closure $handler
+     * @param callable $handler
      */
     public function add($path, $handler)
     {
@@ -68,8 +68,8 @@ class Dispatcher
             return $responder->error($request, $response)->notFound();
             
         } catch (\Exception $e) {
-            $responder = $this->get(Responder::class);
-            return $responder->error($request, $response)->asView(500);
+            $error = $this->get(Responder::class)->error($request, $response);
+            return $error->asView(500);
         }
     }
 
