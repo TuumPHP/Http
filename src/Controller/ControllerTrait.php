@@ -35,7 +35,7 @@ trait ControllerTrait
         $this->request  = $request;
         $this->response = $response;
         if (!$this->responder) {
-            $this->responder = Respond::getResponder($request);
+            $this->responder = Respond::getResponder();
         }
         return $this->_dispatch();
     }

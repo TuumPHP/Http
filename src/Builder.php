@@ -128,7 +128,7 @@ class Builder
     {
         return $this->error ?:
             $this->error = new Error(
-                ErrorFileView::forge($this->getView(), $this->error_option),
+                ErrorFileView::forge($this->error_option),
                 $this->getView(),
                 $this->getSessionStorage()
             );

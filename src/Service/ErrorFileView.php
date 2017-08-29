@@ -1,26 +1,15 @@
 <?php
 namespace Tuum\Respond\Service;
 
-use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Interfaces\ErrorFileInterface;
-use Tuum\Respond\Responder\View;
 
 class ErrorFileView implements ErrorFileInterface
 {
-    /**
-     * @var View
-     */
-    private $renderer;
-
     /**
      * @var string
      */
     public $default_error = 'errors/error';
 
-    public $request;
-    
-    public $response;
-    
     /**
      * @var array
      */
@@ -31,11 +20,10 @@ class ErrorFileView implements ErrorFileInterface
     ];
 
     /**
-     * @param View $viewStream
+     * 
      */
-    public function __construct(View $viewStream)
+    public function __construct()
     {
-        $this->renderer = $viewStream;
     }
 
     /**
@@ -46,15 +34,13 @@ class ErrorFileView implements ErrorFileInterface
      *   'status'  : index of http code to file name (i.e. ['code' => 'file']).
      *   'files'   : index of ile name to http code(s) (i.e. ['file' => [123, 234]]
      *
-     * @param View  $view
      * @param array $options
      * @return static
      */
     public static function forge(
-        View $view,
         array $options
     ) {
-        $error = new static($view);
+        $error = new static();
         $options += [
             'default' => null,
             'status'  => [],

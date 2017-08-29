@@ -55,7 +55,6 @@ class Respond
     }
 
     /**
-     * @param ServerRequestInterface $request
      * @return ViewDataInterface
      */
     public static function getViewData()

@@ -30,7 +30,8 @@ trait DispatchByRouteTrait
 
         return $this->dispatchRoute($path, $method);
     }
-
+    
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     /**
      * @param string $path
      * @return ResponseInterface

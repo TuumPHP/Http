@@ -6,18 +6,12 @@ use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\ViewHelper;
 
 class View extends AbstractResponder
 {
     const OK = 200;
-
-    /**
-     * @var ViewDataInterface
-     */
-    private $viewData;
 
     /**
      * @var RendererInterface

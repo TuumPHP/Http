@@ -33,7 +33,8 @@ trait DispatchByMethodTrait
 
         return $this->dispatchMethod($method, $params);
     }
-
+    
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     /**
      * @return ResponseInterface
      */
