@@ -52,7 +52,7 @@ class Tuum implements RendererInterface
      * @param array      $data
      * @return string
      */
-    public function __invoke($template, ViewHelper $helper, array $data = [])
+    public function render($template, ViewHelper $helper, array $data = [])
     {
         $view_data = array_merge($data, ['view' => $helper]);
 

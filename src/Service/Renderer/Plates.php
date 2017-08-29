@@ -44,7 +44,7 @@ class Plates implements RendererInterface
      * @param array      $data
      * @return string
      */
-    public function __invoke($template, ViewHelper $helper, array $data = [])
+    public function render($template, ViewHelper $helper, array $data = [])
     {
         if (isset($helper)) {
             $this->renderer->addData(['view' => $helper]);

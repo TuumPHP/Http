@@ -18,5 +18,5 @@ interface RendererInterface
      * @param array      $data
      * @return string
      */
-    public function __invoke($template, ViewHelper $helper, array $data = []);
+    public function render($template, ViewHelper $helper, array $data = []);
 }

@@ -68,7 +68,7 @@ class View extends AbstractResponder
     {
         $viewData = $this->session->getViewData();
         $helper    = ViewHelper::forge($this->request, $this->response, $viewData, $this);
-        $content = $this->renderer->__invoke($file, $helper, $data);
+        $content = $this->renderer->render($file, $helper, $data);
         $stream  = $this->response->getBody();
         $stream->rewind();
         $stream->write($content);

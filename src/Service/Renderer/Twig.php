@@ -44,7 +44,7 @@ class Twig   implements RendererInterface
      * @param array      $data
      * @return string
      */
-    public function __invoke($template, ViewHelper $helper, array $data = [])
+    public function render($template, ViewHelper $helper, array $data = [])
     {
         $viewFile   = (substr($template, -5) === '.twig') ?: $template . '.twig';
         $this->renderer->addGlobal('view', $helper);
