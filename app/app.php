@@ -40,7 +40,7 @@ $app = $builder($config);
  * @return ResponseInterface
  */
 $next = function (ServerRequestInterface $request, ResponseInterface $response) use($app) {
-    $request = Respond::withResponder($request, $app->get(Responder::class));
+    Respond::setResponder($app->get(Responder::class));
     return $app->run($request, $response);
 };
 

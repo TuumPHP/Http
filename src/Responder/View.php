@@ -6,11 +6,22 @@ use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Service\SessionStorage;
+use Tuum\Respond\Service\ViewHelper;
 
-class View extends AbstractWithViewData
+class View extends AbstractResponder
 {
     const OK = 200;
+
+    /**
+     * @var RendererInterface
+     */
+    private $renderer;
+
+    /**
+     * @var ContainerInterface|null
+     */
+    public $resolver;
 
     /**
      * a view file to render a string content.
@@ -20,33 +31,21 @@ class View extends AbstractWithViewData
     public $content_view = 'layouts/contents';
 
     /**
-     * @var RendererInterface
+     * Renderer constructor.
+     *
+     * @param RendererInterface  $renderer
+     * @param SessionStorage     $session
+     * @param ContainerInterface $resolver
+     * @param string             $content_view
      */
-    protected $renderer;
-
-    /**
-     * @var ContainerInterface|null
-     */
-    public $resolver;
-
-    // +----------------------------------------------------------------------+
-    //  construction
-    // +----------------------------------------------------------------------+
-    /**
-     * @param RendererInterface $view
-     * @param null|string     $content_view
-     * @param null|ContainerInterface   $resolver
-     */
-    public function __construct(RendererInterface $view, $content_view = null, $resolver = null)
+    public function __construct($renderer, $session, $resolver = null, $content_view = null)
     {
-        $this->renderer     = $view;
+        parent::__construct($session);
+        $this->renderer = $renderer;
+        $this->resolver = $resolver;
         $this->content_view = $content_view ?: $this->content_view;
-        $this->resolver     = $resolver;
     }
-
-    // +----------------------------------------------------------------------+
-    //  methods for creating a view response.
-    // +----------------------------------------------------------------------+
+    
     /**
      * creates a generic response.
      *
@@ -67,12 +66,13 @@ class View extends AbstractWithViewData
      */
     private function renderWithViewer($file, $data = [])
     {
-        $helper    = ['view' => $this->getViewHelper()];
-        $content = $this->renderer->__invoke($file, $data, $helper);
+        $viewData = $this->session->getViewData();
+        $helper    = ViewHelper::forge($this->request, $this->response, $viewData, $this);
+        $content = $this->renderer->render($file, $helper, $data);
         $stream  = $this->response->getBody();
         $stream->rewind();
         $stream->write($content);
-        
+
         return $this->response;
     }
 
@@ -88,17 +88,23 @@ class View extends AbstractWithViewData
         return $this->renderWithViewer($file, $data);
     }
 
+    // ------------------------------------------------------------------------
+    // useful shortcut methods
+    // ------------------------------------------------------------------------
     /**
      * creates a Response of view with given $content as a contents.
      * use this to view a main contents with layout.
      *
-     * @param string                  $content
+     * @param string $content
+     * @param string|null   $content_view
+     * @param array  $data
      * @return ResponseInterface
      */
-    public function asContents($content, $data = [])
+    public function asContents($content, $content_view = null, $data = [])
     {
+        $content_view = $content_view ?: $this->content_view;
         $data['contents'] = $content;
-        return $this->renderWithViewer($this->content_view, $data);
+        return $this->renderWithViewer($content_view, $data);
     }
 
     /**
@@ -191,31 +197,29 @@ class View extends AbstractWithViewData
      */
     public function call($presenter, array $data = [])
     {
-        $viewData = clone($this->viewData);
-        $viewData->setData($data);
         if ($presenter instanceof PresenterInterface) {
-            return $this->callPresenter([$presenter, '__invoke'], $viewData);
+            return $this->callPresenter([$presenter, '__invoke'], $data);
         }
         if (is_callable($presenter)) {
-            return $this->callPresenter($presenter, $viewData);
+            return $this->callPresenter($presenter, $data);
         }
         if ($this->resolver) {
-            return $this->callPresenter($this->resolver->get($presenter), $viewData);
+            return $this->callPresenter($this->resolver->get($presenter), $data);
         }
         throw new \BadMethodCallException('cannot resolve a presenter.');
     }
 
     /**
      * @param callable                $callable
-     * @param mixed|ViewDataInterface $viewData
+     * @param array|mixed   $data
      * @return ResponseInterface
      */
-    private function callPresenter($callable, $viewData)
+    private function callPresenter($callable, $data)
     {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException('resolver is not a callable.');
         }
 
-        return call_user_func($callable, $this->request, $this->response, $viewData);
+        return call_user_func($callable, $this->request, $this->response, $data);
     }
 }

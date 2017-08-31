@@ -27,18 +27,17 @@ class LoginPresenter implements PresenterInterface
     /**
      * renders $view and returns a new $response.
      *
-     * @param ViewDataInterface      $viewData
      * @return ResponseInterface
      */
-    public function dispatch($viewData)
+    public function dispatch()
     {
         $login = $this->responder->session()->get('login.name');
         if ($login) {
-            return $this->view($viewData)
+            return $this->view()
                 ->render('layouts/UserHeaderLogIn', ['login' => $login]);
         }
 
-        return $this->view($viewData)
+        return $this->view()
             ->render('layouts/UserHeaderLoginForm');
     }
 }

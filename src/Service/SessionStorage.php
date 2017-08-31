@@ -5,6 +5,7 @@ use Aura\Session\Segment;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
+use Tuum\Respond\Interfaces\ViewDataInterface;
 
 /**
  * Class SessionStorage
@@ -26,6 +27,11 @@ class SessionStorage implements SessionStorageInterface
      */
     private $session;
 
+    /**
+     * @var ViewData
+     */
+    private $viewData;
+    
     /**
      * @param Session $session
      */
@@ -50,6 +56,34 @@ class SessionStorage implements SessionStorageInterface
         $self->start();
 
         return $self->withStorage($name);
+    }
+
+    /**
+     * @return ViewData
+     */    
+    public function getViewData()
+    {
+        if (isset($this->viewData)) {
+            return $this->viewData;
+        }
+        if ($viewData = $this->getFlash(ViewDataInterface::MY_KEY)) {
+            $this->viewData = clone($viewData);
+            return $this->viewData;
+        }
+        $this->viewData = new ViewData();
+        
+        return $this->viewData;
+    }
+
+    /**
+     * 
+     */
+    public function saveViewData()
+    {
+        if (!isset($this->viewData)) {
+            return;
+        }
+        $this->setFlash(ViewDataInterface::MY_KEY, $this->viewData);
     }
 
     /**

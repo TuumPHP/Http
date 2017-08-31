@@ -36,12 +36,12 @@ trait PresenterTrait
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewDataInterface      $viewData
+     * @param array|mixed            $data
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewData)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $data)
     {
-        return $this->_dispatch('dispatch', $request, $response, $viewData);
+        return $this->_dispatch('dispatch', $request, $response, $data);
     }
 
     /**
@@ -58,18 +58,18 @@ trait PresenterTrait
      * @param string                 $name
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewDataInterface      $viewData
+     * @param array|mixed            $data
      * @return ResponseInterface
      */
-    public function _dispatch($name, ServerRequestInterface $request, ResponseInterface $response, $viewData)
+    public function _dispatch($name, ServerRequestInterface $request, ResponseInterface $response, $data)
     {
         $this->request = $request;
         $this->response = $response;
         if (!$this->responder) {
-            $this->responder = Respond::getResponder($this->request);
+            $this->responder = Respond::getResponder();
         }
 
-        return $this->$name($viewData);
+        return $this->$name($data);
     }
 
     /**

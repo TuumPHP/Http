@@ -1,6 +1,8 @@
 <?php
 namespace Tuum\Respond\Interfaces;
 
+use Tuum\Respond\Service\ViewHelper;
+
 /**
  * Interface RendererInterface
  * 
@@ -11,10 +13,10 @@ namespace Tuum\Respond\Interfaces;
 interface RendererInterface
 {
     /**
-     * @param string $template
-     * @param array  $data
-     * @param array  $helper
+     * @param string     $template
+     * @param ViewHelper $helper
+     * @param array      $data
      * @return string
      */
-    public function __invoke($template, array $data, array $helper = []);
+    public function render($template, ViewHelper $helper, array $data = []);
 }

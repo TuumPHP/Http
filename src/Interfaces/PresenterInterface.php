@@ -14,10 +14,10 @@ interface PresenterInterface
     /**
      * renders $view_file with $data.
      *
-     * @param ServerRequestInterface  $request
-     * @param ResponseInterface       $response
-     * @param mixed|ViewDataInterface $viewData
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param array|mixed            $data
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $viewData);
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $data);
 }

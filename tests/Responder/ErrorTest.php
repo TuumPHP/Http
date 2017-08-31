@@ -15,7 +15,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $this->error = new Error(new RenderErrorBack());
+        $this->error = new Error(new ErrorFileBack());
         $this->error = $this->error->withRequest(ReqBuilder::createFromPath('test'), new Response(),
             SessionStorage::forge('test'));
     }

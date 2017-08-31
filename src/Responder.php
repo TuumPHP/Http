@@ -1,23 +1,20 @@
 <?php
 namespace Tuum\Respond;
 
-use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Responder\AbstractWithViewData;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Responder\ViewData;
+use Tuum\Respond\Service\ViewData;
 
 class Responder
 {
     /**
-     * @var ContainerInterface
+     * @var Builder
      */
-    private $container;
+    private $builder;
 
     /**
      * @var ResponseInterface
@@ -25,74 +22,11 @@ class Responder
     private $response;
 
     /**
-     * @var string[]
+     * @param Builder $builder
      */
-    private $responders = [];
-
-    /**
-     * @var callable
-     */
-    private $viewDataForger;
-
-    /**
-     * @var ViewDataInterface
-     */
-    private $viewData;
-
-    /**
-     * @param ContainerInterface $c
-     */
-    public function __construct(ContainerInterface $c)
+    public function __construct(Builder $builder)
     {
-        $this->container = $c;
-        $this->responders = [
-            'view'     => View::class,
-            'redirect' => Redirect::class,
-            'error'    => Error::class,
-        ];
-    }
-
-    /**
-     * @return mixed|ViewDataInterface
-     */
-    public function getViewData()
-    {
-        if (isset($this->viewData)) {
-            return $this->viewData;
-        }
-        if ($session = $this->session()) {
-            if ($viewData = $session->getFlash(ViewDataInterface::MY_KEY)) {
-                $this->viewData = clone($viewData);
-                return $this->viewData;
-            }
-        }
-
-        $forger = $this->getViewDataForger();
-        $this->viewData = $forger();
-        return $this->viewData;
-    }
-
-    /**
-     * @return callable
-     */
-    protected function getViewDataForger()
-    {
-        if ($this->viewDataForger) {
-            return $this->viewDataForger;
-        }
-        return function () {
-            return new ViewData();
-        };
-    }
-
-    /**
-     * @param callable $callable
-     * @return Responder
-     */
-    public function setViewDataForger($callable)
-    {
-        $this->viewDataForger = $callable;
-        return $this;
+        $this->builder = $builder;
     }
 
     /**
@@ -108,36 +42,9 @@ class Responder
      */
     public function withResponse(ResponseInterface $response)
     {
-        $self           = clone($this);
+        $self = clone($this);
         $self->response = $response;
-
         return $self;
-    }
-
-    /**
-     * @param ViewDataInterface|callable $data
-     * @return $this
-     */
-    public function withView($data)
-    {
-        $self           = clone($this);
-        $self->viewData = is_callable($data) ? $data(clone($this->getViewData())) : $data;
-        return $self;
-    }
-
-    /**
-     * @param string                 $responder
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return AbstractWithViewData
-     */
-    private function returnWith($responder, $request, $response)
-    {
-        /** @var AbstractWithViewData $responder */
-        $responder = $this->container->get($this->responders[$responder]);
-        $response  = $response ?: $this->response;
-
-        return $responder->withRequest($request, $response, $this);
     }
 
     /**
@@ -149,7 +56,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith('view', $request, $response);
+        return $this->builder->getView()->start($request, $response);
     }
 
     /**
@@ -161,7 +68,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith('redirect', $request, $response);
+        return $this->builder->getRedirect()->start($request, $response);
     }
 
     /**
@@ -173,7 +80,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        return $this->returnWith('error', $request, $response);
+        return $this->builder->getError()->start($request, $response);
     }
 
     /**
@@ -181,6 +88,14 @@ class Responder
      */
     public function session()
     {
-        return $this->container->get(SessionStorageInterface::class);
+        return $this->builder->getSessionStorage();
+    }
+
+    /**
+     * @return ViewData
+     */
+    public function getViewData()
+    {
+        return $this->session()->getViewData();
     }
 }

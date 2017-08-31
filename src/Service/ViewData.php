@@ -1,5 +1,5 @@
 <?php
-namespace Tuum\Respond\Responder;
+namespace Tuum\Respond\Service;
 
 use Tuum\Respond\Interfaces\ViewDataInterface;
 

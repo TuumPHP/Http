@@ -37,7 +37,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->setPhpTestFunc($this->session);
         $this->responder = ResponderBuilder::withServices(
             new LocalView(),
-            new RenderErrorBack()
+            new ErrorFileBack()
         )->withResponse(new Response())
             ->withSession($this->session);
         $this->view      = $this->responder->view(ReqBuilder::createFromPath('test'));

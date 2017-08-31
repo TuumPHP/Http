@@ -44,13 +44,13 @@ class JumpController
      */
     private function onGet($request, $response)
     {
+        $this->responder
+            ->getViewData()
+            ->setSuccess('try jump to another URL. ')
+            ->setData('jumped', 'text in control')
+            ->setData('date', (new \DateTime('now'))->format('Y-m-d'));
+
         return $this->responder
-            ->withView(
-                function (ViewDataInterface $viewData) {
-                    return $viewData->setSuccess('try jump to another URL. ')
-                        ->setData('jumped', 'text in control')
-                        ->setData('date', (new \DateTime('now'))->format('Y-m-d'));
-                })
             ->view($request, $response)
             ->render('jump');
     }

@@ -39,17 +39,15 @@ class Twig   implements RendererInterface
     }
 
     /**
-     * @param string $template
-     * @param array  $data
-     * @param array  $helper
+     * @param string     $template
+     * @param ViewHelper $helper
+     * @param array      $data
      * @return string
      */
-    public function __invoke($template, array $data, array $helper = [])
+    public function render($template, ViewHelper $helper, array $data = [])
     {
         $viewFile   = (substr($template, -5) === '.twig') ?: $template . '.twig';
-        foreach($helper as $key => $help) {
-            $this->renderer->addGlobal($key, $help);
-        }
+        $this->renderer->addGlobal('view', $helper);
 
         return $this->renderer->render($viewFile, $data);
     }

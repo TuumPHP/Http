@@ -29,30 +29,27 @@ trait ResponderHelperTrait
     abstract protected function getResponse($string = null);
 
     /**
-     * @param null|ViewDataInterface $viewData
      * @return View
      */
-    protected function view($viewData = null)
+    protected function view()
     {
-        return $this->makeResponders('view', $viewData);
+        return $this->makeResponders('view');
     }
 
     /**
-     * @param null|ViewDataInterface $viewData
      * @return Redirect
      */
-    protected function redirect($viewData = null)
+    protected function redirect()
     {
-        return $this->makeResponders('redirect', $viewData);
+        return $this->makeResponders('redirect');
     }
 
     /**
-     * @param null|ViewDataInterface $viewData
      * @return Error
      */
-    protected function error($viewData = null)
+    protected function error()
     {
-        return $this->makeResponders('error', $viewData);
+        return $this->makeResponders('error');
     }
 
     /**
@@ -78,22 +75,19 @@ trait ResponderHelperTrait
      */
     protected function call($presenter, array $data = [])
     {
-        return $this->getResponder()->view($this->getRequest(), $this->getResponse())
-            ->call($presenter, $data);
+        return $this->getResponder()
+                    ->view($this->getRequest(), $this->getResponse())
+                    ->call($presenter, $data);
     }
 
     /**
      * @param string $type
-     * @param null|ViewDataInterface $viewData
      * @return mixed
      */
-    private function makeResponders($type, $viewData = null)
+    private function makeResponders($type)
     {
-        /** @var Responder\AbstractWithViewData $responder */
+        /** @var Responder\AbstractResponder $responder */
         $responder = $this->getResponder()->$type($this->getRequest(), $this->getResponse());
-        if ($viewData instanceof ViewDataInterface) {
-            $responder = $responder->withView($viewData);
-        }
         return $responder;
     }
 }
