@@ -7,8 +7,10 @@ use Tuum\Respond\Helper\ReqAttr;
 trait DispatchByMethodTrait
 {
     use ControllerTrait;
+    use ResponderHelperTrait;
 
     /**
+     * TODO: name _dispatch confusing; dispatch method. 
      * @return null|ResponseInterface
      */
     protected function _dispatch()

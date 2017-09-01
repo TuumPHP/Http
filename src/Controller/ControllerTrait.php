@@ -3,6 +3,7 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
@@ -22,7 +23,7 @@ trait ControllerTrait
      * @var Responder
      */
     protected $responder;
-
+    
     /**
      * call this dispatch method to respond.
      * 
@@ -76,6 +77,14 @@ trait ControllerTrait
     }
 
     /**
+     * @param Responder $responder
+     */
+    protected function setResponder($responder)
+    {
+        $this->responder = $responder;
+    }
+
+    /**
      * @param null|string $name
      * @return array|null|object
      */
@@ -87,8 +96,18 @@ trait ControllerTrait
         $post = $this->request->getParsedBody();
         return array_key_exists($name, $post) ? $post[$name] : null;
     }
+
+    /**
+     * @return UploadedFileInterface[]
+     */    
+    protected function getUploadFiles()
+    {
+        return $this->request->getUploadedFiles();
+    }
     
     /**
+     * TODO: dispatchMethod confusing; so many dispatch* methods!
+     * 
      * @param string $method
      * @param array  $params
      * @return mixed

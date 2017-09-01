@@ -7,6 +7,7 @@ use Tuum\Respond\Helper\ReqAttr;
 trait DispatchByRouteTrait
 {
     use ControllerTrait;
+    use ResponderHelperTrait;
 
     /**
      * return a hash of routes: [ pattern => handler, ],
