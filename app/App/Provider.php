@@ -5,11 +5,10 @@ use App\App\Controller\JumpController;
 use App\App\Controller\PaginationController;
 use App\App\Controller\UploadController;
 use App\App\Controller\UploadViewer;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use League\Plates\Engine;
 use Tuum\Pagination\Pager;
 use Tuum\Respond\Builder;
-use Tuum\Respond\Helper\TuumProvider;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\Plates;
 

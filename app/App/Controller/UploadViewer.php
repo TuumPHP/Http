@@ -28,8 +28,9 @@ class UploadViewer implements PresenterInterface
     {
         $this->getViewData()
             ->setSuccess('Please upload a file (max 512 byte). ')
+            ->setData($data)
             ->setData('isUploaded', false);
-        return $this->view($data)->render('upload');
+        return $this->view()->render('upload');
     }
 
     /**

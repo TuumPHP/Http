@@ -1,9 +1,7 @@
 <?php
 namespace App\App;
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
-use Interop\Container\Exception\NotFoundException;
+use Psr\Container\ContainerInterface;
 use \InvalidArgumentException;
 
 class Container implements ContainerInterface
@@ -52,9 +50,6 @@ class Container implements ContainerInterface
      * Finds an entry of the container by its identifier and returns it.
      *
      * @param string $id Identifier of the entry to look for.
-     *
-     * @throws NotFoundException  No entry was found for this identifier.
-     * @throws ContainerException Error while retrieving the entry.
      *
      * @return mixed Entry.
      */

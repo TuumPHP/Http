@@ -10,7 +10,7 @@
     ],
     "require": {
         "psr/http-message": "~1.0",
-        "container-interop/container-interop": "^1.1",
+        "psr/container": "^1.0",
         "aura/session": "~2.0",
         "tuum/form": "^1.0",
         "tuum/pagination": "dev-master"

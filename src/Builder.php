@@ -1,7 +1,7 @@
 <?php
 namespace Tuum\Respond;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;

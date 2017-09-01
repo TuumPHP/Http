@@ -27,11 +27,6 @@ trait PresenterTrait
     protected $responder;
 
     /**
-     * @var ViewDataInterface
-     */
-    private $viewData;
-
-    /**
      * renders $view and returns a new $response.
      *
      * @param ServerRequestInterface $request

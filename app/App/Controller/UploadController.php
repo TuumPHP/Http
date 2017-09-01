@@ -13,8 +13,6 @@ class UploadController
 {
     use DispatchByMethodTrait;
 
-    use ResponderHelperTrait;
-
     /**
      * @var PresenterInterface
      */
@@ -29,7 +27,7 @@ class UploadController
     public function __construct($viewer, $responder)
     {
         $this->viewer = $viewer;
-        $this->responder = $responder;
+        $this->setResponder($responder);
     }
 
     /**
