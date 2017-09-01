@@ -20,14 +20,19 @@ use Tuum\Respond\Interfaces\ViewDataInterface;
 class ViewData implements ViewDataInterface
 {
     /**
-     * @var array
+     * @var bool
      */
-    private $data = [];
+    private $hasError = false;
+
+    /**
+     * @var string
+     */
+    private $errorType = ViewDataInterface::ERROR_TYPE_SUCCESS;
 
     /**
      * @var array
      */
-    private $rawData = [];
+    private $data = [];
 
     /**
      * @var array
@@ -43,30 +48,6 @@ class ViewData implements ViewDataInterface
      * @var array
      */
     private $inputErrors = [];
-
-    /**
-     * set a raw data.
-     *
-     * @param string $key
-     * @param mixed  $value
-     * @return ViewData
-     */
-    public function setExtra($key, $value)
-    {
-        $this->rawData[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * get a raw data.
-     *
-     * @return array
-     */
-    public function getExtra()
-    {
-        return $this->rawData;
-    }
 
     /**
      * set data for Data helper.
@@ -141,16 +122,18 @@ class ViewData implements ViewDataInterface
      * a generic message method for Message helper.
      * use success, alert, and error methods.
      *
-     * @param string $message
      * @param string $type
+     * @param string $message
      * @return ViewData
      */
-    public function setMessage($message, $type)
+    public function setMessage($type, $message)
     {
-        $this->messages[] = [
-            'message' => $message,
-            'type'    => $type,
-        ];
+        if (!is_null($message)) {
+            $this->messages[] = [
+                'message' => $message,
+                'type'    => $type,
+            ];
+        }
 
         return $this;
     }
@@ -169,7 +152,7 @@ class ViewData implements ViewDataInterface
      */
     public function setSuccess($message)
     {
-        return $this->setMessage($message, ViewDataInterface::MESSAGE_SUCCESS);
+        return $this->setMessage(ViewDataInterface::MESSAGE_SUCCESS, $message);
     }
 
     /**
@@ -178,15 +161,51 @@ class ViewData implements ViewDataInterface
      */
     public function setAlert($message)
     {
-        return $this->setMessage($message, ViewDataInterface::MESSAGE_ALERT);
+        return $this->setMessage(ViewDataInterface::MESSAGE_ALERT, $message);
     }
 
     /**
      * @param string $message
      * @return ViewData
      */
-    public function setError($message)
+    public function setError($message = null)
     {
-        return $this->setMessage($message, ViewDataInterface::MESSAGE_ERROR);
+        $this->setErrorType(ViewDataInterface::ERROR_TYPE_ERROR);
+        return $this->setMessage(ViewDataInterface::MESSAGE_ERROR, $message);
+    }
+    
+    /**
+     * @param string $message
+     * @return ViewDataInterface
+     */
+    public function setCritical($message = null)
+    {
+        $this->setErrorType(ViewDataInterface::ERROR_TYPE_CRITICAL);
+        return $this->setMessage(ViewDataInterface::MESSAGE_ERROR, $message);
+    }
+
+    /**
+     * @param string $type
+     */
+    private function setErrorType($type)
+    {
+        $this->hasError = true;
+        $this->errorType = $type;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function hasError()
+    {
+        return $this->hasError;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorType()
+    {
+        return $this->errorType;
     }
 }

@@ -35,21 +35,12 @@ interface ViewDataInterface
     const MESSAGE_ALERT   = 'alert';
     const MESSAGE_ERROR   = 'error';
 
-    /**
-     * set a raw data.
-     *
-     * @param string $key
-     * @param mixed  $value
-     * @return ViewDataInterface
+    /*
+     * error types. 
      */
-    public function setExtra($key, $value);
-
-    /**
-     * get a raw data.
-     *
-     * @return array
-     */
-    public function getExtra();
+    const ERROR_TYPE_SUCCESS  = 'success';
+    const ERROR_TYPE_ERROR    = 'error';
+    const ERROR_TYPE_CRITICAL = 'critical';
 
     /**
      * set data for Data helper.
@@ -96,11 +87,11 @@ interface ViewDataInterface
      * a generic message method for Message helper.
      * use success, alert, and error methods.
      *
-     * @param string $message
      * @param string $type
+     * @param string $message
      * @return ViewDataInterface
      */
-    public function setMessage($message, $type);
+    public function setMessage($type, $message);
 
     /**
      * @return array
@@ -123,5 +114,21 @@ interface ViewDataInterface
      * @param string $message
      * @return ViewDataInterface
      */
-    public function setError($message);
+    public function setError($message = null);
+
+    /**
+     * @param string $message
+     * @return ViewDataInterface
+     */
+    public function setCritical($message = null);
+    
+    /**
+     * @return bool
+     */
+    public function hasError();
+
+    /**
+     * @return string
+     */
+    public function getErrorType();
 }
