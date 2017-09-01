@@ -32,15 +32,20 @@ class RespondMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        try {
-            $response = $this->validateCsRfToken($request, $response, $next);
-            if (!$response) {
-                return $this->responder->error($request, $response)->notFound();
-            }
-            return $response;
-        } catch (\Exception $e) {
-            return $this->responder->error($request, $response)->asView($e->getCode());
+        // set CSRF token as request's attribute. 
+        $session = $this->responder->session();
+        $request = $request->withAttribute(self::CSRF_TOKEN, $session->getToken());
+
+        if ($request->getMethod() !== 'POST') {
+            return $next($request, $response);
         }
+        // check token for post method. 
+        $post    = $request->getParsedBody();
+        $token   = isset($post[self::CSRF_TOKEN]) ? $post[self::CSRF_TOKEN] : '';
+        if (!$session->validateToken($token)) {
+            return $this->responder->error($request, $response)->forbidden();
+        }
+        return $next($request, $response);
     }
 
     /**

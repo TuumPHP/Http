@@ -2,6 +2,7 @@
 
 use Demo\Controller\DocumentMap;
 use Demo\Controller\JumpController;
+use Demo\Controller\PaginationController;
 use Demo\Controller\UploadController;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
@@ -22,6 +23,7 @@ $app->get('/throw', function () {
  */
 $app->any('/jump', JumpController::class);
 $app->any('/upload', UploadController::class);
+$app->any('/paginate', PaginationController::class);
 
 /**
  * document map

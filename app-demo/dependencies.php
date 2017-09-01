@@ -2,6 +2,7 @@
 
 use Demo\Controller\DocumentMap;
 use Demo\Controller\JumpController;
+use Demo\Controller\PaginationController;
 use Demo\Controller\UploadController;
 use Demo\Controller\UploadViewer;
 use Demo\Handler\RespondMiddleware;
@@ -84,3 +85,11 @@ $container[DocumentMap::class] = function (ContainerInterface $container) use($b
         $builder->getVarDir() . '/md'
         );
 };
+
+$container[PaginationController::class] = function (ContainerInterface $container) {
+    return new PaginationController(
+        $container->get('responder'), 
+        new \Tuum\Pagination\Pager()
+    );
+};
+
