@@ -3,27 +3,10 @@ namespace Tuum\Respond\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UploadedFileInterface;
 use Tuum\Respond\Respond;
-use Tuum\Respond\Responder;
 
 trait ControllerTrait
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-
-    /**
-     * @var ResponseInterface
-     */
-    private $response;
-
-    /**
-     * @var Responder
-     */
-    protected $responder;
-    
     /**
      * call this dispatch method to respond.
      * 
@@ -47,63 +30,6 @@ trait ControllerTrait
      * @return ResponseInterface|null
      */
     abstract protected function _dispatch();
-
-    /**
-     * @return ServerRequestInterface
-     */
-    protected function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * @param null|string $string
-     * @return ResponseInterface
-     */    
-    protected function getResponse($string = null)
-    {
-        if (is_string($string)) {
-            $this->response->getBody()->write($string);
-        }
-        return $this->response;
-    }
-
-    /**
-     * @return Responder
-     */
-    protected function getResponder()
-    {
-        return $this->responder;
-    }
-
-    /**
-     * @param Responder $responder
-     */
-    protected function setResponder($responder)
-    {
-        $this->responder = $responder;
-    }
-
-    /**
-     * @param null|string $name
-     * @return array|null|object
-     */
-    protected function getPost($name = null)
-    {
-        if (is_null($name)) {
-            return $this->request->getParsedBody();
-        }
-        $post = $this->request->getParsedBody();
-        return array_key_exists($name, $post) ? $post[$name] : null;
-    }
-
-    /**
-     * @return UploadedFileInterface[]
-     */    
-    protected function getUploadFiles()
-    {
-        return $this->request->getUploadedFiles();
-    }
     
     /**
      * TODO: dispatchMethod confusing; so many dispatch* methods!

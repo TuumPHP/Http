@@ -44,7 +44,7 @@ class CsRfCheck
             return $next($request, $response);
         }
         $post    = $request->getParsedBody();
-        $token   = isset($post['_token']) ? $post['_token'] : null;
+        $token   = isset($post['_token']) ? $post['_token'] : '';
         if (!$session->validateToken($token)) {
             return $this->responder->error($request, $response)->forbidden();
         }

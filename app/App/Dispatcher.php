@@ -1,7 +1,6 @@
 <?php
 namespace App\App;
 
-use Closure;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -68,6 +67,7 @@ class Dispatcher
             return $responder->error($request, $response)->notFound();
             
         } catch (\Exception $e) {
+            /** @var Responder\Error $error */
             $error = $this->get(Responder::class)->error($request, $response);
             return $error->asView(500);
         }

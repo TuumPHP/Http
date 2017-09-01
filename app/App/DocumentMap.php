@@ -4,8 +4,6 @@ namespace App\App;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Locator\FileMap;
-use Tuum\Locator\Locator;
-use Tuum\Locator\MarkUp;
 use Tuum\Respond\Responder;
 
 class DocumentMap

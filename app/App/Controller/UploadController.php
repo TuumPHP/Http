@@ -5,7 +5,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Tuum\Respond\Controller\DispatchByMethodTrait;
-use Tuum\Respond\Controller\ResponderHelperTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Responder;
 

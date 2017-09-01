@@ -5,7 +5,6 @@ use App\App\Dispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Controller\PresenterTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Responder;
 
 class LoginPresenter implements PresenterInterface

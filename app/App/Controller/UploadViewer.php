@@ -17,7 +17,7 @@ class UploadViewer implements PresenterInterface
      */
     public function __construct($responder)
     {
-        $this->responder = $responder;
+        $this->setResponder($responder);
     }
 
     /**

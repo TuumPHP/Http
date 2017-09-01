@@ -79,8 +79,6 @@ class Builder
     }
 
     /**
-     * TODO: use PSR's ContainerInterface
-     * 
      * @param ContainerInterface $container
      * @return $this
      */
