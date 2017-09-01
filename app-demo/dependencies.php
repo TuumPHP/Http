@@ -80,7 +80,7 @@ $container[RespondMiddleware::class] = function (ContainerInterface $container) 
 $container[DocumentMap::class] = function (ContainerInterface $container) use($builder) {
     return DocumentMap::forge(
         $container->get('responder'), 
-        __DIR__ . '/templates/docs', 
+        __DIR__ . '/../vendor/tuum/respond/docs', 
         $builder->getVarDir() . '/md'
         );
 };
