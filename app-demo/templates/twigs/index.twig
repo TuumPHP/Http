@@ -1,39 +1,50 @@
 {% extends "layouts/layout.twig" %}
 
 {% block content %}
-
-    <h1>Slim 3 + Tuum/Respond</h1>
-
-    <p>Tuum/Respond responder module sample with Slim 3 Framework.</p>
-    <p>This is a package to turn a micro-framework into ordinary framework for ordinary web site :P</p>
-
-    <h3>redirect with messages sample</h3>
-    <ul>
-        <li><a href="jump">jump!!!</a></li>
-    </ul>
-
-    <h3>file upload sample</h3>
-    <ul>
-        <li><a href="upload">upload!!!</a></li>
-    </ul>
     
-    <h3>pagination</h3>
-    <ul>
-        <li><a href="paginate">pagination</a></li>
-    </ul>
-    <h3>content and file-map</h3>
-    <ul>
-        <li><a href="docs">documents</a> using FileMap.</li>
-        <li><a href="info" >php info</a></li>
-    </ul>
+    <div class="col-md-6">
+        <h3>Sample Pages</h3>
+        <ul>
+            <li><a href="jump">redirect with messages sample</a></li>
+            <li><a href="upload">file upload sample</a></li>
+            <li><a href="paginate">pagination</a></li>
+        </ul>
+    </div>
 
-    <h3>error samples</h3>
+    <div class="col-md-6">
+        <h3>content and file-map</h3>
+        <ul>
+            <li><a href="docs">documents</a> using FileMap.</li>
+            <li><a href="info" >php info</a></li>
+        </ul>
+    </div>
 
-    <ul>
-        <li><a href="not-such-file">not found</a></li>
-        <li><a href="throw">catch exception</a> </li>
-        <li>forbidden (post without CSRF tokens)
-        <form action="jump" method="post"><input type="submit" value="post w/o token!" class="btn btn-warning btn-xs" /></form></li>
-    </ul>
+    <div class="col-md-6">
+        <h3>error samples</h3>
+        <ul>
+            <li><a href="not-such-file">not found</a></li>
+            <li><a href="throw">catch exception</a> </li>
+            <li>forbidden (post without CSRF tokens)
+                <form action="jump" method="post"><input type="submit" value="post w/o token!" class="btn btn-warning btn-xs" /></form></li>
+        </ul>
+    </div>
+    
+{% endblock %}
 
+{% block stylesheet %}
+    <style type="text/css">
+        div.jumbotron h1 {
+            font-size: 3em;
+        }
+    </style>
+{% endblock %}
+
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Slim 3 + Tuum/Respond</h1>
+            <p>Tuum/Respond responder module sample with Slim 3 Framework.<br>
+                This package turns a micro-framework into an ordinary framework for ordinary web site :P</p>
+        </div>
+    </div>
 {% endblock %}
