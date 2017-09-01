@@ -4,6 +4,7 @@ namespace App\App;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Controller\Matcher;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Responder;
 
@@ -99,9 +100,7 @@ class Dispatcher
      */
     private function match($path, $pathInfo)
     {
-        if (preg_match("!^{$path}$!", $pathInfo, $matched)) {
-            return $matched;
-        }
-        return false;
+        $matched = Matcher::verify($path, $pathInfo);
+        return empty($matched) ? false : $matched;
     }
 }

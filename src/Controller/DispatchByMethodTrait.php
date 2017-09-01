@@ -10,10 +10,9 @@ trait DispatchByMethodTrait
     use ResponderHelperTrait;
 
     /**
-     * TODO: name _dispatch confusing; dispatch method. 
      * @return null|ResponseInterface
      */
-    protected function _dispatch()
+    protected function _execInternalMethods()
     {
         /*
          * set up request information
@@ -33,7 +32,7 @@ trait DispatchByMethodTrait
          * also setup arguments from route parameters and get query.
          */
 
-        return $this->dispatchMethod($method, $params);
+        return $this->_execMethodWithArgs($method, $params);
     }
     
     /** @noinspection PhpUnusedPrivateMethodInspection */

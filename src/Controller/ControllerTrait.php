@@ -16,29 +16,31 @@ trait ControllerTrait
      */
     protected function dispatch($request, $response)
     {
-        $this->request  = $request;
-        $this->response = $response;
+        $this->setRequest($request);
+        $this->setResponse($response);
         if (!$this->responder) {
             $this->responder = Respond::getResponder();
         }
-        return $this->_dispatch();
+        return $this->_execInternalMethods();
     }
+    
+    abstract function setRequest(ServerRequestInterface $request);
+
+    abstract function setResponse(ResponseInterface $response);
     
     /**
      * must implement this method, which dispatches one of own method.
      *
      * @return ResponseInterface|null
      */
-    abstract protected function _dispatch();
+    abstract protected function _execInternalMethods();
     
     /**
-     * TODO: dispatchMethod confusing; so many dispatch* methods!
-     * 
      * @param string $method
      * @param array  $params
      * @return mixed
      */
-    protected function dispatchMethod($method, $params)
+    protected function _execMethodWithArgs($method, $params)
     {
         $refMethod = new \ReflectionMethod($this, $method);
         $refArgs   = $refMethod->getParameters();

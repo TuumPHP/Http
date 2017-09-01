@@ -3,15 +3,13 @@ namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Controller\DispatchByMethodTrait;
 use Tuum\Respond\Responder;
 
 class JumpController
 {
-    /**
-     * @var Responder
-     */
-    private $responder;
-
+    use DispatchByMethodTrait;
+    
     /**
      * JumpController constructor.
      *
@@ -19,29 +17,23 @@ class JumpController
      */
     public function __construct($responder)
     {
-        $this->responder = $responder;
+        $this->setResponder($responder);
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @return ResponseInterface
+     * @return null|ResponseInterface
      */
     public function __invoke($request, $response)
     {
-        if ($request->getMethod() === 'POST') {
-            return $this->onPost($request, $response);
-        }
-
-        return $this->onGet($request, $response);
+        return $this->dispatch($request, $response);
     }
-
+    
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    private function onGet($request, $response)
+    protected function onGet()
     {
         $this->responder
             ->getViewData()
@@ -49,21 +41,17 @@ class JumpController
             ->setData('jumped', 'text in control')
             ->setData('date', (new \DateTime('now'))->format('Y-m-d'));
 
-        return $this->responder
-            ->view($request, $response)
-            ->render('jump');
+        return $this->view()->render('jump');
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    private function onPost($request, $response)
+    protected function onPost()
     {
-        $this->responder->getViewData()
+        $this->getViewData()
             ->setError('redirected back!')
-            ->setInput($request->getParsedBody())
+            ->setInput($this->getPost())
             ->setInputErrors([
                 'jumped' => 'redirected error message',
                 'date'   => 'your date',
@@ -72,8 +60,6 @@ class JumpController
                 'happy'  => 'be happy!'
             ]);
 
-        return $this->responder
-            ->redirect($request, $response)
-            ->toPath('jump');
+        return $this->redirect()->toPath('jump');
     }
 }

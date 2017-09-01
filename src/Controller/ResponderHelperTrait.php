@@ -37,6 +37,14 @@ trait ResponderHelperTrait
     }
 
     /**
+     * @param ServerRequestInterface $request
+     */
+    protected function setRequest(ServerRequestInterface $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * @param null|string $string
      * @return ResponseInterface
      */
@@ -46,6 +54,14 @@ trait ResponderHelperTrait
             $this->response->getBody()->write($string);
         }
         return $this->response;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     */
+    protected function setResponse(ResponseInterface $response)
+    {
+        $this->response = $response;
     }
 
     /**

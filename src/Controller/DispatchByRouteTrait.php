@@ -20,7 +20,7 @@ trait DispatchByRouteTrait
     /**
      * @return null|ResponseInterface
      */
-    protected function _dispatch()
+    protected function _execInternalMethods()
     {
         // dispatch by route
         $method         = ReqAttr::getMethod($this->request);
@@ -63,16 +63,25 @@ trait DispatchByRouteTrait
     private function dispatchRoute($path, $method)
     {
         $routes = $this->getRoutes();
+        $matcher = $this->getRouteMatcher();
         foreach ($routes as $pattern => $dispatch) {
-            $params = Matcher::verify($pattern, $path, $method);
+            $params = call_user_func($matcher, $pattern, $path, $method);
             if (!empty($params)) {
                 $params += $this->request->getQueryParams() ?: [];
-                $method = 'on' . ucwords($dispatch);
+                $method = ucwords($dispatch);
 
-                return $this->dispatchMethod($method, $params);
+                return $this->_execMethodWithArgs($method, $params);
             }
         }
 
         return null;
+    }
+
+    /**
+     * @return callable
+     */
+    protected function getRouteMatcher()
+    {
+        return [Matcher::class, 'verify'];
     }
 }
