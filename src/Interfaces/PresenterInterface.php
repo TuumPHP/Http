@@ -6,13 +6,15 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Interface PresenterInterface
+ * 
+ * creates a response for presentation view. 
  *
  * @package Tuum\Respond\Service
  */
 interface PresenterInterface
 {
     /**
-     * renders $view_file with $data.
+     * returns a presentation response.
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response

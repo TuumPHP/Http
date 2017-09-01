@@ -62,8 +62,7 @@ interface SessionStorageInterface
      * @return ViewData
      */
     public function getViewData();
-
-
+    
     /**
      *
      */
