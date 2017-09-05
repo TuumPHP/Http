@@ -231,23 +231,11 @@ class ViewHelper
         if (!$this->renderer) {
             return '';
         }
-        $response = $this->prepareResponseStream($this->response);
-        $response = $this->renderer->start($this->request, $response)->render($viewFile, $data);
-
-        return $this->returnResponseBody($response);
+        return $this->renderer
+            ->start($this->request, $this->response)
+            ->renderContents($viewFile, $data);
     }
-
-    /**
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
-    private function prepareResponseStream($response)
-    {
-        $response->getBody()->rewind();
-
-        return $response;
-    }
-
+    
     /**
      * @param ResponseInterface $response
      * @return string
