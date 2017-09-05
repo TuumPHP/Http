@@ -60,20 +60,13 @@ class View extends AbstractResponder
     }
 
     /**
-     * @param string $file
-     * @param array  $data
-     * @return ResponseInterface
+     * @return ViewHelper
      */
-    private function renderWithViewer($file, $data = [])
+    public function getViewHelper()
     {
         $viewData = $this->session->getViewData();
-        $helper    = ViewHelper::forge($this->request, $this->response, $viewData, $this);
-        $content = $this->renderer->render($file, $helper, $data);
-        $stream  = $this->response->getBody();
-        $stream->rewind();
-        $stream->write($content);
 
-        return $this->response;
+        return ViewHelper::forge($this->request, $this->response, $viewData, $this);
     }
 
     /**
@@ -85,7 +78,24 @@ class View extends AbstractResponder
      */
     public function render($file, $data = [])
     {
-        return $this->renderWithViewer($file, $data);
+        $content = $this->renderContents($file, $data);
+        $stream  = $this->response->getBody();
+        $stream->rewind();
+        $stream->write($content);
+
+        return $this->response;
+    }
+
+    /**
+     * @param string $file
+     * @param array  $data
+     * @return string
+     */
+    public function renderContents($file, $data = [])
+    {
+        $helper   = $this->getViewHelper();
+        
+        return $this->renderer->render($file, $helper, $data);
     }
 
     // ------------------------------------------------------------------------
@@ -104,7 +114,7 @@ class View extends AbstractResponder
     {
         $content_view = $content_view ?: $this->content_view;
         $data['contents'] = $content;
-        return $this->renderWithViewer($content_view, $data);
+        return $this->render($content_view, $data);
     }
 
     /**
