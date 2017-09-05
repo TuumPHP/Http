@@ -23,6 +23,7 @@ include dirname(__DIR__) . "/app/autoload.php";
  */
 
 $config = [
+    'debug'         => true,
     'renderer'      => 'plates',
     'template-path' => dirname(__DIR__) . '/app/plates',
     'error-files'   => [

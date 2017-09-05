@@ -70,7 +70,10 @@ class Dispatcher
         } catch (\Exception $e) {
             /** @var Responder\Error $error */
             $error = $this->get(Responder::class)->error($request, $response);
-            return $error->asView(500);
+            if ($this->container->has('debug') && $this->container->get('debug')) {
+                return $error->asView($e->getCode(), ['exception' => $e]);
+            }
+            return $error->asView($e->getCode());
         }
     }
 

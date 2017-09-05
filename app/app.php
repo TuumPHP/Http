@@ -17,7 +17,7 @@ use Tuum\Respond\Responder;
 $builder = function($config) {
 
     $provider  = new \App\App\Provider($config);
-    $container = new \App\App\Container([]);
+    $container = new \App\App\Container($config);
     $container->loadServices($provider);
     $app = new Dispatcher($container);
     
