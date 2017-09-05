@@ -11,6 +11,7 @@ use Tuum\Pagination\Pager;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\Plates;
+use Tuum\Respond\Service\Renderer\RawPhp;
 
 class Provider
 {
@@ -90,7 +91,7 @@ class Provider
         return new Responder(
             (new Builder('TuumDemo'))
                 ->setContainer($container)
-                ->setRenderer(new Plates(new Engine(dirname(__DIR__) . '/plates')))
+                ->setRenderer(Plates::forge(dirname(__DIR__) . '/plates'))
         );
     }
 }
