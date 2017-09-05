@@ -103,17 +103,17 @@ class ViewHelper
      */
     public function setViewData($viewData)
     {
-        $view = $this->dataView;
-        $get  = function ($method) use ($viewData) {
-            return ($viewData instanceof ViewDataInterface) ? $viewData->$method() : [];
-        };
-        $view->setData($get('getData'));
-        $view->setErrors($get('getInputErrors'));
-        $view->setInputs($get('getInput'));
-        $view->setMessage($get('getMessages'));
         $this->viewData = $viewData;
 
         return $this;
+    }
+
+    /**
+     * @return ViewData
+     */
+    public function getViewData()
+    {
+        return $this->viewData;
     }
 
     /**
@@ -122,8 +122,12 @@ class ViewHelper
      */
     public function __get($name)
     {
-        if (isset($this->dataView->$name)) {
-            return $this->dataView->$name;
+        if (method_exists($this, $name)) {
+            return $this->$name();
+        }
+        $method = 'get' . ucwords($name);
+        if (method_exists($this, $method)) {
+            return $this->$method();
         }
         throw new \InvalidArgumentException;
     }
@@ -141,6 +145,9 @@ class ViewHelper
      */
     public function inputs()
     {
+        if (!$this->dataView->inputs) {
+            $this->dataView->setInputs($this->viewData->getInput());
+        }
         return $this->dataView->inputs;
     }
 
@@ -149,6 +156,9 @@ class ViewHelper
      */
     public function data()
     {
+        if (!$this->dataView->data) {
+            $this->dataView->setData($this->viewData->getData());
+        }
         return $this->dataView->data;
     }
 
@@ -157,6 +167,9 @@ class ViewHelper
      */
     public function errors()
     {
+        if (!$this->dataView->errors) {
+            $this->dataView->setErrors($this->viewData->getInputErrors());
+        }
         return $this->dataView->errors;
     }
 
@@ -165,6 +178,9 @@ class ViewHelper
      */
     public function message()
     {
+        if (!$this->dataView->message) {
+            $this->dataView->setMessage($this->viewData->getMessages());
+        }
         return $this->dataView->message;
     }
 
