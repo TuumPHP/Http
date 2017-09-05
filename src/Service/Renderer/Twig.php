@@ -14,6 +14,11 @@ class Twig   implements RendererInterface
     private $renderer;
 
     /**
+     * @var string
+     */
+    public $viewName = 'view';
+
+    /**
      * @param Twig_Environment $renderer
      */
     public function __construct($renderer)
@@ -47,7 +52,7 @@ class Twig   implements RendererInterface
     public function render($template, ViewHelper $helper, array $data = [])
     {
         $viewFile   = (substr($template, -5) === '.twig') ?: $template . '.twig';
-        $this->renderer->addGlobal('view', $helper);
+        $this->renderer->addGlobal($this->viewName, $helper);
 
         return $this->renderer->render($viewFile, $data);
     }

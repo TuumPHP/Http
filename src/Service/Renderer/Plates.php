@@ -13,6 +13,11 @@ class Plates implements RendererInterface
     private $renderer;
 
     /**
+     * @var string
+     */
+    public $viewName = 'view';
+
+    /**
      * @param Engine   $renderer
      */
     public function __construct($renderer)
@@ -47,7 +52,7 @@ class Plates implements RendererInterface
     public function render($template, ViewHelper $helper, array $data = [])
     {
         if (isset($helper)) {
-            $this->renderer->addData(['view' => $helper]);
+            $this->renderer->addData([$this->viewName => $helper]);
         }
         return $this->renderer->render($template, $data);
     }

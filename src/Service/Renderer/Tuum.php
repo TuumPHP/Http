@@ -21,6 +21,11 @@ class Tuum implements RendererInterface
     private $renderer;
 
     /**
+     * @var string
+     */
+    public $viewName = 'view';
+
+    /**
      * @param Renderer   $renderer
      */
     public function __construct($renderer)
@@ -54,7 +59,7 @@ class Tuum implements RendererInterface
      */
     public function render($template, ViewHelper $helper, array $data = [])
     {
-        $view_data = array_merge($data, ['view' => $helper]);
+        $view_data = array_merge($data, [$this->viewName => $helper]);
 
         return $this->renderer->render($template, $view_data);
     }

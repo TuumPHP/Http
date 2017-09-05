@@ -15,7 +15,7 @@ $this->layout('layouts/layout');
 
 <?= $view->message(); ?>
 
-<div class="col-md-6">
+<div class="col-sm-6 col-md-4">
 
     <h3>Documents</h3>
 
@@ -40,7 +40,7 @@ $this->layout('layouts/layout');
 
 </div>
 
-<div class="col-md-6">
+<div class="col-sm-6 col-md-4">
 
     <h3>samples</h3>
 
@@ -55,6 +55,10 @@ $this->layout('layouts/layout');
             pagination sample page. </li>
     </ul>
 
+</div>
+
+<div class="col-sm-6 col-md-4">
+
     <h3>error samples</h3>
 
     <ul>
@@ -64,6 +68,10 @@ $this->layout('layouts/layout');
             case for catching exception. </li>
         <li><form method="post" action="forbidden" ><input type="submit" value="case for forbidden errors" class="btn btn-default btn-xs" /></form></li>
     </ul>
+
+</div>
+
+<div class="col-sm-6 col-md-4">
 
     <h3>more samples</h3>
 

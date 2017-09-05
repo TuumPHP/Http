@@ -20,6 +20,11 @@ class RawPhp implements RendererInterface
     private $root;
 
     /**
+     * @var string
+     */
+    public $viewName = 'view';
+
+    /**
      * @param string $root
      */
     public function __construct($root)
@@ -47,7 +52,7 @@ class RawPhp implements RendererInterface
      */
     public function render($template, ViewHelper $helper, array $data = [])
     {
-        $view_data = array_merge($data, ['view' => $helper]);
+        $view_data = array_merge($data, [$this->viewName => $helper]);
         $template .= '.php'; 
 
         ob_start();
