@@ -6,7 +6,7 @@ use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
-use Tuum\Respond\Service\ErrorFileView;
+use Tuum\Respond\Service\ErrorFile;
 use Tuum\Respond\Service\SessionStorage;
 
 class Builder
@@ -128,7 +128,7 @@ class Builder
     {
         return $this->error ?:
             $this->error = new Error(
-                ErrorFileView::forge($this->error_option),
+                ErrorFile::forge($this->error_option),
                 $this->getView(),
                 $this->getSessionStorage()
             );

@@ -30,7 +30,7 @@ class Error extends AbstractResponder
     /**
      * @var null|ErrorFileInterface
      */
-    private $errorFile;
+    public $errorFile;
 
     /**
      * index of method name and associated http status code.

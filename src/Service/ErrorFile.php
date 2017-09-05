@@ -3,7 +3,7 @@ namespace Tuum\Respond\Service;
 
 use Tuum\Respond\Interfaces\ErrorFileInterface;
 
-class ErrorFileView implements ErrorFileInterface
+class ErrorFile implements ErrorFileInterface
 {
     /**
      * @var string
