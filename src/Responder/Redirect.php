@@ -9,6 +9,8 @@ use Tuum\Respond\Service\SessionStorage;
 
 class Redirect extends AbstractResponder
 {
+    const REFERRER = '_referrer';
+
     /**
      * @var string
      */
@@ -96,10 +98,33 @@ class Redirect extends AbstractResponder
      */
     public function toReferrer()
     {
-        $referrer = ReqAttr::getReferrer($this->request);
-        $uri = $this->request->getUri()->withPath($referrer);
-
+        $referrer = parse_url($this->getReferrer());
+        $uri = $this->request->getUri();
+        if (isset($referrer['path'])) {
+            $uri = $uri->withPath($referrer['path']);
+        }
+        if (isset($referrer['query'])) {
+            $uri = $uri->withQuery($referrer['query']);
+        }
+        if (isset($referrer['fragment'])) {
+            $uri = $uri->withFragment($referrer['fragment']);
+        }
         return $this->toAbsoluteUri($uri);
+    }
+
+    /**
+     * @return string
+     */
+    private function getReferrer()
+    {
+        $server = $this->request->getServerParams();
+        if (array_key_exists('HTTP_REFERER', $server)) {
+            return $server['HTTP_REFERER'];
+        }
+        if ($referrer = $this->session->get(self::REFERRER)) {
+            return $referrer;
+        }
+        throw new \BadMethodCallException('referrer not set');
     }
 
     /**
