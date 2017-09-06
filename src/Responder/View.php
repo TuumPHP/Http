@@ -118,6 +118,21 @@ class View extends AbstractResponder
     }
 
     /**
+     * @param callable $callable
+     * @param string   $content_view
+     * @param array    $data
+     * @return ResponseInterface
+     */
+    public function asObContents($callable, $content_view = null, $data = [])
+    {
+        ob_start();
+        $callable();
+        $content = ob_get_contents();
+        ob_end_clean();
+        
+        return $this->asContents($content, $content_view, $data);
+    }
+    /**
      * returns a string as a html text.
      *
      * @param string $text
