@@ -1,13 +1,52 @@
 Responders
-==========
+================
 
-There are `view`, `error`, and `redirect` responders. 
+Constructing a Responder
+------------------------
+
+Use `Builder` to construct a responder.  
 
 ```php
-$responder = new Responder($view, $redirect, $error);
+use Tuum\Respond\Builder;
+use Tuum\Respond\Responder;
+
+$builder = new Builder('App-Name')  // 1. application name
+    ->setRenderer(                  // 2. renderer
+        Plates::forge(__DIR__ . '/plates')
+    )->setErrorOption([             // 3. error options
+        'default' => 'layout/error',
+        'status' => [
+            401 => 'errors/unauthorized',
+        ],
+    ])->setContainer($container)    // 4. container
+;
+$responder = new Responder($builder);
 ```
 
-You can access to the responder with `$request` and `$response` object, 
+1. application name: a string to identify the application. Not really used for much. 
+3. renderer: to render a template; `Twig`, `League/Plates`, or `Tuum/View` are available. Used in View and Error responders. 
+4. error options: set error options for default error page, and other pages for each http status. Used in Error responder. 
+2. container: used to retrieve presenter objects. must be `ContainerInterface` of PSR-11. ignore this if not using presenter objects. 
+
+Not all the options are required. 
+
+
+### Respond Class
+
+A Respond class provides a statical proxy to get responder. 
+
+```php
+Respond::setResponder($respond);
+// ...
+// somewhere else in the code
+Respond::getResponder()->view($req, $res)->render('rainbow');
+```
+
+
+### Responders
+
+There are `view`, `error`, and `redirect` responders.
+You can access to the responder with `$request` and `$response` objects,
 
 ```php
 $view     = $responder->view($request, $response);
@@ -15,68 +54,101 @@ $redirect = $responder->redirect($request, $response);
 $error    = $responder->error($request, $response);
 ```
 
-There is also `session` to help manage sessions. 
+There are also: 
 
-#### construction helpers
+* `session` to help manage sessions. 
+* `ViewData` is the central payload of `Tuum/Respond` that are shared between responders and requests via session. 
 
-Since each of the responder also is dependent on other object (called services) 
-and options, there is a `ResponderBuilder` class to help construct a Responder. 
+```php
+$session  = $responder->session();
+$viewData = $responder->getViewData();
+```
 
 
-View, Error, and Redirect
-----------
 
-### View Responder
+View Responder
+--------------
 
-`View` responder creates a response with a view body, such as basic text, json, or html text.
-
+View responder creates a response with a view body, such as basic text, json, or html text.
 
 ```php
 $view = $responder->view($request, $response);
-$view->render('template', $viewData);  // renders a template file.
-$view->call($presenter, $viewData);    // call a presenter, object or class name. 
+
+return $view->render('template', $viewData);  // renders a template file.
+return $view->asText('Hello World');        // returns text/plain.
+return $view->asJson(['Hello' => 'World']); // returns text/json.
+return $view->asHtml('<h1>Hello</h1>');     // returns as text/html.
+return $view->asDownload($fp, 'file_name.csv', true, 'text/csv');  // binary for download.
+return $view->asFileContents('tuum.pdf', 'application/pdf'); // reads the file and sends as mime type.
+return $view->asContent('<h1>My Content</h1>'); // renders the text inside a contents template file.
 ```
 
-to use `call` method, the `$presenter` must be;
-
-*   an object implementing `PresenterInterface`, or
-*   a class name implementing PresenterInterface if resolver is given.
+to use asContent method, specify a template file name for rendering a content.
 
 
-There are some useful method to return a response. 
+### Contents in a Layout
+
+asContents method renders a static HTML inside a template layout. 
 
 ```php
-$view = $responder->view($request, $response);
-$view->asText('Hello World');        // returns text/plain.
-$view->asJson(['Hello' => 'World']); // returns text/json.
-$view->asHtml('<h1>Hello</h1>');     // returns as text/html.
-$view->asDownload($fp, 'some.dat');  // binary for download.
-$view->asFileContents('tuum.pdf', 'application/pdf'); // reads the file and sends as mime type.
-$view->asContent('<h1>My Content</h1>'); // renders the text inside a contents template file.
+$view->content_view = 'layout/contents'; // this is the default. 
+return $view->asContent('<h1>My Content</h1>');
 ```
 
-* to use `asContent` method, specify a template file name for rendering a content. 
+The contents will be rendered using the contets_layout file, which specifies how the contents be rendered. 
+
+```twig
+{% extends "layouts/layout.twig" %}
+
+{% block content %}
+    {{ contents|raw }}
+{% endblock %}
+```
 
 
-#### construction
+### Calling a Presenter Object
 
-`View`'s constructor takes 3 arguments: ViewerInterface object, content file name, and a resolver. 
+A Presenter object is a class implementing `Tuum\Responder\Interfaces\PresenterInterface`... which can be called by;
 
 ```php
-new View(
-    $viewer, 
-    'content-file',
-    $resolver);
+return $responder
+	->view($request, $response)
+	->call(MyPresenter::class, [    // call a presenter
+		'some' => 'data',
+	]);
 ```
 
-* `$viewer` is an object implementing `ViewerInterface`.
-* 'content-file' is a template to render content.
-* `$resolver` is a invokable object to instantiate a class name (i.e some container). 
+Set container when building a responder to retrieve the presenter object from the class or service name. 
+
+It is also possible to call a presenter inside a template file. This maybe useful when a template layout needs some database calls. 
 
 
-### Error Responder
+Redirect Responder
+------------------
 
-The `Error` responder renders a template file according to the http status code
+The Redirect responder creates redirect response to a uri.
+
+```php
+$redirect = $responder->redirect($request, $response);
+$redirect->toAbsoluteUri($request->getUri()->withPath('jump/to'));
+$redirect->toPath('jump/to');
+```
+
+to add queries,
+
+```php
+$redirect
+    ->withQuery('some=value')
+    ->withQuery(['or' => 'give', 'in'=>'array'])
+    ->toPath('with/query');
+```
+
+* TODO: add toReferer and toBasePath methods. 
+
+Error Responder
+---------------
+
+The Error responder renders a template file according to the http status code
 
 ```php
 $error = $responder->error($request, $response);
@@ -86,121 +158,71 @@ $error->notFound();      // 404: file not found
 $error->asView($status, $viewData); // error $status
 ```
 
-#### construction
+### ErrorFileView Class
+
+The `Error` class uses `ErrorFileView` class to determine which error template to render from http status (i.e. error code). It is an object implementing `Tuum\Respond\Interfaces\ErrorFileInterface`. 
+
+The default implementation can be configured as;
 
 ```php
-$error = new Error($errorView);
-```
-
-where `$errorView` is an object implementing `ErrorViewInterface`. 
-
-
-#### add new method
-
-You should be able to add new error method,
-
-```php
-$error->methodStatus[
-    'teaPot'  => 418,
-    'illegal' => 451,
+$error->errorFile->default_error = 'errors/error';
+$error->errorFile->statusView = [
+    401 => 'errors/unauthorized',  // for login error.
+    403 => 'errors/forbidden',     // for CSRF token error.
+    404 => 'errors/notFound',      // for not found.
 ];
 ```
 
-### Redirect Responder
+it searches for `statusView` using `$status`; if not defined, uses `default_error` file. 
 
-The `Redirect` responder creates redirect response to uri, path, base-path, or referrer.
+
+ViewData
+---------
+
+ViewData is a data-transfer-object implementing `Tuum\Respond\Interfaces\ViewDataInterface` that is shared by many objects in Tuum/Respond. 
+
+1. ViewData object is retrieved from session, or instantiated from scratch, 
+2. updated via various responders (view, redirect, etc.), then
+3. passed to template view, OR <br> saved to session to be retrieved in the subsequent request. 
+
+* TODO: clone viewData before passing it to renderer?
+
+### API methods
+
+* The responders (View, Redirect, and Error) all have the same setter methods of the ViewData. 
+
+#### data
 
 ```php
-$redirect = $responder->redirect($request, $response);
-$redirect->toAbsoluteUri($request->getUri()->withPath('jump/to'));
-$redirect->toPath('jump/to');
-$redirect->toBasePath('to');
-$redirect->toReferrer();
+public function setData($key, $value = null);
+public function getData();
 ```
 
-to add queries,
+#### message ans status. 
 
 ```php
-$redirect
-    ->withQuery('some=value')
-    ->withQuery(['more'=>'array'])
-    ->toPath('with/query');
+// setting message with error status. 
+public function setMessage($type, $message);
+public function setSuccess($message);
+public function setAlert($message);
+public function setError($message = null);
+public function setCritical($message = null);
+
+// retrieving messages and finding error status. 
+public function getMessages(); // [[$type, $message], ...]
+public function hasError();
+public function getErrorType();
 ```
 
-#### construction
-
-`Redirect` does not have any dependency. 
+#### input and validation result. 
 
 ```php
-$redirect = new Redirect();
-```
+public function setInput(array $post);
+public function setInputErrors(array $errors);
 
-
-
-Other Objects
--------------
-
-### Session Storage
-
-The `SessionStorageInterface` object is not a responder but managed as part of Responder object.
-
-```php
-$responder->session()->set($key, $value);
-$responder->session()->get($key);
-$responder->session()->setFlash($key, $value);
-$responder->session()->getFlash($key, $value);
-$responder->session()->getFlashNext($key);
-$responder->session()->validateToken($value);
-$responder->session()->getToken();
-```
-
-> `Redirect` responder uses the session to store $viewData in flash using `setFlash` method, and 
-> retrieved in `getViewData` method. 
-
-Set `session` in `$responder` using `withSession` method.  
-
-```php
-$responder = $responder->withSession(SessionStorage::forge('app'));
+public function getInput();
+public function getInputErrors();
 ```
 
 
-### Respond Class
 
-`Respond` class offers an easy way to manage the responder object. Please set the `$responder` object in `$request` object as:
-
-```php
-// set $responder object in a middleware or somewhere.
-$request = Respond::withResponder($request, $responder);
-```
-
-The `$responder` object is set as an attribute of the `$request` object, and accessible anywhere using `Respond`'s static method.
-
-```php
-$app->get('/jump', function($request, $response) {
-    return Respond::view($request, $response)
-        ->asView('jump');
-});
-```
-
-You can access the responder, or each of responders as:
-
-```php
-$responder = Resopnd::getResponder($request);
-$view      = Resopnd::view($request, $response);
-$redirect  = Resopnd::redirect($request, $response);
-$error     = Resopnd::error($request, $response);
-$session   = Resopnd::session($request);
-```
-
-### Response Object
-
-It is possible, but not recommended, to set `$response` object in `$responder` 
-to omit when calling responders. 
-
-```php
-$responder = $responder->withResponse($response);
-return $responder->redirect($request)->back();
-```
-
-The `$response` is an immutable object; the response object maybe an old one 
-when used in later in the code. 

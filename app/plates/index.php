@@ -22,20 +22,10 @@ $this->layout('layouts/layout');
     <p>more about Tuum/Respond</p>
 
     <ul>
-        <li><h4><a href="/docs/" >Document Top</a></h4></li>
-        <li><h4>Getting Started</h4>
-            <ul>
-                <li><a href="/docs/samples" >Sample Codes</a></li>
-                <li><a href="/docs/structure" >Directory Structure</a></li>
-            </ul></li>
-        <li>    <h4>Details</h4>
-            <ul>
-                <li><a href="/docs/templates" >Template and Helpers</a></li>
-                <li><a href="/docs/responders" >Responders</a></li>
-                <li><a href="/docs/services" >Services</a></li>
-                <li><a href="/docs/breadcrumb" >BreadCrumb</a></li>
-            </ul>
-        </li>
+        <li><a href="/docs/introduction" >Introduction</a></li>
+        <li><a href="/docs/responders" >Responders</a></li>
+        <li><a href="/docs/template" >Template and Renderer</a></li>
+        <li><a href="/docs/controller" >Controller Helper</a></li>
     </ul>
 
 </div>

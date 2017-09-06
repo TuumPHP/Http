@@ -13,7 +13,7 @@ if ($path === 'docs') {
     $bread = new BreadCrumb('Documents');
 } else {
     $bread = new BreadCrumb(ucwords($path));
-    $bread->add('Documents', '/docs/');
+    $bread->add('Documents', '/docs/introduction');
 }
 $this->layout('layouts/layout', [
     'nav' => $nav,
@@ -28,17 +28,10 @@ $this->layout('layouts/layout', [
     <br/>
     <h4>Documents</h4>
     <ul class="nav nav-pills nav-stacked">
-        <li role="presentation" class="<?= $nav->m('documents', 'docs'); ?>"><a href="/docs/" >Document Top</a></li>
-        <li role="separator" class="divider"><hr></li>
-        <li role="presentation" class="disabled"><a href="#" >Getting Started</a></li>
-        <li role="presentation" class="<?= $nav->m('documents', 'samples'); ?>"><a href="/docs/samples" >Sample Codes</a></li>
-        <li role="presentation" class="<?= $nav->m('documents', 'structure'); ?>"><a href="/docs/structure" >Directory Structure</a></li>
-        <li role="separator" class="divider"><hr></li>
-        <li role="presentation" class="disabled"><a href="#" >Details</a></li>
-        <li role="presentation" class="<?= $nav->m('documents', 'templates'); ?>"><a href="/docs/templates" >Template and Helpers</a></li>
+        <li role="presentation" class="<?= $nav->m('documents', 'introduction'); ?>"><a href="/docs/introduction" >Introduction</a></li>
         <li role="presentation" class="<?= $nav->m('documents', 'responders'); ?>"><a href="/docs/responders" >Responders</a></li>
-        <li role="presentation" class="<?= $nav->m('documents', 'services'); ?>"><a href="/docs/services" >Services</a></li>
-        <li role="presentation" class="<?= $nav->m('documents', 'breadcrumb'); ?>"><a href="/docs/breadcrumb" >BreadCrumb</a></li>
+        <li role="presentation" class="<?= $nav->m('documents', 'template'); ?>"><a href="/docs/template" >Template and Renderer</a></li>
+        <li role="presentation" class="<?= $nav->m('documents', 'controller'); ?>"><a href="/docs/controller" >Controller Helper</a></li>
     </ul>
 </div>
 

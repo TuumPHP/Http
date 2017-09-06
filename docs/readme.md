@@ -1,7 +1,12 @@
-Document Contents
+Document
 =========
 
-`Tuum/Respond` is a __view module__ as in MVC2 pattern 
+`Tuum/Respond` is a framework agnostic components to 
+compose a response to a request; 
+
+
+
+ __view module__ as in MVC2 pattern 
 as shown in the figure below. 
 The module is designed to work with various PSR-7 based 
 micro-frameworks, such as [Slim 3 framework](http://www.slimframework.com/). 

@@ -46,15 +46,10 @@ if (isset($bread)) {
                 <li class="dropdown<?= $nav->m('documents');?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Documents <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="<?= $nav->m('documents', 'docs');?>"><a href="/docs/" >Document Top</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li class="<?= $nav->m('documents', 'samples');?>"><a href="/docs/samples" >Sample Codes</a></li>
-                        <li class="<?= $nav->m('documents', 'structure');?>"><a href="/docs/structure" >Directory Structure</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li class="<?= $nav->m('documents', 'templates');?>"><a href="/docs/templates" >Template and Helpers</a></li>
+                        <li class="<?= $nav->m('documents', 'introduction');?>"><a href="/docs/introduction" >Template and Helpers</a></li>
                         <li class="<?= $nav->m('documents', 'responders');?>"><a href="/docs/responders" >Responders</a></li>
-                        <li class="<?= $nav->m('documents', 'services');?>"><a href="/docs/services" >Services</a></li>
-                        <li class="<?= $nav->m('documents', 'breadcrumb');?>"><a href="/docs/breadcrumb" >BreadCrumb</a></li>
+                        <li class="<?= $nav->m('documents', 'template');?>"><a href="/docs/template" >Template</a></li>
+                        <li class="<?= $nav->m('documents', 'controller');?>"><a href="/docs/controller" >Controller</a></li>
                     </ul>
                 </li>
                 <li class="dropdown<?= $nav->m('samples');?>">
@@ -62,7 +57,6 @@ if (isset($bread)) {
                     <ul class="dropdown-menu">
                         <li class="<?= $nav->m('samples', 'jump');?>"><a href="/jump">Jump: form and redirect</a></li>
                         <li class="<?= $nav->m('samples', 'upload');?>"><a href="/upload">Upload: uploading files</a></li>
-                        <li class="<?= $nav->m('samples', 'pagination');?>"><a href="/pagination?_page">Pagination sample</a></li>
                         <li class="<?= $nav->m('samples', 'content');?>"><a href="/content">Content: html rendering</a></li>
                         <li class="<?= $nav->m('samples', 'forms');?>"><a href="/forms">Forms: html inputs</a></li>
                         <li class="<?= $nav->m('samples', 'objGraph');?>"><a href="/objGraph">Object graph</a></li>
@@ -110,10 +104,8 @@ if (isset($bread)) {
 
 <nav id="footer" class="nav navbar-fixed-bottom navbar-default">
     <div class="container">
-        <h4>Tuum/Respond.</h4>
-        <p><em>Tuum</em> means 'yours' in Latin. <br/>
-            <?= $view->request()->getMethod() ?>: <?= $view->request()->getUri() ?></p>
-        <p>&nbsp;</p>
+        <strong style="font-size: 1.2em;">Tuum/Respond.</strong>
+        <p><em>Tuum</em> means 'yours' in Latin. </p>
     </div>
 </nav>
 

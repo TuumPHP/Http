@@ -1,5 +1,12 @@
+h1 {
+    border-bottom: 2px solid #cccccc;
+}
+h2 {
+    border-bottom: 2px solid #eeeeee;
+}
 li {
     margin-top: .5em;
+    line-height: 1.3em;
 }
 li>a {
     font-weight:bold;

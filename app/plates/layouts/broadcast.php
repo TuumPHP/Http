@@ -6,7 +6,10 @@
         border: 2px solid #cccccc;
         border-radius: 10px;
     }
-    div li {
+    div.broadcast h1 {
+        border-bottom: none;
+    }
+    div.broadcast li {
         line-height: 1em;
     }
 </style>
