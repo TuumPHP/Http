@@ -94,7 +94,7 @@ class Error extends AbstractResponder
     public function asView($status, $data = [])
     {
         $file = $this->errorFile->find($status);
-        return $this->view->start($this->request, $this->response)->render($file, $data);
+        return $this->view->start($this->request, $this->response)->render($file, $data)->withStatus($status);
     }
 
     /**
