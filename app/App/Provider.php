@@ -41,20 +41,10 @@ class Provider
         $list[JumpController::class] = [$self, 'getJumpController'];
         $list[UploadController::class] = [$self, 'getUploadController'];
         $list[UploadViewer::class] = [$self, 'getUploadViewer'];
-        $list[PaginationController::class] = [$self, 'getPaginationController'];
 
         return $list;
     }
-
-    /**
-     * @param Container $container
-     * @return PaginationController
-     */
-    public static function getPaginationController(Container $container)
-    {
-        return new PaginationController($container->get(Responder::class), new Pager());
-    }
-
+    
     /**
      * @param Container $container
      * @return JumpController

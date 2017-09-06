@@ -69,11 +69,6 @@ return function (Dispatcher $app) {
     $app->add('/upload', UploadController::class);
 
     /**
-     * pagination sample, /pagination.
-     */
-    $app->add('/pagination', PaginationController::class);
-
-    /**
      * for other samples
      */
     $app->add('/content',

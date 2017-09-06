@@ -51,8 +51,6 @@ $this->layout('layouts/layout');
         <li><a href="upload">file upload</a><br/>
             file upload sample using presentation object. </li>
 
-        <li><a href="pagination">pagination </a><br/>
-            pagination sample page. </li>
     </ul>
 
 </div>
