@@ -4,6 +4,7 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\Helper\ReqAttr;
+use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Service\SessionStorage;
 
 class Redirect extends AbstractResponder
@@ -14,11 +15,18 @@ class Redirect extends AbstractResponder
     private $query = '';
 
     /**
-     * @param SessionStorage $session
+     * @var NamedRoutesInterface
      */
-    public function __construct(SessionStorage $session)
+    private $routes;
+
+    /**
+     * @param SessionStorage       $session
+     * @param NamedRoutesInterface $routes
+     */
+    public function __construct(SessionStorage $session, NamedRoutesInterface $routes = null)
     {
         parent::__construct($session);
+        $this->routes = $routes;
     }
     
     /**
@@ -94,4 +102,17 @@ class Redirect extends AbstractResponder
         return $this->toAbsoluteUri($uri);
     }
 
+    /**
+     * @param string $routeName
+     * @param array  $options
+     * @return ResponseInterface
+     */
+    public function toRoute($routeName, $options= [])
+    {
+        if (!$this->routes) {
+            throw new \BadMethodCallException('NamedRoute service is not set');
+        }
+        $path = $this->routes->route($routeName, $options);
+        return $this->toPath($path);
+    }
 }

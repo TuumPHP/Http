@@ -2,6 +2,7 @@
 namespace Tuum\Respond;
 
 use Psr\Container\ContainerInterface;
+use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
@@ -57,6 +58,11 @@ class Builder
     private $session;
 
     /**
+     * @var NamedRoutesInterface
+     */
+    private $namedRoutes;
+
+    /**
      * Builder constructor.
      *
      * @param string $name
@@ -99,6 +105,16 @@ class Builder
     }
 
     /**
+     * @param NamedRoutesInterface $routes
+     * @return $this
+     */
+    public function setNamedRoutes(NamedRoutesInterface $routes)
+    {
+        $this->namedRoutes = $routes;
+        return $this;
+    }
+
+    /**
      * @return View
      */
     public function getView()
@@ -118,7 +134,10 @@ class Builder
     public function getRedirect()
     {
         return $this->redirect ?:
-            $this->redirect = new Redirect($this->getSessionStorage());
+            $this->redirect = new Redirect(
+                $this->getSessionStorage(),
+                $this->getNamedRoutes()
+            );
     }
 
     /**
@@ -141,5 +160,10 @@ class Builder
     {
         return $this->session ?:
             $this->session = SessionStorage::forge($this->name, $_COOKIE);
+    }
+
+    public function getNamedRoutes()
+    {
+        return $this->namedRoutes;
     }
 }
