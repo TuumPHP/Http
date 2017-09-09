@@ -115,17 +115,36 @@ class Builder
     }
 
     /**
+     * @return RendererInterface
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentViewFile()
+    {
+        return $this->content_view;
+    }
+
+    /**
      * @return View
      */
     public function getView()
     {
         return $this->view ?:
-            $this->view = new View(
-                $this->renderer,
-                $this->getSessionStorage(),
-                $this->container,
-                $this->content_view
-            );
+            $this->view = new View($this, $this->getSessionStorage());
     }
 
     /**

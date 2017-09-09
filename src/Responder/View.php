@@ -1,27 +1,16 @@
 <?php
 namespace Tuum\Respond\Responder;
 
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
-use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Service\ViewHelper;
 
 class View extends AbstractResponder
 {
     const OK = 200;
-
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
-
-    /**
-     * @var ContainerInterface|null
-     */
-    public $resolver;
 
     /**
      * a view file to render a string content.
@@ -31,19 +20,21 @@ class View extends AbstractResponder
     public $content_view = 'layouts/contents';
 
     /**
+     * @var Builder
+     */
+    private $builder;
+
+    /**
      * Renderer constructor.
      *
-     * @param RendererInterface  $renderer
+     * @param Builder            $builder
      * @param SessionStorage     $session
-     * @param ContainerInterface $resolver
-     * @param string             $content_view
      */
-    public function __construct($renderer, $session, $resolver = null, $content_view = null)
+    public function __construct(Builder $builder, $session)
     {
         parent::__construct($session);
-        $this->renderer = $renderer;
-        $this->resolver = $resolver;
-        $this->content_view = $content_view ?: $this->content_view;
+        $this->builder  = $builder;
+        $this->content_view = $builder->getContentViewFile() ?: $this->content_view;
     }
     
     /**
@@ -66,7 +57,7 @@ class View extends AbstractResponder
     {
         $viewData = $this->session->getViewData();
 
-        return ViewHelper::forge($this->request, $this->response, $viewData, $this);
+        return ViewHelper::forge($this->request, $this->response, $viewData, $this->builder);
     }
 
     /**
@@ -95,7 +86,7 @@ class View extends AbstractResponder
     {
         $helper   = $this->getViewHelper();
         
-        return $this->renderer->render($file, $helper, $data);
+        return $this->builder->getRenderer()->render($file, $helper, $data);
     }
 
     // ------------------------------------------------------------------------
@@ -228,8 +219,8 @@ class View extends AbstractResponder
         if (is_callable($presenter)) {
             return $this->callPresenter($presenter, $data);
         }
-        if ($this->resolver) {
-            return $this->callPresenter($this->resolver->get($presenter), $data);
+        if ($resolver = $this->builder->getContainer()) {
+            return $this->callPresenter($resolver->get($presenter), $data);
         }
         throw new \BadMethodCallException('cannot resolve a presenter.');
     }

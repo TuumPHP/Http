@@ -12,9 +12,9 @@ use Tuum\Form\Data\Message;
 use Tuum\Form\DataView;
 use Tuum\Form\Dates;
 use Tuum\Form\Forms;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\ViewDataInterface;
-use Tuum\Respond\Responder\View;
 
 /**
  * Class ViewHelper
@@ -47,9 +47,9 @@ class ViewHelper
     private $response;
 
     /**
-     * @var View
+     * @var Builder
      */
-    private $renderer;
+    private $builder;
 
     /**
      * @var ViewData
@@ -59,25 +59,28 @@ class ViewHelper
     /**
      * ViewHelper constructor.
      *
-     * @param DataView $dataView
+     * @param DataView          $dataView
+     * @param ViewDataInterface $viewData
+     * @param Builder           $builder
      */
-    public function __construct($dataView)
+    public function __construct($dataView, $viewData, $builder)
     {
         $this->dataView = $dataView;
+        $this->builder  = $builder;
+        $this->setViewData($viewData);
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param ViewDataInterface      $viewData
-     * @param View                   $view
+     * @param Builder                $builder
      * @return ViewHelper
      */
-    public static function forge($request, $response, $viewData, $view)
+    public static function forge($request, $response, $viewData, $builder)
     {
-        $self = new self(new DataView());
-        $self->start($request, $response, $view);
-        $self->setViewData($viewData);
+        $self = new self(new DataView(), $viewData, $builder);
+        $self->start($request, $response);
 
         return $self;
     }
@@ -85,14 +88,12 @@ class ViewHelper
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param View     $renderer
      * @return $this
      */
-    public function start($request, $response, $renderer)
+    public function start($request, $response)
     {
         $this->request   = $request;
         $this->response  = $response;
-        $this->renderer = $renderer;
 
         return $this;
     }
@@ -229,10 +230,10 @@ class ViewHelper
      */
     public function call($presenter, array $data = [])
     {
-        if (!$this->renderer) {
-            return '';
-        }
-        $response = $this->renderer->call($presenter, $data);
+        $response = $this->builder
+            ->getView()
+            ->start($this->request, $this->response)
+            ->call($presenter, $data);
 
         return $this->returnResponseBody($response);
     }
@@ -244,12 +245,20 @@ class ViewHelper
      */
     public function render($viewFile, $data = [])
     {
-        if (!$this->renderer) {
-            return '';
-        }
-        return $this->renderer
+        return $this->builder
+            ->getView()
             ->start($this->request, $this->response)
             ->renderContents($viewFile, $data);
+    }
+
+    /**
+     * @param string $routeName
+     * @param array  $options
+     * @return string
+     */
+    public function route($routeName, $options = [])
+    {
+        return $this->builder->getNamedRoutes()->route($routeName, $options);
     }
     
     /**
