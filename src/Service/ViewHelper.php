@@ -153,6 +153,14 @@ class ViewHelper
     }
 
     /**
+     * @return bool
+     */
+    public function hasInputs()
+    {
+        return $this->viewData->hasInput();
+    }
+
+    /**
      * @return Data
      */
     public function data()

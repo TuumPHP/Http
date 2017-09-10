@@ -45,6 +45,11 @@ class ViewData implements ViewDataInterface
     private $inputData = [];
 
     /**
+     * @var bool
+     */
+    private $hasInput = false;
+
+    /**
      * @var array
      */
     private $inputErrors = [];
@@ -84,6 +89,7 @@ class ViewData implements ViewDataInterface
     public function setInput(array $value)
     {
         $this->inputData = $value;
+        $this->hasInput = true;
 
         return $this;
     }
@@ -94,6 +100,14 @@ class ViewData implements ViewDataInterface
     public function getInput()
     {
         return $this->inputData;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasInput()
+    {
+        return $this->hasInput;
     }
 
     /**
