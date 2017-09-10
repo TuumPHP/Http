@@ -16,7 +16,7 @@
     },
     "require-dev":{
         "zendframework/zend-diactoros": "~1.0",
-        "tuum/filemap": "@dev",
+        "tuum/filemap": "^1.0",
         "league/plates": "3.*",
         "twig/twig": "~1.0",
         "koriym/printo": " ~1.0",
