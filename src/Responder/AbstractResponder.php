@@ -49,11 +49,11 @@ abstract class AbstractResponder
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
+     * @param string|array $key
+     * @param mixed        $value
      * @return $this
      */
-    public function setData($key, $value)
+    public function setData($key, $value = null)
     {
         $this->session->getViewData()->setData($key, $value);
         return $this;
