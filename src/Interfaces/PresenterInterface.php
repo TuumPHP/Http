@@ -18,8 +18,7 @@ interface PresenterInterface
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewDataInterface      $viewData
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, ViewDataInterface $viewData);
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response);
 }
