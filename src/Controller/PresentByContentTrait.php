@@ -38,11 +38,12 @@ trait PresentByContentTrait
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
+     * @param array                  $data
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $data = [])
     {
-        return $this->_dispatch($request, $response);
+        return $this->_dispatch($request, $response, $data);
     }
 
     /**
@@ -61,9 +62,10 @@ trait PresentByContentTrait
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
+     * @param array                  $data
      * @return ResponseInterface
      */
-    protected function _dispatch(ServerRequestInterface $request, ResponseInterface $response)
+    protected function _dispatch(ServerRequestInterface $request, ResponseInterface $response, array $data)
     {
         $this->setRequest($request);
         $this->setResponse($response);
@@ -78,7 +80,7 @@ trait PresentByContentTrait
         $execute  = $methods[$mimeType];
         
         /** @var ResponseInterface $response */
-        $response = $this->$execute();
+        $response = $this->$execute($data);
         return $response->withHeader('Content-Type', $mimeType);
     }
 
