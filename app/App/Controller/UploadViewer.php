@@ -3,14 +3,13 @@ namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Tuum\Respond\Controller\PresenterTrait;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Controller\PresentByContentTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Responder;
 
 class UploadViewer implements PresenterInterface
 {
-    use PresenterTrait;
+    use PresentByContentTrait;
 
     /**
      * @param Responder $responder
@@ -23,32 +22,26 @@ class UploadViewer implements PresenterInterface
     /**
      * @return ResponseInterface
      */
-    protected function onGet()
+    protected function html()
     {
-        $this->getViewData()
-            ->setSuccess('Please upload a file (max 512 byte). ')
-            ->setData('isUploaded', false);
+        $data = $this->getViewData()->getData();
+        if (array_key_exists('upload', $data)) {
+            $uploadedFile = $data['upload'];
+            $this->setUpMessage($uploadedFile);
+        } else {
+            $this->getViewData()
+                 ->setSuccess('Please upload a file (max 512 byte). ')
+                 ->setData('isUploaded', false);
+        }
         return $this->view()->render('upload');
     }
 
     /**
-     * @return ResponseInterface
+     * @param UploadedFileInterface $upload
      */
-    protected function onPost()
+    private function setUpMessage($upload)
     {
-        $this->setUpMessage();
-
-        return $this->view()->render('upload');
-    }
-
-    /**
-     * 
-     */
-    private function setUpMessage()
-    {
-        /** @var UploadedFileInterface $upload */
         $viewData = $this->getViewData();
-        $upload = $viewData->getData()['upload'];
         $error_code = $upload->getError();
 
         if ($error_code === UPLOAD_ERR_NO_FILE) {

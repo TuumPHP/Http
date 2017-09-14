@@ -3,13 +3,13 @@ namespace App\App\Controller;
 
 use App\App\Dispatcher;
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Controller\PresenterTrait;
+use Tuum\Respond\Controller\PresentByContentTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Responder;
 
 class LoginPresenter implements PresenterInterface
 {
-    use PresenterTrait;
+    use PresentByContentTrait;
 
     /**
      * @param Dispatcher $app
@@ -28,7 +28,7 @@ class LoginPresenter implements PresenterInterface
      *
      * @return ResponseInterface
      */
-    public function dispatch()
+    public function html()
     {
         $login = $this->responder->session()->get('login.name');
         if ($login) {

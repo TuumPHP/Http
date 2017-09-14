@@ -44,7 +44,7 @@ class UploadController
      */
     public function onGet()
     {
-        return $this->call([$this->viewer, 'onGet']);
+        return $this->call(UploadViewer::class);
     }
 
     /**
@@ -55,7 +55,7 @@ class UploadController
         /** @var UploadedFileInterface $upload */
         $uploaded = $this->getRequest()->getUploadedFiles();
         $upload   = $uploaded['up'][0];
-        return $this->call([$this->viewer, 'onPost'], [
+        return $this->call(UploadViewer::class, [
             'upload' => $upload,
         ]);
     }
