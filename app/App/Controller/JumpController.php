@@ -35,13 +35,11 @@ class JumpController
      */
     protected function onGet()
     {
-        $this->responder
-            ->getViewData()
+        return $this->view()
             ->setSuccess('try jump to another URL. ')
             ->setData('jumped', 'text in control')
-            ->setData('date', (new \DateTime('now'))->format('Y-m-d'));
-
-        return $this->view()->render('jump');
+            ->setData('date', (new \DateTime('now'))->format('Y-m-d'))
+            ->render('jump');
     }
 
     /**
@@ -49,7 +47,7 @@ class JumpController
      */
     protected function onPost()
     {
-        $this->getViewData()
+        return $this->redirect()
             ->setError('redirected back!')
             ->setInput($this->getPost())
             ->setInputErrors([
@@ -58,8 +56,6 @@ class JumpController
                 'gender' => 'your gender',
                 'movie'  => 'selected movie',
                 'happy'  => 'be happy!'
-            ]);
-
-        return $this->redirect()->toPath('jump');
+            ])->toReferrer();
     }
 }

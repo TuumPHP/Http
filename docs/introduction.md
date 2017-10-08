@@ -1,97 +1,111 @@
-Introduction
+Sample Code
 ============
 
-A framework agnostic component to construct a response, and more. 
+Assume you have already built a responder (`$responder`).
 
-### License
+Simple Cases
+------------
 
-MIT License
+### Rendering a Template
 
-### PSRs
-
-* Comform to PSR-1, PSR-2, PSR-4, and 
-* uses PSR-7, and PSR-11. 
-
-### Who needs `Tuum/Respond`?
-
-I love the simplicity of Micro Framework, such as Slim 3. But when I want to use them to build an ordinary HTML based web site, I found it lacks some features that automate some tedious  work. 
-
-`Tuum/Respond` provides these missing features such as,
-
-* automatically passes flash messages to templates,
-* easily passes input values to HTML forms, 
-* standard error templates, 
-
-and some more. 
-
-
-Installation
--------
-
-### Installation
-
-Please use composer to install Tuum/Respond
-
-```sh
-$ composer require "tuum/respond:^3.0"
-```
-
-### Demo
-
-The repository includes a demo site to demonstrate what Tuum/Respond can do.
-To see the demo site;
-
-1. run `composer install`,
-2. change directory to `/public`,
-3. run `php -S localhost:8000 index.php`, and
-4. access `localhost:8000` via browser.
-
-### Documentation
-
-This documentation is accessible via the demo site above. 
-
-### Demo With `Slim 3`
-
-There is a `asaokamei/slim-tuum` repository to start a new project using [Slim 3 Framework](https://www.slimframework.com/), which also has a more demo site. 
-
-
-Sample Code
------------
-
-Assume you have already built a responder, which can be accessible via `$this->responder`... 
 Rendering a template is easy. 
+The sample code below is used to draw the top page of the 
+demo site. 
 
 ```php
-$app->get('/{name}', function($req, $res, $args) {
-	$name = $args['name'];
-	return $this->responder
-		->view($req, $res)
+$app->get('/{name}', function($req, $res, $args) use($responder) {
+	$name = $args['name'] ?? 'Tuum/Respond';
+	return $responder->view($req, $res)
 		->setSuccess('Welcome, ' . $name)
 		->render('welcome');
 });
 ```
 
+### Redirect with Messages
+
 It is also very easy to redirect with messages and form inputs saved in flash session to be retrieved in the subsequent request. 
 
 ```php
-$app->post('/check', function($req, $res, $args) {
-	$post = $req->getParsedBody();
-	return $this->responder
-		->redirect($req, $res)
-		->setInput($post)
-		->setError('Sorry, always returns as error...')
-		->toPath('/form');
+$app->post('/check', function($req, $res, $args) use($responder) {
+	return $responder->redirect($req, $res)
+		->setAlert('Redirected!')
+		->toReferrer();
 });
 ```
 
-In the form request, the input data and error message are automatically restored from flash session and passed to template. 
+### Error
 
 ```php
-$app->get('/form', function($req, $res, $args) {
-	return $this->responder
-		->view($req, $res)
-		->render('form');
+$app->get('/form', function($req, $res, $args) use($responder) {
+	return $responder->error($req, $res)
+		->setError('Sorry!')
+		->forbidden();
 });
 ```
+
+Redirect After Validation Errors
+-------------------------------
+
+This pattern is often used in Laravel application; 
+you fill in a form and submit, there is some validation errors, 
+and application redirect back to the form page 
+with the validation errors and input values.  
+
+The sample code below is in `JumpController` class that uses 
+`DispatchByMethodTrait` helper traits to simplify responder API. 
+The class is located at `/app/App/Controller/JumpController.php`
+
+### Showing HTML Form
+
+This is a sample code to show HTML form 
+(the 'jump' page have the html form).
+
+
+```php
+/**
+ * @return ResponseInterface
+ */
+protected function onGet()
+{
+    $this->responder
+        ->getViewData()
+        ->setSuccess('try jump to another URL. ')
+        ->setData('jumped', 'text in control')
+        ->setData('date', (new \DateTime('now'))->format('Y-m-d'));
+
+    return $this->view()->render('jump');
+}
+```
+
+### Redirect 
+
+There is no validation, but redirect with always the 
+same error and messages. 
+
+```php
+/**
+ * @return ResponseInterface
+ */
+protected function onPost()
+{
+    return $this->redirect()
+        ->setError('redirected back!')
+        ->setInput($this->getPost())
+        ->setInputErrors([
+            'jumped' => 'redirected error message',
+            'date'   => 'your date',
+            'gender' => 'your gender',
+            'movie'  => 'selected movie',
+            'happy'  => 'be happy!'
+        ])->toReferrer();
+}
+```
+
+### Template
+
+The messages and forms are automatically populated with 
+input values. 
+
+Ugh, rewrite the template!
 
 

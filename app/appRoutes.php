@@ -32,9 +32,11 @@ return function (Dispatcher $app) {
                 ->render('index');
         });
     
-    $app->add('/info', function () {
-        phpinfo();
-        exit;
+    $app->add('/info', function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
+        return $responder->view($request, $response)
+            ->asObContents(function() {
+                phpinfo();
+            });
     });
 
     $app->add('/login',

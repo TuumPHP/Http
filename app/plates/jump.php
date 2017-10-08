@@ -37,14 +37,13 @@ $forms = $view->forms()->withClass('form-control');
         $view->errors->p('jumped')
     )->class($view->errors->exists('jumped') ? 'has-error' : null);
     ?>
-
-    <?=
-    $forms->formGroup(
-        $forms->label('some date here:', 'date'),
-        $forms->date('date', 'some date')->id()->width('12em'),
-        $view->errors->p('date')
-    )->class($view->errors->exists('date') ? 'has-error' : null);
-    ?>
+    
+    <div class="form-group<?= $view->errors()->ifExists('date', null, ' has-error') ?>">
+        <label for="date">some date here:</label>
+        <input type="date" id="date" name="date" class="form-control" style="width: 12em;"
+               value="<?= $view->inputs->get('date', $view->data->get('date')) ?>">
+        <?= $view->errors()->p('date') ?>
+    </div>
 
     <label>your gender</label>
     <?=

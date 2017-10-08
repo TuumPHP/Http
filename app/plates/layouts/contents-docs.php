@@ -13,7 +13,7 @@ if ($path === 'docs') {
     $bread = new BreadCrumb('Documents');
 } else {
     $bread = new BreadCrumb(ucwords($path));
-    $bread->add('Documents', '/docs/introduction');
+    $bread->add('Documents', '/docs/readme');
 }
 $this->layout('layouts/layout', [
     'nav' => $nav,
@@ -24,10 +24,11 @@ $this->layout('layouts/layout', [
 
 <?php $this->start('contents'); ?>
 
-<div class="col-md-3">
+<div class="col-sm-3">
     <br/>
     <h4>Documents</h4>
     <ul class="nav nav-pills nav-stacked">
+        <li role="presentation" class="<?= $nav->m('documents', 'readme'); ?>"><a href="/docs/readme" >Table of Contents</a></li>
         <li role="presentation" class="<?= $nav->m('documents', 'introduction'); ?>"><a href="/docs/introduction" >Introduction</a></li>
         <li role="presentation" class="<?= $nav->m('documents', 'responders'); ?>"><a href="/docs/responders" >Responders</a></li>
         <li role="presentation" class="<?= $nav->m('documents', 'template'); ?>"><a href="/docs/template" >Template and Renderer</a></li>
@@ -35,7 +36,7 @@ $this->layout('layouts/layout', [
     </ul>
 </div>
 
-<div class="col-md-9">
+<div class="col-sm-9">
     <?= isset($contents) ? $contents: ''; ?>
 </div>
 

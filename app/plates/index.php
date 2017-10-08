@@ -70,6 +70,7 @@ $this->layout('layouts/layout');
             more form generation using Tuum/Form helpers.</li>
         <li><a href="objGraph">object graph</a><br/>
             view object graph of $responder using koriym/printo</li>
+        <li><a href="info">phpinfo</a></li>
     </ul>
 
 </div>

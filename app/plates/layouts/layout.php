@@ -46,9 +46,10 @@ if (isset($bread)) {
                 <li class="dropdown<?= $nav->m('documents');?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Documents <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="<?= $nav->m('documents', 'introduction');?>"><a href="/docs/introduction" >Template and Helpers</a></li>
+                        <li class="<?= $nav->m('documents', 'readme');?>"><a href="/docs/readme" >Table of Contents</a></li>
+                        <li class="<?= $nav->m('documents', 'introduction');?>"><a href="/docs/introduction" >Sample Codes</a></li>
                         <li class="<?= $nav->m('documents', 'responders');?>"><a href="/docs/responders" >Responders</a></li>
-                        <li class="<?= $nav->m('documents', 'template');?>"><a href="/docs/template" >Template</a></li>
+                        <li class="<?= $nav->m('documents', 'template');?>"><a href="/docs/template" >Template and helpers</a></li>
                         <li class="<?= $nav->m('documents', 'controller');?>"><a href="/docs/controller" >Controller</a></li>
                     </ul>
                 </li>

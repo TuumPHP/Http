@@ -4,7 +4,7 @@ Responders
 Constructing a Responder
 ------------------------
 
-Use `Builder` to construct a responder.  
+Use `Tuum\Respond\Builder` to construct a responder.  
 
 ```php
 use Tuum\Respond\Builder;
@@ -23,10 +23,10 @@ $builder = new Builder('App-Name')  // 1. application name
 $responder = new Responder($builder);
 ```
 
-1. application name: a string to identify the application. Not really used for much. 
-3. renderer: to render a template; `Twig`, `League/Plates`, or `Tuum/View` are available. Used in View and Error responders. 
-4. error options: set error options for default error page, and other pages for each http status. Used in Error responder. 
-2. container: used to retrieve presenter objects. must be `ContainerInterface` of PSR-11. ignore this if not using presenter objects. 
+1. **application name**: a string to identify the application. Not really used for much. 
+3. **renderer**: to render a template; `Twig`, `League/Plates`, or `Tuum/View` are available. Used in View and Error responders. 
+4. **error options**: set error options for default error page, and other pages for each http status. Used in Error responder. 
+2. **container**: used to retrieve presenter objects. must be `ContainerInterface` of PSR-11. ignore this if not using presenter objects. 
 
 Not all the options are required. 
 
