@@ -138,6 +138,9 @@ class ViewHelper
      */
     public function forms()
     {
+        if (!$this->dataView->inputs) {
+            $this->dataView->setInputs($this->viewData->getInput());
+        }
         return $this->dataView->forms;
     }
 
