@@ -31,9 +31,14 @@ $forms = $view->forms()->withClass('form-control');
     <?= $forms->open()->action('')->method('post'); ?>
     <input type="hidden" name="_token" value="<?= $view->attributes('_token');?>">
 
-    <?php $this->insert('components/text', ['name' => 'jumper', 'label' => 'some text']); ?>
+    <?php $this->insert('components/text', ['name' => 'jumper', 'label' => 'some text',]); ?>
     
-    <?php $this->insert('components/date', ['name' => 'date', 'label' => 'date here']); ?>
+    <?php $this->insert('components/date', [
+            'name' => 'date', 
+            'label' => 'date here',
+            'attr' => [
+                'style' => 'width: 12em;',
+            ]]); ?>
     
     <?php $this->insert('components/radioList', [
         'name' => 'gender',

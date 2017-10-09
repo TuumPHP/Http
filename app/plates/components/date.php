@@ -10,12 +10,16 @@ use Tuum\Respond\Service\ViewHelper;
 $errorClass = $view->errors->ifExists($name, null, ' has-error');
 $label = isset($label) ? $label : $name;
 $value = $view->inputs->get($name, $view->data->get($name));
+$attributes = $view->forms->newAttribute([
+    'class' => 'form-control',
+]);
+$attributes->fillAttributes(isset($attr) ? $attr : [])
 
 ?>
 
 <div class="form-group<?= $errorClass ?>">
     <label for="<?= $name ?>"><?= $label ?>:</label>
-    <input type="date" id="<?= $name ?>" name="<?= $name ?>" class="form-control" style="width: 12em;"
+    <input type="date" id="<?= $name ?>" name="<?= $name ?>" <?= $attributes ?>
            value="<?= $value ?>">
     <?= $view->errors()->p($name) ?>
 </div>
