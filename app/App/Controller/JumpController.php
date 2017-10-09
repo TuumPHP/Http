@@ -37,8 +37,9 @@ class JumpController
     {
         return $this->view()
             ->setSuccess('try jump to another URL. ')
-            ->setData('jumped', 'text in control')
+            ->setData('jumper', 'text in control')
             ->setData('date', (new \DateTime('now'))->format('Y-m-d'))
+            ->setData('movie', ['3'])
             ->render('jump');
     }
 

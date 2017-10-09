@@ -1,11 +1,12 @@
 <?php
-/** @var Template $this */
-/** @var ViewHelper $view */
 
 use League\Plates\Template\Template;
 use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
+
+/** @var Template $this */
+/** @var ViewHelper $view */
 
 $this->layout('layouts/layout', [
     'nav' => new NavBar('samples', 'jump'),
@@ -19,7 +20,7 @@ $forms = $view->forms()->withClass('form-control');
 
 <h1>Let's Jump!!</h1>
 
-<?= $view->message->onlyOne(); ?>
+<?php $this->insert('/components/messages'); ?>
 
 <p>This sample shows how to create a form input and shows the error message from the redirection.</p>
 
@@ -30,50 +31,32 @@ $forms = $view->forms()->withClass('form-control');
     <?= $forms->open()->action('')->method('post'); ?>
     <input type="hidden" name="_token" value="<?= $view->attributes('_token');?>">
 
-    <?=
-    $forms->formGroup(
-        $forms->label('some text here:', 'jumped'),
-        $forms->text('jumper', $view->data->raw('jumped'))->id(),
-        $view->errors->p('jumped')
-    )->class($view->errors->exists('jumped') ? 'has-error' : null);
-    ?>
+    <?php $this->insert('components/text', ['name' => 'jumper', 'label' => 'some text']); ?>
     
-    <div class="form-group<?= $view->errors()->ifExists('date', null, ' has-error') ?>">
-        <label for="date">some date here:</label>
-        <input type="date" id="date" name="date" class="form-control" style="width: 12em;"
-               value="<?= $view->inputs->get('date', $view->data->get('date')) ?>">
-        <?= $view->errors()->p('date') ?>
+    <?php $this->insert('components/date', ['name' => 'date', 'label' => 'date here']); ?>
+    
+    <?php $this->insert('components/radioList', [
+        'name' => 'gender',
+        'label' => 'your gender',
+        'list' => [
+            '1' => 'male',
+            '2' => 'female',
+            '3' => 'other',
+        ]]); ?>
+
+    <?php $this->insert('components/checkList', [
+            'name' => 'movie',
+            'label' => 'movie list',
+            'list' => [
+                '1' => 'star wars',
+                '2' => 'star trek',
+                '3' => 'yamato',
+            ]]); ?>
+
+    <div class="form-inline">
+        <label>are you happy? <?= $forms->checkbox('happy', 'h') ?></label>
+        <?= $view->errors->p('happy') ?>
     </div>
-
-    <label>your gender</label>
-    <?=
-    $forms->formGroup(
-        $forms->radio('gender', '1')->label('male')->id(),
-        $forms->radio('gender', '2')->label('female')->id(),
-        $forms->radio('gender', '3')->label('other')->id(),
-        $view->errors->p('date')
-    )->class($view->errors->exists('date') ? 'has-error' : null);
-    ?>
-
-    <label>your movie</label>
-    <?=
-    $forms->formGroup(
-        $forms->checkList('movie', [
-            '1' => 'star wars',
-            '2' => 'star trek',
-            '3' => 'yamato',
-        ]),
-        $view->errors->p('movie')
-    )->class($view->errors->exists('movie') ? 'has-error' : null);
-    ?>
-
-    <label>are you happy? </label>
-    <?=
-    $forms->formGroup(
-        $forms->checkbox('happy', 'h'),
-        $view->errors->p('happy')
-    )->class($view->errors->exists('happy') ? 'has-error' : null);
-    ?>
 
     <?= $forms->submit('jump!')->class('btn btn-primary'); ?>&nbsp;
     <input type="button" value="clear" onclick="location.href='jump'" class="btn btn-default"/>
