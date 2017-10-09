@@ -56,7 +56,7 @@ trait PresentByContentTrait
         $this->setRequest($arguments[0]);
         $this->setResponse($arguments[1]);
 
-        return $this->$name($name, ...$arguments);
+        return call_user_func_array([$this, $name], $arguments);
     }
 
     /**

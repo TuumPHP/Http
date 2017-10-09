@@ -110,3 +110,32 @@ which will return a string to be rendered inside the template.
 ### PresenterTrait
 
 There is a `PresenterTrait` to help construct a presenter. 
+
+### PresentByContentTrait
+
+PresentByContentTrait helps to negotiate the content-type request. 
+
+One of the methods, `html`, `json`, or `xml`, is invoked based on the 
+`accept` header of the request. 
+
+```php
+class MyPresenter implements PresenterInterface
+{
+    use PresentByContentTrait;
+    
+    public function html() {}
+    public function json() {}
+    public function xml() {}
+}
+```
+
+to use your content type;
+
+```php
+class MyPresenter implements PresenterInterface
+{
+    protected $methodList = [
+        'content-type' => 'methodName',
+    ];
+}
+```

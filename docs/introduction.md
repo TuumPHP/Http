@@ -103,9 +103,44 @@ protected function onPost()
 
 ### Template
 
-The messages and forms are automatically populated with 
-input values. 
+The messages and errors are automatically passed to template but 
+they must be populated in the template. 
+The sample code below shows a `league/plates` template code 
+to display a text input form for `Bootstrap 3`. 
 
-Ugh, rewrite the template!
+Calling text component from main template: 
 
+```php
+<?php $this->insert('components/text', ['name' => 'jumper', 'label' => 'some text']); ?>
+```
 
+The `components/text.php` contains: 
+
+```php
+<?php
+
+use League\Plates\Template\Template;
+use Tuum\Respond\Service\ViewHelper;
+
+/** @var Template $this */
+/** @var ViewHelper $view */
+/** @var string $name */
+
+$errorClass = $view->errors->ifExists($name, null, ' has-error');
+$label = isset($label) ? $label : $name;
+$value = $view->inputs->get($name, $view->data->get($name));
+
+?>
+
+<div class="form-group<?= $errorClass ?>">
+    <label for="<?= $name ?>"><?= $label ?>:</label>
+    <input type="text" id="<?= $name ?>" name="<?= $name ?>" class="form-control" 
+           value="<?= $value ?>">
+    <?= $view->errors()->p($name) ?>
+</div>
+```
+where,
+
+* `$view->inputs`: contains the input from `setInput()`.
+* `$view->data`: contains the data from `setData()`.
+* `$view->errors`: contains errors from `setInputErrors()`.
