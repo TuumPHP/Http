@@ -124,6 +124,9 @@ class Redirect extends AbstractResponder
         if ($referrer = $this->session->get(self::REFERRER)) {
             return $referrer;
         }
+        if ($referrer = ReqAttr::getReferrer($this->request)) {
+            return $referrer;
+        }
         throw new \BadMethodCallException('referrer not set');
     }
 
