@@ -2,16 +2,12 @@
 namespace App\App;
 
 use App\App\Controller\JumpController;
-use App\App\Controller\PaginationController;
 use App\App\Controller\UploadController;
 use App\App\Controller\UploadViewer;
 use Psr\Container\ContainerInterface;
-use League\Plates\Engine;
-use Tuum\Pagination\Pager;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\Plates;
-use Tuum\Respond\Service\Renderer\RawPhp;
 
 class Provider
 {
@@ -78,10 +74,11 @@ class Provider
      */    
     public static function getResponder(ContainerInterface $container)
     {
-        return new Responder(
-            (new Builder('TuumDemo'))
+        return Responder::forge(
+            Builder::forge('TuumDemo')
                 ->setContainer($container)
-                ->setRenderer(Plates::forge(dirname(__DIR__) . '/plates'))
+                ->setRenderer(Plates::forge($container->get('template-path')))
+            ->setErrorOption($container->get('error-files'))
         );
     }
 }
