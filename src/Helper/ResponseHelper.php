@@ -2,9 +2,20 @@
 namespace Tuum\Respond\Helper;
 
 use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 
 class ResponseHelper
 {
+    public static function create($status = 200, $body = null, $header = [])
+    {
+        $response = new Response('php://memory', $status, $header);
+        if ($body) {
+            $response->getBody()->write($body);
+        }
+        
+        return $response;
+    }
+    
     /**
      * Is this response successful?
      *
