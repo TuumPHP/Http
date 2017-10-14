@@ -30,6 +30,15 @@ class Responder
     }
 
     /**
+     * @param Builder $builder
+     * @return Responder
+     */
+    public static function forge(Builder $builder)
+    {
+        return new self($builder);
+    }
+
+    /**
      * set response object when omitting $response when calling
      * responders, such as:
      * Respond::view($request);
@@ -56,6 +65,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
+        $response = $response ?: $this->response;
         return $this->builder->getView()->start($request, $response);
     }
 
@@ -68,6 +78,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
+        $response = $response ?: $this->response;
         return $this->builder->getRedirect()->start($request, $response);
     }
 
@@ -80,6 +91,7 @@ class Responder
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
+        $response = $response ?: $this->response;
         return $this->builder->getError()->start($request, $response);
     }
 

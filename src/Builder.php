@@ -73,6 +73,15 @@ class Builder
     }
 
     /**
+     * @param string $name
+     * @return Builder
+     */
+    public static function forge($name = 'App')
+    {
+        return new self($name);
+    }
+
+    /**
      * @param RendererInterface $renderer
      * @param string|null       $content_view
      * @return $this

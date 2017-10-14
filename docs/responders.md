@@ -10,7 +10,7 @@ Use `Tuum\Respond\Builder` to construct a responder.
 use Tuum\Respond\Builder;
 use Tuum\Respond\Responder;
 
-$builder = new Builder('App-Name')  // 1. application name
+$builder = Builder::forge('App-Name')  // 1. application name
     ->setRenderer(                  // 2. renderer
         Plates::forge(__DIR__ . '/plates')
     )->setErrorOption([             // 3. error options
@@ -20,7 +20,7 @@ $builder = new Builder('App-Name')  // 1. application name
         ],
     ])->setContainer($container)    // 4. container
 ;
-$responder = new Responder($builder);
+$responder = Responder::forge($builder);
 ```
 
 1. **application name**: a string to identify the application. Not really used for much. 
