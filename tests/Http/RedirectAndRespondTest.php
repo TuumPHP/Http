@@ -1,13 +1,16 @@
 <?php
 namespace tests\Http;
 
-use Tuum\Respond\Helper\ResponderBuilder;
+use tests\Tools\NoRender;
+use tests\Tools\TesterTrait;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\TuumViewer;
 use Zend\Diactoros\Response;
+
+require_once __DIR__ . '/../autoloader.php';
 
 class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,10 +32,19 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         $this->session_factory = SessionStorage::forge('test');
         $this->setPhpTestFunc($this->session_factory);
 
-        $view            = TuumViewer::forge('');
-        $this->responder = ResponderBuilder::withView($view)
-            ->withResponse(new Response())
-            ->withSession($this->session_factory);
+        $this->responder = $this->createResponder();
+    }
+
+    /**
+     * @return Responder
+     */
+    private function createResponder()
+    {
+        $view            = new NoRender();
+        return Responder::forge(
+            Builder::forge('test')
+                ->setRenderer($view)
+        )->withResponse(new Response());
     }
 
     /**
@@ -54,7 +66,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
             ->setInput(['more' => 'test'])
             ->setInputErrors(['more' => 'done']);
         $response = $this->responder->redirect($request)
-            ->toAbsoluteUri('/more/test');
+            ->toPath('/more/test');
         $this->responder->session()
             ->setFlash('with', 'val1');
 
@@ -74,7 +86,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * next request with the data from the previous redirection. 
          */
         $session   = $this->session_factory->withStorage('test');
-        $responder = $this->responder->withSession($session);
+        $responder = $this->createResponder();
 
         $data = $view;
 

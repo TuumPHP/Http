@@ -6,7 +6,8 @@ use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Zend\Diactoros\Request;
+
+require_once __DIR__ . '/../autoloader.php';
 
 class RequestHelperTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,9 +61,8 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
         $obj     = $this->getMockBuilder(Responder::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $request = ReqBuilder::createFromPath('/http/base/path/test');
-        $request = Respond::withResponder($request, $obj);
-        $obj2    = Respond::getResponder($request);
+        Respond::setResponder($obj);
+        $obj2    = Respond::getResponder();
         $this->assertSame($obj, $obj2);
     }
 

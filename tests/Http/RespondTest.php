@@ -1,13 +1,16 @@
 <?php
 namespace tests\Http;
 
+use tests\Tools\NoRender;
+use tests\Tools\TesterTrait;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
-use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\TuumViewer;
 use Zend\Diactoros\Response;
+
+require_once __DIR__ . '/../autoloader.php';
 
 class RespondTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,10 +32,11 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $this->session_factory = SessionStorage::forge('testing');
         $this->setPhpTestFunc($this->session_factory);
 
-        $view            = TuumViewer::forge('');
-        $this->responder = ResponderBuilder::withView($view)
-            ->withResponse(new Response())
-            ->withSession($this->session_factory);
+        $view            = new NoRender();
+        $this->responder = Responder::forge(
+            Builder::forge('test')
+            ->setRenderer($view)
+        )->withResponse(new Response());
     }
 
     function tearDown()
@@ -46,7 +50,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_class_invokes_responder_object()
     {
         $request = ReqBuilder::createFromPath('/path/test');
-        $request = Respond::withResponder($request, $this->responder);
+        Respond::setResponder($this->responder);
 
         $response = Respond::view($request)->asText('test Respond');
         $this->assertEquals('text/plain', $response->getHeader('Content-Type')[0]);

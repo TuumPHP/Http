@@ -1,5 +1,5 @@
 <?php
-namespace tests\Http;
+namespace tests\Tools;
 
 use tests\Tools\PhpTestFunc;
 use Tuum\Respond\Service\SessionStorage;

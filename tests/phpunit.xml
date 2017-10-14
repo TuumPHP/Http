@@ -24,6 +24,7 @@
             <directory>Controller</directory>
             <directory>Responder</directory>
             <directory>Service</directory>
+            <directory>Http</directory>
         </testsuite>
     </testsuites>
 </phpunit>

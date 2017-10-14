@@ -1,8 +1,8 @@
 <?php
 namespace tests\Responder;
 
-use tests\Http\TesterTrait;
-use tests\Responder\Stub\NoRender;
+use tests\Tools\TesterTrait;
+use tests\Tools\NoRender;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder;

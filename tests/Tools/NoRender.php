@@ -1,5 +1,5 @@
 <?php
-namespace tests\Responder\Stub;
+namespace tests\Tools;
 
 use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Service\ViewHelper;

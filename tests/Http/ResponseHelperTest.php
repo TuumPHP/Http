@@ -5,6 +5,8 @@ use Tuum\Respond\Helper\ResponseHelper;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
+require_once __DIR__ . '/../autoloader.php';
+
 class ResponseHelperTest extends \PHPUnit_Framework_TestCase
 {
     function setup()
@@ -68,7 +70,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function default_response_has_status_200_and_isOk()
     {
-        $res = new Response('testing');
+        $res = new Response();
         $this->assertTrue(ResponseHelper::isOk($res));
     }
 
@@ -77,13 +79,13 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function getLocation_returns_location_header()
     {
-        $res = new Response('testing', 302, ['location' => 'to/test']);
+        $res = ResponseHelper::create(302, '', ['location' => 'to/test']);
         $this->assertEquals('to/test', ResponseHelper::getLocation($res));
 
-        $res = new Response('testing', 200, ['location' => 'more/test']);
+        $res = ResponseHelper::create(200, '', ['location' => 'more/test']);
         $this->assertEquals('more/test', ResponseHelper::getLocation($res));
 
-        $res = new Response('testing', 302);
+        $res = ResponseHelper::create(302, '');
         $this->assertEquals(null, ResponseHelper::getLocation($res));
     }
 
@@ -96,7 +98,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function isDirect_checks_for_redirect_response($status, $expected)
     {
-        $res = new Response('testing', $status);
+        $res = new Response('php://memory', $status);
         $this->assertEquals($expected, ResponseHelper::isRedirect($res));
     }
 
@@ -122,7 +124,7 @@ class ResponseHelperTest extends \PHPUnit_Framework_TestCase
      */
     function isInformational_checks_for_informational_response($method, $status, $expected)
     {
-        $res = new Response('testing', $status);
+        $res = new Response('php://memory', $status);
         $this->assertEquals($expected, ResponseHelper::$method($res));
     }
 

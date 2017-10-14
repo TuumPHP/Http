@@ -1,7 +1,7 @@
 <?php
 namespace tests\Responder;
 
-use tests\Http\TesterTrait;
+use tests\Tools\TesterTrait;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder\Redirect;
