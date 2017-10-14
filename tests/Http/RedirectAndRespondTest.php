@@ -58,18 +58,17 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * a redirect response with various data.
          */
         $request  = ReqBuilder::createFromPath('/path/test');
-        $view     = $this->responder->getViewData()
+        $this->responder->session()
+            ->setFlash('with', 'val1');
+
+        $response     = $this->responder->redirect($request)
             ->setData('more', 'with')
             ->setSuccess('message')
             ->setAlert('notice-msg')
             ->setError('error-msg')
             ->setInput(['more' => 'test'])
-            ->setInputErrors(['more' => 'done']);
-        $response = $this->responder->redirect($request)
+            ->setInputErrors(['more' => 'done'])
             ->toPath('/more/test');
-        $this->responder->session()
-            ->setFlash('with', 'val1');
-
         $this->assertEquals('/more/test', ResponseHelper::getLocation($response));
 
         /*
@@ -85,10 +84,9 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         /*
          * next request with the data from the previous redirection. 
          */
-        $session   = $this->session_factory->withStorage('test');
         $responder = $this->createResponder();
 
-        $data = $view;
+        $data = $responder->getViewData();
 
         $this->assertEquals('val1', $responder->session()->getFlash('with'));
         $this->assertEquals('with', $data->getData()['more']);
