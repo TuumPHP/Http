@@ -1,13 +1,20 @@
 <?php
 namespace tests\Responder;
 
+use tests\Http\TesterTrait;
+use tests\Responder\Stub\NoRender;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
-use Tuum\Respond\Service\SessionStorage;
 use Zend\Diactoros\Response;
+
+require_once __DIR__ . '/../autoloader.php';
 
 class ErrorTest extends \PHPUnit_Framework_TestCase
 {
+    use TesterTrait;
+
     /**
      * @var Error
      */
@@ -15,9 +22,12 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
 
     function setup()
     {
-        $this->error = new Error(new ErrorFileBack());
-        $this->error = $this->error->withRequest(ReqBuilder::createFromPath('test'), new Response(),
-            SessionStorage::forge('test'));
+        $_SESSION      = [];
+        $responder = Responder::forge(
+            Builder::forge('test')
+            ->setRenderer(new NoRender())
+        )->withResponse(new Response());
+        $this->error = $responder->error(ReqBuilder::createFromPath('test'));
     }
 
     function test0()

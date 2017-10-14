@@ -10,11 +10,20 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+    <filter>
+        <whitelist
+                addUncoveredFilesFromWhitelist="true"
+                processUncoveredFilesFromWhitelist="true">
+
+            <directory suffix=".php">../src/</directory>
+        </whitelist>
+    </filter>
+    
     <testsuites>
         <testsuite name="Tuum/Application test">
-            <directory>Http</directory>
-            <directory>Service</directory>
+            <directory>Controller</directory>
             <directory>Responder</directory>
+            <directory>Service</directory>
         </testsuite>
     </testsuites>
 </phpunit>

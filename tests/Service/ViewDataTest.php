@@ -4,6 +4,8 @@ namespace tests\Service;
 use Tuum\Respond\Interfaces\ViewDataInterface;
 use Tuum\Respond\Service\ViewData;
 
+require_once __DIR__ . '/../autoloader.php';
+
 class ViewDataTest extends \PHPUnit_Framework_TestCase
 {
     /**

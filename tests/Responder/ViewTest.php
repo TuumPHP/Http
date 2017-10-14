@@ -2,14 +2,17 @@
 namespace tests\Responder;
 
 use tests\Http\TesterTrait;
+use tests\Responder\Stub\NoRender;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
-use Tuum\Respond\Helper\ResponderBuilder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Service\SessionStorage;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Zend\Diactoros\Response;
+
+require_once __DIR__ . '/../autoloader.php';
 
 class ViewTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,16 +33,21 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     private $view;
 
+    /**
+     * @var NoRender
+     */
+    private $renderer;
+
     function setup()
     {
         $_SESSION      = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
-        $this->responder = ResponderBuilder::withServices(
-            new LocalView(),
-            new ErrorFileBack()
-        )->withResponse(new Response())
-            ->withSession($this->session);
+        $this->renderer = new NoRender();
+        $this->responder = Responder::forge(
+            Builder::forge('app-test')
+            ->setRenderer($this->renderer)
+        )->withResponse(new Response());
         $this->view      = $this->responder->view(ReqBuilder::createFromPath('test'));
     }
 
@@ -56,24 +64,11 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function view_returns_viewStream()
-    {
-        $response = $this->view->render('test-view');
-        /** @var LocalView $stream */
-        $stream = $response->getBody();
-        $this->assertEquals('Zend\Diactoros\Response', get_class($response));
-        $this->assertEquals('Zend\Diactoros\Stream', get_class($stream));
-        $this->assertEquals('test-view', $response->getHeaderLine('ViewFile'));
-    }
-
-    /**
-     * @test
-     */
     function asContents_uses_default_content_file()
     {
         $this->view->content_view = 'default/contents';
-        $response                 = $this->view->asContents('test-content');
-        $this->assertEquals('default/contents', $response->getHeaderLine('ViewFile'));
+        $this->view->asContents('test-content');
+        $this->assertEquals('default/contents', $this->renderer->template);
     }
 
     /**
@@ -120,31 +115,4 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->view->call('bad-input');
     }
 
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     */
-    function returning_non_callable_from_resolver_throws_exception()
-    {
-        $view = new View(new LocalView(), null, function () {
-            return 'not-a-callable';
-        });
-        $view->call('bad-input');
-    }
-
-    /**
-     * @test
-     */
-    function execute_using_resolver()
-    {
-        $view   = new View(
-            new LocalView(), null,
-            function () {
-                return function () {
-                    return 'tested: resolver';
-                };
-            });
-        $string = $view->call('any-string');
-        $this->assertEquals('tested: resolver', $string);
-    }
 }

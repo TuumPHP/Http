@@ -12,8 +12,8 @@ class ByRouteController
     protected function getRoutes()
     {
         return [
-            'get:/'          => 'get',
-            'get:/my/{name}' => 'name',
+            'get:/'          => 'onGet',
+            'get:/my/{name}' => 'onName',
         ];
     }
 

@@ -1,13 +1,14 @@
 <?php
 namespace tests\Responder;
 
-use Tuum\Respond\Helper\ResponderBuilder;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Service\SessionStorage;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Service\Renderer\RawPhp;
 use Zend\Diactoros\Response;
+
+require_once __DIR__ . '/../autoloader.php';
 
 class ResponderTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,11 +21,10 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     {
         $_SESSION = [];
         class_exists(Respond::class);
-        $this->responder = ResponderBuilder::withServices(
-            new LocalView(),
-            new ErrorFileBack()
-        );
-        $this->responder = $this->responder->withSession(SessionStorage::forge('tuum-app'))->withResponse(new Response());
+        $this->responder = Responder::forge(
+            Builder::forge('test')
+            ->setRenderer(new RawPhp('none'))
+        )->withResponse(new Response());
     }
 
     function tearDown()
@@ -39,14 +39,5 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Tuum\Respond\Responder\View', get_class($this->responder->view($req)));
         $this->assertEquals('Tuum\Respond\Responder\Redirect', get_class($this->responder->redirect($req)));
         $this->assertEquals('Tuum\Respond\Responder\Error', get_class($this->responder->error($req)));
-    }
-
-    /**
-     * @test
-     */
-    function setting_viewDataForger_returns_other_object()
-    {
-        $res = $this->responder->setViewDataForger(function() {return 'forged';});
-        $this->assertEquals('forged', $res->getViewData());
     }
 }

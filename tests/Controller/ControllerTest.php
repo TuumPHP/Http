@@ -4,7 +4,6 @@ namespace tests\Controller;
 use tests\Controller\MockControllers\ByMethodController;
 use tests\Controller\MockControllers\ByRouteController;
 use Tuum\Respond\Helper\ReqBuilder;
-use Tuum\Respond\Responder;
 use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
