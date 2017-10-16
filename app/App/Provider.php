@@ -1,6 +1,7 @@
 <?php
 namespace App\App;
 
+use App\App\Controller\ForbiddenController;
 use App\App\Controller\JumpController;
 use App\App\Controller\UploadController;
 use App\App\Controller\UploadViewer;
@@ -37,6 +38,7 @@ class Provider
         $list[JumpController::class] = [$self, 'getJumpController'];
         $list[UploadController::class] = [$self, 'getUploadController'];
         $list[UploadViewer::class] = [$self, 'getUploadViewer'];
+        $list[ForbiddenController::class] = [$self, 'getForbiddenController'];
 
         return $list;
     }
@@ -66,6 +68,15 @@ class Provider
     public static function getUploadViewer(Container $container)
     {
         return new UploadViewer($container->get(Responder::class));
+    }
+
+    /**
+     * @param Container $container
+     * @return ForbiddenController
+     */
+    public static function getForbiddenController(Container $container)
+    {
+        return new ForbiddenController($container->get(Responder::class));
     }
 
     /**

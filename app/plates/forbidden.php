@@ -5,7 +5,6 @@
 use League\Plates\Template\Template;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
-use Zend\Diactoros\UploadedFile;
 
 $this->layout('layouts/layout', [
     'nav' => new NavBar('errors', 'forbidden'),
@@ -16,11 +15,37 @@ $this->layout('layouts/layout', [
 
 <h1>Forbidden Errors</h1>
 
-<p>The form below do not have the C.R.S.F. token to cause forbidden error.</p>
+<?= $view->message; ?>
 
-<form method="post" action="forbidden">
 
-    <input type="submit" value="generate forbidden error" class="btn btn-primary">
+<div class="col-sm-6">
 
-</form>
+    <h2>Form without CSRF Token</h2>
+
+    <p>The form below do not have the C.R.S.F. token to cause forbidden error.</p>
+
+    <form method="post">
+
+        <input type="submit" value="generate forbidden error" class="btn btn-primary">
+
+    </form>
+
+</div>
+
+
+<div class="col-sm-6">
+
+    <h2>Form with CSRF Token</h2>
+
+    <p>form below submits form with CSRF token. </p>
+
+    <form method="post">
+
+        <input type="hidden" name="_token" value="<?= $view->attributes('_token') ?>">
+        <input type="submit" value="submit form with CSRF token" class="btn btn-primary">
+
+    </form>
+
+</div>
+
 <?php $this->stop(); ?>

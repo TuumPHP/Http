@@ -45,26 +45,17 @@ $next = function (ServerRequestInterface $request, ResponseInterface $response) 
 };
 
 /**
- * checks for CSRF token as forbidden errors.
- *
- * @param ServerRequestInterface $request
- * @param ResponseInterface      $response
- * @return mixed
- */
-$forbidden = new CsRfCheck($app->get(Responder::class), $next);
-
-/**
  * adds DebugBar middleware.
  *
  * @param ServerRequestInterface $request
  * @param ResponseInterface      $response
  * @return ResponseInterface
  */
-return function (ServerRequestInterface $request, ResponseInterface $response) use($forbidden) {
+return function (ServerRequestInterface $request, ResponseInterface $response) use($next) {
 
     $factory  = new PhpDebugBarMiddlewareFactory();
     $middle   = $factory();
-    $response = $middle($request, $response, $forbidden);
+    $response = $middle($request, $response, $next);
     return $response;
 
 };

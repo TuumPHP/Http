@@ -28,8 +28,5 @@
             <li>use of object as Presenter (or ViewModel),</li>
             <li>templates for errors (forbidden, etc.).</li>
         </ul>
-
-    <p><strong>PSR:</strong> PSR-1, PSR-2, PSR-4, and PSR-7<br/>
-        <strong>License:</strong> MIT License</p>
-
+    
 </div>

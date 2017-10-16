@@ -1,5 +1,6 @@
 <?php
 
+use App\App\Controller\ForbiddenController;
 use App\App\Dispatcher;
 use App\App\DocumentMap;
 use App\App\Controller\UploadController;
@@ -96,9 +97,7 @@ return function (Dispatcher $app) {
             throw new \Exception('always throws exception');
         });
 
-    $app->add('/forbidden', function ($req, $res) use($responder) {
-        return $responder->view($req, $res)->render('forbidden');
-    });
+    $app->add('/forbidden', ForbiddenController::class);
 
     /**
      * @param ServerRequestInterface $request
