@@ -9,6 +9,7 @@ use App\App\Controller\UploadViewer;
 use Psr\Container\ContainerInterface;
 use Tuum\Locator\FileMap;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\Plates;
 
@@ -89,12 +90,15 @@ class Provider
      */    
     public static function getResponder(ContainerInterface $container)
     {
-        return Responder::forge(
+        $responder = Responder::forge(
             Builder::forge('TuumDemo')
                 ->setContainer($container)
                 ->setRenderer(Plates::forge($container->get('template-path')))
             ->setErrorOption($container->get('error-files'))
         );
+        Respond::setResponder($responder);
+        
+        return $responder;
     }
 
     /**
