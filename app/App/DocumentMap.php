@@ -30,21 +30,6 @@ class DocumentMap
     }
 
     /**
-     * factory for this class.
-     *
-     * @param Dispatcher $app
-     * @return self
-     */
-    public static function forge($app)
-    {
-        $docs_dir = dirname(dirname(__DIR__)) . '/docs';
-        $mapper   = FileMap::forge($docs_dir);
-        $self     = new self($mapper, $app->get(Responder::class));
-
-        return $self;
-    }
-    
-    /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param array                  $args

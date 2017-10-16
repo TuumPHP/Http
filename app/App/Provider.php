@@ -3,9 +3,11 @@ namespace App\App;
 
 use App\App\Controller\ForbiddenController;
 use App\App\Controller\JumpController;
+use App\App\Controller\LoginPresenter;
 use App\App\Controller\UploadController;
 use App\App\Controller\UploadViewer;
 use Psr\Container\ContainerInterface;
+use Tuum\Locator\FileMap;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\Plates;
@@ -39,6 +41,8 @@ class Provider
         $list[UploadController::class] = [$self, 'getUploadController'];
         $list[UploadViewer::class] = [$self, 'getUploadViewer'];
         $list[ForbiddenController::class] = [$self, 'getForbiddenController'];
+        $list[DocumentMap::class] = [$self, 'getDocumentMap'];
+        $list[LoginPresenter::class] = [$self, 'getLoginPresenter'];
 
         return $list;
     }
@@ -91,5 +95,26 @@ class Provider
                 ->setRenderer(Plates::forge($container->get('template-path')))
             ->setErrorOption($container->get('error-files'))
         );
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return DocumentMap
+     */
+    public static function getDocumentMap(ContainerInterface $container)
+    {
+        $docs_dir = dirname(dirname(__DIR__)) . '/docs';
+        $mapper   = FileMap::forge($docs_dir);
+        
+        return new DocumentMap($mapper, $container->get(Responder::class));
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return LoginPresenter
+     */
+    public static function getLoginPresenter(ContainerInterface $container)
+    {
+        return new LoginPresenter($container->get(Responder::class));
     }
 }

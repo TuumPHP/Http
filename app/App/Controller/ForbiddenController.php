@@ -36,7 +36,6 @@ class ForbiddenController
     public function onGet()
     {
         $session = $this->responder->session();
-        /** @var ServerRequestInterface $request */
         $request = $this->getRequest()->withAttribute('_token', $session->getToken());
         $this->setRequest($request);
 

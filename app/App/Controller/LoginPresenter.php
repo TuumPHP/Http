@@ -12,15 +12,13 @@ class LoginPresenter implements PresenterInterface
     use PresentByContentTrait;
 
     /**
-     * @param Dispatcher $app
-     * @return LoginPresenter
+     * LoginPresenter constructor.
+     *
+     * @param Responder $responder
      */
-    public static function forge($app)
+    public function __construct($responder)
     {
-        $self            = new self;
-        $self->responder = $app->get(Responder::class);
-
-        return $self;
+        $this->setResponder($responder);
     }
 
     /**

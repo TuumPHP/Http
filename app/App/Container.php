@@ -68,10 +68,6 @@ class Container implements ContainerInterface
             }
             $this->entries[$id] = $found;
             return $found;
-        } elseif (class_exists($id) && method_exists($id, 'forge')) {
-            $found = $id::forge($this);
-            $this->entries[$id] = $found;
-            return $found;
         }
         throw new InvalidArgumentException("id:" . $id);
     }
@@ -90,9 +86,6 @@ class Container implements ContainerInterface
             return true;
         }
         if (array_key_exists($id, $this->factories)) {
-            return true;
-        }
-        if (class_exists($id) && method_exists($id, 'forge')) {
             return true;
         }
         return false;
