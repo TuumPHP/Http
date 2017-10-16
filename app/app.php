@@ -32,29 +32,4 @@ $builder = function($config) {
 $config = isset($config) ? $config : [];
 $app = $builder($config);
 
-/**
- * runs the application.
- *
- * @param ServerRequestInterface $request
- * @param ResponseInterface      $response
- * @return ResponseInterface
- */
-$next = function (ServerRequestInterface $request, ResponseInterface $response) use($app) {
-    return $app->run($request, $response);
-};
-
-/**
- * adds DebugBar middleware.
- *
- * @param ServerRequestInterface $request
- * @param ResponseInterface      $response
- * @return ResponseInterface
- */
-return function (ServerRequestInterface $request, ResponseInterface $response) use($next) {
-
-    $factory  = new PhpDebugBarMiddlewareFactory();
-    $middle   = $factory();
-    $response = $middle($request, $response, $next);
-    return $response;
-
-};
+return $app;
