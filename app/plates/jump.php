@@ -1,7 +1,6 @@
 <?php
 
 use League\Plates\Template\Template;
-use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
@@ -10,7 +9,6 @@ use Tuum\Respond\Service\ViewHelper;
 
 $this->layout('layouts/layout', [
     'nav' => new NavBar('samples', 'jump'),
-    'bread' => BreadCrumb::forge('Jump Samples')->add('Samples', '#'),
 ]);
 $forms = $view->forms()->withClass('form-control');
 

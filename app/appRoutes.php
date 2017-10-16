@@ -1,13 +1,11 @@
 <?php
 
-use App\App\Controller\PaginationController;
 use App\App\Dispatcher;
 use App\App\DocumentMap;
 use App\App\Controller\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
@@ -79,7 +77,6 @@ return function (Dispatcher $app) {
                 ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>', 
                     null, [
                     'nav' => new NavBar('samples', 'content'),
-                    'bread' => BreadCrumb::forge('Contents')->add('Samples', '#'),
                 ]);
         });
 
@@ -88,7 +85,6 @@ return function (Dispatcher $app) {
             return Respond::view($request, $response)
                 ->asContents((new Printo(Respond::getResponder())), null, [
                     'nav' => new NavBar('samples', 'objGraph'),
-                    'bread' => BreadCrumb::forge('Object Graph')->add('Samples', '#'),
                 ]);
         });
 

@@ -3,14 +3,12 @@
 /** @var ViewHelper $view */
 
 use League\Plates\Template\Template;
-use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Form\Lists\Lists;
 use Tuum\Respond\Service\ViewHelper;
 
 $this->layout('layouts/layout', [
     'nav' => new NavBar('samples', 'forms'),
-    'bread' => BreadCrumb::forge('Form Samples')->add('Samples', '#'),
 ]);
 $forms = $view->forms()->withClass('form-control');
 $inputs = $view->inputs();

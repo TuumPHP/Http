@@ -1,12 +1,11 @@
 <style type="text/css">
     div.broadcast {
-        margin: 1em;
-        padding: 0 1em 1em 1em;
+        margin: 0;
+        padding: 2em;
         background-color: #f0f0f0;
-        border: 2px solid #cccccc;
-        border-radius: 10px;
     }
     div.broadcast h1 {
+        margin-top: 0;
         border-bottom: none;
     }
     div.broadcast li {

@@ -1,6 +1,5 @@
 <?php
 use League\Plates\Template\Template;
-use Tuum\Form\Components\BreadCrumb;
 use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
@@ -9,15 +8,8 @@ use Tuum\Respond\Service\ViewHelper;
 
 $path = basename($view->request()->getUri()->getPath());
 $nav  = new NavBar('documents', $path);
-if ($path === 'docs') {
-    $bread = new BreadCrumb('Documents');
-} else {
-    $bread = new BreadCrumb(ucwords($path));
-    $bread->add('Documents', '/docs/readme');
-}
 $this->layout('layouts/layout', [
     'nav' => $nav,
-    'bread' => $bread,
 ]);
 
 ?>

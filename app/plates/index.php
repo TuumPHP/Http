@@ -9,9 +9,12 @@ $this->layout('layouts/layout');
 
 ?>
 
+<?php $this->start('broadcast'); ?>
+    <?= $view->render('layouts/broadcast'); ?>
+<?php $this->stop(); ?>
+
 <?php $this->start('contents'); ?>
 
-<?= $view->render('layouts/broadcast'); ?>
 
 <?= $view->message(); ?>
 
@@ -22,6 +25,7 @@ $this->layout('layouts/layout');
     <p>more about Tuum/Respond</p>
 
     <ul>
+        <li><a href="/docs/introduction" >Table of Contents</a></li>
         <li><a href="/docs/introduction" >Introduction</a></li>
         <li><a href="/docs/responders" >Responders</a></li>
         <li><a href="/docs/template" >Template and Renderer</a></li>
