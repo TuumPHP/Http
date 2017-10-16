@@ -25,7 +25,7 @@ $this->layout('layouts/layout');
     <p>more about Tuum/Respond</p>
 
     <ul>
-        <li><a href="/docs/introduction" >Table of Contents</a></li>
+        <li><a href="/docs/" >Table of Contents</a></li>
         <li><a href="/docs/introduction" >Introduction</a></li>
         <li><a href="/docs/responders" >Responders</a></li>
         <li><a href="/docs/template" >Template and Renderer</a></li>
