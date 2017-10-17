@@ -3,13 +3,10 @@
 /** @var ViewHelper $view */
 
 use League\Plates\Template\Template;
-use Tuum\Form\Components\NavBar;
 use Tuum\Form\Lists\Lists;
 use Tuum\Respond\Service\ViewHelper;
 
-$this->layout('layouts/layout', [
-    'nav' => new NavBar('samples', 'forms'),
-]);
+$this->layout('layouts/layout');
 $forms = $view->forms()->withClass('form-control');
 $inputs = $view->inputs();
 $forms  = $view->forms()->withClass('form-control');

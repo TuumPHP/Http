@@ -4,10 +4,7 @@
 
 use App\App\Controller\LoginPresenter;
 use League\Plates\Template\Template;
-use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
-
-$nav  = isset($nav) ? $nav : new NavBar(null);
 
 ?>
 <!DOCTYPE html>
@@ -37,32 +34,32 @@ $nav  = isset($nav) ? $nav : new NavBar(null);
         <!-- sample menu -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown<?= $nav->m('documents');?>">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Documents <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="<?= $nav->m('documents', 'readme');?>"><a href="/docs/readme" >Table of Contents</a></li>
-                        <li class="<?= $nav->m('documents', 'introduction');?>"><a href="/docs/introduction" >Sample Codes</a></li>
-                        <li class="<?= $nav->m('documents', 'responders');?>"><a href="/docs/responders" >Responders</a></li>
-                        <li class="<?= $nav->m('documents', 'template');?>"><a href="/docs/template" >Template and helpers</a></li>
-                        <li class="<?= $nav->m('documents', 'controller');?>"><a href="/docs/controller" >Controller</a></li>
+                        <li><a href="/docs/readme" >Table of Contents</a></li>
+                        <li><a href="/docs/introduction" >Sample Codes</a></li>
+                        <li><a href="/docs/responders" >Responders</a></li>
+                        <li><a href="/docs/template" >Template and helpers</a></li>
+                        <li><a href="/docs/controller" >Controller</a></li>
                     </ul>
                 </li>
-                <li class="dropdown<?= $nav->m('samples');?>">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Samples <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="<?= $nav->m('samples', 'jump');?>"><a href="/jump">Jump: form and redirect</a></li>
-                        <li class="<?= $nav->m('samples', 'upload');?>"><a href="/upload">Upload: uploading files</a></li>
-                        <li class="<?= $nav->m('samples', 'content');?>"><a href="/content">Content: html rendering</a></li>
-                        <li class="<?= $nav->m('samples', 'forms');?>"><a href="/forms">Forms: html inputs</a></li>
-                        <li class="<?= $nav->m('samples', 'objGraph');?>"><a href="/objGraph">Object graph</a></li>
+                        <li><a href="/jump">Jump: form and redirect</a></li>
+                        <li><a href="/upload">Upload: uploading files</a></li>
+                        <li><a href="/content">Content: html rendering</a></li>
+                        <li><a href="/forms">Forms: html inputs</a></li>
+                        <li><a href="/objGraph">Object graph</a></li>
                     </ul>
                 </li>
-                <li class="dropdown<?= $nav->m('errors');?>">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Errors <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="<?= $nav->m('errors', 'general');?>"><a href="/throw">General Errors</a></li>
-                        <li class="<?= $nav->m('errors', 'notFound');?>"><a href="/not-such-file">Not Found Error</a></li>
-                        <li class="<?= $nav->m('errors', 'forbidden');?>"><a href="/forbidden">Forbidden Error</a></li>
+                        <li><a href="/throw">General Errors</a></li>
+                        <li><a href="/not-such-file">Not Found Error</a></li>
+                        <li><a href="/forbidden">Forbidden Error</a></li>
                     </ul>
                 </li>
             </ul>

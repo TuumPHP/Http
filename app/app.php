@@ -1,12 +1,6 @@
 <?php
 
-use App\App\CsRfCheck;
 use App\App\Dispatcher;
-use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddlewareFactory;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Respond;
-use Tuum\Respond\Responder;
 
 /**
  * builds an application.

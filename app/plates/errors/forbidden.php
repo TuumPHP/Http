@@ -2,12 +2,9 @@
 /** @var Template $this */
 /** @var DataView $view */
 use League\Plates\Template\Template;
-use Tuum\Form\Components\NavBar;
 use Tuum\Form\DataView;
 
-$this->layout('layouts/layout', [
-    'nav' => new NavBar('errors', 'forbidden')
-]);
+$this->layout('layouts/layout');
 
 ?>
 

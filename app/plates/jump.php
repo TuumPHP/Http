@@ -1,15 +1,12 @@
 <?php
 
 use League\Plates\Template\Template;
-use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
 /** @var Template $this */
 /** @var ViewHelper $view */
 
-$this->layout('layouts/layout', [
-    'nav' => new NavBar('samples', 'jump'),
-]);
+$this->layout('layouts/layout');
 $forms = $view->forms()->withClass('form-control');
 
 ?>

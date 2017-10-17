@@ -3,12 +3,9 @@
 /** @var ViewHelper $view */
 
 use League\Plates\Template\Template;
-use Tuum\Form\Components\NavBar;
 use Tuum\Respond\Service\ViewHelper;
 
-$this->layout('layouts/layout', [
-    'nav' => new NavBar('errors', 'forbidden'),
-]);
+$this->layout('layouts/layout');
 ?>
 
 <?php $this->start('contents'); ?>
