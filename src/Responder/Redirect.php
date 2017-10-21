@@ -104,7 +104,7 @@ class Redirect extends AbstractResponder
             $uri = $uri->withPath($referrer['path']);
         }
         if (isset($referrer['query'])) {
-            $uri = $uri->withQuery($referrer['query']);
+            $this->addQuery($referrer['query']);
         }
         if (isset($referrer['fragment'])) {
             $uri = $uri->withFragment($referrer['fragment']);
