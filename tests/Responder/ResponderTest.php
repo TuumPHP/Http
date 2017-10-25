@@ -24,7 +24,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->responder = Responder::forge(
             Builder::forge('test')
             ->setRenderer(new RawPhp('none'))
-        )->withResponse(new Response());
+        )->setResponse(new Response());
     }
 
     function tearDown()

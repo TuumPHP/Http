@@ -47,7 +47,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->responder = Responder::forge(
             Builder::forge('app-test')
             ->setRenderer($this->renderer)
-        )->withResponse(new Response());
+        )->setResponse(new Response());
         $this->view      = $this->responder->view(ReqBuilder::createFromPath('test'));
     }
 

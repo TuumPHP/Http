@@ -36,7 +36,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $this->responder = Responder::forge(
             Builder::forge('test')
             ->setRenderer($view)
-        )->withResponse(new Response());
+        )->setResponse(new Response());
     }
 
     function tearDown()

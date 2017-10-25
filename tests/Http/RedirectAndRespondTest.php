@@ -44,7 +44,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
         return Responder::forge(
             Builder::forge('test')
                 ->setRenderer($view)
-        )->withResponse(new Response());
+        )->setResponse(new Response());
     }
 
     /**

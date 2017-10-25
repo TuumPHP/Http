@@ -49,11 +49,10 @@ class Responder
      * @param ResponseInterface $response
      * @return Responder
      */
-    public function withResponse(ResponseInterface $response)
+    public function setResponse(ResponseInterface $response)
     {
-        $self = clone($this);
-        $self->response = $response;
-        return $self;
+        $this->response = $response;
+        return $this;
     }
 
     /**
