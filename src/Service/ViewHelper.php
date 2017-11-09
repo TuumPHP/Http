@@ -205,6 +205,8 @@ class ViewHelper
     }
 
     /**
+     * return $request.
+     * 
      * @return ServerRequestInterface
      */
     public function request()
@@ -213,6 +215,8 @@ class ViewHelper
     }
 
     /**
+     * returns $uri object.
+     * 
      * @return UriInterface
      */
     public function uri()
@@ -221,6 +225,8 @@ class ViewHelper
     }
 
     /**
+     * returns the request's attribute for $key.
+     * 
      * @param null|string $key
      * @param null|string $default
      * @return array|mixed
@@ -235,6 +241,8 @@ class ViewHelper
     }
 
     /**
+     * call a presenter object and renders the content.
+     * 
      * @param string|PresenterInterface $presenter
      * @param null|mixed|ViewData       $data
      * @return string
@@ -250,8 +258,10 @@ class ViewHelper
     }
 
     /**
-     * @param string              $viewFile
-     * @param array $data
+     * renders another template. 
+     * 
+     * @param string $viewFile
+     * @param array  $data
      * @return string
      */
     public function render($viewFile, $data = [])
@@ -263,6 +273,8 @@ class ViewHelper
     }
 
     /**
+     * returns an URI for named route, $routeName.
+     * 
      * @param string $routeName
      * @param array  $options
      * @return string
@@ -270,6 +282,23 @@ class ViewHelper
     public function route($routeName, $options = [])
     {
         return $this->builder->getNamedRoutes()->route($routeName, $options);
+    }
+
+    /**
+     * returns an URI for $path. Maybe useful for site with $basePath.
+     * 
+     * @param string      $path
+     * @param string|null $query
+     * @return string
+     */
+    public function path($path, $query = null)
+    {
+        $uri = $this->request()->getUri();
+        $uri = $uri->withPath($path);
+        if ($query) {
+            $uri = $uri->withQuery($query);
+        }
+        return (string) $uri;
     }
     
     /**
