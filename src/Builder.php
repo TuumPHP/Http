@@ -8,6 +8,9 @@ use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Service\ErrorFile;
+use Tuum\Respond\Service\Renderer\Plates;
+use Tuum\Respond\Service\Renderer\RawPhp;
+use Tuum\Respond\Service\Renderer\Twig;
 use Tuum\Respond\Service\SessionStorage;
 
 class Builder
@@ -16,6 +19,11 @@ class Builder
      * @var RendererInterface
      */
     private $renderer;
+
+    /**
+     * @var array
+     */
+    private $renderInfo = [];
 
     /**
      * @var string
@@ -94,6 +102,70 @@ class Builder
     }
 
     /**
+     * @param string   $renderer
+     * @param string   $root
+     * @param array    $options
+     * @param callable $callable
+     * @return $this
+     */
+    public function setRendererInfo($renderer, $root, array $options = [], $callable = null)
+    {
+        $this->renderInfo[$renderer] = [
+            'renderer' => $renderer,
+            'root' => $root,
+            'options' => $options,
+            'callable' => $callable,
+        ];
+        return $this;
+    }
+
+    /**
+     * @return RendererInterface
+     */
+    private function makeRenderer()
+    {
+        foreach($this->renderInfo as $renderer => $info) {break;}
+        if (!isset($renderer)) {
+            throw new \InvalidArgumentException('renderer info is not set.');
+        }
+        $maker = 'makeRenderer' . ucwords($renderer);
+        return $this->$maker($renderer);
+    }
+    
+    /** @noinspection PhpUnusedPrivateMethodInspection */
+    /**
+     * @param string $renderer
+     * @return RendererInterface
+     */
+    private function makeRendererTwig($renderer)
+    {
+        $info = $this->renderInfo[$renderer];
+        return Twig::forge($info['root'], $info['options'], $info['callable']);
+    }
+
+    /** @noinspection PhpUnusedPrivateMethodInspection */
+    /**
+     * @param string $renderer
+     * @return RendererInterface
+     */
+    private function makeRendererPlates($renderer)
+    {
+        $info = $this->renderInfo[$renderer];
+        return Plates::forge($info['root'], $info['callable']);
+    }
+
+    /** @noinspection PhpUnusedPrivateMethodInspection */
+    /**
+     * @param string $renderer
+     * @return RendererInterface
+     */
+    private function makeRendererRawPhp($renderer)
+    {
+        $info = $this->renderInfo[$renderer];
+        return RawPhp::forge($info['root']);
+    }
+
+    /**
      * @param ContainerInterface $container
      * @return $this
      */
@@ -128,7 +200,7 @@ class Builder
      */
     public function getRenderer()
     {
-        return $this->renderer;
+        return $this->renderer ?: $this->makeRenderer();
     }
 
     /**
