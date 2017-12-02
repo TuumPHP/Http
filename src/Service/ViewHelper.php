@@ -317,4 +317,12 @@ class ViewHelper
 
         return $contents;
     }
+
+    /**
+     * @return string
+     */
+    public function csrfToken()
+    {
+        return $this->builder->getSessionStorage()->getToken();
+    }
 }
