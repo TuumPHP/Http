@@ -12,7 +12,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class RedirectTest extends \PHPUnit_Framework_TestCase
+class RedirectTest extends \PHPUnit\Framework\TestCase
 {
     use TesterTrait;
 

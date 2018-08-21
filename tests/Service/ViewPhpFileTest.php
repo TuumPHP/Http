@@ -14,7 +14,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ViewPhpFileTest extends \PHPUnit_Framework_TestCase
+class ViewPhpFileTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ServerRequestInterface

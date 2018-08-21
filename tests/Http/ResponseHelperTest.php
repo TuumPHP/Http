@@ -7,7 +7,7 @@ use Zend\Diactoros\Stream;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ResponseHelperTest extends \PHPUnit_Framework_TestCase
+class ResponseHelperTest extends \PHPUnit\Framework\TestCase
 {
     function setup()
     {

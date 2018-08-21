@@ -6,7 +6,7 @@ use Tuum\Respond\Service\ViewData;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ViewDataTest extends \PHPUnit_Framework_TestCase
+class ViewDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ViewData

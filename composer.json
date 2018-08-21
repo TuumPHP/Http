@@ -19,7 +19,9 @@
         "zendframework/zend-diactoros": "~1.0",
         "tuum/filemap": "^1.0",
         "league/plates": "3.*",
-        "koriym/printo": " ~1.0"
+        "koriym/printo": " ~1.0",
+        "twig/twig": "^2.5",
+        "phpunit/phpunit": "^7.0.0"
     },
     "autoload": {
         "psr-4": {

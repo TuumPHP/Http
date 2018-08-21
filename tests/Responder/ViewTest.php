@@ -14,7 +14,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ViewTest extends \PHPUnit_Framework_TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     use TesterTrait;
 

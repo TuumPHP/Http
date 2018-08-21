@@ -10,7 +10,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class TwigViewTest extends \PHPUnit_Framework_TestCase
+class TwigViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
