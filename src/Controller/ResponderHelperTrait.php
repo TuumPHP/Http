@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
@@ -134,7 +134,7 @@ trait ResponderHelperTrait
     }
 
     /**
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     protected function getViewData()
     {

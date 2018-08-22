@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: asao
- * Date: 2016/02/18
- * Time: 15:11
- */
 namespace Tuum\Respond\Interfaces;
 
 /**
@@ -21,7 +15,7 @@ namespace Tuum\Respond\Interfaces;
  *
  * @package Tuum\Respond
  */
-interface ViewDataInterface
+interface PayloadInterface
 {
     /**
      * a key string for storing view-data.
@@ -47,7 +41,7 @@ interface ViewDataInterface
      *
      * @param string|array $key
      * @param mixed        $value
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setData($key, $value = null);
 
@@ -60,7 +54,7 @@ interface ViewDataInterface
      * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setInput(array $value);
 
@@ -74,7 +68,7 @@ interface ViewDataInterface
      * for Errors helper.
      *
      * @param array $errors
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setInputErrors(array $errors);
 
@@ -89,7 +83,7 @@ interface ViewDataInterface
      *
      * @param string $type
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setMessage($type, $message);
 
@@ -100,25 +94,25 @@ interface ViewDataInterface
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setSuccess($message);
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setAlert($message);
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setError($message = null);
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setCritical($message = null);
     

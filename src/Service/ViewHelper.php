@@ -14,7 +14,8 @@ use Tuum\Form\Dates;
 use Tuum\Form\Forms;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Interfaces\PresenterInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
+use Tuum\Respond\Responder\Payload;
 
 /**
  * Class ViewHelper
@@ -52,16 +53,16 @@ class ViewHelper
     private $builder;
 
     /**
-     * @var ViewData
+     * @var Payload
      */
     private $viewData;
 
     /**
      * ViewHelper constructor.
      *
-     * @param DataView          $dataView
-     * @param ViewDataInterface $viewData
-     * @param Builder           $builder
+     * @param DataView         $dataView
+     * @param PayloadInterface $viewData
+     * @param Builder          $builder
      */
     public function __construct($dataView, $viewData, $builder)
     {
@@ -73,7 +74,7 @@ class ViewHelper
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param ViewDataInterface      $viewData
+     * @param PayloadInterface       $viewData
      * @param Builder                $builder
      * @return ViewHelper
      */
@@ -99,7 +100,7 @@ class ViewHelper
     }
 
     /**
-     * @param ViewDataInterface $viewData
+     * @param PayloadInterface $viewData
      * @return $this
      */
     public function setViewData($viewData)
@@ -110,7 +111,7 @@ class ViewHelper
     }
 
     /**
-     * @return ViewData
+     * @return Payload
      */
     public function getViewData()
     {
@@ -244,7 +245,7 @@ class ViewHelper
      * call a presenter object and renders the content.
      * 
      * @param string|PresenterInterface $presenter
-     * @param null|mixed|ViewData       $data
+     * @param null|mixed|Payload        $data
      * @return string
      */
     public function call($presenter, array $data = [])

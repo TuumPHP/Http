@@ -7,7 +7,7 @@ use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\Payload;
 
 class Responder
 {
@@ -103,7 +103,7 @@ class Responder
     }
 
     /**
-     * @return ViewData
+     * @return Payload
      */
     public function getViewData()
     {

@@ -4,7 +4,7 @@ namespace tests\Service;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Service\Renderer\Twig;
 use Tuum\Respond\Service\TwigViewer;
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\Payload;
 use Tuum\Respond\Service\ViewHelper;
 use Zend\Diactoros\Response;
 
@@ -18,7 +18,7 @@ class TwigViewTest extends \PHPUnit\Framework\TestCase
     function get_contents()
     {
         $twig = Twig::forge(__DIR__ . '/twig');
-        $view = new ViewData();
+        $view = new Payload();
         $helper = ViewHelper::forge(ReqBuilder::createFromPath('test'), new Response(), $view, null);
 
         $res = $twig->render('twig-text', $helper);
