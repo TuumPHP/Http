@@ -13,7 +13,8 @@
         "psr/container": "^1.0",
         "aura/session": "~2.0",
         "tuum/form": "^1.0",
-        "willdurand/negotiation": "^2.0"
+        "willdurand/negotiation": "^2.0",
+        "ext-json": "*"
     },
     "require-dev":{
         "zendframework/zend-diactoros": "~1.0",

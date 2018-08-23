@@ -1,7 +1,6 @@
 <?php
 namespace Tuum\Respond;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder\Error;
