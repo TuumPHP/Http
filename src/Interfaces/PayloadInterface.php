@@ -2,7 +2,7 @@
 namespace Tuum\Respond\Interfaces;
 
 /**
- * Class ViewData
+ * interface PayloadInterface
  *
  * a data transfer object for responder to Tuum/Form helpers used in templates.
  *

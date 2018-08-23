@@ -116,7 +116,7 @@ class RespondTest extends \PHPUnit\Framework\TestCase
      */
     function Respond_populates_ViewData_object()
     {
-        $view    = $this->responder->getViewData()
+        $view    = $this->responder->getPayload()
             ->setData('some', 'value')
             ->setSuccess('message')
             ->setAlert('notice-msg')

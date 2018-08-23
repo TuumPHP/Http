@@ -61,10 +61,10 @@ interface SessionStorageInterface
     /**
      * @return Payload
      */
-    public function getViewData();
+    public function getPayload();
     
     /**
      *
      */
-    public function saveViewData();
+    public function savePayload();
 }

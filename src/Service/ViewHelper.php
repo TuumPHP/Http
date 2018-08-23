@@ -55,32 +55,32 @@ class ViewHelper
     /**
      * @var Payload
      */
-    private $viewData;
+    private $payload;
 
     /**
      * ViewHelper constructor.
      *
      * @param DataView         $dataView
-     * @param PayloadInterface $viewData
+     * @param PayloadInterface $payload
      * @param Builder          $builder
      */
-    public function __construct($dataView, $viewData, $builder)
+    public function __construct($dataView, $payload, $builder)
     {
         $this->dataView = $dataView;
         $this->builder  = $builder;
-        $this->setViewData($viewData);
+        $this->setPayload($payload);
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param PayloadInterface       $viewData
+     * @param PayloadInterface       $payload
      * @param Builder                $builder
      * @return ViewHelper
      */
-    public static function forge($request, $response, $viewData, $builder)
+    public static function forge($request, $response, $payload, $builder)
     {
-        $self = new self(new DataView(), $viewData, $builder);
+        $self = new self(new DataView(), $payload, $builder);
         $self->start($request, $response);
 
         return $self;
@@ -100,12 +100,12 @@ class ViewHelper
     }
 
     /**
-     * @param PayloadInterface $viewData
+     * @param PayloadInterface $payload
      * @return $this
      */
-    public function setViewData($viewData)
+    public function setPayload($payload)
     {
-        $this->viewData = $viewData;
+        $this->payload = $payload;
 
         return $this;
     }
@@ -113,9 +113,9 @@ class ViewHelper
     /**
      * @return Payload
      */
-    public function getViewData()
+    public function getPayload()
     {
-        return $this->viewData;
+        return $this->payload;
     }
 
     /**
@@ -140,7 +140,7 @@ class ViewHelper
     public function forms()
     {
         if (!$this->dataView->inputs) {
-            $this->dataView->setInputs($this->viewData->getInput());
+            $this->dataView->setInputs($this->payload->getInput());
         }
         return $this->dataView->forms;
     }
@@ -151,7 +151,7 @@ class ViewHelper
     public function inputs()
     {
         if (!$this->dataView->inputs) {
-            $this->dataView->setInputs($this->viewData->getInput());
+            $this->dataView->setInputs($this->payload->getInput());
         }
         return $this->dataView->inputs;
     }
@@ -161,7 +161,7 @@ class ViewHelper
      */
     public function hasInputs()
     {
-        return $this->viewData->hasInput();
+        return $this->payload->hasInput();
     }
 
     /**
@@ -170,7 +170,7 @@ class ViewHelper
     public function data()
     {
         if (!$this->dataView->data) {
-            $this->dataView->setData($this->viewData->getData());
+            $this->dataView->setData($this->payload->getData());
         }
         return $this->dataView->data;
     }
@@ -181,7 +181,7 @@ class ViewHelper
     public function errors()
     {
         if (!$this->dataView->errors) {
-            $this->dataView->setErrors($this->viewData->getInputErrors());
+            $this->dataView->setErrors($this->payload->getInputErrors());
         }
         return $this->dataView->errors;
     }
@@ -192,7 +192,7 @@ class ViewHelper
     public function message()
     {
         if (!$this->dataView->message) {
-            $this->dataView->setMessage($this->viewData->getMessages());
+            $this->dataView->setMessage($this->payload->getMessages());
         }
         return $this->dataView->message;
     }

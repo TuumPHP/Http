@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Service\SessionStorage;
 
 /**
- * Class AbstractWithViewData
+ * Class AbstractResponder
  *
  * @package Tuum\Respond
  */
@@ -55,7 +55,7 @@ abstract class AbstractResponder
      */
     public function setData($key, $value = null)
     {
-        $this->session->getViewData()->setData($key, $value);
+        $this->session->getPayload()->setData($key, $value);
         return $this;
     }
 
@@ -65,7 +65,7 @@ abstract class AbstractResponder
      */
     public function setSuccess($message)
     {
-        $this->session->getViewData()->setSuccess($message);
+        $this->session->getPayload()->setSuccess($message);
         return $this;
     }
 
@@ -75,7 +75,7 @@ abstract class AbstractResponder
      */
     public function setAlert($message)
     {
-        $this->session->getViewData()->setAlert($message);
+        $this->session->getPayload()->setAlert($message);
         return $this;
     }
 
@@ -85,7 +85,7 @@ abstract class AbstractResponder
      */
     public function setError($message)
     {
-        $this->session->getViewData()->setError($message);
+        $this->session->getPayload()->setError($message);
         return $this;
     }
 
@@ -95,7 +95,7 @@ abstract class AbstractResponder
      */
     public function setInput(array $input)
     {
-        $this->session->getViewData()->setInput($input);
+        $this->session->getPayload()->setInput($input);
         return $this;
     }
 
@@ -105,7 +105,7 @@ abstract class AbstractResponder
      */
     public function setInputErrors(array $messages)
     {
-        $this->session->getViewData()->setInputErrors($messages);
+        $this->session->getPayload()->setInputErrors($messages);
         return $this;
     }
 }

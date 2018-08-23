@@ -4,7 +4,7 @@ namespace Tuum\Respond\Responder;
 use Tuum\Respond\Interfaces\PayloadInterface;
 
 /**
- * Class ViewData
+ * Class Payload
  *
  * a data transfer object for responder to Tuum/Form helpers used in templates.
  *

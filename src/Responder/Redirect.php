@@ -58,7 +58,7 @@ class Redirect extends AbstractResponder
     {
         $uri = $uri->withQuery($this->query);
         $uri = (string)$uri;
-        $this->session->saveViewData();
+        $this->session->savePayload();
 
         return $this->response
             ->withStatus(302)

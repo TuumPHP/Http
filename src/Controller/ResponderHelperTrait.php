@@ -136,9 +136,9 @@ trait ResponderHelperTrait
     /**
      * @return PayloadInterface
      */
-    protected function getViewData()
+    protected function getPayload()
     {
-        return $this->getResponder()->getViewData();
+        return $this->getResponder()->getPayload();
     }
 
     /**

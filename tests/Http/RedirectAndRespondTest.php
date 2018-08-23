@@ -86,7 +86,7 @@ class RedirectAndRespondTest extends \PHPUnit\Framework\TestCase
          */
         $responder = $this->createResponder();
 
-        $data = $responder->getViewData();
+        $data = $responder->getPayload();
 
         $this->assertEquals('val1', $responder->session()->getFlash('with'));
         $this->assertEquals('with', $data->getData()['more']);

@@ -105,8 +105,8 @@ class Responder
     /**
      * @return Payload
      */
-    public function getViewData()
+    public function getPayload()
     {
-        return $this->session()->getViewData();
+        return $this->session()->getPayload();
     }
 }

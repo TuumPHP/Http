@@ -57,9 +57,9 @@ class Respond
     /**
      * @return PayloadInterface
      */
-    public static function getViewData()
+    public static function getPayload()
     {
-        return self::getResponder()->getViewData();
+        return self::getResponder()->getPayload();
     }
     
     /**
