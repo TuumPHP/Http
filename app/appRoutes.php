@@ -19,26 +19,26 @@ return function (Dispatcher $app) {
      * for top page /
      */
     $app->add('/',
-        function (ServerRequestInterface $request, ResponseInterface $response) use ($responder) {
+        function (ServerRequestInterface $request) use ($responder) {
             if (!$responder->session()->get('first.time')) {
                 $responder->session()->set('first.time', true);
                 $responder->getPayload()
                     ->setSuccess('Thanks for downloading Tuum/Respond.');
             }
             return $responder
-                ->view($request, $response)
+                ->view($request)
                 ->render('index');
         });
     
-    $app->add('/info', function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
-        return $responder->view($request, $response)
+    $app->add('/info', function (ServerRequestInterface $request) use($responder) {
+        return $responder->view($request)
             ->asObContents(function() {
                 phpinfo();
             });
     });
 
     $app->add('/login',
-        function (ServerRequestInterface $request, ResponseInterface $response) use($responder) {
+        function (ServerRequestInterface $request) use($responder) {
             $post = $request->getParsedBody();
             $view = $responder->getPayload();
             if (isset($post['logout'])) {
@@ -54,7 +54,7 @@ return function (Dispatcher $app) {
                 }
             }
             return $responder
-                ->redirect($request, $response)
+                ->redirect($request)
                 ->toPath('/');
         });
 
