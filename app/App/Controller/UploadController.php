@@ -31,12 +31,11 @@ class UploadController
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
+    public function __invoke(ServerRequestInterface $request)
     {
-        return $this->dispatch($request, $response);
+        return $this->dispatch($request);
     }
 
     /**

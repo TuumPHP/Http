@@ -22,12 +22,11 @@ class ForbiddenController
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return null|ResponseInterface
      */
-    public function __invoke($request, $response)
+    public function __invoke($request)
     {
-        return $this->dispatch($request, $response);
+        return $this->dispatch($request);
     }
 
     /**
