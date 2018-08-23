@@ -11,6 +11,7 @@ trait DispatchByMethodTrait
 
     /**
      * @return null|ResponseInterface
+     * @throws \ReflectionException
      */
     protected function _execInternalMethods()
     {

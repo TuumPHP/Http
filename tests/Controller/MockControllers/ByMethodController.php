@@ -11,23 +11,24 @@ class ByMethodController
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return null|ResponseInterface
      */
-    public function test($request, $response)
+    public function test($request)
     {
-        return $this->dispatch($request, $response);
+        return $this->dispatch($request);
     }
     
     public function onGet($test=null)
     {
-        $this->getResponse()->getBody()->write("test:{$test}");
-        return $this->response;
+        $response = $this->getResponse();
+        $response->getBody()->write("test:{$test}");
+        return $response;
     }
 
     public function onPost()
     {
-        $this->getResponse()->getBody()->write('test:post');
-        return $this->response;
+        $response = $this->getResponse();
+        $response->getBody()->write('test:post');
+        return $response;
     }
 }

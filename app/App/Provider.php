@@ -12,6 +12,7 @@ use Tuum\Respond\Builder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\Plates;
+use Zend\Diactoros\Response;
 
 class Provider
 {
@@ -95,7 +96,7 @@ class Provider
                 ->setContainer($container)
                 ->setRenderer(Plates::forge($container->get('template-path')))
             ->setErrorOption($container->get('error-files'))
-        );
+        )->setResponse(new Response());
         Respond::setResponder($responder);
         
         return $responder;

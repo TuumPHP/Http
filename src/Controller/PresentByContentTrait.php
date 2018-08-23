@@ -31,19 +31,19 @@ trait PresentByContentTrait
         'text/html; charset=UTF-8' => 'html',
         'application/json' => 'json',
         'application/xml'  => 'xml',
-    ]; 
+    ];
 
     /**
      * prepares a response returns a new $response.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @param array                  $data
      * @return ResponseInterface
+     * @throws \ReflectionException
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $data = [])
+    public function __invoke(ServerRequestInterface $request, array $data = [])
     {
-        return $this->_dispatch($request, $response, $data);
+        return $this->_dispatch($request, $data);
     }
 
     /**
@@ -61,14 +61,13 @@ trait PresentByContentTrait
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @param array                  $data
      * @return ResponseInterface
+     * @throws \ReflectionException
      */
-    protected function _dispatch(ServerRequestInterface $request, ResponseInterface $response, array $data)
+    protected function _dispatch(ServerRequestInterface $request, array $data)
     {
         $this->setRequest($request);
-        $this->setResponse($response);
         
         $negotiator = new Negotiator();
         $accepts = $request->getServerParams()['HTTP_ACCEPT'];
@@ -86,6 +85,7 @@ trait PresentByContentTrait
 
     /**
      * @return string[]
+     * @throws \ReflectionException
      */
     private function _findMethodList()
     {

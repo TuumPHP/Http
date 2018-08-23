@@ -13,13 +13,12 @@ trait PresenterTrait
      * renders $view and returns a new $response.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @param array                  $data
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $data = [])
+    public function __invoke(ServerRequestInterface $request, array $data = [])
     {
-        return $this->_dispatch('dispatch', $request, $response, $data);
+        return $this->_dispatch('dispatch', $request, $data);
     }
 
     /**
@@ -35,14 +34,12 @@ trait PresenterTrait
     /**
      * @param string                 $name
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @param array                  $data
      * @return ResponseInterface
      */
-    public function _dispatch($name, ServerRequestInterface $request, ResponseInterface $response, array $data)
+    public function _dispatch($name, ServerRequestInterface $request, array $data)
     {
         $this->request = $request;
-        $this->response = $response;
         if (!$this->responder) {
             $this->responder = Respond::getResponder();
         }

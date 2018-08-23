@@ -33,10 +33,9 @@ class Respond
      *
      * @param string                 $name
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return View|Redirect|Error
      */
-    private static function _getResponder($name, $request, $response)
+    private static function _getResponder($name, $request)
     {
         /**
          * 1. get responder from the request' attribute.
@@ -51,7 +50,7 @@ class Respond
          * 2. return responder with $name.
          */
 
-        return $responder->$name($request, $response);
+        return $responder->$name($request);
     }
 
     /**
@@ -66,36 +65,33 @@ class Respond
      * get a view responder, Responder\View.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return View
      */
-    public static function view($request, $response = null)
+    public static function view($request)
     {
-        return self::_getResponder('view', $request, $response);
+        return self::_getResponder('view', $request);
     }
 
     /**
      * get a redirect responder, Responder\Redirect.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return Redirect
      */
-    public static function redirect($request, $response = null)
+    public static function redirect($request)
     {
-        return self::_getResponder('redirect', $request, $response);
+        return self::_getResponder('redirect', $request);
     }
 
     /**
      * get an error responder, Responder\Error.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return Error
      */
-    public static function error($request, $response = null)
+    public static function error($request)
     {
-        return self::_getResponder('error', $request, $response);
+        return self::_getResponder('error', $request);
     }
 
     /**

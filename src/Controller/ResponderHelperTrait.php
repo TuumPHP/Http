@@ -50,10 +50,11 @@ trait ResponderHelperTrait
      */
     protected function getResponse($string = null)
     {
+        $response = $this->getResponder()->getResponse();
         if (is_string($string)) {
-            $this->response->getBody()->write($string);
+            $response->getBody()->write($string);
         }
-        return $this->response;
+        return $response;
     }
 
     /**

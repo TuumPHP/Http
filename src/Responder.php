@@ -57,41 +57,32 @@ class Responder
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return View
      */
     public function view(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
+        ServerRequestInterface $request
     ) {
-        $response = $response ?: $this->response;
-        return $this->builder->getView()->start($request, $response);
+        return $this->builder->getView()->start($request, $this->response);
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return Redirect
      */
     public function redirect(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
+        ServerRequestInterface $request
     ) {
-        $response = $response ?: $this->response;
-        return $this->builder->getRedirect()->start($request, $response);
+        return $this->builder->getRedirect()->start($request, $this->response);
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return Error
      */
     public function error(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
+        ServerRequestInterface $request
     ) {
-        $response = $response ?: $this->response;
-        return $this->builder->getError()->start($request, $response);
+        return $this->builder->getError()->start($request, $this->response);
     }
 
     /**
@@ -102,11 +93,13 @@ class Responder
         return $this->builder->getSessionStorage();
     }
 
-    /**
-     * @return Payload
-     */
-    public function getPayload()
+    public function getPayload(): Payload
     {
         return $this->session()->getPayload();
+    }
+
+    public function getResponse(): ResponseInterface
+    {
+        return $this->response;
     }
 }

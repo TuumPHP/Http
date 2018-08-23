@@ -11,13 +11,11 @@ trait ControllerTrait
      * call this dispatch method to respond.
      * 
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface|null
      */
-    protected function dispatch($request, $response)
+    protected function dispatch($request)
     {
         $this->setRequest($request);
-        $this->setResponse($response);
         if (!$this->responder) {
             $this->responder = Respond::getResponder();
         }
@@ -26,19 +24,18 @@ trait ControllerTrait
     
     abstract function setRequest(ServerRequestInterface $request);
 
-    abstract function setResponse(ResponseInterface $response);
-    
     /**
      * must implement this method, which dispatches one of own method.
      *
      * @return ResponseInterface|null
      */
     abstract protected function _execInternalMethods();
-    
+
     /**
      * @param string $method
      * @param array  $params
      * @return mixed
+     * @throws \ReflectionException
      */
     protected function _execMethodWithArgs($method, $params)
     {

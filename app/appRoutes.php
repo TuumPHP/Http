@@ -72,14 +72,14 @@ return function (Dispatcher $app) {
      * for other samples
      */
     $app->add('/content',
-        function (ServerRequestInterface $request, $response) {
-            return Respond::view($request, $response)
+        function (ServerRequestInterface $request) {
+            return Respond::view($request)
                 ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
         });
 
     $app->add('/objGraph',
-        function (ServerRequestInterface $request, $response) {
-            return Respond::view($request, $response)
+        function (ServerRequestInterface $request) {
+            return Respond::view($request)
                 ->asContents((new Printo(Respond::getResponder())));
         });
 
@@ -98,13 +98,13 @@ return function (Dispatcher $app) {
      * @return ResponseInterface
      */
     $app->add('/forms',
-        function (ServerRequestInterface $request, $response) {
+        function (ServerRequestInterface $request) {
             Respond::getPayload()
                 ->setData([
                     'text' => 'this is text-value',
                     'date' => date('Y-m-d'),
                 ]);
-            return Respond::view($request, $response)->render('forms');
+            return Respond::view($request)->render('forms');
         });
 
     $app->add('/docs/(?P<pathInfo>.*)', DocumentMap::class);

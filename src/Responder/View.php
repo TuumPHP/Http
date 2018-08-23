@@ -236,6 +236,6 @@ class View extends AbstractResponder
             throw new \InvalidArgumentException('resolver is not a callable.');
         }
 
-        return call_user_func($callable, $this->request, $this->response, $data);
+        return call_user_func($callable, $this->request, $data);
     }
 }
