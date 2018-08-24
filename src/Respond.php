@@ -51,13 +51,15 @@ class Respond
 
         return $responder->$name($request);
     }
-
-    /**
-     * @return PayloadInterface
-     */
-    public static function getPayload()
+    
+    public static function setPayload(ServerRequestInterface $request, PayloadInterface $payload): ServerRequestInterface
     {
-        return self::getResponder()->getPayload();
+        return $request->withAttribute(PayloadInterface::class, $payload);
+    }
+
+    public static function getPayload(ServerRequestInterface $request): ?PayloadInterface
+    {
+        return $request->getAttribute(PayloadInterface::class);
     }
     
     /**

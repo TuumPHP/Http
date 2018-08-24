@@ -47,7 +47,7 @@ class View extends AbstractResponder
      */
     public function asResponse($input, $status = self::OK, array $header = [])
     {
-        return ResponseHelper::fill($this->response, $input, $status, $header);
+        return ResponseHelper::fill($this->responder->getResponse(), $input, $status, $header);
     }
 
     /**
@@ -57,7 +57,7 @@ class View extends AbstractResponder
     {
         $payload = $this->session->getPayload();
 
-        return ViewHelper::forge($this->request, $this->response, $payload, $this->builder);
+        return ViewHelper::forge($this->request, $this->responder, $payload, $this->builder);
     }
 
     /**
@@ -70,11 +70,12 @@ class View extends AbstractResponder
     public function render($file, $data = [])
     {
         $content = $this->renderContents($file, $data);
-        $stream  = $this->response->getBody();
+        $response = $this->responder->getResponse();
+        $stream  = $response->getBody();
         $stream->rewind();
         $stream->write($content);
 
-        return $this->response;
+        return $response;
     }
 
     /**

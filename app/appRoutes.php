@@ -22,7 +22,7 @@ return function (Dispatcher $app) {
         function (ServerRequestInterface $request) use ($responder) {
             if (!$responder->session()->get('first.time')) {
                 $responder->session()->set('first.time', true);
-                $responder->getPayload()
+                $responder->getPayload($request)
                     ->setSuccess('Thanks for downloading Tuum/Respond.');
             }
             return $responder
@@ -40,7 +40,7 @@ return function (Dispatcher $app) {
     $app->add('/login',
         function (ServerRequestInterface $request) use($responder) {
             $post = $request->getParsedBody();
-            $view = $responder->getPayload();
+            $view = $responder->getPayload($request);
             if (isset($post['logout'])) {
                 $responder->session()->set('login.name', null);
                 $view->setSuccess('logged out');
@@ -99,7 +99,7 @@ return function (Dispatcher $app) {
      */
     $app->add('/forms',
         function (ServerRequestInterface $request) {
-            Respond::getPayload()
+            Respond::getPayload($request)
                 ->setData([
                     'text' => 'this is text-value',
                     'date' => date('Y-m-d'),

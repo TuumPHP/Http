@@ -2,8 +2,10 @@
 namespace tests\Responder;
 
 use tests\Tools\TesterTrait;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
@@ -26,15 +28,22 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
      */
     private $session;
 
+    /**
+     * @var Responder
+     */
+    private $responder;
+
     function setup()
     {
         $_SESSION      = [];
+        $this->responder = new Responder(new Builder('test-tuum'));
+        $this->responder->setResponse(new Response());
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->redirect = new Redirect($this->session);
         $this->redirect = $this->redirect->start(
             ReqBuilder::createFromPath('test'),
-            new Response()
+            $this->responder
         );
     }
 
@@ -66,7 +75,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
         $request        = ReqAttr::withBasePath($request, '/base/');
         $this->redirect = $this->redirect->start(
             $request,
-            new Response()
+            $this->responder
         );
         $response       = $this->redirect->toBasePath('path');
         $this->assertEquals('/base/path', ResponseHelper::getLocation($response));
@@ -81,7 +90,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
         $request        = ReqAttr::withReferrer($request, '/referrer/');
         $this->redirect = $this->redirect->start(
             $request,
-            new Response()
+            $this->responder
         );
         $response       = $this->redirect->toReferrer();
         $this->assertEquals('/referrer/', ResponseHelper::getLocation($response));

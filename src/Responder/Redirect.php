@@ -60,7 +60,7 @@ class Redirect extends AbstractResponder
         $uri = (string)$uri;
         $this->session->savePayload();
 
-        return $this->response
+        return $this->responder->getResponse()
             ->withStatus(302)
             ->withHeader('Location', $uri);
     }

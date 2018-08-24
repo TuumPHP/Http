@@ -3,11 +3,11 @@ namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Responder\Payload;
 
 class Responder
 {
@@ -62,7 +62,7 @@ class Responder
     public function view(
         ServerRequestInterface $request
     ) {
-        return $this->builder->getView()->start($request, $this->response);
+        return $this->builder->getView()->start($request, $this);
     }
 
     /**
@@ -72,7 +72,7 @@ class Responder
     public function redirect(
         ServerRequestInterface $request
     ) {
-        return $this->builder->getRedirect()->start($request, $this->response);
+        return $this->builder->getRedirect()->start($request, $this);
     }
 
     /**
@@ -82,7 +82,7 @@ class Responder
     public function error(
         ServerRequestInterface $request
     ) {
-        return $this->builder->getError()->start($request, $this->response);
+        return $this->builder->getError()->start($request, $this);
     }
 
     /**
@@ -93,9 +93,14 @@ class Responder
         return $this->builder->getSessionStorage();
     }
 
-    public function getPayload(): Payload
+    public function getPayload(ServerRequestInterface $request): ?PayloadInterface
     {
-        return $this->session()->getPayload();
+        return Respond::getPayload($request);
+    }
+    
+    public function setPayload(ServerRequestInterface $request): ServerRequestInterface
+    {
+        return $request->withAttribute(PayloadInterface::class, $this->session()->getPayload());
     }
 
     public function getResponse(): ResponseInterface

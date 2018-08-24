@@ -1,8 +1,9 @@
 <?php
 namespace Tuum\Respond\Responder;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
 
 /**
@@ -18,9 +19,9 @@ abstract class AbstractResponder
     protected $request;
 
     /**
-     * @var ResponseInterface
+     * @var Responder
      */
-    protected $response;
+    protected $responder;
 
     /**
      * @var SessionStorage
@@ -37,13 +38,16 @@ abstract class AbstractResponder
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
+     * @param Responder              $responder
      * @return $this
      */
-    public function start(ServerRequestInterface $request, ResponseInterface $response)
+    public function start(ServerRequestInterface $request, Responder $responder): self
     {
-        $this->request = $request;
-        $this->response = $response;
+        $this->request   = $request;
+        $this->responder = $responder;
+        if (!Respond::getPayload($request)) {
+            Respond::setPayload($request, $responder->session()->getPayload());
+        }
 
         return $this;
     }

@@ -139,7 +139,7 @@ trait ResponderHelperTrait
      */
     protected function getPayload()
     {
-        return $this->getResponder()->getPayload();
+        return $this->getResponder()->getPayload($this->getRequest());
     }
 
     /**

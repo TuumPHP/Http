@@ -110,27 +110,4 @@ class RespondTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('2', $response->getHeader('Content-Length')[0]);
         $this->assertEquals('dl', $response->getBody()->__toString());
     }
-
-    /**
-     * @test
-     */
-    function Respond_populates_ViewData_object()
-    {
-        $view    = $this->responder->getPayload()
-            ->setData('some', 'value')
-            ->setSuccess('message')
-            ->setAlert('notice-msg')
-            ->setError('error-msg')
-            ->setInput(['more' => 'test'])
-            ->setInputErrors(['more' => 'done']);
-
-        $data = $view;
-
-        $this->assertEquals('value', $data->getData()['some']);
-        $this->assertEquals('message', $data->getMessages()[0]['message']);
-        $this->assertEquals('notice-msg', $data->getMessages()[1]['message']);
-        $this->assertEquals('error-msg', $data->getMessages()[2]['message']);
-        $this->assertEquals('test', $data->getInput()['more']);
-        $this->assertEquals('done', $data->getInputErrors()['more']);
-    }
 }

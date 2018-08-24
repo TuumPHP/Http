@@ -71,7 +71,7 @@ class Error extends AbstractResponder
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
     {
-        return ResponseHelper::fill($this->response, $input, $status, $header);
+        return ResponseHelper::fill($this->responder->getResponse(), $input, $status, $header);
     }
 
     /**
@@ -94,7 +94,7 @@ class Error extends AbstractResponder
     public function asView($status, $data = [])
     {
         $file = $this->errorFile->find($status);
-        return $this->view->start($this->request, $this->response)->render($file, $data)->withStatus($status);
+        return $this->view->start($this->request, $this->responder)->render($file, $data)->withStatus($status);
     }
 
     /**
