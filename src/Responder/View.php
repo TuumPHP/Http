@@ -28,11 +28,10 @@ class View extends AbstractResponder
      * Renderer constructor.
      *
      * @param Builder            $builder
-     * @param SessionStorage     $session
      */
-    public function __construct(Builder $builder, $session)
+    public function __construct(Builder $builder)
     {
-        parent::__construct($session);
+        parent::__construct();
         $this->builder  = $builder;
         $this->content_view = $builder->getContentViewFile() ?: $this->content_view;
     }

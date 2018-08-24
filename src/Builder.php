@@ -225,7 +225,7 @@ class Builder
     public function getView()
     {
         return $this->view ?:
-            $this->view = new View($this, $this->getSessionStorage());
+            $this->view = new View($this);
     }
 
     /**
@@ -235,7 +235,6 @@ class Builder
     {
         return $this->redirect ?:
             $this->redirect = new Redirect(
-                $this->getSessionStorage(),
                 $this->getNamedRoutes()
             );
     }
@@ -248,8 +247,7 @@ class Builder
         return $this->error ?:
             $this->error = new Error(
                 ErrorFile::forge($this->error_option),
-                $this->getView(),
-                $this->getSessionStorage()
+                $this->getView()
             );
     }
 

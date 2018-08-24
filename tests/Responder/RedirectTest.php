@@ -42,7 +42,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
             ->setSessionStorage($this->session);
         $this->responder = new Responder($builder);
         $this->responder->setResponse(new Response());
-        $this->redirect = new Redirect($this->session);
+        $this->redirect = new Redirect();
 
         $request = ReqBuilder::createFromPath('test');
         $request = $this->responder->setPayload($request);

@@ -49,11 +49,10 @@ class Error extends AbstractResponder
     /**
      * @param ErrorFileInterface $errorFile
      * @param View               $view
-     * @param SessionStorage     $session
      */
-    public function __construct(ErrorFileInterface $errorFile, View $view, SessionStorage $session)
+    public function __construct(ErrorFileInterface $errorFile, View $view)
     {
-        parent::__construct($session);
+        parent::__construct();
         $this->errorFile = $errorFile;
         $this->view = $view;
     }

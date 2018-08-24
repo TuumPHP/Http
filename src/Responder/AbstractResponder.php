@@ -24,16 +24,10 @@ abstract class AbstractResponder
     protected $responder;
 
     /**
-     * @var SessionStorage
+     * 
      */
-    protected $session;
-
-    /**
-     * @param SessionStorage $session
-     */
-    public function __construct(SessionStorage $session)
+    public function __construct()
     {
-        $this->session = $session;
     }
 
     /**
