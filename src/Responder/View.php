@@ -28,11 +28,10 @@ class View extends AbstractResponder
      * Renderer constructor.
      *
      * @param Builder            $builder
-     * @param SessionStorage     $session
      */
-    public function __construct(Builder $builder, $session)
+    public function __construct(Builder $builder)
     {
-        parent::__construct($session);
+        parent::__construct();
         $this->builder  = $builder;
         $this->content_view = $builder->getContentViewFile() ?: $this->content_view;
     }
@@ -47,7 +46,7 @@ class View extends AbstractResponder
      */
     public function asResponse($input, $status = self::OK, array $header = [])
     {
-        return ResponseHelper::fill($this->response, $input, $status, $header);
+        return ResponseHelper::fill($this->responder->getResponse(), $input, $status, $header);
     }
 
     /**
@@ -55,9 +54,9 @@ class View extends AbstractResponder
      */
     public function getViewHelper()
     {
-        $payload = $this->session->getPayload();
+        $payload = $this->responder->getPayload($this->request);
 
-        return ViewHelper::forge($this->request, $this->response, $payload, $this->builder);
+        return ViewHelper::forge($this->request, $this->responder, $payload, $this->builder);
     }
 
     /**
@@ -70,11 +69,12 @@ class View extends AbstractResponder
     public function render($file, $data = [])
     {
         $content = $this->renderContents($file, $data);
-        $stream  = $this->response->getBody();
+        $response = $this->responder->getResponse();
+        $stream  = $response->getBody();
         $stream->rewind();
         $stream->write($content);
 
-        return $this->response;
+        return $response;
     }
 
     /**

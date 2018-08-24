@@ -29,11 +29,6 @@ class SessionStorage implements SessionStorageInterface
     private $session;
 
     /**
-     * @var Payload
-     */
-    private $payload;
-    
-    /**
      * @param Session $session
      */
     public function __construct($session)
@@ -59,32 +54,17 @@ class SessionStorage implements SessionStorageInterface
         return $self->withStorage($name);
     }
 
-    /**
-     * @return Payload
-     */    
-    public function getPayload()
+    public function getPayload(): PayloadInterface
     {
-        if (isset($this->payload)) {
-            return $this->payload;
-        }
         if ($payload = $this->getFlash(PayloadInterface::MY_KEY)) {
-            $this->payload = clone($payload);
-            return $this->payload;
+            return clone($payload);
         }
-        $this->payload = new Payload();
-        
-        return $this->payload;
+        return new Payload();
     }
 
-    /**
-     * 
-     */
-    public function savePayload()
+    public function savePayload(PayloadInterface $payload)
     {
-        if (!isset($this->payload)) {
-            return;
-        }
-        $this->setFlash(PayloadInterface::MY_KEY, $this->payload);
+        $this->setFlash(PayloadInterface::MY_KEY, $payload);
     }
 
     /**

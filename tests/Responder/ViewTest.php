@@ -48,7 +48,9 @@ class ViewTest extends \PHPUnit\Framework\TestCase
             Builder::forge('app-test')
             ->setRenderer($this->renderer)
         )->setResponse(new Response());
-        $this->view      = $this->responder->view(ReqBuilder::createFromPath('test'));
+        $request = ReqBuilder::createFromPath('test');
+        $request = $this->responder->setPayload($request);
+        $this->view      = $this->responder->view($request);
     }
 
     function tearDown()

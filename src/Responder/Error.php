@@ -49,11 +49,10 @@ class Error extends AbstractResponder
     /**
      * @param ErrorFileInterface $errorFile
      * @param View               $view
-     * @param SessionStorage     $session
      */
-    public function __construct(ErrorFileInterface $errorFile, View $view, SessionStorage $session)
+    public function __construct(ErrorFileInterface $errorFile, View $view)
     {
-        parent::__construct($session);
+        parent::__construct();
         $this->errorFile = $errorFile;
         $this->view = $view;
     }
@@ -71,7 +70,7 @@ class Error extends AbstractResponder
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
     {
-        return ResponseHelper::fill($this->response, $input, $status, $header);
+        return ResponseHelper::fill($this->responder->getResponse(), $input, $status, $header);
     }
 
     /**
@@ -94,7 +93,7 @@ class Error extends AbstractResponder
     public function asView($status, $data = [])
     {
         $file = $this->errorFile->find($status);
-        return $this->view->start($this->request, $this->response)->render($file, $data)->withStatus($status);
+        return $this->view->start($this->request, $this->responder)->render($file, $data)->withStatus($status);
     }
 
     /**

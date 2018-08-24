@@ -4,6 +4,7 @@ namespace tests\Http;
 use tests\Tools\NoRender;
 use tests\Tools\TesterTrait;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponseHelper;
@@ -58,6 +59,7 @@ class RedirectAndRespondTest extends \PHPUnit\Framework\TestCase
          * a redirect response with various data.
          */
         $request  = ReqBuilder::createFromPath('/path/test');
+        $request  = $this->responder->setPayload($request);
         $this->responder->session()
             ->setFlash('with', 'val1');
 
@@ -86,7 +88,7 @@ class RedirectAndRespondTest extends \PHPUnit\Framework\TestCase
          */
         $responder = $this->createResponder();
 
-        $data = $responder->getPayload();
+        $data = $responder->getPayload($request);
 
         $this->assertEquals('val1', $responder->session()->getFlash('with'));
         $this->assertEquals('with', $data->getData()['more']);

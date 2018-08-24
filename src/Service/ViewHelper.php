@@ -15,6 +15,7 @@ use Tuum\Form\Forms;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Payload;
 
 /**
@@ -43,9 +44,9 @@ class ViewHelper
     private $request;
 
     /**
-     * @var ResponseInterface
+     * @var Responder
      */
-    private $response;
+    private $responder;
 
     /**
      * @var Builder
@@ -73,28 +74,28 @@ class ViewHelper
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
+     * @param Responder              $responder
      * @param PayloadInterface       $payload
      * @param Builder                $builder
      * @return ViewHelper
      */
-    public static function forge($request, $response, $payload, $builder)
+    public static function forge($request, $responder, $payload, $builder)
     {
         $self = new self(new DataView(), $payload, $builder);
-        $self->start($request, $response);
+        $self->start($request, $responder);
 
         return $self;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
+     * @param Responder              $responder
      * @return $this
      */
-    public function start($request, $response)
+    public function start($request, $responder)
     {
         $this->request   = $request;
-        $this->response  = $response;
+        $this->responder = $responder;
 
         return $this;
     }
@@ -252,7 +253,7 @@ class ViewHelper
     {
         $response = $this->builder
             ->getView()
-            ->start($this->request, $this->response)
+            ->start($this->request, $this->responder)
             ->call($presenter, $data);
 
         return $this->returnResponseBody($response);
@@ -269,7 +270,7 @@ class ViewHelper
     {
         return $this->builder
             ->getView()
-            ->start($this->request, $this->response)
+            ->start($this->request, $this->responder)
             ->renderContents($viewFile, $data);
     }
 

@@ -1,8 +1,9 @@
 <?php
 namespace Tuum\Respond\Responder;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
 
 /**
@@ -18,32 +19,29 @@ abstract class AbstractResponder
     protected $request;
 
     /**
-     * @var ResponseInterface
+     * @var Responder
      */
-    protected $response;
+    protected $responder;
 
     /**
-     * @var SessionStorage
+     * 
      */
-    protected $session;
-
-    /**
-     * @param SessionStorage $session
-     */
-    public function __construct(SessionStorage $session)
+    public function __construct()
     {
-        $this->session = $session;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
+     * @param Responder              $responder
      * @return $this
      */
-    public function start(ServerRequestInterface $request, ResponseInterface $response)
+    public function start(ServerRequestInterface $request, Responder $responder): self
     {
-        $this->request = $request;
-        $this->response = $response;
+        $this->request   = $request;
+        $this->responder = $responder;
+        if (!Respond::getPayload($request)) {
+            Respond::setPayload($request, $responder->session()->getPayload());
+        }
 
         return $this;
     }
@@ -55,7 +53,7 @@ abstract class AbstractResponder
      */
     public function setData($key, $value = null)
     {
-        $this->session->getPayload()->setData($key, $value);
+        $this->responder->getPayload($this->request)->setData($key, $value);
         return $this;
     }
 
@@ -65,7 +63,7 @@ abstract class AbstractResponder
      */
     public function setSuccess($message)
     {
-        $this->session->getPayload()->setSuccess($message);
+        $this->responder->getPayload($this->request)->setSuccess($message);
         return $this;
     }
 
@@ -75,7 +73,7 @@ abstract class AbstractResponder
      */
     public function setAlert($message)
     {
-        $this->session->getPayload()->setAlert($message);
+        $this->responder->getPayload($this->request)->setAlert($message);
         return $this;
     }
 
@@ -85,7 +83,7 @@ abstract class AbstractResponder
      */
     public function setError($message)
     {
-        $this->session->getPayload()->setError($message);
+        $this->responder->getPayload($this->request)->setError($message);
         return $this;
     }
 
@@ -95,7 +93,7 @@ abstract class AbstractResponder
      */
     public function setInput(array $input)
     {
-        $this->session->getPayload()->setInput($input);
+        $this->responder->getPayload($this->request)->setInput($input);
         return $this;
     }
 
@@ -105,7 +103,7 @@ abstract class AbstractResponder
      */
     public function setInputErrors(array $messages)
     {
-        $this->session->getPayload()->setInputErrors($messages);
+        $this->responder->getPayload($this->request)->setInputErrors($messages);
         return $this;
     }
 }

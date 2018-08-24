@@ -22,12 +22,11 @@ class Redirect extends AbstractResponder
     private $routes;
 
     /**
-     * @param SessionStorage       $session
      * @param NamedRoutesInterface $routes
      */
-    public function __construct(SessionStorage $session, NamedRoutesInterface $routes = null)
+    public function __construct(NamedRoutesInterface $routes = null)
     {
-        parent::__construct($session);
+        parent::__construct();
         $this->routes = $routes;
     }
     
@@ -58,9 +57,11 @@ class Redirect extends AbstractResponder
     {
         $uri = $uri->withQuery($this->query);
         $uri = (string)$uri;
-        $this->session->savePayload();
+        $this->responder
+            ->session()
+            ->savePayload($this->responder->getPayload($this->request));
 
-        return $this->response
+        return $this->responder->getResponse()
             ->withStatus(302)
             ->withHeader('Location', $uri);
     }
@@ -121,7 +122,7 @@ class Redirect extends AbstractResponder
         if (array_key_exists('HTTP_REFERER', $server)) {
             return $server['HTTP_REFERER'];
         }
-        if ($referrer = $this->session->get(self::REFERRER)) {
+        if ($referrer = $this->responder->session()->get(self::REFERRER)) {
             return $referrer;
         }
         if ($referrer = ReqAttr::getReferrer($this->request)) {

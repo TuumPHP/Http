@@ -63,8 +63,5 @@ interface SessionStorageInterface
      */
     public function getPayload();
     
-    /**
-     *
-     */
-    public function savePayload();
+    public function savePayload(PayloadInterface $payload);
 }
