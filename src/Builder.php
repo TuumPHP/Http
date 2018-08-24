@@ -262,6 +262,12 @@ class Builder
             $this->session = SessionStorage::forge($this->name, $_COOKIE);
     }
 
+    public function setSessionStorage(SessionStorage $session): self
+    {
+        $this->session = $session;
+        return $this;
+    }
+
     public function getNamedRoutes()
     {
         return $this->namedRoutes;

@@ -59,7 +59,7 @@ abstract class AbstractResponder
      */
     public function setData($key, $value = null)
     {
-        $this->session->getPayload()->setData($key, $value);
+        $this->responder->getPayload($this->request)->setData($key, $value);
         return $this;
     }
 
@@ -69,7 +69,7 @@ abstract class AbstractResponder
      */
     public function setSuccess($message)
     {
-        $this->session->getPayload()->setSuccess($message);
+        $this->responder->getPayload($this->request)->setSuccess($message);
         return $this;
     }
 
@@ -79,7 +79,7 @@ abstract class AbstractResponder
      */
     public function setAlert($message)
     {
-        $this->session->getPayload()->setAlert($message);
+        $this->responder->getPayload($this->request)->setAlert($message);
         return $this;
     }
 
@@ -89,7 +89,7 @@ abstract class AbstractResponder
      */
     public function setError($message)
     {
-        $this->session->getPayload()->setError($message);
+        $this->responder->getPayload($this->request)->setError($message);
         return $this;
     }
 
@@ -99,7 +99,7 @@ abstract class AbstractResponder
      */
     public function setInput(array $input)
     {
-        $this->session->getPayload()->setInput($input);
+        $this->responder->getPayload($this->request)->setInput($input);
         return $this;
     }
 
@@ -109,7 +109,7 @@ abstract class AbstractResponder
      */
     public function setInputErrors(array $messages)
     {
-        $this->session->getPayload()->setInputErrors($messages);
+        $this->responder->getPayload($this->request)->setInputErrors($messages);
         return $this;
     }
 }

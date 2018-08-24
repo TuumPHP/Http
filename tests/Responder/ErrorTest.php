@@ -27,7 +27,9 @@ class ErrorTest extends \PHPUnit\Framework\TestCase
             Builder::forge('test')
             ->setRenderer(new NoRender())
         )->setResponse(new Response());
-        $this->error = $responder->error(ReqBuilder::createFromPath('test'));
+        $request = ReqBuilder::createFromPath('test');
+        $request = $responder->setPayload($request);
+        $this->error = $responder->error($request);
     }
 
     function test0()

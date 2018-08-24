@@ -38,8 +38,7 @@ $config = [
 /** @var \App\App\Dispatcher $app */
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
-$res = (new Response())->withHeader('Content-Type', 'text/html');
-$res = $app->run($req, $res);
+$res = $app->run($req);
 
 $emitter = new SapiEmitter;
 $emitter->emit($res);

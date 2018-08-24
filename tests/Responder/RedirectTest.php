@@ -36,15 +36,17 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
     function setup()
     {
         $_SESSION      = [];
-        $this->responder = new Responder(new Builder('test-tuum'));
-        $this->responder->setResponse(new Response());
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
+        $builder = Builder::forge('test-tuum')
+            ->setSessionStorage($this->session);
+        $this->responder = new Responder($builder);
+        $this->responder->setResponse(new Response());
         $this->redirect = new Redirect($this->session);
-        $this->redirect = $this->redirect->start(
-            ReqBuilder::createFromPath('test'),
-            $this->responder
-        );
+
+        $request = ReqBuilder::createFromPath('test');
+        $request = $this->responder->setPayload($request);
+        $this->redirect = $this->redirect->start($request, $this->responder);
     }
 
     function tearDown()
@@ -73,6 +75,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
     {
         $request        = ReqBuilder::createFromPath('/base/path');
         $request        = ReqAttr::withBasePath($request, '/base/');
+        $request = $this->responder->setPayload($request);
         $this->redirect = $this->redirect->start(
             $request,
             $this->responder
@@ -88,6 +91,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
     {
         $request        = ReqBuilder::createFromPath('/base/path');
         $request        = ReqAttr::withReferrer($request, '/referrer/');
+        $request = $this->responder->setPayload($request);
         $this->redirect = $this->redirect->start(
             $request,
             $this->responder

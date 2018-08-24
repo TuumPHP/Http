@@ -50,6 +50,7 @@ class RespondTest extends \PHPUnit\Framework\TestCase
     function Respond_class_invokes_responder_object()
     {
         $request = ReqBuilder::createFromPath('/path/test');
+        $request = $this->responder->setPayload($request);
         Respond::setResponder($this->responder);
 
         $response = Respond::view($request)->asText('test Respond');

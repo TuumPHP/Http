@@ -54,22 +54,22 @@ class Dispatcher
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function run($request, $response)
+    public function run(ServerRequestInterface $request): ResponseInterface
     {
+        $request = $this->get(Responder::class)->setPayload($request);
         try {
 
-            if ($response_returned = $this->_run($request, $response)) {
+            if ($response_returned = $this->_run($request)) {
                 return $response_returned;
             }
             $responder = $this->get(Responder::class);
-            return $responder->error($request, $response)->notFound();
+            return $responder->error($request)->notFound();
             
         } catch (\Exception $e) {
             /** @var Responder\Error $error */
-            $error = $this->get(Responder::class)->error($request, $response);
+            $error = $this->get(Responder::class)->error($request);
             $status = $e->getCode() ?: 500;
             if ($this->container->has('debug') && $this->container->get('debug')) {
                 return $error->asView($status, ['exception' => $e]);
@@ -80,10 +80,9 @@ class Dispatcher
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return ResponseInterface
      */
-    public function _run($request, $response)
+    public function _run(ServerRequestInterface $request): ?ResponseInterface
     {
         $pathInfo = ReqAttr::getPathInfo($request);
         foreach ($this->routes as $path => $app) {
@@ -91,7 +90,7 @@ class Dispatcher
                 if (!is_callable($app)) {
                     $app = $this->container->get($app);
                 }
-                return $app($request, $response, $args);
+                return $app($request, $args);
             }
         }
         return null;

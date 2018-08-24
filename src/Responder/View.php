@@ -55,7 +55,7 @@ class View extends AbstractResponder
      */
     public function getViewHelper()
     {
-        $payload = $this->session->getPayload();
+        $payload = $this->responder->getPayload($this->request);
 
         return ViewHelper::forge($this->request, $this->responder, $payload, $this->builder);
     }

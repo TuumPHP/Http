@@ -100,6 +100,9 @@ class Responder
     
     public function setPayload(ServerRequestInterface $request): ServerRequestInterface
     {
+        if (Respond::getPayload($request)) {
+            return $request;
+        }
         return $request->withAttribute(PayloadInterface::class, $this->session()->getPayload());
     }
 
