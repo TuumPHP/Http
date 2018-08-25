@@ -222,4 +222,30 @@ class Payload implements PayloadInterface
     {
         return $this->errorType;
     }
+
+    /**
+     * String representation of object
+     *
+     * @return string   the string representation of the object or null
+     */
+    public function serialize()
+    {
+        $serialized = get_object_vars($this);
+        unset($serialized['data']);
+        return serialize($serialized);
+    }
+
+    /**
+     * Constructs the object
+     *
+     * @param string $serialized The string representation of the object.
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        $data = unserialize($serialized);
+        foreach($data as $key => $value) {
+            $this->$key = $value;
+        }
+    }
 }

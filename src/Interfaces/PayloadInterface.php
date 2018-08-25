@@ -15,7 +15,7 @@ namespace Tuum\Respond\Interfaces;
  *
  * @package Tuum\Respond
  */
-interface PayloadInterface
+interface PayloadInterface extends \Serializable
 {
     /**
      * a key string for storing view-data.
@@ -38,6 +38,8 @@ interface PayloadInterface
 
     /**
      * set data for Data helper.
+     * note that the data are not serialized in the session, 
+     * therefore not passed during the redirection. 
      *
      * @param string|array $key
      * @param mixed        $value
