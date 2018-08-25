@@ -5,7 +5,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
-use Tuum\Respond\Service\SessionStorage;
 
 class Redirect extends AbstractResponder
 {
@@ -57,9 +56,7 @@ class Redirect extends AbstractResponder
     {
         $uri = $uri->withQuery($this->query);
         $uri = (string)$uri;
-        $this->responder
-            ->session()
-            ->savePayload($this->responder->getPayload($this->request));
+        $this->savePayload($this->request);
 
         return $this->responder->getResponse()
             ->withStatus(302)

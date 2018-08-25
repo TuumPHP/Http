@@ -106,6 +106,11 @@ class Responder
         return $request->withAttribute(PayloadInterface::class, $this->session()->getPayload());
     }
 
+    public function savePayload(ServerRequestInterface $request)
+    {
+        $this->session()->savePayload($this->getPayload($request));
+    }
+
     public function getResponse(): ResponseInterface
     {
         return $this->response;

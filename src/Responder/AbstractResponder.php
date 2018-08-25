@@ -4,7 +4,6 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Service\SessionStorage;
 
 /**
  * Class AbstractResponder
@@ -104,6 +103,18 @@ abstract class AbstractResponder
     public function setInputErrors(array $messages)
     {
         $this->responder->getPayload($this->request)->setInputErrors($messages);
+        return $this;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return $this
+     */
+    public function savePayload(ServerRequestInterface $request)
+    {
+        $this->responder
+            ->session()
+            ->savePayload($this->responder->getPayload($request));
         return $this;
     }
 }

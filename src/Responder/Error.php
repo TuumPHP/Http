@@ -4,7 +4,6 @@ namespace Tuum\Respond\Responder;
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\ErrorFileInterface;
-use Tuum\Respond\Service\SessionStorage;
 
 /**
  * Class Error
