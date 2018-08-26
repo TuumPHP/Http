@@ -2,11 +2,11 @@
 namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Tuum\Respond\Controller\AbstractPresenter;
 use Tuum\Respond\Controller\PresentByContentTrait;
-use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Responder;
 
-class LoginPresenter implements PresenterInterface
+class LoginPresenter extends AbstractPresenter
 {
     use PresentByContentTrait;
 

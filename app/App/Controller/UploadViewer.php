@@ -3,14 +3,11 @@ namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Tuum\Respond\Controller\PresentByContentTrait;
-use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Controller\AbstractPresenter;
 use Tuum\Respond\Responder;
 
-class UploadViewer implements PresenterInterface
+class UploadViewer extends AbstractPresenter
 {
-    use PresentByContentTrait;
-
     /**
      * @param Responder $responder
      */

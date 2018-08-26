@@ -4,14 +4,13 @@ namespace App\App\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Tuum\Respond\Controller\AbstractController;
 use Tuum\Respond\Controller\DispatchByMethodTrait;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Responder;
 
-class UploadController
+class UploadController extends AbstractController
 {
-    use DispatchByMethodTrait;
-
     /**
      * @var PresenterInterface
      */
@@ -28,16 +27,7 @@ class UploadController
         $this->viewer = $viewer;
         $this->setResponder($responder);
     }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     */
-    public function __invoke(ServerRequestInterface $request)
-    {
-        return $this->dispatch($request);
-    }
-
+    
     /**
      * @return ResponseInterface
      */

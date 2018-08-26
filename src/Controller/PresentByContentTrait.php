@@ -11,7 +11,7 @@ trait PresentByContentTrait
     use ResponderHelperTrait;
 
     /**
-     * list available methods and its accept mime type as;
+     * list available acceptable mime types and methods to handle, such as;
      * [
      *    'mime-type' => 'method-name',
      *    'application/json' => 'json',
@@ -32,33 +32,7 @@ trait PresentByContentTrait
         'application/json' => 'json',
         'application/xml'  => 'xml',
     ];
-
-    /**
-     * prepares a response returns a new $response.
-     *
-     * @param ServerRequestInterface $request
-     * @param array                  $data
-     * @return ResponseInterface
-     * @throws \ReflectionException
-     */
-    public function __invoke(ServerRequestInterface $request, array $data = [])
-    {
-        return $this->_dispatch($request, $data);
-    }
-
-    /**
-     * @param string $name
-     * @param array  $arguments
-     * @return ResponseInterface
-     */
-    public function __call($name, $arguments)
-    {
-        $this->setRequest($arguments[0]);
-        $this->setResponse($arguments[1]);
-
-        return call_user_func_array([$this, $name], $arguments);
-    }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param array                  $data
