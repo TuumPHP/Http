@@ -3,6 +3,7 @@ namespace Tuum\Respond;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
@@ -17,7 +18,7 @@ class Respond
     /**
      * @return Responder
      */
-    public static function getResponder()
+    public static function getResponder(): ?Responder
     {
         return self::$responder;
     }
@@ -25,31 +26,6 @@ class Respond
     public static function setResponder(Responder $responder)
     {
         self::$responder = $responder;
-    }
-
-    /**
-     * get the responder of $name.
-     *
-     * @param string                 $name
-     * @param ServerRequestInterface $request
-     * @return View|Redirect|Error
-     */
-    private static function _getResponder($name, $request)
-    {
-        /**
-         * 1. get responder from the request' attribute.
-         *
-         * @var Responder $responder
-         */
-        if (!$responder = self::getResponder()) {
-            throw new \BadMethodCallException;
-        }
-
-        /**
-         * 2. return responder with $name.
-         */
-
-        return $responder->$name($request);
     }
     
     public static function setPayload(ServerRequestInterface $request, PayloadInterface $payload): ServerRequestInterface
@@ -62,43 +38,22 @@ class Respond
         return $request->getAttribute(PayloadInterface::class);
     }
     
-    /**
-     * get a view responder, Responder\View.
-     *
-     * @param ServerRequestInterface $request
-     * @return View
-     */
-    public static function view($request)
+    public static function view(ServerRequestInterface $request): View
     {
-        return self::_getResponder('view', $request);
+        return self::getResponder()->view($request);
     }
 
-    /**
-     * get a redirect responder, Responder\Redirect.
-     *
-     * @param ServerRequestInterface $request
-     * @return Redirect
-     */
-    public static function redirect($request)
+    public static function redirect(ServerRequestInterface $request): Redirect
     {
-        return self::_getResponder('redirect', $request);
+        return self::getResponder()->redirect($request);
     }
 
-    /**
-     * get an error responder, Responder\Error.
-     *
-     * @param ServerRequestInterface $request
-     * @return Error
-     */
-    public static function error($request)
+    public static function error(ServerRequestInterface $request): Error
     {
-        return self::_getResponder('error', $request);
+        return self::getResponder()->error($request);
     }
 
-    /**
-     * @return \Tuum\Respond\Interfaces\SessionStorageInterface
-     */
-    public static function session()
+    public static function session(): SessionStorageInterface
     {
         return self::getResponder()->session();
     }

@@ -56,40 +56,22 @@ class Responder
         return $this;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return View
-     */
-    public function view(
-        ServerRequestInterface $request
-    ) {
+    public function view(ServerRequestInterface $request): View
+    {
         return $this->builder->getView()->start($request, $this);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return Redirect
-     */
-    public function redirect(
-        ServerRequestInterface $request
-    ) {
+    public function redirect(ServerRequestInterface $request): Redirect
+    {
         return $this->builder->getRedirect()->start($request, $this);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return Error
-     */
-    public function error(
-        ServerRequestInterface $request
-    ) {
+    public function error(ServerRequestInterface $request): Error 
+    {
         return $this->builder->getError()->start($request, $this);
     }
 
-    /**
-     * @return SessionStorageInterface
-     */
-    public function session()
+    public function session(): SessionStorageInterface
     {
         return $this->builder->getSessionStorage();
     }
@@ -107,7 +89,7 @@ class Responder
         return $request->withAttribute(PayloadInterface::class, $this->session()->getPayload());
     }
 
-    public function savePayload(ServerRequestInterface $request)
+    public function savePayload(ServerRequestInterface $request): void
     {
         $this->session()->savePayload($this->getPayload($request));
     }

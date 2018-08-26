@@ -75,7 +75,7 @@ class Builder
      *
      * @param string $name
      */
-    public function __construct($name = 'App')
+    public function __construct(string $name = 'App')
     {
         $this->name = $name;
     }
@@ -84,7 +84,7 @@ class Builder
      * @param string $name
      * @return Builder
      */
-    public static function forge($name = 'App')
+    public static function forge(string $name = 'App'): self
     {
         return new self($name);
     }
@@ -92,9 +92,9 @@ class Builder
     /**
      * @param RendererInterface $renderer
      * @param string|null       $content_view
-     * @return $this
+     * @return Builder
      */
-    public function setRenderer(RendererInterface $renderer, $content_view = null)
+    public function setRenderer(RendererInterface $renderer, string $content_view = null): self
     {
         $this->renderer = $renderer;
         $this->content_view = $content_view;
@@ -108,7 +108,7 @@ class Builder
      * @param callable $callable
      * @return $this
      */
-    public function setRendererInfo($renderer, $root, array $options = [], $callable = null)
+    public function setRendererInfo(string $renderer, string $root, array $options = [], callable $callable = null): self
     {
         $this->renderInfo[$renderer] = [
             'renderer' => $renderer,
@@ -119,10 +119,7 @@ class Builder
         return $this;
     }
 
-    /**
-     * @return RendererInterface
-     */
-    private function makeRenderer()
+    private function makeRenderer(): RendererInterface
     {
         foreach($this->renderInfo as $renderer => $info) {break;}
         if (!isset($renderer)) {
@@ -133,33 +130,21 @@ class Builder
     }
     
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    /**
-     * @param string $renderer
-     * @return RendererInterface
-     */
-    private function makeRendererTwig($renderer)
+    private function makeRendererTwig(string $renderer): RendererInterface
     {
         $info = $this->renderInfo[$renderer];
         return Twig::forge($info['root'], $info['options'], $info['callable']);
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    /**
-     * @param string $renderer
-     * @return RendererInterface
-     */
-    private function makeRendererPlates($renderer)
+    private function makeRendererPlates(string $renderer): RendererInterface
     {
         $info = $this->renderInfo[$renderer];
         return Plates::forge($info['root'], $info['callable']);
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    /**
-     * @param string $renderer
-     * @return RendererInterface
-     */
-    private function makeRendererRawPhp($renderer)
+    private function makeRendererRawPhp(string $renderer): RendererInterface
     {
         $info = $this->renderInfo[$renderer];
         return RawPhp::forge($info['root']);
@@ -169,7 +154,7 @@ class Builder
      * @param ContainerInterface $container
      * @return $this
      */
-    public function setContainer(ContainerInterface $container)
+    public function setContainer(ContainerInterface $container): self
     {
         $this->container = $container;
         return $this;
@@ -179,7 +164,7 @@ class Builder
      * @param array $option
      * @return $this
      */
-    public function setErrorOption(array $option)
+    public function setErrorOption(array $option): self
     {
         $this->error_option = $option;
         return $this;
@@ -189,49 +174,34 @@ class Builder
      * @param NamedRoutesInterface $routes
      * @return $this
      */
-    public function setNamedRoutes(NamedRoutesInterface $routes)
+    public function setNamedRoutes(NamedRoutesInterface $routes): self
     {
         $this->namedRoutes = $routes;
         return $this;
     }
 
-    /**
-     * @return RendererInterface
-     */
-    public function getRenderer()
+    public function getRenderer(): RendererInterface
     {
         return $this->renderer ?: $this->makeRenderer();
     }
 
-    /**
-     * @return ContainerInterface
-     */
-    public function getContainer()
+    public function getContainer(): ?ContainerInterface
     {
         return $this->container;
     }
 
-    /**
-     * @return string
-     */
-    public function getContentViewFile()
+    public function getContentViewFile(): ?string
     {
         return $this->content_view;
     }
 
-    /**
-     * @return View
-     */
-    public function getView()
+    public function getView(): View
     {
         return $this->view ?:
             $this->view = new View($this);
     }
 
-    /**
-     * @return Redirect
-     */
-    public function getRedirect()
+    public function getRedirect(): Redirect
     {
         return $this->redirect ?:
             $this->redirect = new Redirect(
@@ -239,10 +209,7 @@ class Builder
             );
     }
 
-    /**
-     * @return Error
-     */
-    public function getError()
+    public function getError(): Error
     {
         return $this->error ?:
             $this->error = new Error(
@@ -251,22 +218,23 @@ class Builder
             );
     }
 
-    /**
-     * @return SessionStorage
-     */
-    public function getSessionStorage()
+    public function getSessionStorage(): SessionStorage
     {
         return $this->session ?:
             $this->session = SessionStorage::forge($this->name, $_COOKIE);
     }
 
+    /**
+     * @param SessionStorage $session
+     * @return Builder
+     */
     public function setSessionStorage(SessionStorage $session): self
     {
         $this->session = $session;
         return $this;
     }
 
-    public function getNamedRoutes()
+    public function getNamedRoutes(): ?NamedRoutesInterface
     {
         return $this->namedRoutes;
     }

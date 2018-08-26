@@ -4,7 +4,6 @@
  * a sample web application using Tuum/Respond.
  */
 use Tuum\Respond\Helper\ReqBuilder;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiEmitter;
 
 if (php_sapi_name() == 'cli-server') {
