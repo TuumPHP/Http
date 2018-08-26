@@ -56,15 +56,7 @@ trait ResponderHelperTrait
         }
         return $response;
     }
-
-    /**
-     * @param ResponseInterface $response
-     */
-    protected function setResponse(ResponseInterface $response)
-    {
-        $this->response = $response;
-    }
-
+    
     /**
      * @return Responder
      */
