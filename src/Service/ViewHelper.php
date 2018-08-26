@@ -14,8 +14,8 @@ use Tuum\Form\Dates;
 use Tuum\Form\Forms;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Responder\Payload;
 
 /**
  * Class ViewHelper
@@ -48,62 +48,51 @@ class ViewHelper
     private $responder;
 
     /**
-     * @var Payload
+     * @var PayloadInterface
      */
     private $payload;
 
     /**
      * ViewHelper constructor.
      *
-     * @param DataView         $dataView
-     * @param PayloadInterface $payload
+     * @param Responder|null   $responder
      */
-    public function __construct($dataView, $payload)
+    public function __construct(Responder $responder = null)
     {
-        $this->dataView = $dataView;
-        $this->setPayload($payload);
+        $this->responder = $responder;
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param Responder              $responder
-     * @param PayloadInterface       $payload
      * @return ViewHelper
      */
-    public static function forge($request, $responder, $payload)
+    public static function forge(ServerRequestInterface $request, Responder $responder = null)
     {
-        $self = new self(new DataView(), $payload);
-        $self->start($request, $responder);
+        $self = new self($responder);
+        $self->start($request, new DataView());
 
         return $self;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param Responder              $responder
+     * @param DataView|null          $dataView
      * @return $this
      */
-    public function start($request, $responder)
+    public function start(ServerRequestInterface $request, DataView $dataView = null)
     {
-        $this->request   = $request;
-        $this->responder = $responder;
+        $this->request  = $request;
+        $this->payload  = $this->responder 
+            ? $this->responder->getPayload($request)
+            : Respond::getPayload($request);
+        $this->dataView = $dataView;
 
         return $this;
     }
-
+    
     /**
-     * @param PayloadInterface $payload
-     * @return $this
-     */
-    public function setPayload($payload)
-    {
-        $this->payload = $payload;
-
-        return $this;
-    }
-
-    /**
-     * @return Payload
+     * @return PayloadInterface
      */
     public function getPayload()
     {
@@ -237,7 +226,7 @@ class ViewHelper
      * call a presenter object and renders the content.
      * 
      * @param string|PresenterInterface $presenter
-     * @param null|mixed|Payload        $data
+     * @param array                     $data
      * @return string
      */
     public function call($presenter, array $data = [])
