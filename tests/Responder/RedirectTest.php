@@ -105,16 +105,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
      */
     function withQuery_sets_query_to_uri()
     {
-        $res = $this->redirect->addQuery('test=tested')->toPath('query');
-        $this->assertEquals('/query?test=tested', $res->getHeaderLine('Location'));
-    }
-
-    /**
-     * @test
-     */
-    function withQuery_and_array_sets_query_to_uri()
-    {
-        $res = $this->redirect->addQuery(['test'=>'tested'])->toPath('query');
+        $res = $this->redirect->toPath('query', ['test'=>'tested']);
         $this->assertEquals('/query?test=tested', $res->getHeaderLine('Location'));
     }
 }
