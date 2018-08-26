@@ -2,6 +2,7 @@
 
 use App\App\Dispatcher;
 
+
 /**
  * builds an application.
  *
@@ -24,6 +25,12 @@ $builder = function($config) {
 
 /** @var Dispatcher $app */
 $config = isset($config) ? $config : [];
+$config += [
+    'debug'         => true,
+    'template-path' => dirname(__DIR__) . '/app/plates',
+    'error-files'   => [],
+];
+
 $app = $builder($config);
 
 return $app;

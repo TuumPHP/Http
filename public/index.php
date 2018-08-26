@@ -21,19 +21,6 @@ include dirname(__DIR__) . "/app/autoload.php";
  * run web application for the request.
  */
 
-$config = [
-    'debug'         => true,
-    'template-path' => dirname(__DIR__) . '/app/plates',
-    'error-files'   => [
-        'default' => 'errors/error',
-        'status' => [
-            401 => 'errors/forbidden',
-            403 => 'errors/forbidden',
-            404 => 'errors/notFound',      // for not found.
-        ],
-    ],
-];
-
 /** @var \App\App\Dispatcher $app */
 $app = include dirname(__DIR__) . '/app/app.php';
 $req = ReqBuilder::createFromGlobal($GLOBALS);
