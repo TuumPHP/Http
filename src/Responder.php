@@ -3,6 +3,7 @@ namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
@@ -114,5 +115,10 @@ class Responder
     public function getResponse(): ResponseInterface
     {
         return $this->response;
+    }
+
+    public function routes(): NamedRoutesInterface
+    {
+        return$this->builder->getNamedRoutes();
     }
 }

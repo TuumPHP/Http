@@ -12,7 +12,6 @@ use Tuum\Form\Data\Message;
 use Tuum\Form\DataView;
 use Tuum\Form\Dates;
 use Tuum\Form\Forms;
-use Tuum\Respond\Builder;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder;
@@ -49,11 +48,6 @@ class ViewHelper
     private $responder;
 
     /**
-     * @var Builder
-     */
-    private $builder;
-
-    /**
      * @var Payload
      */
     private $payload;
@@ -63,12 +57,10 @@ class ViewHelper
      *
      * @param DataView         $dataView
      * @param PayloadInterface $payload
-     * @param Builder          $builder
      */
-    public function __construct($dataView, $payload, $builder)
+    public function __construct($dataView, $payload)
     {
         $this->dataView = $dataView;
-        $this->builder  = $builder;
         $this->setPayload($payload);
     }
 
@@ -76,12 +68,11 @@ class ViewHelper
      * @param ServerRequestInterface $request
      * @param Responder              $responder
      * @param PayloadInterface       $payload
-     * @param Builder                $builder
      * @return ViewHelper
      */
-    public static function forge($request, $responder, $payload, $builder)
+    public static function forge($request, $responder, $payload)
     {
-        $self = new self(new DataView(), $payload, $builder);
+        $self = new self(new DataView(), $payload);
         $self->start($request, $responder);
 
         return $self;
@@ -251,9 +242,8 @@ class ViewHelper
      */
     public function call($presenter, array $data = [])
     {
-        $response = $this->builder
-            ->getView()
-            ->start($this->request, $this->responder)
+        $response = $this->responder
+            ->view($this->request)
             ->call($presenter, $data);
 
         return $this->returnResponseBody($response);
@@ -268,9 +258,8 @@ class ViewHelper
      */
     public function render($viewFile, $data = [])
     {
-        return $this->builder
-            ->getView()
-            ->start($this->request, $this->responder)
+        return $this->responder
+            ->view($this->request)
             ->renderContents($viewFile, $data);
     }
 
@@ -283,7 +272,7 @@ class ViewHelper
      */
     public function route($routeName, $options = [])
     {
-        return $this->builder->getNamedRoutes()->route($routeName, $options);
+        return $this->responder->routes()->route($routeName, $options);
     }
 
     /**
@@ -325,6 +314,6 @@ class ViewHelper
      */
     public function csrfToken()
     {
-        return $this->builder->getSessionStorage()->getToken();
+        return $this->responder->session()->getToken();
     }
 }
