@@ -3,13 +3,12 @@ namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Controller\AbstractController;
 use Tuum\Respond\Controller\DispatchByMethodTrait;
 use Tuum\Respond\Responder;
 
-class JumpController
+class JumpController extends AbstractController
 {
-    use DispatchByMethodTrait;
-    
     /**
      * JumpController constructor.
      *
@@ -18,15 +17,6 @@ class JumpController
     public function __construct($responder)
     {
         $this->setResponder($responder);
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @return null|ResponseInterface
-     */
-    public function __invoke($request)
-    {
-        return $this->dispatch($request);
     }
     
     /**

@@ -3,12 +3,11 @@ namespace tests\Controller\MockControllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tuum\Respond\Controller\AbstractController;
 use Tuum\Respond\Controller\DispatchByMethodTrait;
 
-class ByMethodController
+class ByMethodController extends AbstractController
 {
-    use DispatchByMethodTrait;
-
     /**
      * @param ServerRequestInterface $request
      * @return null|ResponseInterface
