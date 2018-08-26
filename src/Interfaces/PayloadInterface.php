@@ -66,6 +66,13 @@ interface PayloadInterface extends \Serializable
     public function getInput();
 
     /**
+     * returns if input value is set or not. 
+     * 
+     * @return bool
+     */
+    public function hasInput(): bool;
+
+    /**
      * sets input errors, such as validation error messages.
      * for Errors helper.
      *

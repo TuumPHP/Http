@@ -105,7 +105,7 @@ class Payload implements PayloadInterface
     /**
      * @return bool
      */
-    public function hasInput()
+    public function hasInput(): bool
     {
         return $this->hasInput;
     }
