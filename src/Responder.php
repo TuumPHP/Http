@@ -142,6 +142,7 @@ class Responder
             return $stream;
         }
         if (is_resource($contents)) {
+            rewind($contents);
             $stream->write(stream_get_contents($contents));
             return $stream;
         }

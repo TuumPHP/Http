@@ -278,7 +278,7 @@ class Builder
         return $this->responseFactory;
     }
     
-    public function getStreamFactory(): StreamFactoryInterface
+    public function getStreamFactory(): ?StreamFactoryInterface
     {
         return $this->streamFactory;
     }
