@@ -41,9 +41,8 @@ class ControllerTest extends \PHPUnit\Framework\TestCase
     function ByMethod_onGetWithParameterIsFilled()
     {
         $req = ReqBuilder::createFromPath('test', 'GET')->withQueryParams(['test' => 'filled']);
-        $res = new Response();
         $controller = new ByMethodController();
-        $returned = $controller->test($req, $res);
+        $returned = $controller->test($req);
         $returned->getBody()->rewind();
         $this->assertEquals('test:filled', $returned->getBody()->getContents());
     }
@@ -54,9 +53,8 @@ class ControllerTest extends \PHPUnit\Framework\TestCase
     function ByMethod_optionReturnsAllow()
     {
         $req = ReqBuilder::createFromPath('test', 'OPTIONS');
-        $res = new Response();
         $controller = new ByMethodController();
-        $returned = $controller->test($req, $res);
+        $returned = $controller->test($req);
         $allowed  = $returned->getHeaderLine('allow');
         $this->assertEquals('GET,OPTIONS,POST', $allowed);
     }
@@ -67,9 +65,8 @@ class ControllerTest extends \PHPUnit\Framework\TestCase
     function ByMethod_nonSupportedMethodReturnsNull()
     {
         $req = ReqBuilder::createFromPath('test', 'not-supported');
-        $res = new Response();
         $controller = new ByMethodController();
-        $returned = $controller->test($req, $res);
+        $returned = $controller->test($req);
         $this->assertEquals(null, $returned);
     }
 
@@ -79,9 +76,8 @@ class ControllerTest extends \PHPUnit\Framework\TestCase
     function ByRoute_DispatchesMethods()
     {
         $req = ReqBuilder::createFromPath('/', 'GET');
-        $res = new Response();
         $controller = new ByRouteController();
-        $returned = $controller->test($req, $res);
+        $returned = $controller->test($req);
         $returned->getBody()->rewind();
         $this->assertEquals('route:get', $returned->getBody()->getContents());
 
@@ -93,9 +89,8 @@ class ControllerTest extends \PHPUnit\Framework\TestCase
     function ByRoute_DispatchesWithArgument()
     {
         $req = ReqBuilder::createFromPath('/my/tests', 'GET');
-        $res = new Response();
         $controller = new ByRouteController();
-        $returned = $controller->test($req, $res);
+        $returned = $controller->test($req);
         $returned->getBody()->rewind();
         $this->assertEquals('route:tests', $returned->getBody()->getContents());
     }
@@ -106,9 +101,8 @@ class ControllerTest extends \PHPUnit\Framework\TestCase
     function ByRoute_optionReturnsAllow()
     {
         $req = ReqBuilder::createFromPath('/', 'OPTIONS');
-        $res = new Response();
         $controller = new ByRouteController();
-        $returned = $controller->test($req, $res);
+        $returned = $controller->test($req);
         $allowed  = $returned->getHeaderLine('allow');
         $this->assertEquals('GET,HEAD,OPTIONS', $allowed);
     }
@@ -119,9 +113,8 @@ class ControllerTest extends \PHPUnit\Framework\TestCase
     function ByRoute_nonSupportedMethodReturnsNull()
     {
         $req = ReqBuilder::createFromPath('/', 'POST');
-        $res = new Response();
         $controller = new ByRouteController();
-        $returned = $controller->test($req, $res);
+        $returned = $controller->test($req);
         $this->assertEquals(null, $returned);
     }
 

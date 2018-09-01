@@ -6,10 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Service\Renderer\Plates;
 use Tuum\Respond\Service\Renderer\RawPhp;
-use Tuum\Respond\Service\TuumViewer;
-use Tuum\Respond\Responder\Payload;
 use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
