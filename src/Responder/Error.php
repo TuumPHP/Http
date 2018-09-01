@@ -2,7 +2,6 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\ErrorFileInterface;
 
 /**
@@ -69,7 +68,7 @@ class Error extends AbstractResponder
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
     {
-        return ResponseHelper::fill($this->responder->getResponse(), $input, $status, $header);
+        return $this->responder->makeResponse($status, $input, $header);
     }
 
     /**

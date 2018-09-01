@@ -3,6 +3,7 @@ namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder\Error;
@@ -98,9 +99,53 @@ class Responder
     {
         return $this->response;
     }
+    
+    public function makeResponse(int $code, $contents, array $header = []): ResponseInterface
+    {
+        if ($factory = $this->builder->getResponseFactory()) {
+            $response = $factory->createResponse($code);
+        } else {
+            $response = $this->getResponse();
+            $response = $response->withStatus($code);
+        }
+        if (!$response) {
+            throw new \BadMethodCallException('no response nor response-factory');
+        }
+        foreach ($header as $name => $value) {
+            $response = $response->withHeader($name, $value);
+        }
+        $stream   = $this->makeStream($contents);
+        $response = $response->withBody($stream);
+        
+        return $response;
+    }
 
     public function routes(): NamedRoutesInterface
     {
         return$this->builder->getNamedRoutes();
+    }
+
+    public function makeStream($contents): StreamInterface
+    {
+        if ($factory = $this->builder->getStreamFactory()) {
+            if (is_string($contents)) {
+                return $factory->createStream($contents);
+            }
+            if (is_resource($contents)) {
+                return $factory->createStreamFromResource($contents);
+            }
+        }
+        $stream = $this->getResponse()->getBody();
+        $stream->rewind();
+        if (is_string($contents)) {
+            $stream->write($contents);
+            return $stream;
+        }
+        if (is_resource($contents)) {
+            $stream->write(stream_get_contents($contents));
+            return $stream;
+        }
+
+        throw new \InvalidArgumentException('contents not a string nor a resource');
     }
 }

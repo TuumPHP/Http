@@ -2,6 +2,8 @@
 namespace Tuum\Respond;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder\Error;
@@ -71,6 +73,16 @@ class Builder
     private $namedRoutes;
 
     /**
+     * @var ResponseFactoryInterface
+     */
+    private $responseFactory;
+
+    /**
+     * @var StreamFactoryInterface
+     */
+    private $streamFactory;
+
+    /**
      * Builder constructor.
      *
      * @param string $name
@@ -128,7 +140,29 @@ class Builder
         $maker = 'makeRenderer' . ucwords($renderer);
         return $this->$maker($renderer);
     }
-    
+
+    /**
+     * @param ResponseFactoryInterface $responseFactory
+     * @return Builder
+     */
+    public function setResponseFactory(ResponseFactoryInterface $responseFactory): Builder
+    {
+        $this->responseFactory = $responseFactory;
+
+        return $this;
+    }
+
+    /**
+     * @param StreamFactoryInterface $streamFactory
+     * @return Builder
+     */
+    public function setStreamFactory(StreamFactoryInterface $streamFactory): Builder
+    {
+        $this->streamFactory = $streamFactory;
+
+        return $this;
+    }
+
     /** @noinspection PhpUnusedPrivateMethodInspection */
     private function makeRendererTwig(string $renderer): RendererInterface
     {
@@ -237,5 +271,15 @@ class Builder
     public function getNamedRoutes(): ?NamedRoutesInterface
     {
         return $this->namedRoutes;
+    }
+    
+    public function getResponseFactory(): ?ResponseFactoryInterface
+    {
+        return $this->responseFactory;
+    }
+    
+    public function getStreamFactory(): StreamFactoryInterface
+    {
+        return $this->streamFactory;
     }
 }
