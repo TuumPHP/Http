@@ -4,8 +4,10 @@ namespace Tuum\Respond;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Tuum\Respond\Interfaces\ErrorFileInterface;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
@@ -242,17 +244,22 @@ class Builder
                 $this->getNamedRoutes()
             );
     }
+    
+    public function getErrorFile(): ErrorFileInterface
+    {
+        return ErrorFile::forge($this->error_option);
+    }
 
     public function getError(): Error
     {
         return $this->error ?:
             $this->error = new Error(
-                ErrorFile::forge($this->error_option),
+                $this->getErrorFile(),
                 $this->getView()
             );
     }
 
-    public function getSessionStorage(): SessionStorage
+    public function getSessionStorage(): SessionStorageInterface
     {
         return $this->session ?:
             $this->session = SessionStorage::forge($this->name, $_COOKIE);
