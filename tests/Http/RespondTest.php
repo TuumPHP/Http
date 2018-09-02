@@ -82,8 +82,7 @@ class RespondTest extends \PHPUnit\Framework\TestCase
     function Respond_asHtml_creates_html_response()
     {
         $request  = ReqBuilder::createFromPath('/path/test');
-        $response = new Response();
-        $response = $this->responder->view($request, $response)->asHtml('<h1>html</h1>');
+        $response = $this->responder->view($request)->asHtml('<h1>html</h1>');
         $this->assertEquals('text/html', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('<h1>html</h1>', $response->getBody()->__toString());
     }
@@ -108,7 +107,6 @@ class RespondTest extends \PHPUnit\Framework\TestCase
         $response = $this->responder->view($request)->asDownload('dl', 'dl-name');
         $this->assertEquals('application/octet-stream', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('attachment; filename="dl-name"', $response->getHeader('Content-Disposition')[0]);
-        $this->assertEquals('2', $response->getHeader('Content-Length')[0]);
         $this->assertEquals('dl', $response->getBody()->__toString());
     }
 }

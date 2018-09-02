@@ -2,9 +2,8 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Builder;
-use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Service\ViewHelper;
 
 class View extends AbstractResponder
@@ -14,25 +13,26 @@ class View extends AbstractResponder
     /**
      * a view file to render a string content.
      *
-     * @var null|string
+     * @var string
      */
     public $content_view = 'layouts/contents';
 
     /**
-     * @var Builder
+     * @var RendererInterface
      */
-    private $builder;
+    private $renderer;
 
     /**
      * Renderer constructor.
      *
-     * @param Builder            $builder
+     * @param RendererInterface $renderer
+     * @param string            $content_view
      */
-    public function __construct(Builder $builder)
+    public function __construct(RendererInterface $renderer, string $content_view = '')
     {
         parent::__construct();
-        $this->builder  = $builder;
-        $this->content_view = $builder->getContentViewFile() ?: $this->content_view;
+        $this->content_view = $content_view ?: $this->content_view;
+        $this->renderer = $renderer;
     }
     
     /**
@@ -45,7 +45,7 @@ class View extends AbstractResponder
      */
     public function asResponse($input, $status = self::OK, array $header = [])
     {
-        return ResponseHelper::fill($this->responder->getResponse(), $input, $status, $header);
+        return $this->responder->makeResponse($status, $input, $header);
     }
 
     /**
@@ -66,10 +66,7 @@ class View extends AbstractResponder
     public function render($file, $data = [])
     {
         $content = $this->renderContents($file, $data);
-        $response = $this->responder->getResponse();
-        $stream  = $response->getBody();
-        $stream->rewind();
-        $stream->write($content);
+        $response = $this->asResponse($content, self::OK);
 
         return $response;
     }
@@ -83,7 +80,7 @@ class View extends AbstractResponder
     {
         $helper   = $this->getViewHelper();
         
-        return $this->builder->getRenderer()->render($file, $helper, $data);
+        return $this->renderer->render($file, $helper, $data);
     }
 
     // ------------------------------------------------------------------------
@@ -161,18 +158,17 @@ class View extends AbstractResponder
      * @param string          $mime
      * @return ResponseInterface
      */
-    public function asFileContents($file_loc, $mime)
+    public function asFileContents($file_loc, $mime = 'text/html; charset=utf-8')
     {
         if (is_string($file_loc)) {
             $contents = file_get_contents($file_loc);
-        } elseif (is_resource($file_loc)) {
-            rewind($file_loc);
-            $contents = stream_get_contents($file_loc);
-        } else {
-            throw new \InvalidArgumentException;
+            return $this->asResponse($contents, self::OK, ['Content-Type' => $mime]);
+        } 
+        if (is_resource($file_loc)) {
+            return $this->asResponse($file_loc, self::OK, ['Content-Type' => $mime]);
         }
 
-        return $this->asResponse($contents, self::OK, ['Content-Type' => $mime]);
+        throw new \InvalidArgumentException;
     }
 
     /**
@@ -194,7 +190,6 @@ class View extends AbstractResponder
             $content,
             self::OK, [
             'Content-Disposition' => "{$type}; filename=\"{$filename}\"",
-            'Content-Length'      => (string)strlen($content),
             'Content-Type'        => $mime,
             'Cache-Control'       => 'public', // for IE8
             'Pragma'              => 'public', // for IE8
@@ -216,8 +211,8 @@ class View extends AbstractResponder
         if (is_callable($presenter)) {
             return $this->callPresenter($presenter, $data);
         }
-        if ($resolver = $this->builder->getContainer()) {
-            return $this->callPresenter($resolver->get($presenter), $data);
+        if ($resolved = $this->responder->resolve($presenter)) {
+            return $this->callPresenter($resolved, $data);
         }
         throw new \BadMethodCallException('cannot resolve a presenter.');
     }

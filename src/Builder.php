@@ -2,8 +2,12 @@
 namespace Tuum\Respond;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Tuum\Respond\Interfaces\ErrorFileInterface;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
@@ -38,7 +42,7 @@ class Builder
     /**
      * @var string
      */
-    private $content_view;
+    private $content_view = '';
 
     /**
      * @var array
@@ -71,6 +75,16 @@ class Builder
     private $namedRoutes;
 
     /**
+     * @var ResponseFactoryInterface
+     */
+    private $responseFactory;
+
+    /**
+     * @var StreamFactoryInterface
+     */
+    private $streamFactory;
+
+    /**
      * Builder constructor.
      *
      * @param string $name
@@ -94,7 +108,7 @@ class Builder
      * @param string|null       $content_view
      * @return Builder
      */
-    public function setRenderer(RendererInterface $renderer, string $content_view = null): self
+    public function setRenderer(RendererInterface $renderer, string $content_view = ''): self
     {
         $this->renderer = $renderer;
         $this->content_view = $content_view;
@@ -128,7 +142,29 @@ class Builder
         $maker = 'makeRenderer' . ucwords($renderer);
         return $this->$maker($renderer);
     }
-    
+
+    /**
+     * @param ResponseFactoryInterface $responseFactory
+     * @return Builder
+     */
+    public function setResponseFactory(ResponseFactoryInterface $responseFactory): Builder
+    {
+        $this->responseFactory = $responseFactory;
+
+        return $this;
+    }
+
+    /**
+     * @param StreamFactoryInterface $streamFactory
+     * @return Builder
+     */
+    public function setStreamFactory(StreamFactoryInterface $streamFactory): Builder
+    {
+        $this->streamFactory = $streamFactory;
+
+        return $this;
+    }
+
     /** @noinspection PhpUnusedPrivateMethodInspection */
     private function makeRendererTwig(string $renderer): RendererInterface
     {
@@ -198,7 +234,7 @@ class Builder
     public function getView(): View
     {
         return $this->view ?:
-            $this->view = new View($this);
+            $this->view = new View($this->getRenderer(), $this->getContentViewFile());
     }
 
     public function getRedirect(): Redirect
@@ -208,17 +244,19 @@ class Builder
                 $this->getNamedRoutes()
             );
     }
+    
+    public function getErrorFile(): ErrorFileInterface
+    {
+        return ErrorFile::forge($this->error_option);
+    }
 
     public function getError(): Error
     {
         return $this->error ?:
-            $this->error = new Error(
-                ErrorFile::forge($this->error_option),
-                $this->getView()
-            );
+            $this->error = new Error($this->getErrorFile());
     }
 
-    public function getSessionStorage(): SessionStorage
+    public function getSessionStorage(): SessionStorageInterface
     {
         return $this->session ?:
             $this->session = SessionStorage::forge($this->name, $_COOKIE);
@@ -237,5 +275,15 @@ class Builder
     public function getNamedRoutes(): ?NamedRoutesInterface
     {
         return $this->namedRoutes;
+    }
+    
+    public function getResponseFactory(): ?ResponseFactoryInterface
+    {
+        return $this->responseFactory;
+    }
+    
+    public function getStreamFactory(): ?StreamFactoryInterface
+    {
+        return $this->streamFactory;
     }
 }
