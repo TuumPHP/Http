@@ -61,7 +61,7 @@ There are also:
 
 ```php
 $session  = $responder->session();
-$viewData = $responder->getViewData();
+$viewData = $responder->getPayload();
 ```
 
 

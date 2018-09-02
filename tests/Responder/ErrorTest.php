@@ -11,7 +11,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ErrorTest extends \PHPUnit_Framework_TestCase
+class ErrorTest extends \PHPUnit\Framework\TestCase
 {
     use TesterTrait;
 
@@ -27,7 +27,9 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
             Builder::forge('test')
             ->setRenderer(new NoRender())
         )->setResponse(new Response());
-        $this->error = $responder->error(ReqBuilder::createFromPath('test'));
+        $request = ReqBuilder::createFromPath('test');
+        $request = $responder->setPayload($request);
+        $this->error = $responder->error($request);
     }
 
     function test0()

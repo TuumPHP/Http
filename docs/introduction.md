@@ -68,7 +68,7 @@ This is a sample code to show HTML form
 protected function onGet()
 {
     $this->responder
-        ->getViewData()
+        ->getPayload()
         ->setSuccess('try jump to another URL. ')
         ->setData('jumped', 'text in control')
         ->setData('date', (new \DateTime('now'))->format('Y-m-d'));

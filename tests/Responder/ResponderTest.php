@@ -10,7 +10,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ResponderTest extends \PHPUnit_Framework_TestCase
+class ResponderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Responder

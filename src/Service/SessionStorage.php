@@ -5,7 +5,8 @@ use Aura\Session\Segment;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
+use Tuum\Respond\Responder\Payload;
 
 /**
  * Class SessionStorage
@@ -27,11 +28,6 @@ class SessionStorage implements SessionStorageInterface
      */
     private $session;
 
-    /**
-     * @var ViewData
-     */
-    private $viewData;
-    
     /**
      * @param Session $session
      */
@@ -58,32 +54,17 @@ class SessionStorage implements SessionStorageInterface
         return $self->withStorage($name);
     }
 
-    /**
-     * @return ViewData
-     */    
-    public function getViewData()
+    public function getPayload(): PayloadInterface
     {
-        if (isset($this->viewData)) {
-            return $this->viewData;
+        if ($payload = $this->getFlash(PayloadInterface::MY_KEY)) {
+            return clone($payload);
         }
-        if ($viewData = $this->getFlash(ViewDataInterface::MY_KEY)) {
-            $this->viewData = clone($viewData);
-            return $this->viewData;
-        }
-        $this->viewData = new ViewData();
-        
-        return $this->viewData;
+        return new Payload();
     }
 
-    /**
-     * 
-     */
-    public function saveViewData()
+    public function savePayload(PayloadInterface $payload)
     {
-        if (!isset($this->viewData)) {
-            return;
-        }
-        $this->setFlash(ViewDataInterface::MY_KEY, $this->viewData);
+        $this->setFlash(PayloadInterface::MY_KEY, $payload);
     }
 
     /**

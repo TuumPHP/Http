@@ -17,9 +17,8 @@ interface PresenterInterface
      * returns a presentation response.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @param array                  $data
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $data = []);
+    public function __invoke(ServerRequestInterface $request, array $data = []);
 }

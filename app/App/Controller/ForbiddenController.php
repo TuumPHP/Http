@@ -2,14 +2,11 @@
 namespace App\App\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Controller\DispatchByMethodTrait;
+use Tuum\Respond\Controller\AbstractController;
 use Tuum\Respond\Responder;
 
-class ForbiddenController
+class ForbiddenController extends AbstractController
 {
-    use DispatchByMethodTrait;
-
     /**
      * JumpController constructor.
      *
@@ -19,23 +16,13 @@ class ForbiddenController
     {
         $this->setResponder($responder);
     }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @return null|ResponseInterface
-     */
-    public function __invoke($request, $response)
-    {
-        return $this->dispatch($request, $response);
-    }
-
+    
     /**
      * @return ResponseInterface
      */
     public function onGet()
     {
-        $session = $this->responder->session();
+        $session = $this->getResponder()->session();
         $request = $this->getRequest()->withAttribute('_token', $session->getToken());
         $this->setRequest($request);
 

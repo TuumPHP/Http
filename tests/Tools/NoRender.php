@@ -23,7 +23,7 @@ class NoRender implements RendererInterface
         $this->data = $data;
         
         $content = 'data:' . implode(',', $data) . 
-            'view:' . implode(',', $helper->getViewData()->getData());
+            'view:' . implode(',', $helper->getPayload()->getData());
         
         return $content;
     }

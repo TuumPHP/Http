@@ -64,7 +64,7 @@ protected function view(); // get view responder
 protected function redirect(); // get redirect responder
 protected function error(); // get error responder
 protected function session(); // get sessionStorageInterface
-protected function getViewData(); // get viewDataInterface
+protected function getPayload(); // get viewDataInterface
 protected function call($presenter, array $data = []); // invoke presenter
 ```
 

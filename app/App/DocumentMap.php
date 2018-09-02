@@ -31,21 +31,20 @@ class DocumentMap
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @param array                  $args
      * @return ResponseInterface
      */
-    public function __invoke($request, $response, $args)
+    public function __invoke($request, $args)
     {
         $path = isset($args['pathInfo']) && $args['pathInfo'] ? $args['pathInfo'] : $this->index_file;
         $info = $this->mapper->render($path);
         if (!$info->found()) {
-            return $this->responder->error($request, $response)->notFound();
+            return $this->responder->error($request)->notFound();
         }
         if ($fp = $info->getResource()) {
-            return $this->responder->view($request, $response)->asFileContents($fp, $info->getMimeType());
+            return $this->responder->view($request)->asFileContents($fp, $info->getMimeType());
         }
-        $view = $this->responder->view($request, $response);
+        $view = $this->responder->view($request);
         return $view->asContents($info->getContents(), 'layouts/contents-docs');
     }
 }

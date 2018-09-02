@@ -2,9 +2,7 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Interfaces\ErrorFileInterface;
-use Tuum\Respond\Service\SessionStorage;
 
 /**
  * Class Error
@@ -22,11 +20,6 @@ class Error extends AbstractResponder
     const FILE_NOT_FOUND = 404;
     const INTERNAL_ERROR = 500;
 
-    /**
-     * @var View
-     */
-    private $view;
-    
     /**
      * @var null|ErrorFileInterface
      */
@@ -48,14 +41,11 @@ class Error extends AbstractResponder
     // +----------------------------------------------------------------------+
     /**
      * @param ErrorFileInterface $errorFile
-     * @param View               $view
-     * @param SessionStorage     $session
      */
-    public function __construct(ErrorFileInterface $errorFile, View $view, SessionStorage $session)
+    public function __construct(ErrorFileInterface $errorFile)
     {
-        parent::__construct($session);
+        parent::__construct();
         $this->errorFile = $errorFile;
-        $this->view = $view;
     }
     
     // +----------------------------------------------------------------------+
@@ -71,7 +61,7 @@ class Error extends AbstractResponder
      */
     public function respond($input, $status = self::INTERNAL_ERROR, array $header = [])
     {
-        return ResponseHelper::fill($this->response, $input, $status, $header);
+        return $this->responder->makeResponse($status, $input, $header);
     }
 
     /**
@@ -94,7 +84,7 @@ class Error extends AbstractResponder
     public function asView($status, $data = [])
     {
         $file = $this->errorFile->find($status);
-        return $this->view->start($this->request, $this->response)->render($file, $data)->withStatus($status);
+        return $this->responder->view($this->request)->render($file, $data)->withStatus($status);
     }
 
     /**

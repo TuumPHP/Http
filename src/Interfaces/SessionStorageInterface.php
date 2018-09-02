@@ -1,7 +1,7 @@
 <?php
 namespace Tuum\Respond\Interfaces;
 
-use Tuum\Respond\Service\ViewData;
+use Tuum\Respond\Responder\Payload;
 
 /**
  * Interface SessionStorageInterface
@@ -59,12 +59,9 @@ interface SessionStorageInterface
     public function getToken();
     
     /**
-     * @return ViewData
+     * @return Payload
      */
-    public function getViewData();
+    public function getPayload();
     
-    /**
-     *
-     */
-    public function saveViewData();
+    public function savePayload(PayloadInterface $payload);
 }

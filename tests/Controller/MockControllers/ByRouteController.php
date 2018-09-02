@@ -19,12 +19,11 @@ class ByRouteController
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
      * @return null|ResponseInterface
      */
-    public function test($request, $response)
+    public function test($request)
     {
-        return $this->dispatch($request, $response);
+        return $this->dispatch($request);
     }
 
     public function onGet()

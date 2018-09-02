@@ -19,6 +19,7 @@ trait DispatchByRouteTrait
 
     /**
      * @return null|ResponseInterface
+     * @throws \ReflectionException
      */
     protected function _execInternalMethods()
     {
@@ -56,9 +57,10 @@ trait DispatchByRouteTrait
     }
 
     /**
-     * @param string                 $path
-     * @param string                 $method
+     * @param string $path
+     * @param string $method
      * @return ResponseInterface|null
+     * @throws \ReflectionException
      */
     private function dispatchRoute($path, $method)
     {

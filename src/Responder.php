@@ -3,11 +3,13 @@ namespace Tuum\Respond;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Tuum\Respond\Interfaces\NamedRoutesInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Service\ViewData;
 
 class Responder
 {
@@ -55,58 +57,108 @@ class Responder
         return $this;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return View
-     */
-    public function view(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
-    ) {
-        $response = $response ?: $this->response;
-        return $this->builder->getView()->start($request, $response);
+    public function view(ServerRequestInterface $request): View
+    {
+        return $this->builder->getView()->start($request, $this);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return Redirect
-     */
-    public function redirect(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
-    ) {
-        $response = $response ?: $this->response;
-        return $this->builder->getRedirect()->start($request, $response);
+    public function redirect(ServerRequestInterface $request): Redirect
+    {
+        return $this->builder->getRedirect()->start($request, $this);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return Error
-     */
-    public function error(
-        ServerRequestInterface $request,
-        ResponseInterface $response = null
-    ) {
-        $response = $response ?: $this->response;
-        return $this->builder->getError()->start($request, $response);
+    public function error(ServerRequestInterface $request): Error 
+    {
+        return $this->builder->getError()->start($request, $this);
     }
 
-    /**
-     * @return SessionStorageInterface
-     */
-    public function session()
+    public function session(): SessionStorageInterface
     {
         return $this->builder->getSessionStorage();
     }
 
-    /**
-     * @return ViewData
-     */
-    public function getViewData()
+    public function getPayload(ServerRequestInterface $request): ?PayloadInterface
     {
-        return $this->session()->getViewData();
+        return Respond::getPayload($request);
+    }
+    
+    public function setPayload(ServerRequestInterface $request): ServerRequestInterface
+    {
+        if (Respond::getPayload($request)) {
+            return $request;
+        }
+        return $request->withAttribute(PayloadInterface::class, $this->session()->getPayload());
+    }
+
+    public function savePayload(ServerRequestInterface $request): void
+    {
+        $this->session()->savePayload($this->getPayload($request));
+    }
+
+    public function getResponse(): ResponseInterface
+    {
+        return $this->response;
+    }
+    
+    public function makeResponse(int $code, $contents, array $header = []): ResponseInterface
+    {
+        if ($factory = $this->builder->getResponseFactory()) {
+            $response = $factory->createResponse($code);
+        } else {
+            $response = $this->getResponse();
+            $response = $response->withStatus($code);
+        }
+        if (!$response) {
+            throw new \BadMethodCallException('no response nor response-factory');
+        }
+        foreach ($header as $name => $value) {
+            $response = $response->withHeader($name, $value);
+        }
+        $stream   = $this->makeStream($contents);
+        $response = $response->withBody($stream);
+        
+        return $response;
+    }
+
+    public function routes(): NamedRoutesInterface
+    {
+        return$this->builder->getNamedRoutes();
+    }
+
+    public function makeStream($contents): StreamInterface
+    {
+        if ($factory = $this->builder->getStreamFactory()) {
+            if (is_string($contents)) {
+                return $factory->createStream($contents);
+            }
+            if (is_resource($contents)) {
+                return $factory->createStreamFromResource($contents);
+            }
+        }
+        $stream = $this->getResponse()->getBody();
+        $stream->rewind();
+        if (is_string($contents)) {
+            $stream->write($contents);
+            return $stream;
+        }
+        if (is_resource($contents)) {
+            rewind($contents);
+            $stream->write(stream_get_contents($contents));
+            return $stream;
+        }
+
+        throw new \InvalidArgumentException('contents not a string nor a resource');
+    }
+
+    public function resolve($id)
+    {
+        $container = $this->builder->getContainer();
+        if (!$container) {
+            throw new \BadMethodCallException('must set container to resolve');
+        }
+        if ($container->has($id)) {
+            return $container->get($id);
+        }
+        return null;
     }
 }

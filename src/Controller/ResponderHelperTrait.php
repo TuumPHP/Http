@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Tuum\Respond\Interfaces\SessionStorageInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
@@ -50,20 +50,13 @@ trait ResponderHelperTrait
      */
     protected function getResponse($string = null)
     {
+        $response = $this->getResponder()->getResponse();
         if (is_string($string)) {
-            $this->response->getBody()->write($string);
+            $response->getBody()->write($string);
         }
-        return $this->response;
+        return $response;
     }
-
-    /**
-     * @param ResponseInterface $response
-     */
-    protected function setResponse(ResponseInterface $response)
-    {
-        $this->response = $response;
-    }
-
+    
     /**
      * @return Responder
      */
@@ -134,11 +127,11 @@ trait ResponderHelperTrait
     }
 
     /**
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
-    protected function getViewData()
+    protected function getPayload()
     {
-        return $this->getResponder()->getViewData();
+        return $this->getResponder()->getPayload($this->getRequest());
     }
 
     /**

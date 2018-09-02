@@ -12,7 +12,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class RespondTest extends \PHPUnit_Framework_TestCase
+class RespondTest extends \PHPUnit\Framework\TestCase
 {
     use TesterTrait;
 
@@ -50,6 +50,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_class_invokes_responder_object()
     {
         $request = ReqBuilder::createFromPath('/path/test');
+        $request = $this->responder->setPayload($request);
         Respond::setResponder($this->responder);
 
         $response = Respond::view($request)->asText('test Respond');
@@ -81,8 +82,7 @@ class RespondTest extends \PHPUnit_Framework_TestCase
     function Respond_asHtml_creates_html_response()
     {
         $request  = ReqBuilder::createFromPath('/path/test');
-        $response = new Response();
-        $response = $this->responder->view($request, $response)->asHtml('<h1>html</h1>');
+        $response = $this->responder->view($request)->asHtml('<h1>html</h1>');
         $this->assertEquals('text/html', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('<h1>html</h1>', $response->getBody()->__toString());
     }
@@ -107,30 +107,6 @@ class RespondTest extends \PHPUnit_Framework_TestCase
         $response = $this->responder->view($request)->asDownload('dl', 'dl-name');
         $this->assertEquals('application/octet-stream', $response->getHeader('Content-Type')[0]);
         $this->assertEquals('attachment; filename="dl-name"', $response->getHeader('Content-Disposition')[0]);
-        $this->assertEquals('2', $response->getHeader('Content-Length')[0]);
         $this->assertEquals('dl', $response->getBody()->__toString());
-    }
-
-    /**
-     * @test
-     */
-    function Respond_populates_ViewData_object()
-    {
-        $view    = $this->responder->getViewData()
-            ->setData('some', 'value')
-            ->setSuccess('message')
-            ->setAlert('notice-msg')
-            ->setError('error-msg')
-            ->setInput(['more' => 'test'])
-            ->setInputErrors(['more' => 'done']);
-
-        $data = $view;
-
-        $this->assertEquals('value', $data->getData()['some']);
-        $this->assertEquals('message', $data->getMessages()[0]['message']);
-        $this->assertEquals('notice-msg', $data->getMessages()[1]['message']);
-        $this->assertEquals('error-msg', $data->getMessages()[2]['message']);
-        $this->assertEquals('test', $data->getInput()['more']);
-        $this->assertEquals('done', $data->getInputErrors()['more']);
     }
 }

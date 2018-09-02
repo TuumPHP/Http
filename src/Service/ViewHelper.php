@@ -12,9 +12,10 @@ use Tuum\Form\Data\Message;
 use Tuum\Form\DataView;
 use Tuum\Form\Dates;
 use Tuum\Form\Forms;
-use Tuum\Respond\Builder;
 use Tuum\Respond\Interfaces\PresenterInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
+use Tuum\Respond\Respond;
+use Tuum\Respond\Responder;
 
 /**
  * Class ViewHelper
@@ -42,79 +43,60 @@ class ViewHelper
     private $request;
 
     /**
-     * @var ResponseInterface
+     * @var Responder
      */
-    private $response;
+    private $responder;
 
     /**
-     * @var Builder
+     * @var PayloadInterface
      */
-    private $builder;
-
-    /**
-     * @var ViewData
-     */
-    private $viewData;
+    private $payload;
 
     /**
      * ViewHelper constructor.
      *
-     * @param DataView          $dataView
-     * @param ViewDataInterface $viewData
-     * @param Builder           $builder
+     * @param Responder|null   $responder
      */
-    public function __construct($dataView, $viewData, $builder)
+    public function __construct(Responder $responder = null)
     {
-        $this->dataView = $dataView;
-        $this->builder  = $builder;
-        $this->setViewData($viewData);
+        $this->responder = $responder;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param ViewDataInterface      $viewData
-     * @param Builder                $builder
+     * @param Responder              $responder
      * @return ViewHelper
      */
-    public static function forge($request, $response, $viewData, $builder)
+    public static function forge(ServerRequestInterface $request, Responder $responder = null)
     {
-        $self = new self(new DataView(), $viewData, $builder);
-        $self->start($request, $response);
+        $self = new self($responder);
+        $self->start($request, new DataView());
 
         return $self;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
+     * @param DataView|null          $dataView
      * @return $this
      */
-    public function start($request, $response)
+    public function start(ServerRequestInterface $request, DataView $dataView = null)
     {
-        $this->request   = $request;
-        $this->response  = $response;
+        $this->request  = $request;
+        $this->payload  = $this->responder 
+            ? $this->responder->getPayload($request)
+            : Respond::getPayload($request);
+        $this->dataView = $dataView;
 
         return $this;
     }
-
+    
     /**
-     * @param ViewDataInterface $viewData
-     * @return $this
+     * @return PayloadInterface
      */
-    public function setViewData($viewData)
+    public function getPayload()
     {
-        $this->viewData = $viewData;
-
-        return $this;
-    }
-
-    /**
-     * @return ViewData
-     */
-    public function getViewData()
-    {
-        return $this->viewData;
+        return $this->payload;
     }
 
     /**
@@ -139,7 +121,7 @@ class ViewHelper
     public function forms()
     {
         if (!$this->dataView->inputs) {
-            $this->dataView->setInputs($this->viewData->getInput());
+            $this->dataView->setInputs($this->payload->getInput());
         }
         return $this->dataView->forms;
     }
@@ -150,7 +132,7 @@ class ViewHelper
     public function inputs()
     {
         if (!$this->dataView->inputs) {
-            $this->dataView->setInputs($this->viewData->getInput());
+            $this->dataView->setInputs($this->payload->getInput());
         }
         return $this->dataView->inputs;
     }
@@ -160,7 +142,7 @@ class ViewHelper
      */
     public function hasInputs()
     {
-        return $this->viewData->hasInput();
+        return $this->payload->hasInput();
     }
 
     /**
@@ -169,7 +151,7 @@ class ViewHelper
     public function data()
     {
         if (!$this->dataView->data) {
-            $this->dataView->setData($this->viewData->getData());
+            $this->dataView->setData($this->payload->getData());
         }
         return $this->dataView->data;
     }
@@ -180,7 +162,7 @@ class ViewHelper
     public function errors()
     {
         if (!$this->dataView->errors) {
-            $this->dataView->setErrors($this->viewData->getInputErrors());
+            $this->dataView->setErrors($this->payload->getInputErrors());
         }
         return $this->dataView->errors;
     }
@@ -191,7 +173,7 @@ class ViewHelper
     public function message()
     {
         if (!$this->dataView->message) {
-            $this->dataView->setMessage($this->viewData->getMessages());
+            $this->dataView->setMessage($this->payload->getMessages());
         }
         return $this->dataView->message;
     }
@@ -244,14 +226,13 @@ class ViewHelper
      * call a presenter object and renders the content.
      * 
      * @param string|PresenterInterface $presenter
-     * @param null|mixed|ViewData       $data
+     * @param array                     $data
      * @return string
      */
     public function call($presenter, array $data = [])
     {
-        $response = $this->builder
-            ->getView()
-            ->start($this->request, $this->response)
+        $response = $this->responder
+            ->view($this->request)
             ->call($presenter, $data);
 
         return $this->returnResponseBody($response);
@@ -266,9 +247,8 @@ class ViewHelper
      */
     public function render($viewFile, $data = [])
     {
-        return $this->builder
-            ->getView()
-            ->start($this->request, $this->response)
+        return $this->responder
+            ->view($this->request)
             ->renderContents($viewFile, $data);
     }
 
@@ -281,7 +261,7 @@ class ViewHelper
      */
     public function route($routeName, $options = [])
     {
-        return $this->builder->getNamedRoutes()->route($routeName, $options);
+        return $this->responder->routes()->route($routeName, $options);
     }
 
     /**
@@ -323,6 +303,6 @@ class ViewHelper
      */
     public function csrfToken()
     {
-        return $this->builder->getSessionStorage()->getToken();
+        return $this->responder->session()->getToken();
     }
 }

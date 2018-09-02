@@ -1,10 +1,10 @@
 <?php
-namespace Tuum\Respond\Service;
+namespace Tuum\Respond\Responder;
 
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
 
 /**
- * Class ViewData
+ * Class Payload
  *
  * a data transfer object for responder to Tuum/Form helpers used in templates.
  *
@@ -17,7 +17,7 @@ use Tuum\Respond\Interfaces\ViewDataInterface;
  *
  * @package Tuum\Respond
  */
-class ViewData implements ViewDataInterface
+class Payload implements PayloadInterface
 {
     /**
      * @var bool
@@ -27,7 +27,7 @@ class ViewData implements ViewDataInterface
     /**
      * @var string
      */
-    private $errorType = ViewDataInterface::ERROR_TYPE_SUCCESS;
+    private $errorType = PayloadInterface::ERROR_TYPE_SUCCESS;
 
     /**
      * @var array
@@ -59,7 +59,7 @@ class ViewData implements ViewDataInterface
      *
      * @param string|array $key
      * @param mixed        $value
-     * @return ViewData
+     * @return Payload
      */
     public function setData($key, $value = null)
     {
@@ -84,7 +84,7 @@ class ViewData implements ViewDataInterface
      * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
-     * @return ViewData
+     * @return Payload
      */
     public function setInput(array $value)
     {
@@ -105,7 +105,7 @@ class ViewData implements ViewDataInterface
     /**
      * @return bool
      */
-    public function hasInput()
+    public function hasInput(): bool
     {
         return $this->hasInput;
     }
@@ -115,7 +115,7 @@ class ViewData implements ViewDataInterface
      * for Errors helper.
      *
      * @param array $errors
-     * @return ViewData
+     * @return Payload
      */
     public function setInputErrors(array $errors)
     {
@@ -138,7 +138,7 @@ class ViewData implements ViewDataInterface
      *
      * @param string $type
      * @param string $message
-     * @return ViewData
+     * @return Payload
      */
     public function setMessage($type, $message)
     {
@@ -162,40 +162,40 @@ class ViewData implements ViewDataInterface
 
     /**
      * @param string $message
-     * @return ViewData
+     * @return Payload
      */
     public function setSuccess($message)
     {
-        return $this->setMessage(ViewDataInterface::MESSAGE_SUCCESS, $message);
+        return $this->setMessage(PayloadInterface::MESSAGE_SUCCESS, $message);
     }
 
     /**
      * @param string $message
-     * @return ViewData
+     * @return Payload
      */
     public function setAlert($message)
     {
-        return $this->setMessage(ViewDataInterface::MESSAGE_ALERT, $message);
+        return $this->setMessage(PayloadInterface::MESSAGE_ALERT, $message);
     }
 
     /**
      * @param string $message
-     * @return ViewData
+     * @return Payload
      */
     public function setError($message = null)
     {
-        $this->setErrorType(ViewDataInterface::ERROR_TYPE_ERROR);
-        return $this->setMessage(ViewDataInterface::MESSAGE_ERROR, $message);
+        $this->setErrorType(PayloadInterface::ERROR_TYPE_ERROR);
+        return $this->setMessage(PayloadInterface::MESSAGE_ERROR, $message);
     }
     
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setCritical($message = null)
     {
-        $this->setErrorType(ViewDataInterface::ERROR_TYPE_CRITICAL);
-        return $this->setMessage(ViewDataInterface::MESSAGE_ERROR, $message);
+        $this->setErrorType(PayloadInterface::ERROR_TYPE_CRITICAL);
+        return $this->setMessage(PayloadInterface::MESSAGE_ERROR, $message);
     }
 
     /**
@@ -221,5 +221,31 @@ class ViewData implements ViewDataInterface
     public function getErrorType()
     {
         return $this->errorType;
+    }
+
+    /**
+     * String representation of object
+     *
+     * @return string   the string representation of the object or null
+     */
+    public function serialize()
+    {
+        $serialized = get_object_vars($this);
+        unset($serialized['data']);
+        return serialize($serialized);
+    }
+
+    /**
+     * Constructs the object
+     *
+     * @param string $serialized The string representation of the object.
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        $data = unserialize($serialized);
+        foreach($data as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

@@ -1,14 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: asao
- * Date: 2016/02/18
- * Time: 15:11
- */
 namespace Tuum\Respond\Interfaces;
 
 /**
- * Class ViewData
+ * interface PayloadInterface
  *
  * a data transfer object for responder to Tuum/Form helpers used in templates.
  *
@@ -21,7 +15,7 @@ namespace Tuum\Respond\Interfaces;
  *
  * @package Tuum\Respond
  */
-interface ViewDataInterface
+interface PayloadInterface extends \Serializable
 {
     /**
      * a key string for storing view-data.
@@ -44,10 +38,12 @@ interface ViewDataInterface
 
     /**
      * set data for Data helper.
+     * note that the data are not serialized in the session, 
+     * therefore not passed during the redirection. 
      *
      * @param string|array $key
      * @param mixed        $value
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setData($key, $value = null);
 
@@ -60,7 +56,7 @@ interface ViewDataInterface
      * sets input value, like $_POST, for Inputs helper.
      *
      * @param array $value
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setInput(array $value);
 
@@ -70,11 +66,18 @@ interface ViewDataInterface
     public function getInput();
 
     /**
+     * returns if input value is set or not. 
+     * 
+     * @return bool
+     */
+    public function hasInput(): bool;
+
+    /**
      * sets input errors, such as validation error messages.
      * for Errors helper.
      *
      * @param array $errors
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setInputErrors(array $errors);
 
@@ -89,7 +92,7 @@ interface ViewDataInterface
      *
      * @param string $type
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setMessage($type, $message);
 
@@ -100,25 +103,25 @@ interface ViewDataInterface
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setSuccess($message);
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setAlert($message);
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setError($message = null);
 
     /**
      * @param string $message
-     * @return ViewDataInterface
+     * @return PayloadInterface
      */
     public function setCritical($message = null);
     

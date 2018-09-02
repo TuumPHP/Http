@@ -12,6 +12,7 @@ use Tuum\Respond\Builder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\Plates;
+use Zend\Diactoros\Response;
 
 class Provider
 {
@@ -35,15 +36,14 @@ class Provider
      */
     public function getServices()
     {
-        $self = Provider::class;
         $list = [];
-        $list[Responder::class] = [$self, 'getResponder'];
-        $list[JumpController::class] = [$self, 'getJumpController'];
-        $list[UploadController::class] = [$self, 'getUploadController'];
-        $list[UploadViewer::class] = [$self, 'getUploadViewer'];
-        $list[ForbiddenController::class] = [$self, 'getForbiddenController'];
-        $list[DocumentMap::class] = [$self, 'getDocumentMap'];
-        $list[LoginPresenter::class] = [$self, 'getLoginPresenter'];
+        $list[Responder::class] = [$this, 'getResponder'];
+        $list[JumpController::class] = [$this, 'getJumpController'];
+        $list[UploadController::class] = [$this, 'getUploadController'];
+        $list[UploadViewer::class] = [$this, 'getUploadViewer'];
+        $list[ForbiddenController::class] = [$this, 'getForbiddenController'];
+        $list[DocumentMap::class] = [$this, 'getDocumentMap'];
+        $list[LoginPresenter::class] = [$this, 'getLoginPresenter'];
 
         return $list;
     }
@@ -52,7 +52,7 @@ class Provider
      * @param Container $container
      * @return JumpController
      */
-    public static function getJumpController(Container $container)
+    public function getJumpController(Container $container)
     {
         return new JumpController($container->get(Responder::class));
     }
@@ -61,7 +61,7 @@ class Provider
      * @param Container $container
      * @return UploadController
      */
-    public static function getUploadController(Container $container)
+    public function getUploadController(Container $container)
     {
         return new UploadController($container->get(UploadViewer::class), $container->get(Responder::class));
     }
@@ -70,7 +70,7 @@ class Provider
      * @param Container $container
      * @return UploadViewer
      */
-    public static function getUploadViewer(Container $container)
+    public function getUploadViewer(Container $container)
     {
         return new UploadViewer($container->get(Responder::class));
     }
@@ -79,7 +79,7 @@ class Provider
      * @param Container $container
      * @return ForbiddenController
      */
-    public static function getForbiddenController(Container $container)
+    public function getForbiddenController(Container $container)
     {
         return new ForbiddenController($container->get(Responder::class));
     }
@@ -88,14 +88,14 @@ class Provider
      * @param ContainerInterface $container
      * @return Responder
      */    
-    public static function getResponder(ContainerInterface $container)
+    public function getResponder(ContainerInterface $container)
     {
-        $responder = Responder::forge(
-            Builder::forge('TuumDemo')
-                ->setContainer($container)
-                ->setRenderer(Plates::forge($container->get('template-path')))
-            ->setErrorOption($container->get('error-files'))
-        );
+        $builder = Builder::forge('TuumDemo')
+            ->setContainer($container)
+            ->setRenderer(Plates::forge($container->get('template-path')))
+            ->setErrorOption($container->get('error-files'));
+        $responder = Responder::forge($builder)
+            ->setResponse(new Response());
         Respond::setResponder($responder);
         
         return $responder;
@@ -105,7 +105,7 @@ class Provider
      * @param ContainerInterface $container
      * @return DocumentMap
      */
-    public static function getDocumentMap(ContainerInterface $container)
+    public function getDocumentMap(ContainerInterface $container)
     {
         $docs_dir = dirname(dirname(__DIR__)) . '/docs';
         $mapper   = FileMap::forge($docs_dir);
@@ -117,7 +117,7 @@ class Provider
      * @param ContainerInterface $container
      * @return LoginPresenter
      */
-    public static function getLoginPresenter(ContainerInterface $container)
+    public function getLoginPresenter(ContainerInterface $container)
     {
         return new LoginPresenter($container->get(Responder::class));
     }

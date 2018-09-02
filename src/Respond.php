@@ -1,9 +1,9 @@
 <?php
 namespace Tuum\Respond;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Interfaces\ViewDataInterface;
+use Tuum\Respond\Interfaces\PayloadInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
@@ -18,7 +18,7 @@ class Respond
     /**
      * @return Responder
      */
-    public static function getResponder()
+    public static function getResponder(): ?Responder
     {
         return self::$responder;
     }
@@ -27,81 +27,33 @@ class Respond
     {
         self::$responder = $responder;
     }
-
-    /**
-     * get the responder of $name.
-     *
-     * @param string                 $name
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return View|Redirect|Error
-     */
-    private static function _getResponder($name, $request, $response)
+    
+    public static function setPayload(ServerRequestInterface $request, PayloadInterface $payload): ServerRequestInterface
     {
-        /**
-         * 1. get responder from the request' attribute.
-         *
-         * @var Responder $responder
-         */
-        if (!$responder = self::getResponder()) {
-            throw new \BadMethodCallException;
-        }
-
-        /**
-         * 2. return responder with $name.
-         */
-
-        return $responder->$name($request, $response);
+        return $request->withAttribute(PayloadInterface::class, $payload);
     }
 
-    /**
-     * @return ViewDataInterface
-     */
-    public static function getViewData()
+    public static function getPayload(ServerRequestInterface $request): ?PayloadInterface
     {
-        return self::getResponder()->getViewData();
+        return $request->getAttribute(PayloadInterface::class);
     }
     
-    /**
-     * get a view responder, Responder\View.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return View
-     */
-    public static function view($request, $response = null)
+    public static function view(ServerRequestInterface $request): View
     {
-        return self::_getResponder('view', $request, $response);
+        return self::getResponder()->view($request);
     }
 
-    /**
-     * get a redirect responder, Responder\Redirect.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return Redirect
-     */
-    public static function redirect($request, $response = null)
+    public static function redirect(ServerRequestInterface $request): Redirect
     {
-        return self::_getResponder('redirect', $request, $response);
+        return self::getResponder()->redirect($request);
     }
 
-    /**
-     * get an error responder, Responder\Error.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
-     * @return Error
-     */
-    public static function error($request, $response = null)
+    public static function error(ServerRequestInterface $request): Error
     {
-        return self::_getResponder('error', $request, $response);
+        return self::getResponder()->error($request);
     }
 
-    /**
-     * @return \Tuum\Respond\Interfaces\SessionStorageInterface
-     */
-    public static function session()
+    public static function session(): SessionStorageInterface
     {
         return self::getResponder()->session();
     }

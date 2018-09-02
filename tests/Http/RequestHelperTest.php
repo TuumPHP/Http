@@ -9,7 +9,7 @@ use Tuum\Respond\Responder;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class RequestHelperTest extends \PHPUnit_Framework_TestCase
+class RequestHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

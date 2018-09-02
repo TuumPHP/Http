@@ -2,8 +2,10 @@
 namespace tests\Responder;
 
 use tests\Tools\TesterTrait;
+use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Helper\ResponseHelper;
 use Tuum\Respond\Service\SessionStorage;
@@ -12,7 +14,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class RedirectTest extends \PHPUnit_Framework_TestCase
+class RedirectTest extends \PHPUnit\Framework\TestCase
 {
     use TesterTrait;
 
@@ -26,16 +28,25 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
      */
     private $session;
 
+    /**
+     * @var Responder
+     */
+    private $responder;
+
     function setup()
     {
         $_SESSION      = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
-        $this->redirect = new Redirect($this->session);
-        $this->redirect = $this->redirect->start(
-            ReqBuilder::createFromPath('test'),
-            new Response()
-        );
+        $builder = Builder::forge('test-tuum')
+            ->setSessionStorage($this->session);
+        $this->responder = new Responder($builder);
+        $this->responder->setResponse(new Response());
+        $this->redirect = new Redirect();
+
+        $request = ReqBuilder::createFromPath('test');
+        $request = $this->responder->setPayload($request);
+        $this->redirect = $this->redirect->start($request, $this->responder);
     }
 
     function tearDown()
@@ -64,9 +75,10 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
     {
         $request        = ReqBuilder::createFromPath('/base/path');
         $request        = ReqAttr::withBasePath($request, '/base/');
+        $request = $this->responder->setPayload($request);
         $this->redirect = $this->redirect->start(
             $request,
-            new Response()
+            $this->responder
         );
         $response       = $this->redirect->toBasePath('path');
         $this->assertEquals('/base/path', ResponseHelper::getLocation($response));
@@ -79,9 +91,10 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
     {
         $request        = ReqBuilder::createFromPath('/base/path');
         $request        = ReqAttr::withReferrer($request, '/referrer/');
+        $request = $this->responder->setPayload($request);
         $this->redirect = $this->redirect->start(
             $request,
-            new Response()
+            $this->responder
         );
         $response       = $this->redirect->toReferrer();
         $this->assertEquals('/referrer/', ResponseHelper::getLocation($response));
@@ -92,16 +105,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
      */
     function withQuery_sets_query_to_uri()
     {
-        $res = $this->redirect->addQuery('test=tested')->toPath('query');
-        $this->assertEquals('/query?test=tested', $res->getHeaderLine('Location'));
-    }
-
-    /**
-     * @test
-     */
-    function withQuery_and_array_sets_query_to_uri()
-    {
-        $res = $this->redirect->addQuery(['test'=>'tested'])->toPath('query');
+        $res = $this->redirect->toPath('query', ['test'=>'tested']);
         $this->assertEquals('/query?test=tested', $res->getHeaderLine('Location'));
     }
 }

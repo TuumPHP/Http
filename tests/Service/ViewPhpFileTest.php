@@ -6,15 +6,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Builder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder;
-use Tuum\Respond\Service\Renderer\Plates;
 use Tuum\Respond\Service\Renderer\RawPhp;
-use Tuum\Respond\Service\TuumViewer;
-use Tuum\Respond\Service\ViewData;
 use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ViewPhpFileTest extends \PHPUnit_Framework_TestCase
+class ViewPhpFileTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ServerRequestInterface
@@ -26,11 +23,20 @@ class ViewPhpFileTest extends \PHPUnit_Framework_TestCase
      */
     private $res;
 
+    /**
+     * @var Responder
+     */
+    private $responder;
+
     function setup()
     {
         $_SESSION = [];
         $this->req      = ReqBuilder::createFromPath('test');
         $this->res      = new Response();
+        $this->responder = Responder::forge(
+            Builder::forge('test')
+                ->setRenderer(new RawPhp(__DIR__ . '/views'))
+        )->setResponse($this->res);
     }
 
     /**
@@ -38,11 +44,7 @@ class ViewPhpFileTest extends \PHPUnit_Framework_TestCase
      */
     function render_with_raw_php()
     {
-        $responder = Responder::forge(
-            Builder::forge('test')
-            ->setRenderer(new RawPhp(__DIR__ . '/views'))
-        );
-        $res = $responder->view($this->req, $this->res)->render('simple-text');
+        $res = $this->responder->view($this->req)->render('simple-text');
         $this->assertEquals('this is a simple text.', $res->getBody()->__toString());
     }
 
@@ -51,11 +53,7 @@ class ViewPhpFileTest extends \PHPUnit_Framework_TestCase
      */
     function render_with_league_plates()
     {
-        $responder = Responder::forge(
-            Builder::forge('test')
-                ->setRenderer(Plates::forge(__DIR__ . '/views'))
-        );
-        $res = $responder->view($this->req, $this->res)->render('simple-text');
+        $res = $this->responder->view($this->req)->render('simple-text');
         $this->assertEquals('this is a simple text.', $res->getBody()->__toString());
     }
 }

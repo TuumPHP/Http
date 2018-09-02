@@ -12,7 +12,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
+class RedirectAndRespondTest extends \PHPUnit\Framework\TestCase
 {
     use TesterTrait;
 
@@ -58,6 +58,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          * a redirect response with various data.
          */
         $request  = ReqBuilder::createFromPath('/path/test');
+        $request  = $this->responder->setPayload($request);
         $this->responder->session()
             ->setFlash('with', 'val1');
 
@@ -86,7 +87,7 @@ class RedirectAndRespondTest extends \PHPUnit_Framework_TestCase
          */
         $responder = $this->createResponder();
 
-        $data = $responder->getViewData();
+        $data = $responder->getPayload($request);
 
         $this->assertEquals('val1', $responder->session()->getFlash('with'));
         $this->assertEquals('with', $data->getData()['more']);

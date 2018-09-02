@@ -14,7 +14,7 @@ use Zend\Diactoros\Response;
 
 require_once __DIR__ . '/../autoloader.php';
 
-class ViewTest extends \PHPUnit_Framework_TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     use TesterTrait;
 
@@ -48,7 +48,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
             Builder::forge('app-test')
             ->setRenderer($this->renderer)
         )->setResponse(new Response());
-        $this->view      = $this->responder->view(ReqBuilder::createFromPath('test'));
+        $request = ReqBuilder::createFromPath('test');
+        $request = $this->responder->setPayload($request);
+        $this->view      = $this->responder->view($request);
     }
 
     function tearDown()
