@@ -21,11 +21,6 @@ class Error extends AbstractResponder
     const INTERNAL_ERROR = 500;
 
     /**
-     * @var View
-     */
-    private $view;
-    
-    /**
      * @var null|ErrorFileInterface
      */
     public $errorFile;
@@ -46,13 +41,11 @@ class Error extends AbstractResponder
     // +----------------------------------------------------------------------+
     /**
      * @param ErrorFileInterface $errorFile
-     * @param View               $view
      */
-    public function __construct(ErrorFileInterface $errorFile, View $view)
+    public function __construct(ErrorFileInterface $errorFile)
     {
         parent::__construct();
         $this->errorFile = $errorFile;
-        $this->view = $view;
     }
     
     // +----------------------------------------------------------------------+
@@ -91,7 +84,7 @@ class Error extends AbstractResponder
     public function asView($status, $data = [])
     {
         $file = $this->errorFile->find($status);
-        return $this->view->start($this->request, $this->responder)->render($file, $data)->withStatus($status);
+        return $this->responder->view($this->request)->render($file, $data)->withStatus($status);
     }
 
     /**

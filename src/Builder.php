@@ -42,7 +42,7 @@ class Builder
     /**
      * @var string
      */
-    private $content_view;
+    private $content_view = '';
 
     /**
      * @var array
@@ -108,7 +108,7 @@ class Builder
      * @param string|null       $content_view
      * @return Builder
      */
-    public function setRenderer(RendererInterface $renderer, string $content_view = null): self
+    public function setRenderer(RendererInterface $renderer, string $content_view = ''): self
     {
         $this->renderer = $renderer;
         $this->content_view = $content_view;
@@ -234,7 +234,7 @@ class Builder
     public function getView(): View
     {
         return $this->view ?:
-            $this->view = new View($this);
+            $this->view = new View($this->getRenderer(), $this->getContentViewFile());
     }
 
     public function getRedirect(): Redirect
@@ -253,10 +253,7 @@ class Builder
     public function getError(): Error
     {
         return $this->error ?:
-            $this->error = new Error(
-                $this->getErrorFile(),
-                $this->getView()
-            );
+            $this->error = new Error($this->getErrorFile());
     }
 
     public function getSessionStorage(): SessionStorageInterface

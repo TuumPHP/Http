@@ -149,4 +149,16 @@ class Responder
 
         throw new \InvalidArgumentException('contents not a string nor a resource');
     }
+
+    public function resolve($id)
+    {
+        $container = $this->builder->getContainer();
+        if (!$container) {
+            throw new \BadMethodCallException('must set container to resolve');
+        }
+        if ($container->has($id)) {
+            return $container->get($id);
+        }
+        return null;
+    }
 }

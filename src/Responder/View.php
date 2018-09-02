@@ -2,8 +2,8 @@
 namespace Tuum\Respond\Responder;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Builder;
 use Tuum\Respond\Interfaces\PresenterInterface;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Service\ViewHelper;
 
 class View extends AbstractResponder
@@ -13,25 +13,26 @@ class View extends AbstractResponder
     /**
      * a view file to render a string content.
      *
-     * @var null|string
+     * @var string
      */
     public $content_view = 'layouts/contents';
 
     /**
-     * @var Builder
+     * @var RendererInterface
      */
-    private $builder;
+    private $renderer;
 
     /**
      * Renderer constructor.
      *
-     * @param Builder            $builder
+     * @param RendererInterface $renderer
+     * @param string            $content_view
      */
-    public function __construct(Builder $builder)
+    public function __construct(RendererInterface $renderer, string $content_view = '')
     {
         parent::__construct();
-        $this->builder  = $builder;
-        $this->content_view = $builder->getContentViewFile() ?: $this->content_view;
+        $this->content_view = $content_view ?: $this->content_view;
+        $this->renderer = $renderer;
     }
     
     /**
@@ -79,7 +80,7 @@ class View extends AbstractResponder
     {
         $helper   = $this->getViewHelper();
         
-        return $this->builder->getRenderer()->render($file, $helper, $data);
+        return $this->renderer->render($file, $helper, $data);
     }
 
     // ------------------------------------------------------------------------
@@ -210,8 +211,8 @@ class View extends AbstractResponder
         if (is_callable($presenter)) {
             return $this->callPresenter($presenter, $data);
         }
-        if ($resolver = $this->builder->getContainer()) {
-            return $this->callPresenter($resolver->get($presenter), $data);
+        if ($resolved = $this->responder->resolve($presenter)) {
+            return $this->callPresenter($resolved, $data);
         }
         throw new \BadMethodCallException('cannot resolve a presenter.');
     }
