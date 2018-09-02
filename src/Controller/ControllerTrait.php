@@ -24,6 +24,8 @@ trait ControllerTrait
     
     abstract function setRequest(ServerRequestInterface $request);
 
+    abstract function getRequest(): ServerRequestInterface;
+
     /**
      * must implement this method, which dispatches one of own method.
      *
@@ -39,6 +41,7 @@ trait ControllerTrait
      */
     protected function _execMethodWithArgs($method, $params)
     {
+        $params = $params + $this->getRequest()->getQueryParams();
         $refMethod = new \ReflectionMethod($this, $method);
         $refArgs   = $refMethod->getParameters();
         $arguments = array();
@@ -46,7 +49,7 @@ trait ControllerTrait
             $key             = $arg->getPosition();
             $name            = $arg->getName();
             $opt             = $arg->isOptional() ? $arg->getDefaultValue() : null;
-            $val             = isset($params[$name]) ? $params[$name] : $opt;
+            $val             = $params[$name] ?? $this->getRequest()->getAttribute($name, $opt);
             $arguments[$key] = $val;
         }
         $refMethod->setAccessible(true);

@@ -18,7 +18,6 @@ trait DispatchByMethodTrait
         /*
          * set up request information
          */
-        $params = (array)$this->request->getQueryParams();
         $method = ReqAttr::getMethod($this->request);
         if (strtoupper($method) === 'OPTIONS') {
             return $this->onOptions();
@@ -33,7 +32,7 @@ trait DispatchByMethodTrait
          * also setup arguments from route parameters and get query.
          */
 
-        return $this->_execMethodWithArgs($method, $params);
+        return $this->_execMethodWithArgs($method, []);
     }
     
     /** @noinspection PhpUnusedPrivateMethodInspection */

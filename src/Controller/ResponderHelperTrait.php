@@ -31,7 +31,7 @@ trait ResponderHelperTrait
     /**
      * @return ServerRequestInterface
      */
-    protected function getRequest()
+    protected function getRequest(): ServerRequestInterface
     {
         return $this->request;
     }
@@ -48,7 +48,7 @@ trait ResponderHelperTrait
      * @param null|string $string
      * @return ResponseInterface
      */
-    protected function getResponse($string = null)
+    protected function getResponse($string = null): ResponseInterface
     {
         $response = $this->getResponder()->getResponse();
         if (is_string($string)) {
@@ -60,7 +60,7 @@ trait ResponderHelperTrait
     /**
      * @return Responder
      */
-    protected function getResponder()
+    protected function getResponder(): Responder
     {
         return $this->responder;
     }
@@ -97,7 +97,7 @@ trait ResponderHelperTrait
     /**
      * @return View
      */
-    protected function view()
+    protected function view(): View
     {
         return $this->makeResponders('view');
     }
@@ -105,7 +105,7 @@ trait ResponderHelperTrait
     /**
      * @return Redirect
      */
-    protected function redirect()
+    protected function redirect(): Redirect
     {
         return $this->makeResponders('redirect');
     }
@@ -113,7 +113,7 @@ trait ResponderHelperTrait
     /**
      * @return Error
      */
-    protected function error()
+    protected function error(): Error
     {
         return $this->makeResponders('error');
     }
@@ -121,7 +121,7 @@ trait ResponderHelperTrait
     /**
      * @return SessionStorageInterface
      */
-    protected function session()
+    protected function session(): SessionStorageInterface
     {
         return $this->getResponder()->session();
     }
@@ -129,7 +129,7 @@ trait ResponderHelperTrait
     /**
      * @return PayloadInterface
      */
-    protected function getPayload()
+    protected function getPayload(): PayloadInterface
     {
         return $this->getResponder()->getPayload($this->getRequest());
     }
@@ -139,7 +139,7 @@ trait ResponderHelperTrait
      * @param array $data
      * @return ResponseInterface
      */
-    protected function call($presenter, array $data = [])
+    protected function call($presenter, array $data = []): ResponseInterface
     {
         return $this->view()
                     ->call($presenter, $data);
