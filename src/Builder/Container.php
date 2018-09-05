@@ -7,18 +7,35 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class Container implements ContainerInterface
 {
-    private $concrete = [];
-    
-    private $provider = [];
-
     /**
      * @var ContainerInterface[]
      */
     private $containers = [];
-    
-    public function __construct($setup = [])
+
+    /**
+     * Container constructor.
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
     {
-        $this->concrete = $setup;
+        $this->addContainers($container);
+    }
+    
+    public static function forge($setup = []): self
+    {
+        $provider = new Builder($setup);
+        $container = new self($provider);
+        
+        return $container;
+    }
+    
+    /**
+     * @param ContainerInterface $container
+     */
+    public function addContainers(ContainerInterface $container): void
+    {
+        $this->containers[] = array_merge([$container], $this->containers);
     }
 
     /**
@@ -37,12 +54,6 @@ class Container implements ContainerInterface
             if ($container->has($id)) {
                 return $container->get($id);
             }
-        }
-        if (array_key_exists($id, $this->concrete)) {
-            return $this->concrete[$id];
-        }
-        if (array_key_exists($id, $this->provider)) {
-            return $this->concrete[$id] = $this->build($id);
         }
         throw new NotFoundException(sprintf('Failed to get the id (%s) in the container.', $id));
     }
@@ -65,48 +76,6 @@ class Container implements ContainerInterface
                 return true;
             }
         }
-        if (array_key_exists($id, $this->concrete)) {
-            return true;
-        }
-        if (array_key_exists($id, $this->provider)) {
-            return true;
-        }
         return false;
-    }
-
-    /**
-     * @param string $id
-     * @return mixed
-     * @throws ContainerException
-     */
-    private function build(string $id)
-    {
-        $provider = $this->provider[$id];
-        if (is_callable($provider)) {
-            return $provider($this);
-        }
-        throw new ContainerException(sprintf('Failed to build the id (%s).', $id));
-    }
-
-    /**
-     * @param string $id
-     * @param mixed  $concrete
-     * @return Container|$this
-     */
-    public function set(string $id, $concrete): self
-    {
-        $this->concrete[$id] = $concrete;
-        return $this;
-    }
-
-    /**
-     * @param string   $id
-     * @param callable $provider
-     * @return Container
-     */
-    public function setProvider(string $id, callable $provider): self 
-    {
-        $this->provider[$id] = $provider;
-        return $this;
     }
 }
