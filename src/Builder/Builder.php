@@ -1,9 +1,7 @@
 <?php
 namespace Tuum\Respond\Builder;
 
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Tuum\Respond\Interfaces\ErrorFileInterface;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
@@ -15,29 +13,23 @@ use Tuum\Respond\Service\Renderer\Plates;
 use Tuum\Respond\Service\Renderer\RawPhp;
 use Tuum\Respond\Service\Renderer\Twig;
 
-class Builder implements ContainerInterface
+class Builder implements ServiceProviderInterface
 {
     const ID = 'Tuum-Respond-Setup';
 
     /**
      * @var array
      */
-    private $setup = [];
+    private $setting = [];
 
-    /**
-     * @var callable[] 
-     */
-    private $providers = [];
-    
     /**
      * Builder constructor.
      *
-     * @param array $setup
+     * @param array $setting
      */
-    public function __construct($setup = [])
+    public function __construct($setting = [])
     {
-        $this->setup = $setup + [
-                'content_view'    => 'layout/content_view',
+        $this->setting = $setting + [
                 'error_options'   => [
                     'path'    => 'errors',
                     'default' => 'error',
@@ -53,18 +45,17 @@ class Builder implements ContainerInterface
                 'twig-options'    => [],
                 'twig-callable'   => null,
                 'plates-callable' => null,
+                'content_view'    => 'layout/content_view',
             ];
-        
-        $this->providers = $this->getProviders();
     }
 
     /**
      * @return callable[]
      */
-    public function getProviders()
+    public function getFactories()
     {
         return [
-            self::ID                  => [$this, 'getSetup'],
+            self::ID                  => [$this, 'getSetting'],
             View::class               => [$this, 'getView'],
             Redirect::class           => [$this, 'getRedirect'],
             ErrorFileInterface::class => [$this, 'getErrorFile'],
@@ -76,9 +67,9 @@ class Builder implements ContainerInterface
         ];
     }
 
-    public function getSetup()
+    public function getSetting(): array
     {
-        return $this->setup;
+        return $this->setting;
     }
 
     public function getView(ContainerInterface $container): View
@@ -135,44 +126,5 @@ class Builder implements ContainerInterface
         $info = $container->get(self::ID);
         $type = $info['renderer_type'];
         return $container->get($type);
-    }
-
-    /**
-     * Finds an entry of the container by its identifier and returns it.
-     *
-     * @param string $id Identifier of the entry to look for.
-     *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
-     *
-     * @return mixed Entry.
-     */
-    public function get($id)
-    {
-        if (!$this->has($id)) {
-            throw new NotFoundException();
-        }
-        $factory = $this->providers[$id];
-        if (is_callable($factory)) {
-            return $factory($this);
-        }
-        throw new ContainerException(sprintf('Failed to build the id (%s).', $id));
-
-    }
-
-    /**
-     * Returns true if the container can return an entry for the given identifier.
-     * Returns false otherwise.
-     *
-     * `has($id)` returning true does not mean that `get($id)` will not throw an exception.
-     * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
-     *
-     * @param string $id Identifier of the entry to look for.
-     *
-     * @return bool
-     */
-    public function has($id)
-    {
-        return array_key_exists($id, $this->providers);
     }
 }

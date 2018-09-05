@@ -13,29 +13,50 @@ class Container implements ContainerInterface
     private $containers = [];
 
     /**
-     * Container constructor.
-     *
-     * @param ContainerInterface $container
+     * @var callable[]
      */
-    public function __construct(ContainerInterface $container)
+    private $providers = [];
+
+    /**
+     * @var mixed[]
+     */
+    private $concretes = [];
+
+    /**
+     * Container constructor.
+     */
+    public function __construct()
     {
-        $this->addContainers($container);
     }
     
     public static function forge($setup = []): self
     {
         $provider = new Builder($setup);
-        $container = new self($provider);
-        
+        $container = new self();
+        $container->addProvider($provider);
         return $container;
     }
     
-    /**
-     * @param ContainerInterface $container
-     */
     public function addContainers(ContainerInterface $container): void
     {
         $this->containers[] = array_merge([$container], $this->containers);
+    }
+
+    public function addProvider(ServiceProviderInterface $provider): void
+    {
+        foreach($provider->getFactories() as $id => $provider) {
+            $this->providers[$id] = $provider;
+        }
+    }
+    
+    public function set(string $id, $concrete): void
+    {
+        $this->concretes[$id] = $concrete;
+    }
+
+    public function setFactory(string $id, callable $factory): void
+    {
+        $this->providers[$id] = $factory;
     }
 
     /**
@@ -54,6 +75,13 @@ class Container implements ContainerInterface
             if ($container->has($id)) {
                 return $container->get($id);
             }
+        }
+        if (array_key_exists($id, $this->concretes)) {
+            return $this->concretes[$id];
+        }
+        if (array_key_exists($id, $this->providers) && is_callable($this->providers[$id])) {
+            $factory = $this->providers[$id];
+            return $factory($this);
         }
         throw new NotFoundException(sprintf('Failed to get the id (%s) in the container.', $id));
     }
@@ -75,6 +103,12 @@ class Container implements ContainerInterface
             if ($container->has($id)) {
                 return true;
             }
+        }
+        if (array_key_exists($id, $this->concretes)) {
+            return true;
+        }
+        if (array_key_exists($id, $this->providers)) {
+            return true;
         }
         return false;
     }
