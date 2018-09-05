@@ -4,7 +4,9 @@ namespace tests\Http;
 use tests\Tools\NoRender;
 use tests\Tools\TesterTrait;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\SessionStorage;
@@ -33,10 +35,10 @@ class RespondTest extends \PHPUnit\Framework\TestCase
         $this->setPhpTestFunc($this->session_factory);
 
         $view            = new NoRender();
-        $this->responder = Responder::forge(
-            Builder::forge('test')
-            ->setRenderer($view)
-        )->setResponse(new Response());
+        $this->responder = Factory::new()
+            ->set(RendererInterface::class, $view)
+            ->build()
+            ->setResponse(new Response());
     }
 
     function tearDown()

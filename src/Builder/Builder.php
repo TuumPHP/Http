@@ -5,6 +5,7 @@ use Psr\Container\ContainerInterface;
 use Tuum\Respond\Interfaces\ErrorFileInterface;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\RendererInterface;
+use Tuum\Respond\Interfaces\SessionStorageInterface;
 use Tuum\Respond\Responder\Error;
 use Tuum\Respond\Responder\Redirect;
 use Tuum\Respond\Responder\View;
@@ -12,6 +13,7 @@ use Tuum\Respond\Service\ErrorFile;
 use Tuum\Respond\Service\Renderer\Plates;
 use Tuum\Respond\Service\Renderer\RawPhp;
 use Tuum\Respond\Service\Renderer\Twig;
+use Tuum\Respond\Service\SessionStorage;
 
 class Builder implements ServiceProviderInterface
 {
@@ -64,6 +66,7 @@ class Builder implements ServiceProviderInterface
             Plates::class             => [$this, 'getRendererPlates'],
             RawPhp::class             => [$this, 'getRendererRawPhp'],
             RendererInterface::class  => [$this, 'getRenderer'],
+            SessionStorageInterface::class => [$this, 'getSessionStorage'],
         ];
     }
 
@@ -77,15 +80,16 @@ class Builder implements ServiceProviderInterface
         $contentView = $container->get(self::ID)['content_view'] ?? '';
         return new View(
             $container->get(RendererInterface::class),
-            $container->get($contentView)
+            $contentView
         );
     }
 
     public function getRedirect(ContainerInterface $container): Redirect
     {
-        return new Redirect(
-            $container->get(NamedRoutesInterface::class)
-        );
+        $route = $container->has(NamedRoutesInterface::class) 
+            ? $container->get(NamedRoutesInterface::class)
+            : null;
+        return new Redirect($route);
     }
 
     public function getErrorFile(ContainerInterface $container): ErrorFileInterface
@@ -127,4 +131,11 @@ class Builder implements ServiceProviderInterface
         $type = $info['renderer_type'];
         return $container->get($type);
     }
+
+    public function getSessionStorage(ContainerInterface $container): SessionStorageInterface
+    {
+        $name = $container->get(self::ID)['name'] ?? 'app';
+        return SessionStorage::forge($name, $_COOKIE);
+    }
+
 }

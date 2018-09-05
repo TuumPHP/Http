@@ -3,7 +3,10 @@ namespace tests\Responder;
 
 use Http\Factory\Diactoros\ResponseFactory;
 use Http\Factory\Diactoros\StreamFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
@@ -16,18 +19,17 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 {
     private function buildResponse()
     {
-        $builder = Builder::forge('test');
-        $responder = Responder::forge($builder)
+        $responder = Factory::forge()
             ->setResponse(new Response());
         return $responder;
     }
     
     private function buildFactory()
     {
-        $builder = Builder::forge('test')
-            ->setResponseFactory(new ResponseFactory())
-            ->setStreamFactory(new StreamFactory());
-        $responder = Responder::forge($builder);
+        $responder = Factory::new()
+            ->set(ResponseFactoryInterface::class, new ResponseFactory())
+            ->set(StreamFactoryInterface::class, new StreamFactory())
+            ->build();
         return $responder;
     }
     

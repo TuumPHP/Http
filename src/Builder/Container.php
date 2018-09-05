@@ -29,14 +29,6 @@ class Container implements ContainerInterface
     {
     }
     
-    public static function forge($setup = []): self
-    {
-        $provider = new Builder($setup);
-        $container = new self();
-        $container->addProvider($provider);
-        return $container;
-    }
-    
     public function addContainers(ContainerInterface $container): void
     {
         $this->containers[] = array_merge([$container], $this->containers);
@@ -49,14 +41,16 @@ class Container implements ContainerInterface
         }
     }
     
-    public function set(string $id, $concrete): void
+    public function set(string $id, $concrete): self
     {
         $this->concretes[$id] = $concrete;
+        return $this;
     }
 
-    public function setFactory(string $id, callable $factory): void
+    public function setFactory(string $id, callable $factory): self
     {
         $this->providers[$id] = $factory;
+        return $this;
     }
 
     /**
@@ -81,7 +75,7 @@ class Container implements ContainerInterface
         }
         if (array_key_exists($id, $this->providers) && is_callable($this->providers[$id])) {
             $factory = $this->providers[$id];
-            return $factory($this);
+            return $this->concretes[$id] = $factory($this);
         }
         throw new NotFoundException(sprintf('Failed to get the id (%s) in the container.', $id));
     }

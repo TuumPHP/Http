@@ -2,7 +2,9 @@
 namespace tests\Responder;
 
 use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\RawPhp;
@@ -21,10 +23,10 @@ class ResponderTest extends \PHPUnit\Framework\TestCase
     {
         $_SESSION = [];
         class_exists(Respond::class);
-        $this->responder = Responder::forge(
-            Builder::forge('test')
-            ->setRenderer(new RawPhp('none'))
-        )->setResponse(new Response());
+        $this->responder = Factory::new()
+            ->set(RendererInterface::class, new RawPhp('none'))
+            ->build()
+            ->setResponse(new Response());
     }
 
     function tearDown()
