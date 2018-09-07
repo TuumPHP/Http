@@ -1,6 +1,7 @@
 <?php
 namespace Tuum\Respond;
 
+use Psr\Container\ContainerInterface;
 use Tuum\Respond\Builder\Container;
 
 class Factory
@@ -40,6 +41,12 @@ class Factory
     public function set(string $id, $concrete): self
     {
         $this->container->set($id, $concrete);
+        return $this;
+    }
+    
+    public function setContainer(ContainerInterface $container): self
+    {
+        $this->container->setContainer($container);
         return $this;
     }
 

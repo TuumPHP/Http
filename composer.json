@@ -15,7 +15,9 @@
         "tuum/form": "^1.0",
         "willdurand/negotiation": "^2.0",
         "ext-json": "*",
-        "psr/http-factory": " ^1.0"
+        "psr/http-factory": " ^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "psr/http-server-handler": "^1.0"
     },
     "require-dev":{
         "zendframework/zend-diactoros": "~1.0",
