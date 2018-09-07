@@ -8,9 +8,9 @@ use Psr\Container\NotFoundExceptionInterface;
 class Container implements ContainerInterface
 {
     /**
-     * @var ContainerInterface
+     * @var ContainerInterface|null
      */
-    private $container = [];
+    private $container = null;
 
     /**
      * @var callable[]
