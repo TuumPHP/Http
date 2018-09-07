@@ -8,9 +8,9 @@ use Psr\Container\NotFoundExceptionInterface;
 class Container implements ContainerInterface
 {
     /**
-     * @var ContainerInterface[]
+     * @var ContainerInterface
      */
-    private $containers = [];
+    private $container = [];
 
     /**
      * @var callable[]
@@ -29,9 +29,9 @@ class Container implements ContainerInterface
     {
     }
     
-    public function addContainers(ContainerInterface $container): void
+    public function setContainer(ContainerInterface $container): void
     {
-        $this->containers[] = array_merge([$container], $this->containers);
+        $this->container = $container;
     }
 
     public function addProvider(ServiceProviderInterface $provider): void
@@ -65,10 +65,8 @@ class Container implements ContainerInterface
      */
     public function get($id)
     {
-        foreach($this->containers as $container) {
-            if ($container->has($id)) {
-                return $container->get($id);
-            }
+        if ($this->container && $this->container->has($id)) {
+            return $this->container->get($id);
         }
         if (array_key_exists($id, $this->concretes)) {
             return $this->concretes[$id];
@@ -93,10 +91,8 @@ class Container implements ContainerInterface
      */
     public function has($id)
     {
-        foreach($this->containers as $container) {
-            if ($container->has($id)) {
-                return true;
-            }
+        if ($this->container && $this->container->has($id)) {
+            return true;
         }
         if (array_key_exists($id, $this->concretes)) {
             return true;
