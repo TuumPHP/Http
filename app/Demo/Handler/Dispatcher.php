@@ -66,7 +66,7 @@ class Dispatcher implements MiddlewareInterface
             $handler = $this->container->get($handler);
         }
         if ($handler instanceof RequestHandlerInterface) {
-            return $handler->process($request);
+            return $handler->handle($request);
         } 
         if (is_callable($handler)) {
             return $handler($request);

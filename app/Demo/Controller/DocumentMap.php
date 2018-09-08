@@ -4,10 +4,10 @@ namespace App\Demo\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Locator\FileMap;
-use Tuum\Respond\Controller\AbstractController;
+use Tuum\Respond\Controller\AbstractRequestHandler;
 use Tuum\Respond\Responder;
 
-class DocumentMap extends AbstractController
+class DocumentMap extends AbstractRequestHandler
 {
     /**
      * @var FileMap

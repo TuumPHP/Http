@@ -2,14 +2,12 @@
 namespace App\Demo\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Tuum\Respond\Controller\AbstractController;
-use Tuum\Respond\Controller\DispatchByMethodTrait;
+use Tuum\Respond\Controller\AbstractRequestHandler;
 use Tuum\Respond\Interfaces\PresenterInterface;
 use Tuum\Respond\Responder;
 
-class UploadController extends AbstractController
+class UploadController extends AbstractRequestHandler
 {
     /**
      * @var PresenterInterface
