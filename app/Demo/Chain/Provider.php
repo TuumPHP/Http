@@ -1,6 +1,7 @@
 <?php
 namespace App\Demo\Chain;
 
+use App\Demo\Controller\DocumentMap;
 use App\Demo\Controller\ForbiddenController;
 use App\Demo\Controller\JumpController;
 use App\Demo\Controller\LoginPresenter;
@@ -16,6 +17,7 @@ use Http\Factory\Diactoros\StreamFactory;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Tuum\Locator\FileMap;
 use Tuum\Respond\Builder\ServiceProviderInterface;
 use Tuum\Respond\Factory;
 use Tuum\Respond\Respond;
@@ -46,6 +48,7 @@ class Provider implements ServiceProviderInterface
             UploadController::class         => [$this, 'getUploadController'],
             UploadViewer::class             => [$this, 'getUploadViewer'],
             ForbiddenController::class      => [$this, 'getForbiddenController'],
+            DocumentMap::class              => [$this, 'getDocumentMap'],
         ];
     }
 
@@ -126,5 +129,13 @@ class Provider implements ServiceProviderInterface
     public function getForbiddenController(ContainerInterface $container)
     {
         return new ForbiddenController($container->get(Responder::class));
+    }
+
+    public function getDocumentMap(ContainerInterface $container)
+    {
+        $docs_dir = dirname(dirname(dirname(__DIR__))) . '/docs';
+        $mapper   = FileMap::forge($docs_dir);
+
+        return new DocumentMap($mapper, $container->get(Responder::class));
     }
 }

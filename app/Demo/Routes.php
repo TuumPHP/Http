@@ -1,6 +1,7 @@
 <?php
 namespace App\Demo;
 
+use App\Demo\Controller\DocumentMap;
 use App\Demo\Controller\ForbiddenController;
 use App\Demo\Controller\JumpController;
 use App\Demo\Controller\UploadController;
@@ -57,6 +58,7 @@ class Routes implements \IteratorAggregate
             'forbidden' => ['/forbidden', ForbiddenController::class],
             'jump'      => ['/jump', JumpController::class],
             'upload'    => ['/upload', UploadController::class],
+            'docs'      => ['/docs/(?P<pathInfo>.*)', DocumentMap::class],
         ];
     }
 
