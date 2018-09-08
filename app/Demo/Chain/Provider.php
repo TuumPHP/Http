@@ -7,6 +7,7 @@ use App\Demo\Controller\JumpController;
 use App\Demo\Controller\LoginPresenter;
 use App\Demo\Controller\UploadController;
 use App\Demo\Controller\UploadViewer;
+use App\Demo\Handler\CatchThrows;
 use App\Demo\Handler\CsRfToken;
 use App\Demo\Handler\Dispatcher;
 use App\Demo\Handler\NotFound;
@@ -38,6 +39,7 @@ class Provider implements ServiceProviderInterface
             NotFound::class                 => [$this, 'getNotFound'],
             CsRfToken::class                => [$this, 'getCsRfToken'],
             Dispatcher::class               => [$this, 'getDispatcher'],
+            CatchThrows::class              => [$this, 'getCatchThrows'],
             // services
             Responder::class                => [$this, 'getResponder'],
             ResponseFactoryInterface::class => [$this, 'getResponseFactory'],
@@ -129,6 +131,11 @@ class Provider implements ServiceProviderInterface
     public function getForbiddenController(ContainerInterface $container)
     {
         return new ForbiddenController($container->get(Responder::class));
+    }
+
+    public function getCatchThrows(ContainerInterface $container)
+    {
+        return new CatchThrows($container->get(Responder::class));
     }
 
     public function getDocumentMap(ContainerInterface $container)

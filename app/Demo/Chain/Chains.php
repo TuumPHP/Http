@@ -7,6 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * Class Chains
+ * 
+ * This class was developed based on Relay project. 
+ * https://github.com/relayphp/Relay.Relay
+ *
+ * @package App\Demo\Chain
+ */
 class Chains implements RequestHandlerInterface
 {
     /**
