@@ -98,7 +98,7 @@ class Responder
         $this->session()->savePayload($this->getPayload($request));
     }
 
-    public function getResponse(): ResponseInterface
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }

@@ -30,26 +30,26 @@ class Dispatcher implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $pathInfo = $request->getUri()->getPath();
-        foreach ($this->routes as $name => [$route, $handler]) {
+        foreach ($this->routes as $name => [$route, $controller]) {
             $args = $this->match($pathInfo, $route);
-            if (!$args) {
+            if (!empty($args)) {
                 $request = $request->withQueryParams(array_merge($request->getQueryParams(), $args));
-                return $this->run($handler, $request);
+                return $this->run($controller, $request);
             }
         }
 
-        return $handler($request);
+        return $handler->handle($request);
     }
 
     /**
      * @param string $pathInfo
      * @param string $route
-     * @return array|bool
+     * @return array
      */
     private function match(string $pathInfo, string $route)
     {
         $matched = Matcher::verify($route, $pathInfo);
-        return empty($matched) ? false : $matched;
+        return $matched;
     }
 
     /**
@@ -71,6 +71,11 @@ class Dispatcher implements MiddlewareInterface
         if (is_callable($handler)) {
             return $handler($request);
         }
-        throw new \RuntimeException("don't know how to handle a route: " . $request->getUri()->getPath());
+        $message = "don't know how to handle a route: "
+            . $request->getUri()->getPath();
+        if (is_string($handler)) {
+            $message .= ', handler: ' . $handler;
+        }
+        throw new \RuntimeException($message);
     }
 }

@@ -30,7 +30,7 @@ use Tuum\Respond\Service\ViewHelper;
             <a class="navbar-brand" href="/">Tuum/Respond with Plates</a>
         </div>
         <!-- login form -->
-        <?php echo $view->call(LoginPresenter::class); ?>
+        <?php //echo $view->call(LoginPresenter::class); ?>
         <!-- sample menu -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">

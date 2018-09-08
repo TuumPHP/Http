@@ -9,7 +9,7 @@ class Middleware
 {
     private $chains  = [];
     
-    private function __construct()
+    public function __construct()
     {
         $this->chains = [
             CsRfToken::class,

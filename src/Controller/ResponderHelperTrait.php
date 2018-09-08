@@ -48,7 +48,7 @@ trait ResponderHelperTrait
      * @param null|string $string
      * @return ResponseInterface
      */
-    protected function getResponse($string = null): ResponseInterface
+    protected function getResponse($string = null): ?ResponseInterface
     {
         $response = $this->getResponder()->getResponse();
         if (is_string($string)) {
