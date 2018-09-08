@@ -26,6 +26,7 @@ include dirname(__DIR__) . "/app/boot-demo.php";
 /** @var \App\App\Dispatcher $app */
 $app = bootDemo([
     'template_dir' => dirname(__DIR__). '/app/plates',
+    'content_view' => 'layouts/contents',
     'renderer_type' => Plates::class,
 ]);
 $req = ReqBuilder::createFromGlobal($GLOBALS);

@@ -1,9 +1,10 @@
 <?php
 namespace App\Demo;
 
-use App\App\Controller\ForbiddenController;
-use App\App\Controller\JumpController;
-use App\App\Controller\UploadController;
+use App\Demo\Controller\ForbiddenController;
+use App\Demo\Controller\JumpController;
+use App\Demo\Controller\UploadController;
+use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Respond;
@@ -37,7 +38,7 @@ class Routes implements \IteratorAggregate
             'contents'  => [
                 '/content',
                 function (ServerRequestInterface $request) {
-                    return Respond::view($request)
+                    return $this->responder->view($request)
                         ->asContents('<h1>Contents</h1><p>this is a string content in a layout file</p>');
                 }
             ],
@@ -47,6 +48,11 @@ class Routes implements \IteratorAggregate
                     throw new \Exception('always throws exception');
                 }
             ],
+            'objGraph'  => ['/objGraph',
+                function (ServerRequestInterface $request) {
+                    return Respond::view($request)
+                        ->asContents((new Printo($this->responder)));
+                }],
             'login'     => ['/login', [$this, 'onLogin']],
             'forbidden' => ['/forbidden', ForbiddenController::class],
             'jump'      => ['/jump', JumpController::class],

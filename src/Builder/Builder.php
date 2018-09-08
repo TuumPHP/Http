@@ -47,7 +47,7 @@ class Builder implements ServiceProviderInterface
                 'twig-options'    => [],
                 'twig-callable'   => null,
                 'plates-callable' => null,
-                'content_view'    => 'layout/content_view',
+                'content_view'    => 'layouts/content_view',
             ];
     }
 

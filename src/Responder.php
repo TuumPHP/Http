@@ -155,11 +155,19 @@ class Responder
         throw new \InvalidArgumentException('contents not a string nor a resource');
     }
 
-    public function resolve($id)
+    public function resolve(string $id)
     {
         if ($this->container->has($id)) {
             return $this->container->get($id);
         }
         return null;
+    }
+    
+    public function resolvable(string $id): bool
+    {
+        if ($this->container) {
+            return $this->container->has($id);
+        }
+        return false;
     }
 }

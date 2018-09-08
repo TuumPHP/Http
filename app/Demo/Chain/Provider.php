@@ -1,8 +1,11 @@
 <?php
 namespace App\Demo\Chain;
 
-use App\App\Controller\JumpController;
-use App\App\Controller\LoginPresenter;
+use App\Demo\Controller\ForbiddenController;
+use App\Demo\Controller\JumpController;
+use App\Demo\Controller\LoginPresenter;
+use App\Demo\Controller\UploadController;
+use App\Demo\Controller\UploadViewer;
 use App\Demo\Handler\CsRfToken;
 use App\Demo\Handler\Dispatcher;
 use App\Demo\Handler\NotFound;
@@ -15,6 +18,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Tuum\Respond\Builder\ServiceProviderInterface;
 use Tuum\Respond\Factory;
+use Tuum\Respond\Respond;
 use Tuum\Respond\Responder;
 
 class Provider implements ServiceProviderInterface
@@ -25,20 +29,26 @@ class Provider implements ServiceProviderInterface
     public function getFactories()
     {
         return [
-            App::class        => [$this, 'getApp'],
-            Middleware::class => [$this, 'getMiddleware'],
-            Routes::class     => [$this, 'getRoutes'],
-            Responder::class  => [$this, 'getResponder'],
-            Dispatcher::class => [$this, 'getDispatcher'],
-            NotFound::class   => [$this, 'getNotFound'],
-            CsRfToken::class  => [$this, 'getCsRfToken'],
-            LoginPresenter::class  => [$this, 'getLoginPresenter'],
+            App::class                      => [$this, 'getApp'],
+            Middleware::class               => [$this, 'getMiddleware'],
+            Routes::class                   => [$this, 'getRoutes'],
+            // middleware
+            NotFound::class                 => [$this, 'getNotFound'],
+            CsRfToken::class                => [$this, 'getCsRfToken'],
+            Dispatcher::class               => [$this, 'getDispatcher'],
+            // services
+            Responder::class                => [$this, 'getResponder'],
             ResponseFactoryInterface::class => [$this, 'getResponseFactory'],
-            StreamFactoryInterface::class => [$this, 'getStreamFactory'],
-            JumpController::class, [$this, 'getJumpController'],
+            StreamFactoryInterface::class   => [$this, 'getStreamFactory'],
+            // controllers and presenters
+            LoginPresenter::class           => [$this, 'getLoginPresenter'],
+            JumpController::class           => [$this, 'getJumpController'],
+            UploadController::class         => [$this, 'getUploadController'],
+            UploadViewer::class             => [$this, 'getUploadViewer'],
+            ForbiddenController::class      => [$this, 'getForbiddenController'],
         ];
     }
-    
+
     public function getResponseFactory()
     {
         return new ResponseFactory();
@@ -52,10 +62,12 @@ class Provider implements ServiceProviderInterface
     public function getResponder(ContainerInterface $container)
     {
         $settings = $container->get('settings');
-
-        return Factory::new($settings)
+        $responder = Factory::new($settings)
             ->setContainer($container)
             ->build();
+        Respond::setResponder($responder); // a quick access to responder!?
+        
+        return $responder;
     }
 
     public function getApp(ContainerInterface $container)
@@ -87,14 +99,32 @@ class Provider implements ServiceProviderInterface
     {
         return new CsRfToken($container->get(Responder::class));
     }
-    
+
     public function getLoginPresenter(ContainerInterface $container)
     {
         return new LoginPresenter($container->get(Responder::class));
     }
-    
+
     public function getJumpController(ContainerInterface $container)
     {
         return new JumpController($container->get(Responder::class));
+    }
+
+    public function getUploadController(ContainerInterface $container)
+    {
+        return new UploadController(
+            $container->get(UploadViewer::class), 
+            $container->get(Responder::class)
+        );
+    }
+
+    public function getUploadViewer(ContainerInterface $container)
+    {
+        return new UploadViewer($container->get(Responder::class));
+    }
+    
+    public function getForbiddenController(ContainerInterface $container)
+    {
+        return new ForbiddenController($container->get(Responder::class));
     }
 }

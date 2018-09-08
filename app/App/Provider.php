@@ -1,11 +1,11 @@
 <?php
 namespace App\App;
 
-use App\App\Controller\ForbiddenController;
-use App\App\Controller\JumpController;
-use App\App\Controller\LoginPresenter;
-use App\App\Controller\UploadController;
-use App\App\Controller\UploadViewer;
+use App\Demo\Controller\ForbiddenController;
+use App\Demo\Controller\JumpController;
+use App\Demo\Controller\LoginPresenter;
+use App\Demo\Controller\UploadController;
+use App\Demo\Controller\UploadViewer;
 use Psr\Container\ContainerInterface;
 use Tuum\Locator\FileMap;
 use Tuum\Respond\Builder;

@@ -1,8 +1,10 @@
 <?php
 namespace Tuum\Respond\Service;
 
+use Http\Factory\Diactoros\StreamFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Tuum\Form\Data\Data;
 use Tuum\Form\Data\Errors;
@@ -289,6 +291,11 @@ class ViewHelper
     {
         if (!$response->getBody()->isSeekable()) {
             throw new \InvalidArgumentException('not seekable response body. ');
+        }
+        if ($this->responder->resolvable(StreamFactoryInterface::class)) {
+            $stream = $response->getBody();
+            $stream->rewind();
+            return $stream->getContents();
         }
         $position = $response->getBody()->tell();
         $response->getBody()->rewind();
