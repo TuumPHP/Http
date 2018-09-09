@@ -1,5 +1,5 @@
 <?php
-namespace App\App\Controller;
+namespace App\Demo\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Tuum\Respond\Controller\AbstractPresenter;

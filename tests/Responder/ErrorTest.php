@@ -4,7 +4,9 @@ namespace tests\Responder;
 use tests\Tools\TesterTrait;
 use tests\Tools\NoRender;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\Error;
 use Zend\Diactoros\Response;
@@ -23,10 +25,10 @@ class ErrorTest extends \PHPUnit\Framework\TestCase
     function setup()
     {
         $_SESSION      = [];
-        $responder = Responder::forge(
-            Builder::forge('test')
-            ->setRenderer(new NoRender())
-        )->setResponse(new Response());
+        $responder = Factory::new()
+            ->set(RendererInterface::class, new NoRender())
+            ->build()    
+            ->setResponse(new Response());
         $request = ReqBuilder::createFromPath('test');
         $request = $responder->setPayload($request);
         $this->error = $responder->error($request);

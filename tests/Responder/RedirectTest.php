@@ -3,6 +3,7 @@ namespace tests\Responder;
 
 use tests\Tools\TesterTrait;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
 use Tuum\Respond\Helper\ReqAttr;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Responder;
@@ -38,9 +39,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
         $_SESSION      = [];
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
-        $builder = Builder::forge('test-tuum')
-            ->setSessionStorage($this->session);
-        $this->responder = new Responder($builder);
+        $this->responder = Factory::forge();
         $this->responder->setResponse(new Response());
         $this->redirect = new Redirect();
 

@@ -1,8 +1,11 @@
 <?php
 namespace Tuum\Respond;
 
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Tuum\Respond\Interfaces\NamedRoutesInterface;
 use Tuum\Respond\Interfaces\PayloadInterface;
@@ -14,9 +17,9 @@ use Tuum\Respond\Interfaces\SessionStorageInterface;
 class Responder
 {
     /**
-     * @var Builder
+     * @var ContainerInterface
      */
-    private $builder;
+    private $container;
 
     /**
      * @var ResponseInterface
@@ -24,20 +27,20 @@ class Responder
     private $response;
 
     /**
-     * @param Builder $builder
+     * @param ContainerInterface $container
      */
-    public function __construct(Builder $builder)
+    public function __construct(ContainerInterface $container)
     {
-        $this->builder = $builder;
+        $this->container = $container;
     }
 
     /**
-     * @param Builder $builder
+     * @param ContainerInterface $container
      * @return Responder
      */
-    public static function forge(Builder $builder)
+    public static function forge(ContainerInterface $container)
     {
-        return new self($builder);
+        return new self($container);
     }
 
     /**
@@ -59,22 +62,22 @@ class Responder
 
     public function view(ServerRequestInterface $request): View
     {
-        return $this->builder->getView()->start($request, $this);
+        return $this->container->get(View::class)->start($request, $this);
     }
 
     public function redirect(ServerRequestInterface $request): Redirect
     {
-        return $this->builder->getRedirect()->start($request, $this);
+        return $this->container->get(Redirect::class)->start($request, $this);
     }
 
     public function error(ServerRequestInterface $request): Error 
     {
-        return $this->builder->getError()->start($request, $this);
+        return $this->container->get(Error::class)->start($request, $this);
     }
 
     public function session(): SessionStorageInterface
     {
-        return $this->builder->getSessionStorage();
+        return $this->container->get(SessionStorageInterface::class);
     }
 
     public function getPayload(ServerRequestInterface $request): ?PayloadInterface
@@ -95,14 +98,15 @@ class Responder
         $this->session()->savePayload($this->getPayload($request));
     }
 
-    public function getResponse(): ResponseInterface
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }
     
     public function makeResponse(int $code, $contents, array $header = []): ResponseInterface
     {
-        if ($factory = $this->builder->getResponseFactory()) {
+        if ($this->container->has(ResponseFactoryInterface::class)) {
+            $factory = $this->container->get(ResponseFactoryInterface::class);
             $response = $factory->createResponse($code);
         } else {
             $response = $this->getResponse();
@@ -122,12 +126,13 @@ class Responder
 
     public function routes(): NamedRoutesInterface
     {
-        return$this->builder->getNamedRoutes();
+        return$this->container->get(NamedRoutesInterface::class);
     }
 
     public function makeStream($contents): StreamInterface
     {
-        if ($factory = $this->builder->getStreamFactory()) {
+        if ($this->container->has(StreamFactoryInterface::class)) {
+            $factory = $this->container->get(StreamFactoryInterface::class);
             if (is_string($contents)) {
                 return $factory->createStream($contents);
             }
@@ -150,15 +155,19 @@ class Responder
         throw new \InvalidArgumentException('contents not a string nor a resource');
     }
 
-    public function resolve($id)
+    public function resolve(string $id)
     {
-        $container = $this->builder->getContainer();
-        if (!$container) {
-            throw new \BadMethodCallException('must set container to resolve');
-        }
-        if ($container->has($id)) {
-            return $container->get($id);
+        if ($this->container->has($id)) {
+            return $this->container->get($id);
         }
         return null;
+    }
+    
+    public function resolvable(string $id): bool
+    {
+        if ($this->container) {
+            return $this->container->has($id);
+        }
+        return false;
     }
 }

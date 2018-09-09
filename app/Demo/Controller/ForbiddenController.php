@@ -1,11 +1,11 @@
 <?php
-namespace App\App\Controller;
+namespace App\Demo\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Tuum\Respond\Controller\AbstractController;
+use Tuum\Respond\Controller\AbstractRequestHandler;
 use Tuum\Respond\Responder;
 
-class ForbiddenController extends AbstractController
+class ForbiddenController extends AbstractRequestHandler
 {
     /**
      * JumpController constructor.

@@ -3,7 +3,8 @@ namespace tests\Http;
 
 use tests\Tools\NoRender;
 use tests\Tools\TesterTrait;
-use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Helper\ReqBuilder;
 use Tuum\Respond\Helper\ResponseHelper;
@@ -41,10 +42,10 @@ class RedirectAndRespondTest extends \PHPUnit\Framework\TestCase
     private function createResponder()
     {
         $view            = new NoRender();
-        return Responder::forge(
-            Builder::forge('test')
-                ->setRenderer($view)
-        )->setResponse(new Response());
+        return Factory::new()
+            ->set(RendererInterface::class, $view)
+            ->build()
+            ->setResponse(new Response());
     }
 
     /**

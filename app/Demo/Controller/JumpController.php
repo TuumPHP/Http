@@ -1,13 +1,11 @@
 <?php
-namespace App\App\Controller;
+namespace App\Demo\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Tuum\Respond\Controller\AbstractController;
-use Tuum\Respond\Controller\DispatchByMethodTrait;
+use Tuum\Respond\Controller\AbstractRequestHandler;
 use Tuum\Respond\Responder;
 
-class JumpController extends AbstractController
+class JumpController extends AbstractRequestHandler
 {
     /**
      * JumpController constructor.

@@ -1,9 +1,9 @@
 <?php
 
-use App\App\Controller\ForbiddenController;
+use App\Demo\Controller\ForbiddenController;
 use App\App\Dispatcher;
 use App\App\DocumentMap;
-use App\App\Controller\UploadController;
+use App\Demo\Controller\UploadController;
 use Koriym\Printo\Printo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -61,7 +61,7 @@ return function (Dispatcher $app) {
     /**
      * for displaying form for /jump
      */
-    $app->add('/jump', \App\App\Controller\JumpController::class);
+    $app->add('/jump', \App\Demo\Controller\JumpController::class);
 
     /**
      * file upload sample, /upload.

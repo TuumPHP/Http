@@ -79,7 +79,6 @@ class View extends AbstractResponder
     public function renderContents($file, $data = [])
     {
         $helper   = $this->getViewHelper();
-        
         return $this->renderer->render($file, $helper, $data);
     }
 

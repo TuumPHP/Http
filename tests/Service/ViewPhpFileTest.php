@@ -4,7 +4,9 @@ namespace tests\Service;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Service\Renderer\RawPhp;
 use Zend\Diactoros\Response;
@@ -33,10 +35,10 @@ class ViewPhpFileTest extends \PHPUnit\Framework\TestCase
         $_SESSION = [];
         $this->req      = ReqBuilder::createFromPath('test');
         $this->res      = new Response();
-        $this->responder = Responder::forge(
-            Builder::forge('test')
-                ->setRenderer(new RawPhp(__DIR__ . '/views'))
-        )->setResponse($this->res);
+        $this->responder = Factory::new()
+            ->set(RendererInterface::class, new RawPhp(__DIR__ . '/views'))
+            ->build()
+            ->setResponse($this->res);
     }
 
     /**

@@ -4,7 +4,9 @@ namespace tests\Responder;
 use tests\Tools\TesterTrait;
 use tests\Tools\NoRender;
 use Tuum\Respond\Builder;
+use Tuum\Respond\Factory;
 use Tuum\Respond\Helper\ReqBuilder;
+use Tuum\Respond\Interfaces\RendererInterface;
 use Tuum\Respond\Responder;
 use Tuum\Respond\Responder\View;
 use Tuum\Respond\Interfaces\PresenterInterface;
@@ -44,10 +46,10 @@ class ViewTest extends \PHPUnit\Framework\TestCase
         $this->session = SessionStorage::forge('tuum-app');
         $this->setPhpTestFunc($this->session);
         $this->renderer = new NoRender();
-        $this->responder = Responder::forge(
-            Builder::forge('app-test')
-            ->setRenderer($this->renderer)
-        )->setResponse(new Response());
+        $this->responder = Factory::new()
+            ->set(RendererInterface::class, $this->renderer)
+            ->build()
+            ->setResponse(new Response());
         $request = ReqBuilder::createFromPath('test');
         $request = $this->responder->setPayload($request);
         $this->view      = $this->responder->view($request);

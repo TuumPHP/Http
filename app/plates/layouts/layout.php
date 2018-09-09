@@ -2,7 +2,7 @@
 /** @var Template $this */
 /** @var ViewHelper $view */
 
-use App\App\Controller\LoginPresenter;
+use App\Demo\Controller\LoginPresenter;
 use League\Plates\Template\Template;
 use Tuum\Respond\Service\ViewHelper;
 
