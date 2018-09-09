@@ -17,15 +17,18 @@ Most of a typical HTML web site need to:
 
 and more. 
 
-Using `Tuum/Respond` module with PSR-7 based micro-frameworks, 
-such as Slim3 or Expressive, gives these useful functions that 
-are often available only in full-stack frameworks. 
+`Tuum/Respond` module provides functionality to help 
+ implement these operations that are often available 
+ only in full-stack frameworks. 
 
 ### Who needs `Tuum/Respond`?
 
-`Tuum/Respond` is a **module**, not a framework.
-I did not want to develop yet-another framework. 
-Rather I wanted to utilize existing great micro-frameworks and PSR standards. 
+`Tuum/Respond` is a **module**, not a framework. 
+It is designed to 
+work with existing PSR-7 based micro-frameworks, 
+such as Slim3 or Expressive. 
+
+> we do not need yet-another framework :). 
 
 Thus, `Tuum/Respond` is for people who uses PSR based micro-frameworks, 
 yet wants/needs to develop a traditional html based web sites.  
@@ -67,7 +70,179 @@ To see the site;
 4. access `localhost:8000` via browser.
 
 
+Basic Usage
+===========
 
+### Construction with Container
+
+It is best to configure responder using PSR-11 (DI) container. 
+
+```php
+use Tuum\Respond\Factory;
+use Tuum\Respond\Service\Renderer\Plates;
+
+/**
+ * set settings for responder
+ */
+$container->set('settings', [
+    'template_dir' => dirname(__DIR__). '/app/plates',
+    'renderer_type' => Plates::class,
+]);
+/**
+ * set PSR-17 factories: response and stream. 
+ */ 
+$container->setFactory(ResponseFactoryInterface::class, 
+    function() {
+        return new ResponseFactory();
+    });
+$container->setFactory(StreamFactoryInterface::class, 
+    function() {
+        return new StreamFactory();
+    });
+/**
+ * set factory for responder
+ */
+$container->setFactory(Responder::class, 
+    function(ContainerInterface $container) {
+         $settings  = $container->get('settings');
+         return Factory::new($settings)
+             ->setContainer($container)
+             ->build();
+    });
+```
+
+For settings, please specify at least template directory and a renderer which 
+implements `Tuum\Respond\Interfaces\RendererInterface`. 
+
+`Tuum\Respond\Factory` class provides a simple method to 
+construct a responder. 
+
+### Using a Response Object
+
+If PSR-17 is not present, please use a response object, 
+either in a factory, or in a middleware. 
+
+```php
+$responder->setResponse($response);
+```
+
+Sample Codes
+------------
+
+### Rendering a Template
+
+The sample code below is used to draw the top page of the demo site. 
+
+```php
+$app->get('/', function($request) use(Responder $responder) {
+	return $responder->view($request)
+		->setSuccess('Hello World')
+		->render('welcome');
+});
+```
+
+#### for `welcome.php` as in plates or raw-php file:  
+
+a variable, `$view`, contains the message set in the 
+responder in the code above.
+
+```php
+$classes = [
+    'message' => 'success',
+    'alert' => 'info',
+    'error' => 'danger',
+];
+?>
+<?php if ($message = $view->message->findMostSerious()): ?>
+    <div class="alert alert-<?= $classes[$message['type']] ?>"><?= $message['message'] ?></div>
+<?php endif;?>
+```
+
+
+#### for `welcome.twig` twig file: 
+
+t.b.w.
+
+
+### Redirect with Messages
+
+It is also very easy to redirect with messages; 
+the message below is saved in flash session and 
+retrieved in the subsequent request. 
+
+```php
+$app->post('/redirect', function($request) use(Responder $responder) {
+	return $responder->redirect($request)
+		->setAlert('Redirected!')
+		->toPath('/');
+});
+```
+
+#### templates
+
+the message can be retrieved exactly the same as 
+message set in the controller. 
+
+
+### Error
+
+```php
+$app->get('/form', function($request) use($responder) {
+	return $responder->error($request)
+		->setError('Sorry!')
+		->forbidden();
+});
+```
+
+#### templates for errors
+
+a default error pages are at `errors`, and following 
+default error pages are required.  
+
+- `forbidden`: 403 CSRF token error.
+- `notFound`: 404 not found
+- `unauthorized`: 401 login error
+- `error`: all other errors
+
+Configuration
+=============
+
+### view options
+
+defaults are;
+
+```php
+$settings = [
+    'template_dir'    => '/templates',
+    'renderer_type'   => Twig::class,
+    'twig-options'    => [],
+    'twig-callable'   => null,
+    'plates-callable' => null,
+    'content_view'    => 'layouts/content_view',
+];
+```
+
+### error option
+
+defaults are;
+
+```php
+$settings = [
+    'error_options'   => [
+        'path'    => 'errors',
+        'default' => 'error',
+        'status'  => [
+            401 => 'unauthorized',  // for login error.
+            403 => 'forbidden',     // for CSRF token error.
+            404 => 'notFound',      // for not found.
+        ],
+        'files'   => [],
+    ],
+];
+```
+
+--------
+--------
 --------
 
 
