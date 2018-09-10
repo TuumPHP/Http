@@ -90,8 +90,10 @@ use Tuum\Respond\Service\Renderer\Plates;
  * set settings for responder
  */
 $container->set('settings', [
-    'template_dir' => dirname(__DIR__). '/app/plates',
-    'renderer_type' => Plates::class,
+    'view_options' => [
+        'template_dir' => dirname(__DIR__). '/app/plates',
+        'renderer_type' => Plates::class,
+    ],
 ]);
 /**
  * set PSR-17 factories: response and stream. 
