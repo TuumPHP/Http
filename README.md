@@ -221,22 +221,64 @@ default error pages are required.
 Configuration
 =============
 
+Settings
+--------
+
+When building a responder using Factory class. 
+
+```php
+$settings = [
+    'name'         => 'app',
+    'view_options' => [...see below...],
+    'error_options'=> [...see below...]
+];
+```
+
+Where as, 
+
+- `name`: name of the application. default is 'app'.
+- `view_options`: for template engine.
+- `error_options`: for error page structure.  
+
+Rendering View
+--------------
+
 ### view options
 
 defaults are;
 
 ```php
 $settings = [
-    'template_dir'    => '/templates',
-    'renderer_type'   => Twig::class,
-    'twig-options'    => [],
-    'twig-callable'   => null,
-    'plates-callable' => null,
-    'content_view'    => 'layouts/content_view',
+    'view_options' => [
+        'template_dir'    => '/templates',
+        'renderer_type'   => Twig::class,
+        'twig-options'    => [],
+        'twig-callable'   => null,
+        'plates-callable' => null,
+        'content_view'    => 'layouts/content_view',
+    ],
 ];
 ```
 
-### error option
+- `template_dir`: template directory. 
+- `renderer_type`: class name for render object that implements `RendererInterface`.  
+- `twig-options`: options for twig. 
+- `twig-callable`: callable for twig. 
+- `plates-callable`: callable for Plates. 
+- `content_view`: specify template file name having `content` block for for `asContents` method
+
+### Twig
+
+
+
+### League/Plates
+
+
+
+Error Pages
+------------
+
+### error options 
 
 defaults are;
 
@@ -254,6 +296,39 @@ $settings = [
     ],
 ];
 ```
+
+- `path`: directory name of error templates. 
+- `default`: a template name used as default error page. 
+- `status`: a hashed array of status to error file name.  
+- `files`: file name and list of status, for instance, 
+
+```php
+'files' => [
+    'badError' => [500, 501, 505],
+]
+```
+
+Other Options
+-------------
+
+### Named Route
+
+Please set `NamedRoutesInterface` object to use named route. 
+
+```php
+$container->setFactory(
+    \Tuum\Respond\Interfaces\NamedRoutesInterface::class, 
+    function(ContainerInterface $container) {
+        return new MyNamedRoute($container->get('router'));
+    });
+```
+
+meanwhile somewhere in template... 
+
+```html
+<a href="{{ view.route('top-page') }}">back to top</a>
+```
+
 
 --------
 --------
