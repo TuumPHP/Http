@@ -73,9 +73,14 @@ To see the site;
 Basic Usage
 ===========
 
+It is best to configure responder using PSR-11 (DI) container. 
+
+The following example assumes that `$container` implements PSR-11 `ContainerInterface`, 
+`set` method for setting a value, and `setFactory` for setting a factory. 
+
 ### Construction with Container
 
-It is best to configure responder using PSR-11 (DI) container. 
+First, setup a container; settings for view_options, and PSR-17 response and stream factories.  
 
 ```php
 use Tuum\Respond\Factory;
@@ -99,6 +104,11 @@ $container->setFactory(StreamFactoryInterface::class,
     function() {
         return new StreamFactory();
     });
+```
+
+then, set a factory for responder as such. 
+
+```php
 /**
  * set factory for responder
  */
@@ -111,11 +121,13 @@ $container->setFactory(Responder::class,
     });
 ```
 
-For settings, please specify at least template directory and a renderer which 
-implements `Tuum\Respond\Interfaces\RendererInterface`. 
+For view_options, please specify at least 
 
-`Tuum\Respond\Factory` class provides a simple method to 
-construct a responder. 
+- template directory as `template_dir` and 
+- a renderer class name as `renderer_type` which must 
+  implement `Tuum\Respond\Interfaces\RendererInterface`. 
+
+Then, use `Tuum\Respond\Factory` class to construct a responder. 
 
 ### Using a Response Object
 
