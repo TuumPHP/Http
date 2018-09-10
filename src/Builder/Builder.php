@@ -31,23 +31,28 @@ class Builder implements ServiceProviderInterface
      */
     public function __construct($setting = [])
     {
-        $this->setting = $setting + [
-                'error_options'   => [
-                    'path'    => 'errors',
-                    'default' => 'error',
-                    'status'  => [
-                        401 => 'unauthorized',  // for login error.
-                        403 => 'forbidden',     // for CSRF token error.
-                        404 => 'notFound',      // for not found.
-                    ],
-                    'files'   => [],
-                ],
+        $viewOption = ($setting['view_options'] ?? []) + [
                 'template_dir'    => '/templates',
                 'renderer_type'   => Twig::class,
                 'twig-options'    => [],
                 'twig-callable'   => null,
                 'plates-callable' => null,
                 'content_view'    => 'layouts/content_view',
+            ];
+        $errorOption = ($setting['error_options'] ?? []) + [
+                'path'    => 'errors',
+                'default' => 'error',
+                'status'  => [
+                    401 => 'unauthorized',  // for login error.
+                    403 => 'forbidden',     // for CSRF token error.
+                    404 => 'notFound',      // for not found.
+                ],
+                'files'   => [],
+            ];
+        $this->setting = [
+                'name'          => 'app',
+                'error_options' => $errorOption,
+                'view_options'  => $viewOption,
             ];
     }
 
@@ -77,7 +82,7 @@ class Builder implements ServiceProviderInterface
 
     public function getView(ContainerInterface $container): View
     {
-        $contentView = $container->get(self::ID)['content_view'] ?? '';
+        $contentView = $container->get(self::ID)['view_options']['content_view'] ?? '';
         return new View(
             $container->get(RendererInterface::class),
             $contentView
@@ -109,25 +114,25 @@ class Builder implements ServiceProviderInterface
 
     public function getRendererTwig(ContainerInterface $container): Twig
     {
-        $info = $container->get(self::ID);
+        $info = $container->get(self::ID)['view_options'];
         return Twig::forge($info['template_dir'], $info['twig-options'], $info['twig-callable']);
     }
 
     public function getRendererPlates(ContainerInterface $container): Plates
     {
-        $info = $container->get(self::ID);
+        $info = $container->get(self::ID)['view_options'];
         return Plates::forge($info['template_dir'], $info['plates-callable']);
     }
 
     public function getRendererRawPhp(ContainerInterface $container): RawPhp
     {
-        $info = $container->get(self::ID);
+        $info = $container->get(self::ID)['view_options'];
         return RawPhp::forge($info['template_dir']);
     }
 
     public function getRenderer(ContainerInterface $container): RendererInterface
     {
-        $info = $container->get(self::ID);
+        $info = $container->get(self::ID)['view_options'];
         $type = $info['renderer_type'];
         return $container->get($type);
     }
