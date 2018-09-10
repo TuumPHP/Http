@@ -31,21 +31,19 @@ class DocumentMap extends AbstractRequestHandler
     }
 
     /**
-     * @param ServerRequestInterface $request
+     * @param string $pathInfo
      * @return ResponseInterface
      */
-    public function __invoke($request)
+    public function onGet($pathInfo)
     {
-        $args = $request->getQueryParams();
-        $path = isset($args['pathInfo']) && $args['pathInfo'] ? $args['pathInfo'] : $this->index_file;
-        $info = $this->mapper->render($path);
+        $info = $this->mapper->render($pathInfo);
         if (!$info->found()) {
-            return $this->responder->error($request)->notFound();
+            return $this->error()->notFound();
         }
         if ($fp = $info->getResource()) {
-            return $this->responder->view($request)->asFileContents($fp, $info->getMimeType());
+            return $this->view()->asFileContents($fp, $info->getMimeType());
         }
-        $view = $this->responder->view($request);
-        return $view->asContents($info->getContents(), 'layouts/contents-docs');
+        return $this->view()
+                    ->asContents($info->getContents(), 'layouts/contents-docs');
     }
 }
