@@ -73,6 +73,9 @@ To see the site;
 Basic Usage
 ===========
 
+Preparation
+-----------
+
 It is best to configure responder using PSR-11 (DI) container. 
 
 The following example assumes that `$container` implements PSR-11 `ContainerInterface`, 
@@ -139,6 +142,19 @@ either in a factory, or in a middleware.
 ```php
 $responder->setResponse($response);
 ```
+
+### Middleware
+
+Please set up `ServerRequestInterface`, `$request`, such as;
+
+```php
+public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+    $request = $this->responder->setUpRequest($request);
+    return $hander->handle($request);
+}
+```
+
+`Responder` saves payload and session data as `$request`'s attribute. 
 
 Sample Codes
 ------------
