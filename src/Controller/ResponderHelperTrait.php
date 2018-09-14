@@ -123,7 +123,7 @@ trait ResponderHelperTrait
      */
     protected function session(): SessionStorageInterface
     {
-        return $this->getResponder()->session();
+        return $this->getResponder()->session($this->request);
     }
 
     /**

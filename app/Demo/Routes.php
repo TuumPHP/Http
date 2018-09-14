@@ -65,8 +65,8 @@ class Routes implements \IteratorAggregate
     public function onHome(ServerRequestInterface $request): ResponseInterface
     {
         $responder = $this->responder;
-        if (!$responder->session()->get('first.time')) {
-            $responder->session()->set('first.time', true);
+        if (!$responder->session($request)->get('first.time')) {
+            $responder->session($request)->set('first.time', true);
             $responder->getPayload($request)
                 ->setSuccess('Thanks for downloading Tuum/Respond.');
         }
@@ -90,11 +90,11 @@ class Routes implements \IteratorAggregate
         $post      = $request->getParsedBody();
         $payload   = $responder->getPayload($request);
         if (isset($post['logout'])) {
-            $responder->session()->set('login.name', null);
+            $responder->session($request)->set('login.name', null);
             $payload->setSuccess('logged out');
         } elseif (isset($post['login'])) {
             if ($post['login']) {
-                $responder->session()->set('login.name', $post['login']);
+                $responder->session($request)->set('login.name', $post['login']);
                 $payload->setSuccess('logged as: ' . $post['login']);
             } else {
                 $payload->setAlert('enter login name');

@@ -39,7 +39,7 @@ abstract class AbstractResponder
         $this->request   = $request;
         $this->responder = $responder;
         if (!Respond::getPayload($request)) {
-            Respond::setPayload($request, $responder->session()->getPayload());
+            Respond::setPayload($request, $responder->session($request)->getPayload());
         }
 
         return $this;
@@ -113,7 +113,7 @@ abstract class AbstractResponder
     public function savePayload(ServerRequestInterface $request)
     {
         $this->responder
-            ->session()
+            ->session($request)
             ->savePayload($this->responder->getPayload($request));
         return $this;
     }

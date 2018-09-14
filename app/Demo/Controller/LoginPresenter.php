@@ -27,7 +27,7 @@ class LoginPresenter extends AbstractPresenter
      */
     public function html()
     {
-        $login = $this->responder->session()->get('login.name');
+        $login = $this->session()->get('login.name');
         if ($login) {
             return $this->view()
                 ->render('layouts/UserHeaderLogIn', ['login' => $login]);

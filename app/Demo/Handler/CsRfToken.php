@@ -21,7 +21,7 @@ class CsRfToken implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $request = $this->responder->setPayload($request);
+        $request = $this->responder->setUpRequest($request);
         if ($request->getMethod() === 'POST') {
             if (!$this->validateToken($request)) {
                 return $this->responder->error($request)->forbidden();
@@ -35,7 +35,7 @@ class CsRfToken implements MiddlewareInterface
     {
         $post    = $request->getParsedBody();
         $token   = isset($post['_token']) ? $post['_token'] : '';
-        $session = $this->responder->session();
+        $session = $this->responder->session($request);
 
         return $session->validateToken($token);
     }

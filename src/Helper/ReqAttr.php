@@ -41,7 +41,7 @@ class ReqAttr
         if ($referrer = $request->getAttribute(self::REFERRER)) {
             return $referrer;
         }
-        if ($referrer = Respond::session()->get(self::REFERRER)) {
+        if ($referrer = Respond::getSession($request)->get(self::REFERRER)) {
             return $referrer;
         }
         $info = $request->getServerParams();

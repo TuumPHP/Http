@@ -52,9 +52,14 @@ class Respond
     {
         return self::getResponder()->error($request);
     }
-
-    public static function session(): SessionStorageInterface
+    
+    public static function getSession(ServerRequestInterface $request): ?SessionStorageInterface
     {
-        return self::getResponder()->session();
+        return $request->getAttribute(SessionStorageInterface::class);
+    }
+
+    public static function setSession(ServerRequestInterface $request, SessionStorageInterface $session): ServerRequestInterface
+    {
+        return $request->withAttribute(SessionStorageInterface::class, $session);
     }
 }

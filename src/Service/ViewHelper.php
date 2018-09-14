@@ -310,6 +310,6 @@ class ViewHelper
      */
     public function csrfToken()
     {
-        return $this->responder->session()->getToken();
+        return $this->responder->session($this->request)->getToken();
     }
 }

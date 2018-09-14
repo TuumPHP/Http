@@ -22,7 +22,7 @@ class ForbiddenController extends AbstractRequestHandler
      */
     public function onGet()
     {
-        $session = $this->getResponder()->session();
+        $session = $this->session();
         $request = $this->getRequest()->withAttribute('_token', $session->getToken());
         $this->setRequest($request);
 

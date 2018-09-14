@@ -30,7 +30,7 @@ class ErrorTest extends \PHPUnit\Framework\TestCase
             ->build()    
             ->setResponse(new Response());
         $request = ReqBuilder::createFromPath('test');
-        $request = $responder->setPayload($request);
+        $request = $responder->setUpRequest($request);
         $this->error = $responder->error($request);
     }
 

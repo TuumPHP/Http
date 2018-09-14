@@ -51,7 +51,7 @@ class ViewTest extends \PHPUnit\Framework\TestCase
             ->build()
             ->setResponse(new Response());
         $request = ReqBuilder::createFromPath('test');
-        $request = $this->responder->setPayload($request);
+        $request = $this->responder->setUpRequest($request);
         $this->view      = $this->responder->view($request);
     }
 

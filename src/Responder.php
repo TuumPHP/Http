@@ -75,9 +75,15 @@ class Responder
         return $this->container->get(Error::class)->start($request, $this);
     }
 
-    public function session(): SessionStorageInterface
+    /**
+     * TODO: is it OK to return a session object even if $request does not have one...
+     * 
+     * @param ServerRequestInterface $request
+     * @return SessionStorageInterface
+     */
+    public function session(ServerRequestInterface $request): SessionStorageInterface
     {
-        return $this->container->get(SessionStorageInterface::class);
+        return Respond::getSession($request) ?: $this->container->get(SessionStorageInterface::class);
     }
 
     public function getPayload(ServerRequestInterface $request): ?PayloadInterface
@@ -85,17 +91,21 @@ class Responder
         return Respond::getPayload($request);
     }
     
-    public function setPayload(ServerRequestInterface $request): ServerRequestInterface
+    public function setUpRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        if (Respond::getPayload($request)) {
-            return $request;
+        if (!Respond::getSession($request)) {
+            $request = Respond::setSession($request, $this->container->get(SessionStorageInterface::class));
         }
-        return $request->withAttribute(PayloadInterface::class, $this->session()->getPayload());
+        if (!Respond::getPayload($request)) {
+            $request = Respond::setPayload($request, $this->session($request)->getPayload());
+        }
+
+        return $request;
     }
 
     public function savePayload(ServerRequestInterface $request): void
     {
-        $this->session()->savePayload($this->getPayload($request));
+        $this->session($request)->savePayload($this->getPayload($request));
     }
 
     public function getResponse(): ?ResponseInterface

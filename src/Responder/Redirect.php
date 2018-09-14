@@ -104,7 +104,7 @@ class Redirect extends AbstractResponder
         if (array_key_exists('HTTP_REFERER', $server)) {
             return $server['HTTP_REFERER'];
         }
-        if ($referrer = $this->responder->session()->get(self::REFERRER)) {
+        if ($referrer = $this->responder->session($this->request)->get(self::REFERRER)) {
             return $referrer;
         }
         if ($referrer = ReqAttr::getReferrer($this->request)) {

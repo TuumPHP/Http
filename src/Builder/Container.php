@@ -73,7 +73,7 @@ class Container implements ContainerInterface
         }
         if (array_key_exists($id, $this->providers) && is_callable($this->providers[$id])) {
             $factory = $this->providers[$id];
-            return $this->concretes[$id] = $factory($this);
+            return $factory($this);
         }
         throw new NotFoundException(sprintf('Failed to get the id (%s) in the container.', $id));
     }

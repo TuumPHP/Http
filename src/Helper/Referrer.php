@@ -22,7 +22,7 @@ class Referrer
      */
     public function load(ServerRequestInterface $request)
     {
-        $referrer = Respond::session()->get(self::REFERRER);
+        $referrer = Respond::getSession($request)->get(self::REFERRER);
 
         return $request->withAttribute(self::REFERRER, $referrer);
     }
@@ -45,7 +45,7 @@ class Referrer
      */
     private function saveReferrer(ServerRequestInterface $request)
     {
-        Respond::session()->set(self::REFERRER, $request->getUri()->__toString());
+        Respond::getSession($request)->set(self::REFERRER, $request->getUri()->__toString());
     }
 
 

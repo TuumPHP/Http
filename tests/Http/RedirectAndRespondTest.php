@@ -59,8 +59,8 @@ class RedirectAndRespondTest extends \PHPUnit\Framework\TestCase
          * a redirect response with various data.
          */
         $request  = ReqBuilder::createFromPath('/path/test');
-        $request  = $this->responder->setPayload($request);
-        $this->responder->session()
+        $request  = $this->responder->setUpRequest($request);
+        $this->responder->session($request)
             ->setFlash('with', 'val1');
 
         $response     = $this->responder->redirect($request)
@@ -90,7 +90,7 @@ class RedirectAndRespondTest extends \PHPUnit\Framework\TestCase
 
         $data = $responder->getPayload($request);
 
-        $this->assertEquals('val1', $responder->session()->getFlash('with'));
+        $this->assertEquals('val1', $responder->session($request)->getFlash('with'));
         $this->assertEquals('with', $data->getData()['more']);
         $this->assertEquals('message', $data->getMessages()[0]['message']);
         $this->assertEquals('notice-msg', $data->getMessages()[1]['message']);
