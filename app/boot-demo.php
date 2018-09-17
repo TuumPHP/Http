@@ -14,7 +14,7 @@ function bootDemo(array $settings)
         ];
     $container = new Container();
     $container->set('settings', $settings);
-    $container->addProvider(new \App\Demo\Chain\Provider());
+    $container->addProvider(new \App\Demo\Provider());
 
     return $container->get(App::class);
 }

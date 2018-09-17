@@ -1,7 +1,6 @@
 <?php
-namespace App\Demo\Chain;
+namespace App\Demo;
 
-use App\Demo\App;
 use App\Demo\Controller\DocumentMap;
 use App\Demo\Controller\ForbiddenController;
 use App\Demo\Controller\JumpController;
@@ -12,8 +11,6 @@ use App\Demo\Handler\CatchThrows;
 use App\Demo\Handler\CsRfToken;
 use App\Demo\Handler\Dispatcher;
 use App\Demo\Handler\NotFound;
-use App\Demo\Middleware;
-use App\Demo\Routes;
 use Http\Factory\Diactoros\ResponseFactory;
 use Http\Factory\Diactoros\StreamFactory;
 use Psr\Container\ContainerInterface;

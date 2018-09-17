@@ -2,7 +2,6 @@
 namespace App\Demo\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Tuum\Locator\FileMap;
 use Tuum\Respond\Controller\AbstractRequestHandler;
 use Tuum\Respond\Responder;
