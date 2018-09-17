@@ -1,6 +1,6 @@
 <?php
 
-use App\Demo\Chain\App;
+use App\Demo\App;
 use Tuum\Respond\Builder\Container;
 
 /**

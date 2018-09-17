@@ -1,7 +1,7 @@
 <?php
-namespace App\Demo\Chain;
+namespace App\Demo;
 
-use App\Demo\Middleware;
+use App\Demo\Chain\Chains;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

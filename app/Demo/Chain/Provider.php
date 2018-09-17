@@ -1,6 +1,7 @@
 <?php
 namespace App\Demo\Chain;
 
+use App\Demo\App;
 use App\Demo\Controller\DocumentMap;
 use App\Demo\Controller\ForbiddenController;
 use App\Demo\Controller\JumpController;
