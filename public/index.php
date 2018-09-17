@@ -23,7 +23,6 @@ include dirname(__DIR__) . "/app/boot-demo.php";
  * run web application for the request.
  */
 
-/** @var \App\App\Dispatcher $app */
 $app = bootDemo([
     'view_options' => [
         'template_dir' => dirname(__DIR__). '/app/plates',
