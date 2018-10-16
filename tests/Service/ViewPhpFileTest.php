@@ -39,6 +39,7 @@ class ViewPhpFileTest extends \PHPUnit\Framework\TestCase
             ->set(RendererInterface::class, new RawPhp(__DIR__ . '/views'))
             ->build()
             ->setResponse($this->res);
+        $this->req = $this->responder->setUpRequest($this->req);
     }
 
     /**

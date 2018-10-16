@@ -38,9 +38,6 @@ abstract class AbstractResponder
     {
         $this->request   = $request;
         $this->responder = $responder;
-        if (!Respond::getPayload($request)) {
-            Respond::setPayload($request, $responder->session($request)->getPayload());
-        }
 
         return $this;
     }

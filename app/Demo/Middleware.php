@@ -13,8 +13,8 @@ class Middleware
     public function __construct()
     {
         $this->chains = [
-            CatchThrows::class,
             CsRfToken::class,
+            CatchThrows::class,
             Dispatcher::class,
             NotFound::class,
         ];

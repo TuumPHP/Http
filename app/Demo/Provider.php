@@ -138,7 +138,7 @@ class Provider implements ServiceProviderInterface
 
     public function getDocumentMap(ContainerInterface $container)
     {
-        $docs_dir = dirname(dirname(dirname(__DIR__))) . '/docs';
+        $docs_dir = dirname(dirname(__DIR__)) . '/docs';
         $mapper   = FileMap::forge($docs_dir);
 
         return new DocumentMap($mapper, $container->get(Responder::class));
